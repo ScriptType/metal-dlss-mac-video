@@ -1,0 +1,7 @@
+{
+  "references": [
+    {"path": "references/dlss5-video-player", "url": "https://github.com/2600th/dlss5-video-player.git", "revision": "e297ceb7b31c8d0641281b0b2563d77281430e1c"},
+    {"path": "references/dlss-media-player", "url": "https://github.com/petercunha/dlss-media-player.git", "revision": "d1f6cf73a00735f604e39f07021f0bba44c51803"},
+    {"path": "references/video2dlssnr", "url": "https://github.com/DaniilSokolyuk/video2dlssnr.git", "revision": "b29afd1179dbaa0c009e365adbf0339a7424e03f"}
+  ]
+}

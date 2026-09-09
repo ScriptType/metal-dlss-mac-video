@@ -1,0 +1,12 @@
+[submodule "vendor/MLX-DLSS"]
+	path = vendor/MLX-DLSS
+	url = https://github.com/ScriptType/MLX-DLSS.git
+[submodule "vendor/mpv"]
+	path = vendor/mpv
+	url = https://github.com/mpv-player/mpv.git
+[submodule "vendor/Erika"]
+	path = vendor/Erika
+	url = https://github.com/AimesSoft/Erika.git
+[submodule "vendor/libplacebo"]
+	path = vendor/libplacebo
+	url = https://github.com/haasn/libplacebo.git

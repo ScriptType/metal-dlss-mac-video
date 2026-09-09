@@ -1,0 +1,13 @@
+{
+  "name": "m5-max",
+  "purpose": "Unvalidated starting profile; measure on target hardware",
+  "buildJobs": 6,
+  "processingWidth": 512,
+  "processingHeight": 288,
+  "smokeFrames": 12,
+  "maxInFlightFrames": 3,
+  "suggestedEngineMemoryMiB": 16384,
+  "suggestedDiskCacheGiB": 32,
+  "precision": "float16",
+  "referenceWhiteNits": 203
+}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>HDR Player controls</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="controls.js" defer></script>
+</head>
+<body class="bg-zinc-950 font-sans text-zinc-100">
+  <main class="flex h-32 items-center justify-between gap-6 px-6">
+    <div>
+      <p class="text-sm font-semibold tracking-wide">HDR Player <span class="ml-2 rounded bg-teal-950 px-2 py-1 text-xs text-teal-300">Native bypass</span></p>
+      <p class="mt-3 text-xs text-zinc-400">Open a local video to start playback.</p>
+    </div>
+    <nav aria-label="Playback" class="flex gap-2">
+      <button data-action="open" class="rounded-lg bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-white focus-visible:outline-2 focus-visible:outline-teal-400">Open video</button>
+      <button data-action="play" class="rounded-lg bg-zinc-800 px-4 py-2 text-sm hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-teal-400">Play</button>
+      <button data-action="pause" class="rounded-lg bg-zinc-800 px-4 py-2 text-sm hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-teal-400">Pause</button>
+    </nav>
+  </main>
+</body>
+</html>

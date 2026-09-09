@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@source "./index.html";
+html { color-scheme: dark; }
+button { cursor: pointer; }

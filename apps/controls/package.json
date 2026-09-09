@@ -1,0 +1,13 @@
+{
+  "name": "hdr-player-controls",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tailwindcss -i src/styles.css -o ../macos/Sources/Resources/Controls/styles.css --minify && node build.mjs",
+    "check": "node --check src/controls.js && node --check build.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}

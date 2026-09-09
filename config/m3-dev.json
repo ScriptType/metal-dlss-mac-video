@@ -1,0 +1,13 @@
+{
+  "name": "m3-dev",
+  "purpose": "Correctness and tiny inference smoke tests; no real-time claim",
+  "buildJobs": 2,
+  "processingWidth": 320,
+  "processingHeight": 192,
+  "smokeFrames": 3,
+  "maxInFlightFrames": 3,
+  "suggestedEngineMemoryMiB": 4096,
+  "suggestedDiskCacheGiB": 4,
+  "precision": "float16",
+  "referenceWhiteNits": 203
+}

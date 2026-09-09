@@ -1,0 +1,20 @@
+[project]
+name = "metal-dlss-devtools"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "mlxdlss",
+  "numpy",
+  "pillow",
+  "safetensors",
+]
+
+[dependency-groups]
+dev = ["pytest"]
+coreml = ["coremltools>=8"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+mlxdlss = { path = "vendor/MLX-DLSS/python", editable = true }

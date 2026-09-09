@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "name": "neural-rendering",
+      "status": "smoke-tested",
+      "note": "Extracted from e16bcf15 source variant; image and three-frame video smoke passed. Upstream reference DLL hash differs.",
+      "files": [
+        {
+          "path": "models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
+          "bytes": 101028,
+          "sha256": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32"
+        },
+        {
+          "path": "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors",
+          "bytes": 291576650,
+          "sha256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+        }
+      ]
+    },
+    {
+      "name": "frame-generation",
+      "status": "smoke-tested",
+      "note": "Exact supported DLSS SDK 310.7.0 library; three input frames generated five output frames.",
+      "files": [
+        {
+          "path": "models/framegen.safetensors",
+          "bytes": 2891168,
+          "sha256": "40261b36213e41dec4d32041e18bf31c4ade18e6d5970ba343bb26c43ca66ecb"
+        }
+      ]
+    },
+    {
+      "name": "rtx-vsr",
+      "status": "smoke-tested",
+      "note": "Exact supported VSR 1.8.2 library SHA256; 2x image smoke passed.",
+      "files": [
+        {
+          "path": "models/vsr.safetensors",
+          "bytes": 890232,
+          "sha256": "9933d19d95591034682514aaeaa6fcf470ea0e26999e5cd8e3b09a1653201138"
+        }
+      ]
+    },
+    {
+      "name": "dlss-sr",
+      "status": "requires-nvidia-capture",
+      "note": "Library downloaded; one-time CUDA capture required by upstream. An M5 cannot perform that capture.",
+      "files": []
+    }
+  ]
+}

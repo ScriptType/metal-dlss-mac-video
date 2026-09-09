@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "downloads": [
+    {
+      "path": "models/sources/nvngx_dlssnr_310.8.0.zip",
+      "url": "https://github.com/RankFTW/rhi-repo/releases/download/dlssnr-310.8.0/nvngx_dlssnr_310.8.0.zip",
+      "bytes": 109425288,
+      "sha256": "388c0a7912e15ec911b9c9e11a692142b11fe387ddf2b637d8c358138fffb3ac",
+      "note": "Third-party mirror; different DLL hash from MLX-DLSS reference; smoke-tested, no NVIDIA parity claim"
+    },
+    {
+      "path": "models/sources/libnvidia-ngx-dlssg.so.310.7.0",
+      "url": "https://raw.githubusercontent.com/NVIDIA/DLSS/a291cc7d2cc642a51566f3dfd5376f635cd1b284/lib/Linux_x86_64/rel/libnvidia-ngx-dlssg.so.310.7.0",
+      "bytes": 7764600,
+      "sha256": "676cfeace1bf675a281cf234df619f24cef16a1259f36119ebdf01138468a057",
+      "note": "NVIDIA DLSS SDK v310.7.0"
+    },
+    {
+      "path": "models/sources/libnvidia-ngx-dlss.so.310.7.0",
+      "url": "https://raw.githubusercontent.com/NVIDIA/DLSS/a291cc7d2cc642a51566f3dfd5376f635cd1b284/lib/Linux_x86_64/rel/libnvidia-ngx-dlss.so.310.7.0",
+      "bytes": 59494264,
+      "sha256": "fc19b68cefb4218e0954fab812c782e0aa4d30526e0151c796e8887e0eca3acb",
+      "note": "NVIDIA DLSS SDK v310.7.0; SR capture still required"
+    },
+    {
+      "path": "models/sources/nvidia-vfx-linux.whl",
+      "url": "https://pypi.nvidia.com/nvidia-vfx/nvidia_vfx-0.1.0.1-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "bytes": 597321055,
+      "sha256": "e51d9e6faa68466e45b83be7928321af4b0c561c7c5536a8cb2b7e6aba25f905",
+      "note": "NVIDIA Python distribution; archive only, not installed on macOS"
+    },
+    {
+      "path": "models/sources/NVIDIA-DLSS-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/NVIDIA/DLSS/a291cc7d2cc642a51566f3dfd5376f635cd1b284/LICENSE.txt",
+      "bytes": 27176,
+      "sha256": "21b5daec892b12bea692e66bc8fe45cf5902ccaf3a7b831e78050d8859881c37",
+      "note": "Vendor terms retained locally"
+    }
+  ]
+}
