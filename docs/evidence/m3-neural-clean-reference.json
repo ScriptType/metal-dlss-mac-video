@@ -1,0 +1,255 @@
+{
+  "scope": "First completed startup-frame RGBA16F linear BT.2020 nits; ten locations retained before the warmed interval",
+  "configurations": [
+    {
+      "processingWidth": 32,
+      "processingHeight": 24,
+      "repeatSamplesIdentical": true,
+      "reference": {
+        "height": 192,
+        "implementationRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+        "model": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+        "primaries": "BT.2020",
+        "pts": {
+          "timescale": 1000,
+          "value": 0
+        },
+        "samples": [
+          {
+            "rgba": [
+              786.5,
+              113.0625,
+              28.796875,
+              1
+            ],
+            "x": 0,
+            "y": 48
+          },
+          {
+            "rgba": [
+              166.625,
+              411.5,
+              44.53125,
+              1
+            ],
+            "x": 80,
+            "y": 48
+          },
+          {
+            "rgba": [
+              174.875,
+              218.625,
+              948.5,
+              1
+            ],
+            "x": 160,
+            "y": 48
+          },
+          {
+            "rgba": [
+              735.5,
+              119,
+              925.5,
+              1
+            ],
+            "x": 240,
+            "y": 48
+          },
+          {
+            "rgba": [
+              213.5,
+              508.25,
+              711,
+              1
+            ],
+            "x": 319,
+            "y": 48
+          },
+          {
+            "rgba": [
+              463.5,
+              63.0625,
+              16.359375,
+              1
+            ],
+            "x": 0,
+            "y": 144
+          },
+          {
+            "rgba": [
+              124.6875,
+              92.375,
+              81.375,
+              1
+            ],
+            "x": 80,
+            "y": 144
+          },
+          {
+            "rgba": [
+              64.375,
+              49.71875,
+              459,
+              1
+            ],
+            "x": 160,
+            "y": 144
+          },
+          {
+            "rgba": [
+              207.5,
+              309,
+              519.5,
+              1
+            ],
+            "x": 240,
+            "y": 144
+          },
+          {
+            "rgba": [
+              237.125,
+              564.5,
+              794.5,
+              1
+            ],
+            "x": 319,
+            "y": 144
+          }
+        ],
+        "schemaVersion": 1,
+        "scope": "One CPU readback of the first completed startup frame; before display mapping and warmed timing",
+        "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+        "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+        "storage": "RGBA16F",
+        "transfer": "linear",
+        "units": "cd/m2",
+        "width": 320
+      }
+    },
+    {
+      "processingWidth": 160,
+      "processingHeight": 96,
+      "repeatSamplesIdentical": true,
+      "reference": {
+        "height": 192,
+        "implementationRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+        "model": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+        "primaries": "BT.2020",
+        "pts": {
+          "timescale": 1000,
+          "value": 0
+        },
+        "samples": [
+          {
+            "rgba": [
+              707.5,
+              88.5625,
+              22.15625,
+              1
+            ],
+            "x": 0,
+            "y": 48
+          },
+          {
+            "rgba": [
+              169.5,
+              445,
+              50.53125,
+              1
+            ],
+            "x": 80,
+            "y": 48
+          },
+          {
+            "rgba": [
+              305.25,
+              366,
+              1606,
+              1
+            ],
+            "x": 160,
+            "y": 48
+          },
+          {
+            "rgba": [
+              780.5,
+              108.9375,
+              932.5,
+              1
+            ],
+            "x": 240,
+            "y": 48
+          },
+          {
+            "rgba": [
+              278.75,
+              671,
+              927,
+              1
+            ],
+            "x": 319,
+            "y": 48
+          },
+          {
+            "rgba": [
+              699.5,
+              83.875,
+              21.203125,
+              1
+            ],
+            "x": 0,
+            "y": 144
+          },
+          {
+            "rgba": [
+              168.125,
+              196,
+              146.75,
+              1
+            ],
+            "x": 80,
+            "y": 144
+          },
+          {
+            "rgba": [
+              70.625,
+              36.25,
+              547.5,
+              1
+            ],
+            "x": 160,
+            "y": 144
+          },
+          {
+            "rgba": [
+              205,
+              272.75,
+              507.75,
+              1
+            ],
+            "x": 240,
+            "y": 144
+          },
+          {
+            "rgba": [
+              275.25,
+              661.5,
+              912,
+              1
+            ],
+            "x": 319,
+            "y": 144
+          }
+        ],
+        "schemaVersion": 1,
+        "scope": "One CPU readback of the first completed startup frame; before display mapping and warmed timing",
+        "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+        "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+        "storage": "RGBA16F",
+        "transfer": "linear",
+        "units": "cd/m2",
+        "width": 320
+      }
+    }
+  ]
+}

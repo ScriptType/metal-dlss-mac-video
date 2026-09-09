@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Exercise native mpv policy through libmpv's JSON IPC command surface."""
 import argparse
+from bisect import bisect_left
+from datetime import datetime, timezone
 from fractions import Fraction
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import socket
 import statistics
 import subprocess
@@ -13,18 +16,86 @@ import tempfile
 import time
 
 
+def digest(path):
+    hasher = hashlib.sha256()
+    with path.open("rb") as source:
+        while block := source.read(1024 * 1024):
+            hasher.update(block)
+    return hasher.hexdigest()
+
+
+def revision(path):
+    def git(*args):
+        return subprocess.check_output(["git", "-C", str(path), *args])
+    status = git("status", "--porcelain=v1").decode().splitlines()
+    untracked = git("ls-files", "--others", "--exclude-standard", "-z").decode().split("\0")
+    return {"commit": git("rev-parse", "HEAD").decode().strip(), "dirty": bool(status),
+            "status": status, "trackedDiffSHA256": hashlib.sha256(git("diff", "HEAD", "--binary")).hexdigest(),
+            "untrackedSHA256": {name: digest(path / name) for name in untracked if name and (path / name).is_file()}}
+
+
+def source_inventory(source, source_hash):
+    manifest_path = source.with_suffix(".json")
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text())
+        if manifest.get("sha256") == source_hash and manifest.get("videoPTS"):
+            scale = Fraction(manifest["videoTimebase"])
+            return sorted(Fraction(value) * scale for value in manifest["videoPTS"]), {
+                "source": "verified fixture manifest", "manifestSHA256": digest(manifest_path),
+                "profile": manifest.get("profile"), "vfr": manifest.get("vfr"),
+                "nominalRate": manifest.get("nominalRate")}
+    probe = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0",
+        "-show_frames", "-show_streams", "-show_entries", "frame=pts:stream=time_base", "-of", "json", str(source)]))
+    scale = Fraction(probe["streams"][0]["time_base"])
+    return sorted(Fraction(frame["pts"]) * scale for frame in probe["frames"] if "pts" in frame), {
+        "source": "ffprobe exact decoded-frame PTS", "ffprobeVersion": subprocess.check_output(["ffprobe", "-version"], text=True).splitlines()[0]}
+
+
+def displayed_time(state):
+    if "displayed-source-pts" not in state:
+        return None
+    return Fraction(state["displayed-source-pts"] * state["displayed-timebase-num"], state["displayed-timebase-den"])
+
+
+def rational(value):
+    return {"value": value.numerator, "timescale": value.denominator}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("source", type=Path)
     parser.add_argument("--model", type=Path)
     parser.add_argument("--seconds", type=float, default=12)
+    parser.add_argument("--seek-target", default="0.73", help="Decimal final target; expected frame comes from exact source timestamps")
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
+    source_path = args.source.resolve()
+    source_hash = digest(source_path)
+    inventory, inventory_provenance = source_inventory(source_path, source_hash)
+    seek_target = Fraction(args.seek_target)
+    expected_index = bisect_left(inventory, seek_target - Fraction(5, 1000))
+    if expected_index >= len(inventory):
+        parser.error("seek target is outside the decoded source inventory")
+    expected_pts = inventory[expected_index]
+    binaries = [root / "artifacts/mpv-build/mpv", root / "artifacts/mpv-build/libmpv.2.dylib",
+                root / ".build/debug/libFrameEngineShared.dylib", root / ".build/debug/mlx.metallib"]
+    provenance = {"root": revision(root), "mpv": revision(root / "vendor/mpv"),
+        "MLX-DLSS": revision(root / "vendor/MLX-DLSS"),
+        "binaries": {str(path.relative_to(root)): {"sha256": digest(path), "bytes": path.stat().st_size,
+            "modifiedNanoseconds": path.stat().st_mtime_ns} for path in binaries if path.is_file()},
+        "scriptSHA256": digest(Path(__file__)),
+        "recordedUTC": datetime.now(timezone.utc).isoformat()}
     args.report.parent.mkdir(parents=True, exist_ok=True)
     report = {"source": str(args.source.resolve()), "model": str(args.model),
+              "reportSchemaVersion": 2,
+              "avOffsetDefinition": "raw mpv avsync: audioPTS - videoPTS + audioDelay + audioOffset; cached at video queue updates, opposite the shared engine video-minus-audio sign",
               "conditions": "M3 native gpu-next/macvk, source-rate audio clock, muted CoreAudio; Adaptive explicitly buffers both clocks; lifecycle excluded from steady samples",
               "samples": [], "errors": []}
+    report.update({"provenance": provenance, "sourceSHA256": source_hash, "inventoryProvenance": inventory_provenance,
+        "seekTarget": rational(seek_target), "expectedSeekPTS": rational(expected_pts),
+        "seekSelection": "first exact source PTS >= target -5ms, matching mpv accurate-seek tolerance",
+        "requestedPlaybackWallSeconds": args.seconds})
     with tempfile.TemporaryDirectory(prefix="mpv-policy-") as directory:
         ipc = Path(directory) / "ipc"
         options = "@enhance:metal-hdr=policy=adaptive:processing-width=32:processing-height=24:strength=1:maximum-luminance-ratio=2"
@@ -33,20 +104,15 @@ def main():
             options += f":model=%{len(model.encode())}%{model}"
         source_stream = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0",
             "-show_entries", "stream=width,height,avg_frame_rate", "-of", "json", str(args.source)]))["streams"][0]
-        def digest(path):
-            hasher = hashlib.sha256()
-            with path.open("rb") as source:
-                while block := source.read(1024 * 1024): hasher.update(block)
-            return hasher.hexdigest()
         model_id = digest(args.model / "weights.safetensors") if args.model else "original"
-        config = {"adapter": "mpv-metal-hdr-policy", "source": digest(args.source),
+        config = {"adapter": "mpv-metal-hdr-policy", "source": source_hash,
             "sourceWidth": source_stream["width"], "sourceHeight": source_stream["height"],
             "processingWidth": 32, "processingHeight": 24, "displayWidth": 960, "displayHeight": 496,
             "sourceFPS": float(Fraction(source_stream["avg_frame_rate"])), "modelVersion": model_id,
-            "implementationRevision": "mpv-hdr-policy-working-tree", "warmupFrames": 3,
+            "implementationRevision": json.dumps(provenance, sort_keys=True, separators=(",", ":")), "warmupFrames": 3,
             "settingsJSON": json.dumps({"strength": 1, "colourStrength": 1, "referenceWhiteNits": 203,
                                        "maximumLuminanceRatio": 2, "policy": "adaptive"}),
-            "displayConfiguration": "gpu-next/macvk; requested drawable960x496 verified against osd-dimensions; physical calibration and brightness unreported",
+            "displayConfiguration": "gpu-next/macvk; requested drawable960x496 verified against OSD dimensions or native Vulkan swapchain log; physical calibration and brightness unreported",
             "powerConfiguration": subprocess.check_output(["pmset", "-g", "batt"], text=True).strip()}
         config_path = args.report.with_suffix(".configuration.json").resolve()
         config_path.write_text(json.dumps(config, indent=2) + "\n")
@@ -93,13 +159,18 @@ def main():
             def state():
                 return command("get_property", "enhancement-state").get("data", {})
 
-            def await_pair(generation=-1):
+            def counters():
+                return {name: command("get_property", name, allow_error=True).get("data")
+                        for name in ("frame-drop-count", "decoder-frame-drop-count", "vo-delayed-frame-count")}
+
+            def await_pair(generation=-1, expected=None):
                 deadline = time.monotonic() + 30
                 seen = []
                 while time.monotonic() < deadline:
                     current = state()
                     seen.append({"host": time.monotonic(), **current})
-                    if current.get("compare-ready") and current.get("generation", -1) > generation:
+                    if current.get("compare-ready") and current.get("generation", -1) > generation and \
+                            (expected is None or displayed_time(current) == expected):
                         return current, seen
                     time.sleep(.02)
                 raise RuntimeError(f"same-frame pair not ready: {current}")
@@ -112,6 +183,17 @@ def main():
                 if report["drawable"].get("w") or time.monotonic() >= drawable_deadline:
                     break
                 time.sleep(.02)
+            report["drawableEvidence"] = "osd-dimensions"
+            if not report["drawable"].get("w"):
+                # OSD resolution may remain unavailable while paused. The
+                # native swapchain allocation records actual drawable pixels,
+                # independently of whether an OSD object has been rendered.
+                allocations = re.findall(r"\(Re\)creating swapchain of size (\d+)x(\d+)",
+                    args.report.with_suffix(".log").read_text())
+                if allocations:
+                    report["osdDimensions"] = report["drawable"]
+                    report["drawable"] = dict(zip(("w", "h"), map(int, allocations[-1])))
+                    report["drawableEvidence"] = "native Vulkan swapchain allocation in mpv log"
             if (report["drawable"].get("w"), report["drawable"].get("h")) != (960, 496):
                 raise RuntimeError("actual drawable does not match measurement configuration")
             report["liveRejection"] = command("vf-command", "enhance", "policy", "live", allow_error=True)
@@ -121,20 +203,22 @@ def main():
             # old generation work may finish but must never replace this target.
             before = initial["generation"]
             seek_start = time.monotonic()
-            for target in (.2, 1.2, .7):
+            for target in (.2, 1.2, float(seek_target)):
                 sequence += 1
                 stream.write((json.dumps({"command": ["seek", target, "absolute+exact"],
                                           "request_id": sequence}) + "\n").encode())
-            final, report["seekLifecycle"] = await_pair(before)
+            final, report["seekLifecycle"] = await_pair(before, expected_pts)
             report["seekSecondsToEnhancedPair"] = time.monotonic() - seek_start
-            pts = final["displayed-source-pts"] * final["displayed-timebase-num"] / final["displayed-timebase-den"]
-            if not .695 <= pts <= .74:
-                raise RuntimeError(f"wrong final seek timestamp: {pts}")
+            if displayed_time(final) != expected_pts:
+                raise RuntimeError("final seek differs from exact source inventory")
             pair_identity = [final.get(key) for key in ("displayed-source-pts", "displayed-timebase-num", "displayed-timebase-den", "displayed-generation")]
             previews = [s for s in report["seekLifecycle"] if s.get("comparison") == "original" and
                         s.get("displayed-generation") == final["displayed-generation"] and
                         s.get("displayed-source-pts") == final["displayed-source-pts"]]
             report["seekSecondsToOriginalPreview"] = previews[0]["host"] - seek_start if previews else None
+            report["exactOriginalPreviewObserved"] = bool(previews)
+            if args.model and not previews:
+                raise RuntimeError("no exact source original preview observed before enhancement")
             submitted = final["submitted-frames"]
             report["comparison"] = []
             for variant in ("original", "enhanced") * 3:
@@ -147,6 +231,7 @@ def main():
                     raise RuntimeError("comparison did not switch the retained variant")
                 report["comparison"].append({"variant": variant, "state": current,
                     "transfer": command("get_property", "video-out-params/gamma", allow_error=True).get("data")})
+            report["playbackInitialCounters"] = counters()
             command("set_property", "pause", False)
             started = time.monotonic()
             while time.monotonic() - started < args.seconds:
@@ -166,11 +251,29 @@ def main():
             absolute = sorted(map(abs, steady))
             report["steadyP95AbsoluteAVOffsetSeconds"] = absolute[int((len(absolute) - 1) * .95)] if absolute else None
             report["steadyMedianAVOffsetSeconds"] = statistics.median(steady) if steady else None
+            if steady:
+                window = max(1, len(steady) // 4)
+                report["steadyFirstQuarterMedianAVOffsetSeconds"] = statistics.median(steady[:window])
+                report["steadyLastQuarterMedianAVOffsetSeconds"] = statistics.median(steady[-window:])
+                report["steadyMedianAVDriftSeconds"] = statistics.median(steady[-window:]) - statistics.median(steady[:window])
+            report["steadySampleCount"] = len(steady)
             report["synchronisation20msTargetMet"] = max(absolute) <= .020 if absolute else None
             report["maximumPendingFrames"] = max((s["state"]["pending-frames"] for s in report["samples"]), default=0)
             if report["maximumPendingFrames"] > 3:
                 raise RuntimeError("unbounded enhancement admission")
             report["final"] = state()
+            report["playbackFinalCounters"] = counters()
+            report["playbackCounterDeltas"] = {key: value - report["playbackInitialCounters"][key]
+                for key, value in report["playbackFinalCounters"].items()
+                if isinstance(value, (float, int)) and isinstance(report["playbackInitialCounters"].get(key), (float, int))}
+            report["adaptiveBufferEpisodes"] = report["final"]["buffer-count"] - final["buffer-count"]
+            report["adaptiveBufferedSeconds"] = report["final"]["buffer-seconds"] - final["buffer-seconds"]
+            observed = [sample["state"] for sample in report["samples"]]
+            report["staleGenerationObservations"] = sum(s.get("displayed-generation", s.get("generation")) != s.get("generation") for s in observed)
+            report["displayedContentKinds"] = sorted({s.get("displayed-content-kind", "unavailable") for s in observed})
+            report["liveDeadlineFallback"] = "unexercised: neural Live is correctly unqualified for32x24; Adaptive deadline buffering measured directly"
+            if report["staleGenerationObservations"]:
+                raise RuntimeError("stale generation observed during controlled playback")
             report["passed"] = True
             command("quit")
         except Exception as error:
@@ -186,9 +289,18 @@ def main():
                 report["exitCode"] = process.wait()
                 report["errors"].append("shutdown timed out")
                 report["passed"] = False
+            if report["exitCode"] != 0:
+                report["passed"] = False
+                report["errors"].append(f"mpv exited with status {report['exitCode']}")
+            report["binaryHashesUnchanged"] = all(
+                digest(root / name) == recorded["sha256"]
+                for name, recorded in provenance["binaries"].items())
+            if not report["binaryHashesUnchanged"]:
+                report["passed"] = False
+                report["errors"].append("a measured binary changed during the run")
             args.report.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({key: value for key, value in report.items()
-                      if key not in ("samples", "initialLifecycle", "seekLifecycle", "comparison")}, indent=2))
+                      if key not in ("samples", "initialLifecycle", "seekLifecycle", "comparison", "provenance")}, indent=2))
     return 0 if report.get("passed") else 1
 
 

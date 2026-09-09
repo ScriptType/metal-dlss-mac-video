@@ -1,0 +1,699 @@
+{
+  "scope": "Clean-revision M3 offscreen completed-work baseline; no presentation, audio, target-hardware or source-rate Live claim",
+  "configurations": [
+    {
+      "provenance": {
+        "schemaVersion": 1,
+        "rootRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+        "mlxRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+        "sourceTreeClean": true,
+        "benchmarkSHA256": "d7713a4063b07c1db4c20d89f69d3f9d79d4771936cb4f495ff12fe15724e21f",
+        "metallibSHA256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+        "videoSHA256": "01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+        "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+        "processingWidth": 32,
+        "processingHeight": 24,
+        "requestedFrames": 300,
+        "warmupFrames": 30,
+        "runs": [
+          {
+            "index": 1,
+            "startedUnixSeconds": 1788997127.02144,
+            "report": "run-1.json",
+            "reference": "reference-1.json",
+            "completed": 300,
+            "warmed": 270,
+            "completedFPS": 11.139009129847155
+          },
+          {
+            "index": 2,
+            "startedUnixSeconds": 1788997158.585025,
+            "report": "run-2.json",
+            "reference": "reference-2.json",
+            "completed": 300,
+            "warmed": 270,
+            "completedFPS": 10.549594612494953
+          }
+        ],
+        "scope": "Sequential offscreen completed work; no physical presentation or audio measurements",
+        "referenceSamplesIdentical": true,
+        "passed": true
+      },
+      "runs": [
+        {
+          "completedCadenceSeconds": {
+            "count": 269,
+            "maximum": 0.11536941677331924,
+            "minimum": 0.07668599998578429,
+            "p50": 0.08877641672734171,
+            "p95": 0.10268867497798055,
+            "p99": 0.10742421498522162
+          },
+          "completedStageWallSeconds": {
+            "inference": {
+              "count": 270,
+              "maximum": 0.099393917,
+              "minimum": 0.063082834,
+              "p50": 0.07368039600000001,
+              "p95": 0.08486192484999999,
+              "p99": 0.08954174627
+            },
+            "motion": {
+              "count": 270,
+              "maximum": 0.018364708,
+              "minimum": 0.0107795,
+              "p50": 0.012264542,
+              "p95": 0.0143347295,
+              "p99": 0.015865781040000002
+            },
+            "proxy": {
+              "count": 270,
+              "maximum": 0.003355291,
+              "minimum": 0.000283875,
+              "p50": 0.000403646,
+              "p95": 0.0005684601999999988,
+              "p99": 0.0018314110200000004
+            },
+            "reconstruction": {
+              "count": 270,
+              "maximum": 0.003700958,
+              "minimum": 0.0011334169999999998,
+              "p50": 0.0012799585,
+              "p95": 0.0019684547499999976,
+              "p99": 0.003126020440000001
+            }
+          },
+          "completedThroughputFPS": 11.139009129847155,
+          "completedTotal": 300,
+          "completedWorkSeconds": {
+            "count": 270,
+            "maximum": 0.11534675001166761,
+            "minimum": 0.07666870835237205,
+            "p50": 0.08876081253401935,
+            "p95": 0.10261190002202054,
+            "p99": 0.10738205576431938
+          },
+          "configuration": {
+            "adapter": "native-decoder/shared-engine",
+            "displayConfiguration": "offscreen RGBA16F; no presentation",
+            "displayHeight": 192,
+            "displayWidth": 320,
+            "implementationRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+            "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+            "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t66%; discharging; 3:24 remaining present: true",
+            "processingHeight": 24,
+            "processingWidth": 32,
+            "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+            "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+            "sourceFPS": 29.99966812133789,
+            "sourceHeight": 192,
+            "sourceWidth": 320,
+            "warmupFrames": 30
+          },
+          "cpuSubmissionSeconds": {
+            "count": 15707,
+            "maximum": 0.0017422082601115108,
+            "minimum": 5.00003807246685e-07,
+            "p50": 1.7082784324884415e-06,
+            "p95": 6.41669612377882e-06,
+            "p99": 1.0536646004766269e-05
+          },
+          "deadlineMisses": 0,
+          "device": "Apple M3",
+          "drops": 0,
+          "duplicatePresentations": 0,
+          "endToEndSeconds": {
+            "count": 270,
+            "maximum": 0.22056650009471923,
+            "minimum": 0.1563386666821316,
+            "p50": 0.1764048749464564,
+            "p95": 0.19993334790342487,
+            "p99": 0.20827127788448707
+          },
+          "gpuStageSeconds": {
+            "planar_import": {
+              "count": 270,
+              "maximum": 0.0018057916313409805,
+              "minimum": 4.962494131177664e-05,
+              "p50": 6.837502587586641e-05,
+              "p95": 0.00010590209276415405,
+              "p99": 0.0007273587526287891
+            },
+            "rgba16f_pack": {
+              "count": 270,
+              "maximum": 0.002195791690610349,
+              "minimum": 9.124982170760632e-06,
+              "p50": 1.7395825125277042e-05,
+              "p95": 5.050210747867822e-05,
+              "p99": 0.00029460002318956095
+            }
+          },
+          "maximumAllocatorBytes": {
+            "mlx_active": 305464456,
+            "mlx_cache": 269107736,
+            "mlx_peak_active": 557371540,
+            "resident_model_payload": 291576650,
+            "runtime_mlx_cache_policy": 268435456
+          },
+          "maximumQueueSlots": 2,
+          "measurementScope": "all completed frames",
+          "osVersion": "Version 26.5 (Build 25F71)",
+          "peakRetainedBytes": 4376192,
+          "peakSampledResidentBytes": 352141312,
+          "physicalMemoryBytes": 17179869184,
+          "queueSeconds": {
+            "count": 270,
+            "maximum": 0.11531495838426054,
+            "minimum": 0.07505041663534939,
+            "p50": 0.0876390624907799,
+            "p95": 0.10115975000080651,
+            "p99": 0.10650832915329375
+          },
+          "retainedSamples": 300,
+          "schemaVersion": 1,
+          "targetHardware": false,
+          "unavailableMetrics": [
+            "presentation timing, drops and duplicates",
+            "audio/video offset",
+            "GPU copy count",
+            "CPU readback count",
+            "CPU wait count",
+            "seek latency",
+            "power and energy",
+            "isolated neural/proxy GPU intervals; completed wall stages are separate"
+          ],
+          "warmedSamples": 270,
+          "firstCompletedPTS": {
+            "value": 0,
+            "timescale": 1000
+          },
+          "lastCompletedPTS": {
+            "value": 159472,
+            "timescale": 16000
+          },
+          "run": 1
+        },
+        {
+          "completedCadenceSeconds": {
+            "count": 269,
+            "maximum": 0.14840333338361233,
+            "minimum": 0.08212016674224287,
+            "p50": 0.09303466661367565,
+            "p95": 0.10862806667573749,
+            "p99": 0.12556223993189633
+          },
+          "completedStageWallSeconds": {
+            "inference": {
+              "count": 270,
+              "maximum": 0.131248542,
+              "minimum": 0.066465916,
+              "p50": 0.0778790835,
+              "p95": 0.09154025625,
+              "p99": 0.10361668479000001
+            },
+            "motion": {
+              "count": 270,
+              "maximum": 0.038377125,
+              "minimum": 0.010739667,
+              "p50": 0.012352333,
+              "p95": 0.01505878995,
+              "p99": 0.01864187369
+            },
+            "proxy": {
+              "count": 270,
+              "maximum": 0.001276917,
+              "minimum": 0.000303083,
+              "p50": 0.000397917,
+              "p95": 0.0005443878,
+              "p99": 0.0011727047100000003
+            },
+            "reconstruction": {
+              "count": 270,
+              "maximum": 0.003855542,
+              "minimum": 0.0009121260000000001,
+              "p50": 0.001296166,
+              "p95": 0.00212338385,
+              "p99": 0.00225088517
+            }
+          },
+          "completedThroughputFPS": 10.549594612494953,
+          "completedTotal": 300,
+          "completedWorkSeconds": {
+            "count": 270,
+            "maximum": 0.1483765000011772,
+            "minimum": 0.08209633338265121,
+            "p50": 0.0930469999439083,
+            "p95": 0.10920611246256157,
+            "p99": 0.12576166835962796
+          },
+          "configuration": {
+            "adapter": "native-decoder/shared-engine",
+            "displayConfiguration": "offscreen RGBA16F; no presentation",
+            "displayHeight": 192,
+            "displayWidth": 320,
+            "implementationRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+            "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+            "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t65%; discharging; 3:14 remaining present: true",
+            "processingHeight": 24,
+            "processingWidth": 32,
+            "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+            "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+            "sourceFPS": 29.99966812133789,
+            "sourceHeight": 192,
+            "sourceWidth": 320,
+            "warmupFrames": 30
+          },
+          "cpuSubmissionSeconds": {
+            "count": 15395,
+            "maximum": 0.00045258342288434505,
+            "minimum": 5.416804924607277e-07,
+            "p50": 1.7499551177024841e-06,
+            "p95": 6.583286449313164e-06,
+            "p99": 1.2583332136273384e-05
+          },
+          "deadlineMisses": 0,
+          "device": "Apple M3",
+          "drops": 0,
+          "duplicatePresentations": 0,
+          "endToEndSeconds": {
+            "count": 270,
+            "maximum": 0.27396416664123535,
+            "minimum": 0.16546187503263354,
+            "p50": 0.18550391658209264,
+            "p95": 0.21728046251810157,
+            "p99": 0.24368577916524375
+          },
+          "gpuStageSeconds": {
+            "planar_import": {
+              "count": 270,
+              "maximum": 0.001648374949581921,
+              "minimum": 5.0166621804237366e-05,
+              "p50": 7.545831613242626e-05,
+              "p95": 0.00011216660495847461,
+              "p99": 0.0006445428892038768
+            },
+            "rgba16f_pack": {
+              "count": 270,
+              "maximum": 0.001042541698552668,
+              "minimum": 9.291572496294975e-06,
+              "p50": 2.3895816411823034e-05,
+              "p95": 5.3041591309010954e-05,
+              "p99": 0.0007874041539616884
+            }
+          },
+          "maximumAllocatorBytes": {
+            "mlx_active": 305193352,
+            "mlx_cache": 269779480,
+            "mlx_peak_active": 608000948,
+            "resident_model_payload": 291576650,
+            "runtime_mlx_cache_policy": 268435456
+          },
+          "maximumQueueSlots": 2,
+          "measurementScope": "all completed frames",
+          "osVersion": "Version 26.5 (Build 25F71)",
+          "peakRetainedBytes": 4376192,
+          "peakSampledResidentBytes": 382369792,
+          "physicalMemoryBytes": 17179869184,
+          "queueSeconds": {
+            "count": 270,
+            "maximum": 0.14838312496431172,
+            "minimum": 0.08027295838110149,
+            "p50": 0.09215162496548146,
+            "p95": 0.10868769170483573,
+            "p99": 0.1254061533382628
+          },
+          "retainedSamples": 300,
+          "schemaVersion": 1,
+          "targetHardware": false,
+          "unavailableMetrics": [
+            "presentation timing, drops and duplicates",
+            "audio/video offset",
+            "GPU copy count",
+            "CPU readback count",
+            "CPU wait count",
+            "seek latency",
+            "power and energy",
+            "isolated neural/proxy GPU intervals; completed wall stages are separate"
+          ],
+          "warmedSamples": 270,
+          "firstCompletedPTS": {
+            "value": 0,
+            "timescale": 1000
+          },
+          "lastCompletedPTS": {
+            "value": 159472,
+            "timescale": 16000
+          },
+          "run": 2
+        }
+      ]
+    },
+    {
+      "provenance": {
+        "schemaVersion": 1,
+        "rootRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+        "mlxRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+        "sourceTreeClean": true,
+        "benchmarkSHA256": "d7713a4063b07c1db4c20d89f69d3f9d79d4771936cb4f495ff12fe15724e21f",
+        "metallibSHA256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+        "videoSHA256": "01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+        "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+        "processingWidth": 160,
+        "processingHeight": 96,
+        "requestedFrames": 300,
+        "warmupFrames": 30,
+        "runs": [
+          {
+            "index": 1,
+            "startedUnixSeconds": 1788997270.102845,
+            "report": "run-1.json",
+            "reference": "reference-1.json",
+            "completed": 300,
+            "warmed": 270,
+            "completedFPS": 10.397446013629802
+          },
+          {
+            "index": 2,
+            "startedUnixSeconds": 1788997300.790547,
+            "report": "run-2.json",
+            "reference": "reference-2.json",
+            "completed": 300,
+            "warmed": 270,
+            "completedFPS": 10.036638003904539
+          }
+        ],
+        "scope": "Sequential offscreen completed work; no physical presentation or audio measurements",
+        "referenceSamplesIdentical": true,
+        "passed": true
+      },
+      "runs": [
+        {
+          "completedCadenceSeconds": {
+            "count": 269,
+            "maximum": 0.12294179166201502,
+            "minimum": 0.07935362495481968,
+            "p50": 0.09576929162722081,
+            "p95": 0.10719252498820424,
+            "p99": 0.11452030835673213
+          },
+          "completedStageWallSeconds": {
+            "inference": {
+              "count": 270,
+              "maximum": 0.101171375,
+              "minimum": 0.064595667,
+              "p50": 0.0790830005,
+              "p95": 0.08949093925,
+              "p99": 0.0932348025
+            },
+            "motion": {
+              "count": 270,
+              "maximum": 0.022109541,
+              "minimum": 0.011050833,
+              "p50": 0.0135715205,
+              "p95": 0.0173614686,
+              "p99": 0.020600127790000002
+            },
+            "proxy": {
+              "count": 270,
+              "maximum": 0.002313167,
+              "minimum": 0.000287792,
+              "p50": 0.0004280835,
+              "p95": 0.0008955749999999997,
+              "p99": 0.0014904887500000004
+            },
+            "reconstruction": {
+              "count": 270,
+              "maximum": 0.005144584,
+              "minimum": 0.0008894580000000001,
+              "p50": 0.0015746455000000001,
+              "p95": 0.0024210165999999987,
+              "p99": 0.003612581960000001
+            }
+          },
+          "completedThroughputFPS": 10.397446013629802,
+          "completedTotal": 300,
+          "completedWorkSeconds": {
+            "count": 270,
+            "maximum": 0.12291062506847084,
+            "minimum": 0.07932791661005467,
+            "p50": 0.09576706250663847,
+            "p95": 0.10727612499031239,
+            "p99": 0.11447180418181234
+          },
+          "configuration": {
+            "adapter": "native-decoder/shared-engine",
+            "displayConfiguration": "offscreen RGBA16F; no presentation",
+            "displayHeight": 192,
+            "displayWidth": 320,
+            "implementationRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+            "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+            "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t65%; discharging; 3:14 remaining present: true",
+            "processingHeight": 96,
+            "processingWidth": 160,
+            "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+            "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+            "sourceFPS": 29.99966812133789,
+            "sourceHeight": 192,
+            "sourceWidth": 320,
+            "warmupFrames": 30
+          },
+          "cpuSubmissionSeconds": {
+            "count": 15212,
+            "maximum": 0.0005377499619498849,
+            "minimum": 5.832407623529434e-07,
+            "p50": 2.00001522898674e-06,
+            "p95": 8.541741408407688e-06,
+            "p99": 2.0657461136579465e-05
+          },
+          "deadlineMisses": 0,
+          "device": "Apple M3",
+          "drops": 0,
+          "duplicatePresentations": 0,
+          "endToEndSeconds": {
+            "count": 270,
+            "maximum": 0.23402920830994844,
+            "minimum": 0.16266887495294213,
+            "p50": 0.19138129166094586,
+            "p95": 0.21273945829016153,
+            "p99": 0.2192017129366286
+          },
+          "gpuStageSeconds": {
+            "planar_import": {
+              "count": 270,
+              "maximum": 0.0011398750357329845,
+              "minimum": 5.479168612509966e-05,
+              "p50": 7.987499702721834e-05,
+              "p95": 0.00012096664868295192,
+              "p99": 0.000581065372098238
+            },
+            "rgba16f_pack": {
+              "count": 270,
+              "maximum": 0.0009932916145771742,
+              "minimum": 9.41671896725893e-06,
+              "p50": 3.2895884942263365e-05,
+              "p95": 0.0001104270690120753,
+              "p99": 0.0007084224757272751
+            }
+          },
+          "maximumAllocatorBytes": {
+            "mlx_active": 305442664,
+            "mlx_cache": 274974368,
+            "mlx_peak_active": 609703572,
+            "resident_model_payload": 291576650,
+            "runtime_mlx_cache_policy": 268435456
+          },
+          "maximumQueueSlots": 2,
+          "measurementScope": "all completed frames",
+          "osVersion": "Version 26.5 (Build 25F71)",
+          "peakRetainedBytes": 5777024,
+          "peakSampledResidentBytes": 382287872,
+          "physicalMemoryBytes": 17179869184,
+          "queueSeconds": {
+            "count": 270,
+            "maximum": 0.12216049991548061,
+            "minimum": 0.07754141662735492,
+            "p50": 0.09473714581690729,
+            "p95": 0.10662569583510048,
+            "p99": 0.11279178837896325
+          },
+          "retainedSamples": 300,
+          "schemaVersion": 1,
+          "targetHardware": false,
+          "unavailableMetrics": [
+            "presentation timing, drops and duplicates",
+            "audio/video offset",
+            "GPU copy count",
+            "CPU readback count",
+            "CPU wait count",
+            "seek latency",
+            "power and energy",
+            "isolated neural/proxy GPU intervals; completed wall stages are separate"
+          ],
+          "warmedSamples": 270,
+          "firstCompletedPTS": {
+            "value": 0,
+            "timescale": 1000
+          },
+          "lastCompletedPTS": {
+            "value": 159472,
+            "timescale": 16000
+          },
+          "run": 1
+        },
+        {
+          "completedCadenceSeconds": {
+            "count": 269,
+            "maximum": 0.11533641663845628,
+            "minimum": 0.08734408335294574,
+            "p50": 0.09968362504150718,
+            "p95": 0.10824673336464911,
+            "p99": 0.11279682165011763
+          },
+          "completedStageWallSeconds": {
+            "inference": {
+              "count": 270,
+              "maximum": 0.097672541,
+              "minimum": 0.072715875,
+              "p50": 0.08264875,
+              "p95": 0.09050122485,
+              "p99": 0.09409015200000001
+            },
+            "motion": {
+              "count": 270,
+              "maximum": 0.017767542,
+              "minimum": 0.011205625,
+              "p50": 0.013945375,
+              "p95": 0.016305627599999997,
+              "p99": 0.01666449352
+            },
+            "proxy": {
+              "count": 270,
+              "maximum": 0.001455834,
+              "minimum": 0.000309833,
+              "p50": 0.000418958,
+              "p95": 0.0005585062499999996,
+              "p99": 0.0011223586900000007
+            },
+            "reconstruction": {
+              "count": 270,
+              "maximum": 0.003165083,
+              "minimum": 0.000880293,
+              "p50": 0.001312625,
+              "p95": 0.0020933432999999998,
+              "p99": 0.0027104741
+            }
+          },
+          "completedThroughputFPS": 10.036638003904539,
+          "completedTotal": 300,
+          "completedWorkSeconds": {
+            "count": 270,
+            "maximum": 0.11531000002287328,
+            "minimum": 0.08731787500437349,
+            "p50": 0.09965810412541032,
+            "p95": 0.10821052712853997,
+            "p99": 0.11276766701601446
+          },
+          "configuration": {
+            "adapter": "native-decoder/shared-engine",
+            "displayConfiguration": "offscreen RGBA16F; no presentation",
+            "displayHeight": 192,
+            "displayWidth": 320,
+            "implementationRevision": "dad49c6df5c24765eb3e63b102c20349823048db",
+            "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+            "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t64%; discharging; 3:24 remaining present: true",
+            "processingHeight": 96,
+            "processingWidth": 160,
+            "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+            "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+            "sourceFPS": 29.99966812133789,
+            "sourceHeight": 192,
+            "sourceWidth": 320,
+            "warmupFrames": 30
+          },
+          "cpuSubmissionSeconds": {
+            "count": 15750,
+            "maximum": 5.124998278915882e-05,
+            "minimum": 5.416804924607277e-07,
+            "p50": 1.5416881069540977e-06,
+            "p95": 4.791654646396637e-06,
+            "p99": 7.541733793914318e-06
+          },
+          "deadlineMisses": 0,
+          "device": "Apple M3",
+          "drops": 0,
+          "duplicatePresentations": 0,
+          "endToEndSeconds": {
+            "count": 270,
+            "maximum": 0.228162124985829,
+            "minimum": 0.1758809166494757,
+            "p50": 0.19795683328993618,
+            "p95": 0.21219390413025394,
+            "p99": 0.21969438957516105
+          },
+          "gpuStageSeconds": {
+            "planar_import": {
+              "count": 270,
+              "maximum": 0.000822416739538312,
+              "minimum": 5.4333359003067017e-05,
+              "p50": 8.525000885128975e-05,
+              "p95": 0.00012130416580475867,
+              "p99": 0.0006678070232737812
+            },
+            "rgba16f_pack": {
+              "count": 270,
+              "maximum": 0.0007846667431294918,
+              "minimum": 9.375042282044888e-06,
+              "p50": 3.364589065313339e-05,
+              "p95": 9.384999866597315e-05,
+              "p99": 0.0005672370910178871
+            }
+          },
+          "maximumAllocatorBytes": {
+            "mlx_active": 305442664,
+            "mlx_cache": 274203160,
+            "mlx_peak_active": 609703572,
+            "resident_model_payload": 291576650,
+            "runtime_mlx_cache_policy": 268435456
+          },
+          "maximumQueueSlots": 2,
+          "measurementScope": "all completed frames",
+          "osVersion": "Version 26.5 (Build 25F71)",
+          "peakRetainedBytes": 5777024,
+          "peakSampledResidentBytes": 382533632,
+          "physicalMemoryBytes": 17179869184,
+          "queueSeconds": {
+            "count": 270,
+            "maximum": 0.11415562499314547,
+            "minimum": 0.08626270841341466,
+            "p50": 0.09872229164466262,
+            "p95": 0.10717516875592992,
+            "p99": 0.11194298039539717
+          },
+          "retainedSamples": 300,
+          "schemaVersion": 1,
+          "targetHardware": false,
+          "unavailableMetrics": [
+            "presentation timing, drops and duplicates",
+            "audio/video offset",
+            "GPU copy count",
+            "CPU readback count",
+            "CPU wait count",
+            "seek latency",
+            "power and energy",
+            "isolated neural/proxy GPU intervals; completed wall stages are separate"
+          ],
+          "warmedSamples": 270,
+          "firstCompletedPTS": {
+            "value": 0,
+            "timescale": 1000
+          },
+          "lastCompletedPTS": {
+            "value": 159472,
+            "timescale": 16000
+          },
+          "run": 2
+        }
+      ]
+    }
+  ]
+}

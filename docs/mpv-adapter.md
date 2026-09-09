@@ -135,3 +135,28 @@ Evidence is in `artifacts/mpv-policy-pq-controlled-neural.json`, `.engine.json` 
 The nine-second embedded HLG model smoke passed with the same processing dimensions and gain bound. It exercised exact seeks, pause/resume, resize, fullscreen and teardown. The surface reached RGBA16F with extended linear BT.2020 and EDR enabled; no renderer-owned window appeared, and removing the renderer left the host window alive. The report recorded ten dropped frames and a 1.172-second maximum absolute A/V offset including startup and lifecycle actions. This proves the embedding and shutdown path, while leaving sustained pacing unqualified. The machine-readable report is `artifacts/mpv-hdr-host-hlg-model.json`.
 
 Sustained neural Live qualification, longer drift runs and physical presentation measurements remain acceptance work; absent metrics are reported as unavailable. Current development measurements target M3.
+
+### Continuous M3 clock checks
+
+The broader fixtures contain continuous PCM pulses, alternate audio, styled ASS subtitles, chapters and long GOPs. The first three Adaptive cases each used 30 seconds of wall playback after the seek/compare checks, with a 320×192 source, 32×24 neural processing, strength 1, reference white 203 nits, gain bound 2, a 960×496 native Vulkan swapchain and muted CoreAudio. They ran sequentially on battery power. All exited cleanly, retained exact source identity through six paused comparison switches, observed zero decoder/VO drops and stale generations, and sampled at most two pending frames.
+
+| Source | Completed / warmed frames | Completed fps | Steady A/V median / p95 absolute / maximum absolute | Playback buffering | Original preview / enhanced pair |
+|---|---:|---:|---:|---:|---:|
+| SDR 24 fps | 281 / 277 | 9.41 | 4 / 8 / 9.33 ms | 18.66 s, 279 episodes | 83 / 927 ms |
+| HLG 60 fps | 343 / 339 | 11.36 | 3 / 7.33 / 22 ms | 24.60 s, 341 episodes | 78 / 621 ms |
+| PQ variable rate, nominal 30 fps | 268 / 264 | 8.89 | 2.67 / 9.33 / 20.33 ms | 19.20 s, 266 episodes | 89 / 1061 ms |
+
+The HLG run exceeded the 20-ms target for one displayed frame at source PTS 4.583 seconds, observed in three consecutive samples. PQ variable-rate playback exceeded it at 8 seconds in four samples. Neither showed cumulative drift: the last-quarter median differed from the first by approximately −0.33 ms in every case. These are functional passes with two clock-target failures, so broader timing acceptance remains open. The next targeted checks are repeats of those cases and a PQ 60-fps comparison before expanding the remaining profile/rate combinations. No tested neural configuration qualified Live; actual qualified-Live deadline fallback remains unexercised. Adaptive deadline buffering is measured directly.
+
+The final rapid-seek request is 0.73 seconds. Expected PTS comes from the source's verified exact timestamp inventory using mpv's 5-ms accurate-seek tolerance: SDR selected 3/4, HLG selected 733/1000, and the variable-rate fixture selected 767/1000 after a deliberately missing frame. Preview timings observe renderer-current state, not physical scanout. Signed A/V values are raw mpv `avsync`: audio PTS minus video PTS plus configured audio delay/offset, opposite the shared engine's video-minus-audio convention. This value is cached when video is queued; repeated IPC samples of one displayed frame are not independent physical measurements. Absolute-offset acceptance remains unchanged. PCM pulses were not physically captured.
+
+```sh
+python3 scripts/generate-playback-fixtures.py --duration 30 --profile sdr --rate 24
+python3 scripts/generate-playback-fixtures.py --duration 30 --profile hlg --rate 60
+python3 scripts/generate-playback-fixtures.py --duration 30 --profile pq --rate 30
+python3 scripts/test-mpv-policy.py assets/test-clips/playback/sdr-24-30s.mkv --model models/neural-rendering/NeuralRendering.dlssmodel --seconds 30 --report artifacts/mpv-policy-sdr24-broader.json
+python3 scripts/test-mpv-policy.py assets/test-clips/playback/hlg-60-30s.mkv --model models/neural-rendering/NeuralRendering.dlssmodel --seconds 30 --report artifacts/mpv-policy-hlg60-broader.json
+python3 scripts/test-mpv-policy.py assets/test-clips/playback/pq-30-vfr-30s.mkv --model models/neural-rendering/NeuralRendering.dlssmodel --seconds 30 --report artifacts/mpv-policy-pq-vfr-broader.json
+```
+
+Each report has matching `.engine.json`, `.configuration.json` and `.log` evidence. The recorded revisions are root `dad49c6df5c24765eb3e63b102c20349823048db`, mpv `efe0a783dac87021aabb7e6700faa00c2887a731` and MLX-DLSS `f2ce1772b98a0b862385fd71a1c45e137cdd4580`. Reports include the actual dirty source snapshot, source/manifest/model hashes, and SHA-256/size/mtime for the executable, libmpv, shared engine and MLX kernels; they verify those binaries did not change during each run. OSD dimensions were unavailable while paused, so actual native swapchain allocation in the mpv log supplies drawable evidence. Sampled process RSS maxima were 579,436,544, 585,334,784 and 591,626,240 bytes respectively. Detailed queue, allocator and completed-work timings remain in the engine reports; these observations are not hard memory limits.
