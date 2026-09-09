@@ -27,7 +27,7 @@ Within a generation, submissions must have strictly increasing PTS and unique su
 
 Frame slots and bytes are separate from neural model residency. `HDRRuntimeResources` admits at most two retained neural processors by default, with a combined 1 GiB Safetensors payload and at most 147,456 processing pixels per processor (512×288). These conservative development limits bound model count, payload and workload shape. Model reservations live until the processor is destroyed after its GPU work; a full reservation fails explicitly. Zero-strength/original sessions do not construct or reserve a model. Preparation and playback share this policy.
 
-The MLX reusable allocation cache is configured to 256 MiB. MLX reclaims excess free cache on its next allocation; this setting does not cap transient inference allocations or process RSS. Model file bytes are not an estimate of peak inference memory. Completed-frame reports retain actual MLX active/cache/peak-active and sampled RSS so larger workloads can be assessed independently of admission limits.
+The MLX reusable allocation cache is configured to 256 MiB before the first import or float allocation, including original-only sessions that never reserve a model. MLX reclaims excess free cache on its next allocation; this setting does not cap transient inference allocations or process RSS. Model file bytes are not an estimate of peak inference memory. Completed-frame reports retain actual MLX active/cache/peak-active and sampled RSS so larger workloads can be assessed independently of admission limits.
 
 Before retaining neural processors, hosts can call `fe_runtime_configure` with a complete policy:
 

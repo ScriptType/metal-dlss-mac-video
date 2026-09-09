@@ -43,6 +43,18 @@ public final class HDRRuntimeResources: @unchecked Sendable {
 
     public init() {}
 
+    /// Original-only processing still allocates MLX arrays for import and pack.
+    /// Apply the default cache policy before those allocations, independently
+    /// of whether the session will reserve a neural model.
+    func prepareAllocator() throws {
+        try lock.withLock {
+            if !cacheConfigured {
+                try MLXRuntimeDiagnostics.setCacheLimitBytes(policy.mlxCacheBytes)
+                cacheConfigured = true
+            }
+        }
+    }
+
     /// Configure before creating neural sessions. Reconfiguration while any
     /// neural processor retains a model is rejected without changing limits.
     public func configure(_ requested: HDRRuntimeResourcePolicy) throws {

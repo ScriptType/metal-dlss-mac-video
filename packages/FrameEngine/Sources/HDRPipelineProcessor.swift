@@ -47,6 +47,7 @@ public actor HDRPipelineProcessor: FrameProcessor {
     public func resetHistory() async { await processor?.reset() }
 
     public func process(_ frame: EngineInput) async throws -> ProcessedFrame {
+        try HDRRuntimeResources.shared.prepareAllocator()
         let descriptor = frame.descriptor
         if let event = frame.readyEvent {
             if queue == nil { queue = MTLCreateSystemDefaultDevice()?.makeCommandQueue() }
