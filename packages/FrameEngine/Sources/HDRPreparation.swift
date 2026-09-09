@@ -1,14 +1,18 @@
 import CFrameEngine
-import CoreMedia
 import CoreVideo
 import CryptoKit
-import DLSSMedia
 import Foundation
 
 public struct HDRPreparationSegment: Sendable {
     public let identity: HDRCacheIdentity
     public let frameCount: Int
-    public init(identity: HDRCacheIdentity, frameCount: Int) { self.identity = identity; self.frameCount = frameCount }
+    public let decodeTimings: ArraySlice<HDRCacheFrameTiming>?
+    public init(identity: HDRCacheIdentity, frameCount: Int, decodeTimings: [HDRCacheFrameTiming]? = nil) {
+        self.identity = identity; self.frameCount = frameCount; self.decodeTimings = decodeTimings.map { $0[...] }
+    }
+    init(identity: HDRCacheIdentity, frameCount: Int, decodeTimingsSlice: ArraySlice<HDRCacheFrameTiming>) {
+        self.identity = identity; self.frameCount = frameCount; self.decodeTimings = decodeTimingsSlice
+    }
 }
 
 public struct HDRPreparationProgress: Sendable {
@@ -26,6 +30,7 @@ public actor HDRPreparationCoordinator {
     private let cache: HDRSegmentCache
     private let configuration: HDRPipelineConfiguration
     private let processor: HDRPipelineProcessor
+    private let decoderProvider: any FramePreparationDecoderProvider
     private var job: Task<Void, any Error>?
     private var generation: UInt64 = 0
     private var state: HDRPreparationProgress.State = .idle
@@ -33,9 +38,11 @@ public actor HDRPreparationCoordinator {
     private var completedRanges: [HDRCacheRange] = []
     private var failure: String?
 
-    public init(cache: HDRSegmentCache, configuration: HDRPipelineConfiguration) {
+    public init(cache: HDRSegmentCache, configuration: HDRPipelineConfiguration,
+                decoderProvider: any FramePreparationDecoderProvider = NativeFramePreparationProvider()) {
         self.cache = cache; self.configuration = configuration
         self.processor = HDRPipelineProcessor(configuration: configuration)
+        self.decoderProvider = decoderProvider
     }
 
     public func start(sourceURL: URL, segments: [HDRPreparationSegment]) async throws {
@@ -92,6 +99,7 @@ public actor HDRPreparationCoordinator {
                 }
                 let identity = segment.identity
                 guard identity.source == fingerprint,
+                      identity.timingInventorySHA256 == nil || identity.source.interpretation["decoder"] == decoderProvider.identifier,
                       identity.settings.modelSHA256 == configuration.modelVersion,
                       identity.settings.processingWidth == configuration.processingWidth,
                       identity.settings.processingHeight == configuration.processingHeight,
@@ -135,19 +143,26 @@ public actor HDRPreparationCoordinator {
 
     private func prepare(sourceURL: URL, segment: HDRPreparationSegment, writer: HDRCacheWrite, token: UInt64) async throws {
         let identity = segment.identity
-        let start = CMTime(value: identity.preroll.start.value, timescale: identity.preroll.start.timescale)
-        let end = CMTime(value: identity.range.end.value, timescale: identity.range.end.timescale)
-        let reader = try await NativeHDRVideoReader(url: sourceURL, generation: token,
-            timeRange: CMTimeRange(start: start, end: end))
         let session = try FrameSession(limits: .init(slots: 3, bytes: 512 * 1024 * 1024,
             processingWidth: configuration.processingWidth, processingHeight: configuration.processingHeight), processor: processor)
         defer { session.close() }
+        let reader = try await decoderProvider.decoder(sourceURL: sourceURL,
+            videoStreamIndex: identity.source.streamIndex,
+            range: .init(start: identity.preroll.start, end: identity.range.end))
         var admitted = 0, consumed = 0
         do {
-            while let decoded = try await reader.nextDecoded() {
+            while let decoded = try await reader.next() {
+                defer { withExtendedLifetime(decoded) {} }
                 try check(token)
-                let descriptor = DecoderFrameDescriptor.make(pixelBuffer: decoded.pixelBuffer.buffer,
-                    metadata: decoded.metadata, sourceID: 1, generation: session.generation)
+                var descriptor = decoded.descriptor
+                descriptor.source_id = 1; descriptor.generation = session.generation; descriptor.frame_id = UInt64(admitted)
+                if let expected = segment.decodeTimings {
+                    let timing = try HDRCacheFrameTiming(presentationTime: .init(value: descriptor.pts.value, timescale: descriptor.pts.timescale),
+                        duration: .init(value: descriptor.duration.value, timescale: descriptor.duration.timescale))
+                    guard admitted < expected.count, expected[expected.startIndex + admitted] == timing else {
+                        throw HDRCacheError.invalidFrame("Prepared decoder differs from exact indexed preroll/output timing at frame \(admitted)")
+                    }
+                }
                 while session.submit(descriptor) == FE_FULL {
                     consumed += try await consume(session: session, writer: writer, identity: identity, token: token)
                     try await Task.sleep(for: .milliseconds(1))
@@ -159,6 +174,9 @@ public actor HDRPreparationCoordinator {
                 }
                 admitted += 1
                 consumed += try await consume(session: session, writer: writer, identity: identity, token: token)
+            }
+            if let expected = segment.decodeTimings, admitted != expected.count {
+                throw HDRCacheError.invalidFrame("Prepared decoder omitted indexed preroll/output frames")
             }
             while consumed < admitted {
                 try check(token)

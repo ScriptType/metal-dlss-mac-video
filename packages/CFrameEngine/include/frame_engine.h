@@ -126,8 +126,40 @@ void fe_session_destroy(fe_session *session);
 // sourcePath, cacheDirectory, capacityBytes, optional rangeStart/rangeEnd exact
 // {value,timescale}, segmentFrames (default60), prerollFrames (default8).
 typedef struct fe_prepared fe_prepared;
+// A selected-core provider owns independent background readers. Inventory mode
+// returns exact decoded/playback PTS, duration and geometry with NULL pixels.
+// Pixel mode returns immutable decoded CVPixelBuffers for [start,end), including
+// every frame from exact preroll. Seeking to an earlier keyframe is internal.
+// Inventory scans the whole video stream; start/end timescale are zero there.
+// Stream index is the zero-based video stream ordinal, not a global stream ID.
+typedef enum { FE_PREPARATION_INVENTORY = 0, FE_PREPARATION_PIXELS = 1 } fe_preparation_mode;
+typedef struct {
+    uint32_t struct_size, abi_version;
+    // Copied UTF-8 semantic version, including decoder and exact timing policy.
+    const char *identifier;
+    void *user;
+    void (*retain_user)(void *);
+    void (*release_user)(void *);
+    void *(*open)(void *user, const char *source_path, uint32_t video_stream_index,
+                  fe_time start, fe_time end, uint32_t mode, char *error, size_t capacity);
+    // FE_ACCEPTED=one frame, FE_EMPTY=EOF, FE_FAILED/FE_CANCELLED otherwise.
+    // Descriptor/pixel/owner pointers remain valid until next() or close(). The
+    // engine retains accepted CVPixelBuffer/owner before asking for another frame.
+    fe_status (*next)(void *reader, fe_frame *frame, char *error, size_t capacity);
+    // cancel is thread-safe, nonblocking and may overlap next; it interrupts I/O.
+    // open/next/close are serial per reader on a utility queue. Different readers
+    // may run concurrently. close follows any in-flight next and runs exactly once.
+    void (*cancel)(void *reader);
+    void (*close)(void *reader);
+} fe_preparation_decoder_provider;
 fe_prepared *fe_prepared_create(const fe_config *config, const char *configuration_json,
                                 const char *actual_source_path, char *error, size_t capacity);
+// Copies the vtable and identifier; retains user if non-NULL (paired callbacks
+// then required). Callback code must remain loaded until all contexts are idle
+// and destroyed. No fallback to another decoder on failure or timing mismatch.
+fe_prepared *fe_prepared_create_with_decoder(const fe_config *config, const char *configuration_json,
+                                const char *actual_source_path, const fe_preparation_decoder_provider *decoder,
+                                char *error, size_t capacity);
 fe_session *fe_prepared_session_create(fe_prepared *prepared, char *error, size_t capacity);
 fe_status fe_prepared_start(fe_prepared *prepared);
 void fe_prepared_cancel(fe_prepared *prepared);

@@ -1,4 +1,3 @@
-import AVFoundation
 import CFrameEngine
 import CoreVideo
 import CryptoKit
@@ -127,38 +126,56 @@ public actor PreparedHDRContext {
     public nonisolated let status = PreparedHDRStatus()
     public nonisolated let request: PreparedHDRRequest
     public nonisolated let configuration: HDRPipelineConfiguration
+    private let decoderProvider: any FramePreparationDecoderProvider
     private var resources: PreparedHDRResources?
     private var initialization: Task<PreparedHDRResources, any Error>?
+    private var initializationRevision: UInt64 = 0
     private var job: Task<Void, Never>?
     private var generation: UInt64 = 0
     private var invalidated = false
 
-    public init(request: PreparedHDRRequest, configuration: HDRPipelineConfiguration) throws {
+    public init(request: PreparedHDRRequest, configuration: HDRPipelineConfiguration,
+                decoderProvider: any FramePreparationDecoderProvider = NativeFramePreparationProvider()) throws {
         try request.validate()
         self.request = request; self.configuration = configuration
+        self.decoderProvider = decoderProvider
     }
 
     public nonisolated func initializeInBackground() {
-        Task { _ = try? await self.initialize() }
+        let token = status.currentControl()
+        Task { await self.initializeIfCurrent(token) }
+    }
+
+    private func initializeIfCurrent(_ token: UInt64) async {
+        guard token == status.currentControl() else { return }
+        _ = try? await initialize()
     }
 
     private func initialize() async throws -> PreparedHDRResources {
         guard !invalidated else { throw FrameEngineError.invalid("Prepared source changed; reopen the media to create a new context") }
         if let resources { return resources }
         if initialization == nil {
-            let request = request, configuration = configuration
+            initializationRevision &+= 1
+            let request = request, configuration = configuration, decoderProvider = decoderProvider
             initialization = Task.detached(priority: .utility) {
-                try await Self.buildResources(request: request, configuration: configuration)
+                try await Self.buildResources(request: request, configuration: configuration, decoderProvider: decoderProvider)
             }
         }
+        let revision = initializationRevision, task = initialization!
         do {
-            let result = try await initialization!.value
+            let result = try await task.value
+            guard revision == initializationRevision else { throw CancellationError() }
             resources = result
             let available = await availableRanges(result)
             status.update { $0.configurationState = "ready"; $0.totalSegments = result.segments.count; $0.availableRanges = available }
             return result
         } catch {
-            status.update { $0.configurationState = "failed"; $0.error = error.localizedDescription }
+            guard revision == initializationRevision else { throw error }
+            if error is CancellationError { initialization = nil }
+            status.update {
+                $0.configurationState = error is CancellationError ? "cancelled" : "failed"
+                $0.error = error is CancellationError ? nil : error.localizedDescription
+            }
             throw error
         }
     }
@@ -197,6 +214,15 @@ public actor PreparedHDRContext {
         guard token == status.currentControl() else { return }
         generation = token
         job?.cancel()
+        if resources == nil, let pending = initialization {
+            initializationRevision &+= 1
+            initialization = nil
+            pending.cancel()
+            _ = await pending.result
+        }
+        if token == status.currentControl(), resources == nil {
+            status.update { $0.configurationState = "cancelled"; $0.error = nil }
+        }
         if let resources { await resources.coordinator.cancel() }
         if let job { await job.value }
         if token == status.currentControl() { status.update { $0.jobState = "cancelled" } }
@@ -262,14 +288,15 @@ public actor PreparedHDRContext {
         return identity.range.start <= pts ? (resources.cache, identity) : nil
     }
 
-    /// Metadata scanning reads compressed samples only. Sorting handles decode
-    /// order/B-frames without estimating CFR timestamps or retaining pixel data.
+    /// The selected provider supplies exact frame timing. Sorting handles decode
+    /// order/B-frames without rounding timestamps or retaining pixel data.
     private static func buildResources(request: PreparedHDRRequest,
-                                       configuration original: HDRPipelineConfiguration) async throws -> PreparedHDRResources {
+                                       configuration original: HDRPipelineConfiguration,
+                                       decoderProvider: any FramePreparationDecoderProvider) async throws -> PreparedHDRResources {
         let sourceURL = URL(fileURLWithPath: request.sourcePath)
         let signature = try PreparedSourceSignature.read(request.sourcePath)
         let source = try HDRCacheSource.fingerprint(url: sourceURL, streamIndex: 0,
-            interpretation: ["decoder": "NativeHDRVideoReader-planar-v1", "geometry": "unbaked-source-crop-transform-aspect-v1"])
+            interpretation: ["decoder": decoderProvider.identifier, "geometry": "unbaked-source-crop-transform-aspect-v1"])
         guard try PreparedSourceSignature.read(request.sourcePath) == signature else {
             throw FrameEngineError.invalid("Prepared source changed while being fingerprinted")
         }
@@ -280,75 +307,25 @@ public actor PreparedHDRContext {
         } else {
             configuration.modelVersion = SHA256.hash(data: Data("original-hdr-v1".utf8)).map { String(format: "%02x", $0) }.joined()
         }
-        let asset = AVURLAsset(url: sourceURL)
-        guard let track = try await asset.loadTracks(withMediaType: .video).first,
-              let format = try await track.load(.formatDescriptions).first else {
-            throw FrameEngineError.invalid("Prepared source has no video format")
-        }
-        let dimensions = CMVideoFormatDescriptionGetDimensions(format)
-        guard dimensions.width > 0, dimensions.height > 0 else { throw FrameEngineError.invalid("Invalid Prepared source dimensions") }
-        let rate = try await track.load(.nominalFrameRate)
-        let fallbackDuration = CMTime(seconds: 1 / Double(rate.isFinite && rate > 0 ? rate : 30), preferredTimescale: 60000)
-        let reader = try AVAssetReader(asset: asset)
-        let output = AVAssetReaderTrackOutput(track: track, outputSettings: nil)
-        output.alwaysCopiesSampleData = false
-        guard reader.canAdd(output) else { throw FrameEngineError.invalid("Cannot scan Prepared timestamps") }
-        let provider = reader.outputProvider(for: output)
-        guard reader.startReading() else { throw reader.error ?? FrameEngineError.invalid("Cannot start Prepared timestamp scan") }
-        defer { reader.cancelReading() }
-        var timings: [HDRCacheFrameTiming] = []
-        while let sample = try await provider.next() {
-            try Task.checkCancellation()
-            // AVAssetReader also emits marker-only buffers (including EOF).
-            if sample.sampleCount == 0 { continue }
-            guard sample.sampleCount == 1 else { throw FrameEngineError.invalid("Prepared scan requires one compressed video frame per sample") }
-            // Output timing applies track edits to compressed sample timestamps.
-            let pts = sample.outputPresentationTimeStamp
-            let duration = sample.outputDuration.isNumeric && sample.outputDuration > .zero ? sample.outputDuration : fallbackDuration
-            guard pts.isNumeric, timings.count < 1_000_000 else { throw FrameEngineError.invalid("Prepared timestamp inventory invalid at sample \(timings.count), pts=\(pts); maximum one million frames") }
-            timings.append(try .init(presentationTime: .init(value: pts.value, timescale: pts.timescale),
-                                     duration: .init(value: duration.value, timescale: duration.timescale)))
-        }
-        if reader.status == .failed { throw reader.error ?? FrameEngineError.invalid("Prepared timestamp scan failed") }
-        timings.sort { $0.presentationTime < $1.presentationTime }
-        guard let first = timings.first, let last = timings.last else { throw FrameEngineError.invalid("Prepared source contains no frames") }
-        for index in timings.indices.dropFirst() {
-            guard try timings[index - 1].end == timings[index].presentationTime else {
-                throw FrameEngineError.invalid("Prepared source timestamps overlap or contain an unsupported gap")
-            }
-        }
-        let start = request.rangeStart ?? first.presentationTime, end = try request.rangeEnd ?? last.end
-        let selected = timings.indices.filter { timings[$0].presentationTime >= start && (try? timings[$0].end <= end) == true }
-        guard let firstIndex = selected.first, let lastIndex = selected.last,
-              timings[firstIndex].presentationTime == start, try timings[lastIndex].end == end else {
-            throw FrameEngineError.invalid("Prepared range boundaries must coincide with exact source frame boundaries; scanned \(first.presentationTime)...\(try last.end), requested \(start)...\(end)")
-        }
+        let inventory = try await decoderProvider.inventory(sourceURL: sourceURL, videoStreamIndex: 0)
         let settings = HDRCacheSettings(modelSHA256: configuration.modelVersion,
             implementationVersion: "frame-engine-prepared-v1;mlx-hdr-f2ce1772",
             processingWidth: configuration.processingWidth, processingHeight: configuration.processingHeight,
-            outputWidth: Int(dimensions.width), outputHeight: Int(dimensions.height),
+            outputWidth: inventory.width, outputHeight: inventory.height,
             colourPolicy: ["storage": HDRSegmentCache.storagePolicy, "referenceWhiteNits": String(configuration.referenceWhiteNits),
                 "hlgPeakNits": "1000", "proxy": "srgb-bt709-proxy-v1", "reconstruction": "linear-bt2020-nits-ratio-v1", "displayMapping": "none"],
             guides: ["motion": "NativeOpticalFlow-automatic-v1", "temporal": "persistent-neural-defaults-v1", "sceneCutThreshold": "0.3"],
             effects: ["strength": Double(configuration.strength), "colourStrength": Double(configuration.colourStrength),
                 "maximumLuminanceRatio": Double(configuration.maximumLuminanceRatio)],
             execution: ["precision": "float16", "backend": "MLX-Metal", "output": "RGBA16F-absolute-nits"])
-        var segments: [HDRPreparationSegment] = []
-        var index = firstIndex
-        while index <= lastIndex {
-            let final = min(index + (request.segmentFrames ?? 60) - 1, lastIndex)
-            let preroll = max(0, index - (request.prerollFrames ?? 8))
-            let identity = try HDRCacheIdentity(source: source,
-                range: .init(start: timings[index].presentationTime, end: timings[final].end), settings: settings,
-                preroll: .init(start: timings[preroll].presentationTime, policyVersion: "reset-decode-all-from-preroll-v1", randomSeed: 0))
-            segments.append(.init(identity: identity, frameCount: final - index + 1))
-            index = final + 1
-        }
+        let segments = try inventory.segments(source: source, settings: settings,
+            rangeStart: request.rangeStart, rangeEnd: request.rangeEnd,
+            segmentFrames: request.segmentFrames ?? 60, prerollFrames: request.prerollFrames ?? 8)
         guard try PreparedSourceSignature.read(request.sourcePath) == signature else {
             throw FrameEngineError.invalid("Prepared source changed while timestamps were being indexed")
         }
         let cache = try await PreparedCacheRegistry.shared.open(directory: URL(fileURLWithPath: request.cacheDirectory), capacity: request.capacityBytes)
-        return PreparedHDRResources(cache: cache, coordinator: HDRPreparationCoordinator(cache: cache, configuration: configuration),
+        return PreparedHDRResources(cache: cache, coordinator: HDRPreparationCoordinator(cache: cache, configuration: configuration, decoderProvider: decoderProvider),
                                     segments: segments, expectedKeys: Set(try segments.map { try $0.identity.key() }), sourceSignature: signature)
     }
 }

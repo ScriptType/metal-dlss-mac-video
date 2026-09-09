@@ -15,7 +15,7 @@ func preparationCancelsStagingResumesAndPairsAcrossSegments() async throws {
     defer { try? FileManager.default.removeItem(at: directory) }
     let cache = try await HDRSegmentCache.open(directory: directory, capacityBytes: 64 * 1024 * 1024)
     let hash = SHA256.hash(data: Data("original-hdr-v1".utf8)).map { String(format: "%02x", $0) }.joined()
-    let source = try HDRCacheSource.fingerprint(url: preparationFixture, streamIndex: 1)
+    let source = try HDRCacheSource.fingerprint(url: preparationFixture, streamIndex: 0)
     let settings = HDRCacheSettings(modelSHA256: hash, implementationVersion: "preparation-test-v1",
         processingWidth: 32, processingHeight: 24, outputWidth: 320, outputHeight: 192,
         colourPolicy: ["storage": HDRSegmentCache.storagePolicy],

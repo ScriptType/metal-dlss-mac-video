@@ -16,6 +16,7 @@ The SHA-256 key covers the canonical JSON representation of `HDRCacheIdentity`:
 | Guides and effects | Guide algorithms/dimensions/content hashes; every effect and strength |
 | Execution | Quality/precision, numerical backend or other execution choices that can change pixels |
 | Temporal context | Preroll start, reset policy version and random seed |
+| Timing inventory | For schema 2, SHA-256 of the complete ordered canonical PTS/duration array |
 
 Callers must supply every pixel-affecting setting. The cache cannot infer omitted settings from a renderer. `HDRCacheSource.fingerprint` hashes source content in bounded chunks and rejects a source whose size or modification time changes during hashing.
 
@@ -33,9 +34,9 @@ cache/
 
 One actor owns one directory, enforced by an operating-system advisory lock. Open with `try await HDRSegmentCache.open(directory:capacityBytes:)`, or call `recover()` after the initializer. Recovery removes abandoned staging, validates committed segments, removes corrupt entries and reconstructs the completed-range index. No independently updated index can publish a partial segment.
 
-`begin(identity:expectedFrameCount:)` allocates a writer. Append one `HDRCacheFloatFrame` at a time, with contiguous presentation times and positive durations. Each frame file is interleaved little-endian RGBA32F. Frame data is synchronized to disk while still unpublished. `publish` requires the exact frame count and range coverage, writes the manifest, verifies every payload's dimensions, float values and SHA-256, synchronizes staging, then renames the directory into `segments` on the same filesystem. An interrupted write remains unpublished; a published segment is independently recoverable. `cancel` discards a live writer.
+`begin(identity:expectedFrameCount:)` allocates a writer. Append one `HDRCacheFloatFrame` at a time with positive duration. Legacy schema 1 identities omit `timingInventorySHA256` and require contiguous presentation times ending exactly at the range end. Schema 2 identities bind `HDRCacheFrameTiming.inventoryDigest` for the complete expected timing array. They preserve strictly increasing PTS with durations that may overlap or leave gaps relative to the next PTS; every frame PTS must lie in the segment's coverage range. Coverage ends at the next segment's first PTS, or the final frame end for EOF. Each frame file is interleaved little-endian RGBA32F. Frame data is synchronized to disk while still unpublished. `publish` requires the exact frame count and either complete inventory digest or legacy contiguous range coverage, writes the manifest, verifies every payload's dimensions, float values and SHA-256, synchronizes staging, then renames the directory into `segments` on the same filesystem. An interrupted write remains unpublished; a published segment is independently recoverable. `cancel` discards a live writer.
 
-The manifest records schema/storage-policy versions, the complete identity, frame filenames, rational timing, byte counts and SHA-256 checksums. Unexpected files, symlinks, noncontiguous timing, invalid float values and checksum/size mismatches are rejected.
+The manifest records schema/storage-policy versions, the complete identity, frame filenames, rational timing, byte counts and SHA-256 checksums. Unexpected files, symlinks, missing/altered inventory records, noncontiguous legacy timing, invalid float values and checksum/size mismatches are rejected. Recovery validates the same timing policy as publication. Schema 1 identity encoding and keys are unchanged when the optional digest is absent; schema 2 is explicitly versioned so an older reader cannot mistake it for contiguous data.
 
 `acquire(identity:)` validates and pins a completed segment. Use `read(_:frameIndex:)` for one frame at a time and call `release` when the reader finishes. Repeated reads preserve timestamps and do not advance temporal history. Active leases prevent eviction. Corruption detected after acquisition causes reads to fail; it does not return unchecked pixels.
 
@@ -77,4 +78,4 @@ swift test --filter cache
 python3 scripts/evaluate-hdr10-cache.py
 ```
 
-`HDRCacheTests.swift` covers bit-exact HDR float round trips, full identity invalidation and canonical rational equivalence, VFR timing, incomplete writes/recovery, payload corruption, invalid pixels, active-reader eviction protection, source fingerprints and exclusive cache ownership.
+`HDRCacheTests.swift` and `HDRCacheInventoryTests.swift` cover bit-exact HDR float round trips, full identity invalidation and canonical rational equivalence, contiguous VFR and exact millisecond PTS/duration inventories, missing/changed timing rejection, legacy identity compatibility, incomplete writes/recovery, payload corruption, invalid pixels, active-reader eviction protection, source fingerprints and exclusive cache ownership.

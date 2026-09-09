@@ -91,6 +91,7 @@ public struct HDRCacheSource: Codable, Hashable, Sendable {
         var hash = SHA256()
         var length: Int64 = 0
         while let data = try handle.read(upToCount: 1_048_576), !data.isEmpty {
+            try Task.checkCancellation()
             hash.update(data: data)
             length += Int64(data.count)
         }
@@ -156,13 +157,16 @@ public struct HDRCacheIdentity: Codable, Hashable, Sendable {
     public var range: HDRCacheRange
     public var settings: HDRCacheSettings
     public var preroll: HDRCachePreroll
+    /// Exact ordered PTS/duration inventory. Nil retains legacy contiguous timing.
+    public var timingInventorySHA256: String?
 
     public init(source: HDRCacheSource, range: HDRCacheRange,
-                settings: HDRCacheSettings, preroll: HDRCachePreroll) {
+                settings: HDRCacheSettings, preroll: HDRCachePreroll, timingInventorySHA256: String? = nil) {
         self.source = source
         self.range = range
         self.settings = settings
         self.preroll = preroll
+        self.timingInventorySHA256 = timingInventorySHA256
     }
 
     public func key() throws -> String {
@@ -174,7 +178,8 @@ public struct HDRCacheIdentity: Codable, Hashable, Sendable {
         func isHash(_ value: String) -> Bool {
             value.count == 64 && value.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) }
         }
-        guard isHash(source.contentSHA256), isHash(settings.modelSHA256), source.byteCount >= 0,
+        guard isHash(source.contentSHA256), isHash(settings.modelSHA256),
+              timingInventorySHA256 == nil || isHash(timingInventorySHA256!), source.byteCount >= 0,
               source.streamIndex >= 0, !settings.implementationVersion.isEmpty,
               !settings.colourPolicy.isEmpty, !preroll.policyVersion.isEmpty,
               range.start < range.end, preroll.start <= range.start,
@@ -209,6 +214,19 @@ public struct HDRCacheFrameTiming: Codable, Hashable, Sendable {
     }
 
     public var end: HDRCacheTime { get throws { try presentationTime.adding(duration) } }
+
+    /// The array length, order and canonical rational values all affect identity.
+    public static func inventoryDigest(_ frames: [Self]) throws -> String {
+        guard !frames.isEmpty else { throw HDRCacheError.invalidFrame("Empty timing inventory") }
+        for (index, frame) in frames.enumerated() {
+            guard frame.duration.value > 0,
+                  index == 0 || frames[index - 1].presentationTime < frame.presentationTime else {
+                throw HDRCacheError.invalidFrame("Timing inventory must contain strictly increasing PTS and positive durations")
+            }
+            _ = try frame.end
+        }
+        return cacheDigest(try cacheJSON(frames))
+    }
 }
 
 /// Interleaved, little-endian Float32 RGBA. RGB is absolute cd/m² in linear BT.2020.
@@ -349,13 +367,20 @@ public actor HDRSegmentCache {
     public func append(_ frame: HDRCacheFloatFrame, to token: HDRCacheWrite) throws {
         guard var stage = stages[token.id] else { throw HDRCacheError.unavailable }
         guard stage.frames.count < stage.expectedFrameCount else { throw HDRCacheError.invalidFrame("Too many frames") }
-        let expectedStart = try stage.frames.last?.timing.end ?? stage.identity.range.start
-        guard frame.timing.duration.value > 0, frame.timing.presentationTime == expectedStart,
-              try frame.timing.end <= stage.identity.range.end,
+        let timingValid: Bool
+        if stage.identity.timingInventorySHA256 != nil {
+            timingValid = frame.timing.presentationTime < stage.identity.range.end &&
+                (stage.frames.last.map { $0.timing.presentationTime < frame.timing.presentationTime }
+                    ?? (frame.timing.presentationTime == stage.identity.range.start))
+        } else {
+            let expectedStart = try stage.frames.last?.timing.end ?? stage.identity.range.start
+            timingValid = try frame.timing.presentationTime == expectedStart && frame.timing.end <= stage.identity.range.end
+        }
+        guard frame.timing.duration.value > 0, timingValid,
               frame.rgba.count == (try stage.identity.frameByteCount) / 4,
               frame.rgba.allSatisfy(\.isFinite),
               stride(from: 3, to: frame.rgba.count, by: 4).allSatisfy({ (0...1).contains(frame.rgba[$0]) }) else {
-            throw HDRCacheError.invalidFrame("Pixels, alpha, or contiguous rational timing are invalid")
+            throw HDRCacheError.invalidFrame("Pixels, alpha, or exact rational timing are invalid")
         }
         let data = frame.rgba.withUnsafeBufferPointer { buffer in
             Data(buffer: UnsafeBufferPointer(start: buffer.baseAddress, count: buffer.count))
@@ -380,11 +405,11 @@ public actor HDRSegmentCache {
     @discardableResult
     public func publish(_ token: HDRCacheWrite) throws -> HDRCacheManifest {
         guard let stage = stages[token.id] else { throw HDRCacheError.unavailable }
-        guard stage.frames.count == stage.expectedFrameCount,
-              try stage.frames.last?.timing.end == stage.identity.range.end else {
+        guard stage.frames.count == stage.expectedFrameCount else {
             throw HDRCacheError.invalidFrame("Segment is incomplete")
         }
-        let manifest = HDRCacheManifest(schemaVersion: 1, storagePolicy: Self.storagePolicy,
+        try validateTiming(stage.frames.map(\.timing), identity: stage.identity)
+        let manifest = HDRCacheManifest(schemaVersion: stage.identity.timingInventorySHA256 == nil ? 1 : 2, storagePolicy: Self.storagePolicy,
                                         key: try stage.identity.key(), identity: stage.identity, frames: stage.frames)
         let metadata = try cacheJSON(manifest)
         guard metadata.count <= maximumManifestBytes else { throw HDRCacheError.capacityExceeded }
@@ -519,14 +544,14 @@ public actor HDRSegmentCache {
         }
         let manifest = try JSONDecoder().decode(HDRCacheManifest.self, from: Data(contentsOf: manifestURL))
         try manifest.identity.validate()
-        guard manifest.schemaVersion == 1, manifest.storagePolicy == Self.storagePolicy,
+        guard manifest.schemaVersion == (manifest.identity.timingInventorySHA256 == nil ? 1 : 2), manifest.storagePolicy == Self.storagePolicy,
               manifest.key == (try manifest.identity.key()), manifest.key == (expectedKey ?? directory.lastPathComponent),
               !manifest.frames.isEmpty else { throw HDRCacheError.corruptSegment("Invalid manifest identity") }
-        var next = manifest.identity.range.start
+        try validateTiming(manifest.frames.map(\.timing), identity: manifest.identity)
         let frameBytes = try manifest.identity.frameByteCount
         for (index, frame) in manifest.frames.enumerated() {
             guard frame.fileName == String(format: "%08d.rgba32f", index), frame.byteCount == frameBytes,
-                  frame.timing.duration.value > 0, frame.timing.presentationTime == next else {
+                  frame.timing.duration.value > 0 else {
                 throw HDRCacheError.corruptSegment("Invalid frame inventory or timing")
             }
             let pixels = try readVerified(frame, from: directory)
@@ -537,9 +562,7 @@ public actor HDRSegmentCache {
                 }
             }
             guard valid else { throw HDRCacheError.corruptSegment("Invalid float payload") }
-            next = try frame.timing.end
         }
-        guard next == manifest.identity.range.end else { throw HDRCacheError.corruptSegment("Incomplete range") }
         let names = Set(try fm.contentsOfDirectory(atPath: directory.path))
         guard names == Set(manifest.frames.map(\.fileName) + ["manifest.json"]) else {
             throw HDRCacheError.corruptSegment("Unexpected payload files")
@@ -556,6 +579,27 @@ public actor HDRSegmentCache {
         let data = try Data(contentsOf: url)
         guard cacheDigest(data) == record.sha256 else { throw HDRCacheError.corruptSegment("Payload checksum mismatch") }
         return data
+    }
+}
+
+private func validateTiming(_ timings: [HDRCacheFrameTiming], identity: HDRCacheIdentity) throws {
+    guard timings.first?.presentationTime == identity.range.start else {
+        throw HDRCacheError.corruptSegment("Missing first frame")
+    }
+    if let expected = identity.timingInventorySHA256 {
+        guard try HDRCacheFrameTiming.inventoryDigest(timings) == expected,
+              timings.allSatisfy({ $0.presentationTime < identity.range.end }) else {
+            throw HDRCacheError.corruptSegment("Exact timing inventory is incomplete or changed")
+        }
+    } else {
+        var next = identity.range.start
+        for timing in timings {
+            guard timing.duration.value > 0, timing.presentationTime == next else {
+                throw HDRCacheError.corruptSegment("Noncontiguous legacy timing")
+            }
+            next = try timing.end
+        }
+        guard next == identity.range.end else { throw HDRCacheError.corruptSegment("Incomplete range") }
     }
 }
 

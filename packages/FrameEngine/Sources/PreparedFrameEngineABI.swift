@@ -18,6 +18,20 @@ private func preparedHandle(_ pointer: UnsafeMutableRawPointer) -> PreparedFrame
 public func fePreparedCreate(_ config: UnsafePointer<fe_config>?, _ json: UnsafePointer<CChar>?,
                              _ actualSourcePath: UnsafePointer<CChar>?,
                              _ error: UnsafeMutablePointer<CChar>?, _ capacity: Int) -> UnsafeMutableRawPointer? {
+    createPrepared(config, json, actualSourcePath, decoder: nil, error, capacity)
+}
+
+@_cdecl("fe_prepared_create_with_decoder")
+public func fePreparedCreateWithDecoder(_ config: UnsafePointer<fe_config>?, _ json: UnsafePointer<CChar>?,
+                             _ actualSourcePath: UnsafePointer<CChar>?, _ decoder: UnsafePointer<fe_preparation_decoder_provider>?,
+                             _ error: UnsafeMutablePointer<CChar>?, _ capacity: Int) -> UnsafeMutableRawPointer? {
+    guard let decoder else { _ = writeError("Prepared decoder provider is required", error, capacity); return nil }
+    return createPrepared(config, json, actualSourcePath, decoder: decoder, error, capacity)
+}
+
+private func createPrepared(_ config: UnsafePointer<fe_config>?, _ json: UnsafePointer<CChar>?,
+                           _ actualSourcePath: UnsafePointer<CChar>?, decoder: UnsafePointer<fe_preparation_decoder_provider>?,
+                           _ error: UnsafeMutablePointer<CChar>?, _ capacity: Int) -> UnsafeMutableRawPointer? {
     do {
         let (limits, configuration) = try validatedFrameConfiguration(config)
         guard let json, let actualSourcePath else { throw FrameEngineError.invalid("Prepared configuration and actual opened source are required") }
@@ -25,7 +39,8 @@ public func fePreparedCreate(_ config: UnsafePointer<fe_config>?, _ json: Unsafe
         let declared = URL(fileURLWithPath: request.sourcePath).standardizedFileURL.resolvingSymlinksInPath()
         let actual = URL(fileURLWithPath: String(cString: actualSourcePath)).standardizedFileURL.resolvingSymlinksInPath()
         guard declared == actual else { throw FrameEngineError.invalid("Prepared source differs from the file opened by playback") }
-        let context = try PreparedHDRContext(request: request, configuration: configuration)
+        let provider: any FramePreparationDecoderProvider = try decoder.map { try CFramePreparationProvider($0) } ?? NativeFramePreparationProvider()
+        let context = try PreparedHDRContext(request: request, configuration: configuration, decoderProvider: provider)
         let handle = PreparedFrameEngineHandle(context: context, limits: limits)
         _ = writeError("", error, capacity)
         return Unmanaged.passRetained(handle).toOpaque()
