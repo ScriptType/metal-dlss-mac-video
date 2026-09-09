@@ -53,6 +53,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         video.setAccessibilityLabel("Native HDR video")
         video.setAccessibilityRole(.image)
         let configuration = WKWebViewConfiguration()
+        configuration.preferences.tabFocusesLinks = true
         configuration.userContentController.add(self, name: "player")
         controls = WKWebView(frame: .zero, configuration: configuration)
         controls.navigationDelegate = self
@@ -113,9 +114,10 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         app.addItem(withTitle: "Quit HDR Player", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         let file = submenu("File")
         let open = file.addItem(withTitle: "Open Video…", action: #selector(openVideo), keyEquivalent: "o"); open.target = self
+        let close = file.addItem(withTitle: "Close Window", action: #selector(closeWindow), keyEquivalent: "w"); close.target = self
         let playback = submenu("Playback")
-        for (title, action, key) in [("Play/Pause", #selector(togglePlay), "p"), ("Previous Frame", #selector(previousFrame), ","),
-                                     ("Next Frame", #selector(nextFrame), "."), ("Mute", #selector(toggleMute), "m")] {
+        for (title, action, key) in [("Play/Pause", #selector(togglePlay), "p"), ("Previous Frame", #selector(previousFrame), "["),
+                                     ("Next Frame", #selector(nextFrame), "]"), ("Mute", #selector(toggleMute), "m")] {
             let item = playback.addItem(withTitle: title, action: action, keyEquivalent: key); item.target = self
         }
         let view = submenu("View")
@@ -131,6 +133,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
             if response == .OK, let url = panel.url { self?.player.load(url) }
         }
     }
+    @objc private func closeWindow() { window.performClose(nil) }
     @objc private func openSettings() { controls.evaluateJavaScript("document.getElementById('settings').showModal()") }
     @objc private func togglePlay() { player.command("togglePause", value: nil) }
     @objc private func nextFrame() { player.command("frameStep", value: 1) }

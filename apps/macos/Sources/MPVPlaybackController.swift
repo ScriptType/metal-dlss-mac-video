@@ -276,7 +276,7 @@ final class MPVPlaybackController {
         self.hostView = hostView
         if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] != nil {
             defaults = UserDefaults(suiteName: "HDRPlayer.Smoke")!
-            defaults.removePersistentDomain(forName: "HDRPlayer.Smoke")
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES"] != "1" { defaults.removePersistentDomain(forName: "HDRPlayer.Smoke") }
         } else { defaults = .standard }
         let cacheBase = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first ?? FileManager.default.temporaryDirectory
         if let override = ProcessInfo.processInfo.environment["HDRPLAYER_CACHE_DIRECTORY"] {
@@ -357,7 +357,8 @@ final class MPVPlaybackController {
         case "enhancement":
             if let value = value as? Bool, modelURL != nil {
                 enabled = value
-                worker?.enqueue(["vf-command", "enhance", "bypass", enabled ? "no" : "yes"])
+                if source.isEmpty { reconfigure() }
+                else { worker?.enqueue(["vf-command", "enhance", "bypass", enabled ? "no" : "yes"]) }
             }
         case "strength": if let value = numeric(), value.isFinite { strength = min(1, max(0, value)); reconfigure() }
         case "colorStrength": if let value = numeric(), value.isFinite { colorStrength = min(1, max(0, value)); reconfigure() }

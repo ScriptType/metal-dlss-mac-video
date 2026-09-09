@@ -46,6 +46,31 @@ final class PlayerSmokeCheck {
     private func selected(_ type: String, id: Int) -> Bool {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
+    private func runPreferences(write: Bool) async throws {
+        try await wait("empty player and controls initialized", seconds: 20) { self.state()["initialized"] as? Bool == true && !self.webView.isLoading }
+        if write {
+            try await change("volume", value: "37", event: "input")
+            if state()["muted"] as? Bool != true { try await click("mute") }
+            try await click("settings-open")
+            try await change("quality", value: "160x96")
+            try await change("subtitleBrightness", value: "0.6")
+            try await change("subtitleScale", value: "1.2")
+            try await change("subtitleDelay", value: "0.3")
+            try await click("settings-close")
+            try await change("cacheCapacityGiB", value: "2")
+        }
+        try await wait(write ? "selected preferences applied through controls" : "selected preferences restored by a new process") {
+            let processing = self.state()["processing"] as? [String: Any] ?? [:]
+            let prepared = self.state()["prepared"] as? [String: Any] ?? [:]
+            return abs(self.number("volume") - 37) < 0.001 && self.state()["muted"] as? Bool == true &&
+                abs(self.number("subtitleScale") - 1.2) < 0.001 && abs(self.number("subtitleDelay") - 0.3) < 0.001 &&
+                abs((processing["subtitleBrightness"] as? Double ?? 0) - 0.6) < 0.001 &&
+                processing["width"] as? Int == 160 && processing["height"] as? Int == 96 &&
+                prepared["capacityBytes"] as? Int64 == 2_147_483_648
+        }
+        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Preference error") }
+        checks.append("preference changes work without opening media")
+    }
     private func runPrepared() async throws {
         func progress() -> [String: Any] { state()["prepared"] as? [String: Any] ?? [:] }
         func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
@@ -101,6 +126,8 @@ final class PlayerSmokeCheck {
         do {
             if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "prepared" {
                 try await runPrepared()
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"]?.hasPrefix("preferences-") == true {
+                try await runPreferences(write: ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "preferences-write")
             } else {
             try await wait("media metadata and native view loaded", seconds: 20) {
                 self.number("duration") > 0 && (self.state()["tracks"] as? [[String: Any]] ?? []).count >= 4 && !self.video.subviews.isEmpty

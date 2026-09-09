@@ -54,7 +54,9 @@ Request JSON is written on the playback worker immediately before context instal
 
 All libmpv commands, property access and destruction run on a worker. The waiting command queue is bounded at 64. New desired property values, filter configurations and seeks replace their waiting predecessors; relative frame/toggle actions retain order. AppKit can continue handling input during model setup and inference. The Settings dialog and Command-comma menu expose processing size and independent native subtitle brightness, scale and delay.
 
-Preferences retain effect parameters, processing dimensions, volume/mute and subtitle settings. Live qualification is not restored from a preference. Open-file events received before launch are queued. Resize/fullscreen remain owned by the host window. System sleep pauses playback and wake resumes it only if it was previously playing. Quit first closes the worker while the ordinary AppKit loop remains active for native view detachment, then terminates after core destruction. The host retains the view throughout this interval.
+Preferences retain effect parameters, processing dimensions, volume/mute, subtitle settings and cache capacity. Settings also work before opening media. Live qualification is not restored from a preference. Open-file events received before launch are queued. Resize/fullscreen remain owned by the host window. System sleep pauses playback and wake resumes it only if it was previously playing. Quit or Command-W first closes the worker while the ordinary AppKit loop remains active for native view detachment, then terminates after core destruction. The host retains the view throughout this interval.
+
+Native menus provide Open (Command-O), Settings (Command-comma), Close (Command-W), Play/Pause (Command-P), frame stepping (Command-left/right bracket), Mute (Command-M), and fullscreen (Control-Command-F). When the native video has focus, Space, arrows, F, M and comma/period handle playback directly. WebKit receives keys while a control has focus, and Tab navigation includes form controls without changing the system keyboard preference. Dialogs expose their headings and labeled controls through the native accessibility tree; Escape closes them.
 
 ## Functional check
 
@@ -74,5 +76,24 @@ HDRPLAYER_UI_SMOKE_KIND=prepared HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-prepared-
 ```
 
 It exercises original misses, changing capacity after draining the old owner, progress, cancel/resume, committed-range seeking, cache provenance and reusing complete segments without more neural work.
+
+Preference restoration uses two separate processes and an isolated defaults suite. The second invocation preserves the suite written by the first:
+
+```sh
+HDRPLAYER_UI_SMOKE_KIND=preferences-write HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-preferences-write.json \
+  .build/debug/HDRPlayer
+HDRPLAYER_UI_SMOKE_KIND=preferences-read HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES=1 \
+  HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-preferences-read.json .build/debug/HDRPlayer
+```
+
+Both phases verify volume/mute, processing dimensions, subtitle brightness/scale/delay and cache capacity through the actual native state with no source loaded. These checks do not change the normal player preferences.
+
+For an external accessibility inspection, foreground a running player and pass its process ID:
+
+```sh
+osascript scripts/read-player-accessibility.applescript PLAYER_PID
+```
+
+The script reads the AppKit/WebKit tree without changing accessibility settings. The automation client needs macOS Accessibility permission. On the current M3, external inspection verified labeled video, transport, seek, volume, track, processing and subtitle controls with correct disabled states for an empty player. Actual keyboard events verified Command-comma, Tab through subtitle settings, Escape, return to Open, and Command-W with clean process exit. The two-process preference check also passed. Fullscreen/resize and responsive controls during inference are covered by the media check above. VoiceOver speech, a physical sleep/wake cycle and moving playback to another physical display remain unverified; this machine has one built-in display.
 
 This is a functional integration check. It does not establish sustained Live performance, calibrated display accuracy or physical presentation timing. Development measurements use the current M3; M5 measurements are separate future runs.
