@@ -2,6 +2,7 @@ import AVFoundation
 import CFrameEngine
 import CoreVideo
 import CryptoKit
+import Darwin
 import Foundation
 import QuartzCore
 
@@ -62,7 +63,62 @@ private struct PreparedHDRResources: Sendable {
     let cache: HDRSegmentCache
     let coordinator: HDRPreparationCoordinator
     let segments: [HDRPreparationSegment]
-    let width, height: Int
+    let expectedKeys: Set<String>
+    let sourceSignature: PreparedSourceSignature
+}
+
+struct PreparedSourceSignature: Equatable, Sendable {
+    let device, inode: UInt64
+    let bytes, modifiedSeconds, modifiedNanoseconds, changedSeconds, changedNanoseconds: Int64
+    static func read(_ path: String) throws -> Self {
+        var value = stat()
+        guard stat(path, &value) == 0 else { throw FrameEngineError.invalid("Prepared source is no longer accessible") }
+        return Self(device: UInt64(UInt32(bitPattern: value.st_dev)), inode: UInt64(value.st_ino), bytes: value.st_size,
+            modifiedSeconds: Int64(value.st_mtimespec.tv_sec), modifiedNanoseconds: Int64(value.st_mtimespec.tv_nsec),
+            changedSeconds: Int64(value.st_ctimespec.tv_sec), changedNanoseconds: Int64(value.st_ctimespec.tv_nsec))
+    }
+}
+
+/// Replacing an mpv filter briefly overlaps old and new contexts. Share one
+/// owning cache actor for that directory, while identities and jobs stay separate.
+/// Weak entries release the filesystem lock after the final context/lease ends.
+private actor PreparedCacheRegistry {
+    static let shared = PreparedCacheRegistry()
+    private final class Entry {
+        weak var cache: HDRSegmentCache?
+        let capacity: Int64
+        init(_ cache: HDRSegmentCache, capacity: Int64) { self.cache = cache; self.capacity = capacity }
+    }
+    private struct Pending {
+        let id: UUID, capacity: Int64
+        let task: Task<HDRSegmentCache, any Error>
+    }
+    private var entries: [String: Entry] = [:]
+    private var pending: [String: Pending] = [:]
+    func open(directory: URL, capacity: Int64) async throws -> HDRSegmentCache {
+        entries = entries.filter { $0.value.cache != nil }
+        let directory = directory.standardizedFileURL.resolvingSymlinksInPath(), key = directory.path
+        if let entry = entries[key], let cache = entry.cache {
+            guard entry.capacity == capacity else { throw FrameEngineError.invalid("Close existing Prepared contexts before changing cache capacity") }
+            return cache
+        }
+        if let opening = pending[key] {
+            guard opening.capacity == capacity else { throw FrameEngineError.invalid("Prepared cache is opening with a different capacity") }
+            return try await opening.task.value
+        }
+        let id = UUID()
+        let task = Task { try await HDRSegmentCache.open(directory: directory, capacityBytes: capacity) }
+        pending[key] = Pending(id: id, capacity: capacity, task: task)
+        do {
+            let cache = try await task.value
+            entries[key] = Entry(cache, capacity: capacity)
+            if pending[key]?.id == id { pending.removeValue(forKey: key) }
+            return cache
+        } catch {
+            if pending[key]?.id == id { pending.removeValue(forKey: key) }
+            throw error
+        }
+    }
 }
 
 /// One source/configuration owns one existing cache actor. Preparation and
@@ -75,6 +131,7 @@ public actor PreparedHDRContext {
     private var initialization: Task<PreparedHDRResources, any Error>?
     private var job: Task<Void, Never>?
     private var generation: UInt64 = 0
+    private var invalidated = false
 
     public init(request: PreparedHDRRequest, configuration: HDRPipelineConfiguration) throws {
         try request.validate()
@@ -86,6 +143,7 @@ public actor PreparedHDRContext {
     }
 
     private func initialize() async throws -> PreparedHDRResources {
+        guard !invalidated else { throw FrameEngineError.invalid("Prepared source changed; reopen the media to create a new context") }
         if let resources { return resources }
         if initialization == nil {
             let request = request, configuration = configuration
@@ -178,13 +236,22 @@ public actor PreparedHDRContext {
 
     private func availableRanges(_ resources: PreparedHDRResources) async -> [HDRCacheRange] {
         guard let identity = resources.segments.first?.identity else { return [] }
-        let expected = Set(resources.segments.compactMap { try? $0.identity.key() })
         return await resources.cache.indexedCompletedRanges(source: identity.source, settings: identity.settings)
-            .filter { expected.contains($0.key) }.map(\.range)
+            .filter { resources.expectedKeys.contains($0.key) }.map(\.range)
     }
 
-    fileprivate func lookup(_ pts: HDRCacheTime) -> (HDRSegmentCache, HDRCacheIdentity)? {
+    fileprivate func lookup(_ pts: HDRCacheTime) throws -> (HDRSegmentCache, HDRCacheIdentity)? {
         guard let resources else { return nil }
+        do {
+            guard try PreparedSourceSignature.read(request.sourcePath) == resources.sourceSignature else {
+                throw FrameEngineError.invalid("Prepared source changed after fingerprinting; reopen the media before reusing cached frames")
+            }
+        } catch {
+            invalidated = true
+            status.update { $0.configurationState = "failed"; $0.error = error.localizedDescription; $0.availableRanges = [] }
+            requestCancel()
+            throw error
+        }
         var low = 0, high = resources.segments.count
         while low < high {
             let mid = (low + high) / 2
@@ -200,8 +267,12 @@ public actor PreparedHDRContext {
     private static func buildResources(request: PreparedHDRRequest,
                                        configuration original: HDRPipelineConfiguration) async throws -> PreparedHDRResources {
         let sourceURL = URL(fileURLWithPath: request.sourcePath)
+        let signature = try PreparedSourceSignature.read(request.sourcePath)
         let source = try HDRCacheSource.fingerprint(url: sourceURL, streamIndex: 0,
             interpretation: ["decoder": "NativeHDRVideoReader-planar-v1", "geometry": "unbaked-source-crop-transform-aspect-v1"])
+        guard try PreparedSourceSignature.read(request.sourcePath) == signature else {
+            throw FrameEngineError.invalid("Prepared source changed while being fingerprinted")
+        }
         try Task.checkCancellation()
         var configuration = original
         if let model = configuration.modelURL {
@@ -273,9 +344,12 @@ public actor PreparedHDRContext {
             segments.append(.init(identity: identity, frameCount: final - index + 1))
             index = final + 1
         }
-        let cache = try await HDRSegmentCache.open(directory: URL(fileURLWithPath: request.cacheDirectory), capacityBytes: request.capacityBytes)
+        guard try PreparedSourceSignature.read(request.sourcePath) == signature else {
+            throw FrameEngineError.invalid("Prepared source changed while timestamps were being indexed")
+        }
+        let cache = try await PreparedCacheRegistry.shared.open(directory: URL(fileURLWithPath: request.cacheDirectory), capacity: request.capacityBytes)
         return PreparedHDRResources(cache: cache, coordinator: HDRPreparationCoordinator(cache: cache, configuration: configuration),
-                                    segments: segments, width: Int(dimensions.width), height: Int(dimensions.height))
+                                    segments: segments, expectedKeys: Set(try segments.map { try $0.identity.key() }), sourceSignature: signature)
     }
 }
 
@@ -305,7 +379,7 @@ public actor PreparedFrameProcessor: FrameProcessor {
         let pts = try HDRCacheTime(value: descriptor.pts.value, timescale: descriptor.pts.timescale)
         let duration = try HDRCacheTime(value: descriptor.duration.value, timescale: descriptor.duration.timescale)
         let start = CACurrentMediaTime()
-        if let (cache, identity) = await context.lookup(pts) {
+        if let (cache, identity) = try await context.lookup(pts) {
             guard identity.settings.outputWidth == Int(descriptor.geometry.width),
                   identity.settings.outputHeight == Int(descriptor.geometry.height) else {
                 throw FrameEngineError.invalid("Prepared cache source geometry differs from decoded playback")
@@ -331,7 +405,8 @@ public actor PreparedFrameProcessor: FrameProcessor {
                     $0.lastFrameID = descriptor.frame_id; $0.lastPTS = pts
                 }
                 return ProcessedFrame(buffer: buffer, colour: colour,
-                    completedStageWallSeconds: ["prepared_cache_read": readEnd - start, "prepared_rgba16f_pack": CACurrentMediaTime() - readEnd])
+                    completedStageWallSeconds: ["prepared_cache_read": readEnd - start, "prepared_rgba16f_pack": CACurrentMediaTime() - readEnd],
+                    contentKind: context.configuration.modelURL != nil && context.configuration.strength > 0 ? .preparedEnhanced : .preparedOriginal)
             }
         } else if let (cache, lease) = active {
             await cache.release(lease); active = nil

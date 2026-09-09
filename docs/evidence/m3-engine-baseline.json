@@ -1,0 +1,314 @@
+{
+  "scope": "M3 completed-work instrumentation baseline; tiny neural shape, offscreen, no source-rate Live or physical-display claim",
+  "binarySHA256": "e17c9ecd256ebfc3ecfe2edd7ce1c9a970b094ecd90d0664d3a4cd4e2fccba34",
+  "sourceTreeWasClean": false,
+  "buildNote": "Root84290e5 with additive output-provenance changes in the engine. Prepared-source work was also present in the working tree; this is not a clean-revision optimization comparison.",
+  "runs": [
+    {
+      "completedCadenceSeconds": {
+        "count": 269,
+        "maximum": 0.13632400007918477,
+        "minimum": 0.08791212504729629,
+        "p50": 0.10102670826017857,
+        "p95": 0.11722537502646446,
+        "p99": 0.133734611668624
+      },
+      "completedStageWallSeconds": {
+        "inference": {
+          "count": 270,
+          "maximum": 0.117155291,
+          "minimum": 0.073410167,
+          "p50": 0.0850044375,
+          "p95": 0.1003314003,
+          "p99": 0.11303658073
+        },
+        "motion": {
+          "count": 270,
+          "maximum": 0.0173965,
+          "minimum": 0.010965125,
+          "p50": 0.013334104,
+          "p95": 0.015371232999999998,
+          "p99": 0.01634525221
+        },
+        "proxy": {
+          "count": 270,
+          "maximum": 0.001346167,
+          "minimum": 0.000296792,
+          "p50": 0.000409521,
+          "p95": 0.0005361954999999999,
+          "p99": 0.0011733758100000002
+        },
+        "reconstruction": {
+          "count": 270,
+          "maximum": 0.0031060000000000003,
+          "minimum": 0.000915166,
+          "p50": 0.001533708,
+          "p95": 0.0021079938999999997,
+          "p99": 0.00237826656
+        }
+      },
+      "completedThroughputFPS": 9.737344704060126,
+      "completedTotal": 300,
+      "completedWorkSeconds": {
+        "count": 270,
+        "maximum": 0.1362947083543986,
+        "minimum": 0.08788941672537476,
+        "p50": 0.10103395831538364,
+        "p95": 0.11769724796758964,
+        "p99": 0.13370137961115688
+      },
+      "configuration": {
+        "adapter": "native-decoder/shared-engine",
+        "displayConfiguration": "offscreen RGBA16F; no presentation",
+        "displayHeight": 192,
+        "displayWidth": 320,
+        "implementationRevision": "84290e517b1387cf705fa62b08885ab911f7cc6f",
+        "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+        "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t73%; discharging; 4:25 remaining present: true",
+        "processingHeight": 24,
+        "processingWidth": 32,
+        "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+        "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+        "sourceFPS": 29.99966812133789,
+        "sourceHeight": 192,
+        "sourceWidth": 320,
+        "warmupFrames": 30
+      },
+      "cpuSubmissionSeconds": {
+        "count": 16215,
+        "maximum": 5.1999930292367935e-05,
+        "minimum": 5.416804924607277e-07,
+        "p50": 1.625041477382183e-06,
+        "p95": 5.791662260890007e-06,
+        "p99": 9.124982170760632e-06
+      },
+      "deadlineMisses": 0,
+      "device": "Apple M3",
+      "drops": 0,
+      "duplicatePresentations": 0,
+      "endToEndSeconds": {
+        "count": 270,
+        "maximum": 0.2689290000125766,
+        "minimum": 0.17921075003687292,
+        "p50": 0.20107489585643634,
+        "p95": 0.23592806871747596,
+        "p99": 0.26402664166642353
+      },
+      "gpuStageSeconds": {
+        "planar_import": {
+          "count": 270,
+          "maximum": 0.0009173332946375012,
+          "minimum": 6.154156289994717e-05,
+          "p50": 8.237495785579085e-05,
+          "p95": 0.00013302501174621283,
+          "p99": 0.00034758209367282783
+        },
+        "rgba16f_pack": {
+          "count": 270,
+          "maximum": 0.0009400832932442427,
+          "minimum": 9.874929673969746e-06,
+          "p50": 3.091664984822273e-05,
+          "p95": 9.22249455470591e-05,
+          "p99": 0.0006179125083144754
+        }
+      },
+      "maximumAllocatorBytes": {
+        "mlx_active": 305169800,
+        "mlx_cache": 272073240,
+        "mlx_peak_active": 617332790,
+        "resident_model_payload": 291576650,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "maximumQueueSlots": 2,
+      "measurementScope": "all completed frames",
+      "osVersion": "Version 26.5 (Build 25F71)",
+      "peakRetainedBytes": 4376192,
+      "peakSampledResidentBytes": 381190144,
+      "physicalMemoryBytes": 17179869184,
+      "queueSeconds": {
+        "count": 270,
+        "maximum": 0.13536041660699993,
+        "minimum": 0.08725754171609879,
+        "p50": 0.10001189581817016,
+        "p95": 0.11706225001835265,
+        "p99": 0.13211955123697408
+      },
+      "retainedSamples": 300,
+      "schemaVersion": 1,
+      "targetHardware": false,
+      "unavailableMetrics": [
+        "presentation timing, drops and duplicates",
+        "audio/video offset",
+        "GPU copy count",
+        "CPU readback count",
+        "CPU wait count",
+        "seek latency",
+        "power and energy",
+        "isolated neural/proxy GPU intervals; completed wall stages are separate"
+      ],
+      "warmedSamples": 270,
+      "firstCompletedPTS": {
+        "value": 0,
+        "timescale": 1000
+      },
+      "lastCompletedPTS": {
+        "value": 159472,
+        "timescale": 16000
+      },
+      "run": "a"
+    },
+    {
+      "completedCadenceSeconds": {
+        "count": 269,
+        "maximum": 0.20898704160936177,
+        "minimum": 0.08903637493494898,
+        "p50": 0.1064072500448674,
+        "p95": 0.11957516665570438,
+        "p99": 0.12545235170982777
+      },
+      "completedStageWallSeconds": {
+        "inference": {
+          "count": 270,
+          "maximum": 0.156530708,
+          "minimum": 0.07347375,
+          "p50": 0.089589167,
+          "p95": 0.10069945000000001,
+          "p99": 0.10691800404
+        },
+        "motion": {
+          "count": 270,
+          "maximum": 0.032678334,
+          "minimum": 0.010791542,
+          "p50": 0.0139596875,
+          "p95": 0.016418522249999998,
+          "p99": 0.018042671540000003
+        },
+        "proxy": {
+          "count": 270,
+          "maximum": 0.005517459,
+          "minimum": 0.000354709,
+          "p50": 0.000455437,
+          "p95": 0.0005690335499999998,
+          "p99": 0.0010826282900000006
+        },
+        "reconstruction": {
+          "count": 270,
+          "maximum": 0.005292125,
+          "minimum": 0.001054709,
+          "p50": 0.0015194995,
+          "p95": 0.0021644233999999984,
+          "p99": 0.0030314062300000003
+        }
+      },
+      "completedThroughputFPS": 9.303080168126394,
+      "completedTotal": 300,
+      "completedWorkSeconds": {
+        "count": 270,
+        "maximum": 0.20893758325837553,
+        "minimum": 0.0890117499511689,
+        "p50": 0.10649264586390927,
+        "p95": 0.11952727912575938,
+        "p99": 0.1254270554659888
+      },
+      "configuration": {
+        "adapter": "native-decoder/shared-engine",
+        "displayConfiguration": "offscreen RGBA16F; no presentation",
+        "displayHeight": 192,
+        "displayWidth": 320,
+        "implementationRevision": "84290e517b1387cf705fa62b08885ab911f7cc6f",
+        "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+        "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t73%; discharging; 4:15 remaining present: true",
+        "processingHeight": 24,
+        "processingWidth": 32,
+        "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+        "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+        "sourceFPS": 29.99966812133789,
+        "sourceHeight": 192,
+        "sourceWidth": 320,
+        "warmupFrames": 30
+      },
+      "cpuSubmissionSeconds": {
+        "count": 16584,
+        "maximum": 0.0002321666106581688,
+        "minimum": 5.833571776747704e-07,
+        "p50": 1.5416881069540977e-06,
+        "p95": 5.333335138857365e-06,
+        "p99": 1.0208343155682087e-05
+      },
+      "deadlineMisses": 0,
+      "device": "Apple M3",
+      "drops": 0,
+      "duplicatePresentations": 0,
+      "endToEndSeconds": {
+        "count": 270,
+        "maximum": 0.32622583326883614,
+        "minimum": 0.18093862500973046,
+        "p50": 0.2127810624660924,
+        "p95": 0.23736551660113037,
+        "p99": 0.24564913168665953
+      },
+      "gpuStageSeconds": {
+        "planar_import": {
+          "count": 270,
+          "maximum": 0.0010232499334961176,
+          "minimum": 6.158335600048304e-05,
+          "p50": 9.293749462813139e-05,
+          "p95": 0.00012666873517446216,
+          "p99": 0.0003147062088828545
+        },
+        "rgba16f_pack": {
+          "count": 270,
+          "maximum": 0.0010711250361055136,
+          "minimum": 9.874929673969746e-06,
+          "p50": 3.491668030619621e-05,
+          "p95": 6.297077634371817e-05,
+          "p99": 0.000857449978357181
+        }
+      },
+      "maximumAllocatorBytes": {
+        "mlx_active": 305193352,
+        "mlx_cache": 274979548,
+        "mlx_peak_active": 597449588,
+        "resident_model_payload": 291576650,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "maximumQueueSlots": 2,
+      "measurementScope": "all completed frames",
+      "osVersion": "Version 26.5 (Build 25F71)",
+      "peakRetainedBytes": 4376192,
+      "peakSampledResidentBytes": 382320640,
+      "physicalMemoryBytes": 17179869184,
+      "queueSeconds": {
+        "count": 270,
+        "maximum": 0.2082297916058451,
+        "minimum": 0.08722412493079901,
+        "p50": 0.10561966669047251,
+        "p95": 0.11924906251952051,
+        "p99": 0.12537136669270696
+      },
+      "retainedSamples": 300,
+      "schemaVersion": 1,
+      "targetHardware": false,
+      "unavailableMetrics": [
+        "presentation timing, drops and duplicates",
+        "audio/video offset",
+        "GPU copy count",
+        "CPU readback count",
+        "CPU wait count",
+        "seek latency",
+        "power and energy",
+        "isolated neural/proxy GPU intervals; completed wall stages are separate"
+      ],
+      "warmedSamples": 270,
+      "firstCompletedPTS": {
+        "value": 0,
+        "timescale": 1000
+      },
+      "lastCompletedPTS": {
+        "value": 159472,
+        "timescale": 16000
+      },
+      "run": "b"
+    }
+  ]
+}

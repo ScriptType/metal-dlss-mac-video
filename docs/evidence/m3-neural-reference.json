@@ -1,0 +1,121 @@
+{
+  "height": 192,
+  "implementationRevision": "84290e517b1387cf705fa62b08885ab911f7cc6f",
+  "model": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+  "primaries": "BT.2020",
+  "pts": {
+    "timescale": 1000,
+    "value": 0
+  },
+  "samples": [
+    {
+      "rgba": [
+        786.5,
+        113.0625,
+        28.796875,
+        1
+      ],
+      "x": 0,
+      "y": 48
+    },
+    {
+      "rgba": [
+        166.625,
+        411.5,
+        44.53125,
+        1
+      ],
+      "x": 80,
+      "y": 48
+    },
+    {
+      "rgba": [
+        174.875,
+        218.625,
+        948.5,
+        1
+      ],
+      "x": 160,
+      "y": 48
+    },
+    {
+      "rgba": [
+        735.5,
+        119,
+        925.5,
+        1
+      ],
+      "x": 240,
+      "y": 48
+    },
+    {
+      "rgba": [
+        213.5,
+        508.25,
+        711,
+        1
+      ],
+      "x": 319,
+      "y": 48
+    },
+    {
+      "rgba": [
+        463.5,
+        63.0625,
+        16.359375,
+        1
+      ],
+      "x": 0,
+      "y": 144
+    },
+    {
+      "rgba": [
+        124.6875,
+        92.375,
+        81.375,
+        1
+      ],
+      "x": 80,
+      "y": 144
+    },
+    {
+      "rgba": [
+        64.375,
+        49.71875,
+        459,
+        1
+      ],
+      "x": 160,
+      "y": 144
+    },
+    {
+      "rgba": [
+        207.5,
+        309,
+        519.5,
+        1
+      ],
+      "x": 240,
+      "y": 144
+    },
+    {
+      "rgba": [
+        237.125,
+        564.5,
+        794.5,
+        1
+      ],
+      "x": 319,
+      "y": 144
+    }
+  ],
+  "schemaVersion": 1,
+  "scope": "One CPU readback of the first completed startup frame; before display mapping and warmed timing",
+  "settingsJSON": "{\"strength\":1.0,\"colourStrength\":1,\"referenceWhiteNits\":203,\"maximumLuminanceRatio\":2}",
+  "source": "pq-30-30s.mp4;sha256=01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+  "storage": "RGBA16F",
+  "transfer": "linear",
+  "units": "cd/m2",
+  "width": 320,
+  "repeatedSamplesIdentical": true
+}

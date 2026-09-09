@@ -97,6 +97,8 @@ bash scripts/prepare-frame-runtime.sh
 
 These short commands validate instrumentation and model wiring. Sustained performance requires longer representative material, the intended processing dimensions, recorded display/power settings and the actual playback adapter. A tiny processing shape cannot establish a usable Live configuration.
 
+The [M3 development reference](m3-benchmarks.md) records two 300-frame runs and an identical repeated numeric HDR capture. `--reference FILE` reads the first completed startup frame before the warmed interval; `--power DESCRIPTION` records actual power conditions. Benchmark errors drain pending GPU work before reporting failure.
+
 For continuous clock and navigation checks, generate longer PCM-audio clips with five-second GOP targets, styled ASS, two audio tracks, chapters and exact source PTS manifests:
 
 ```sh

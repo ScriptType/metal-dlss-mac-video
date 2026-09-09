@@ -40,6 +40,8 @@ The tiny 32×24 processing shape validates neural integration on M3. It is not a
 | `measurements` | None | JSONL filter-output and normalization-pass measurements |
 | `measurement-config` | None | Path to the shared engine's `MeasurementConfiguration` JSON |
 | `engine-report` | None | Destination for shared engine JSON measurements at teardown |
+| `prepared-config` | None | Path to the source-bound Prepared request JSON |
+| `prepare` | `no` | Start or resume preparation when constructing a Prepared filter |
 
 `vf-command <filter-label> bypass yes` / `no` switches decoder bypass while retaining the engine/model session and resetting temporal history. Effect and processing-size changes require rebuilding the filter configuration; the native host performs that work off AppKit and reports the model reload and temporal reset.
 
@@ -65,6 +67,32 @@ libmpv clients can read or observe the `enhancement-state` node:
 | `buffer-count`, `buffer-seconds` | Shared-clock buffering accumulated during playback |
 | `compare-ready`, `comparison` | Availability and displayed member of the paused pair |
 | `generation`, `displayed-generation`, `displayed-source-pts`, `displayed-timebase-num`, `displayed-timebase-den` | Exact displayed source identity |
+| `displayed-content-kind` | Immutable output provenance: `unknown`, `original`, `enhanced`, `prepared-original`, or `prepared-enhanced` |
+| `prepared-supported`, `prepared` | Compiled Prepared capability and its context's current progress node |
+
+## Prepared playback
+
+The filter owns one shared preparation/playback context selected by `prepared-config`. The request identifies a local source, cache directory and disk capacity. For example:
+
+```json
+{
+  "sourcePath": "/absolute/movie.mp4",
+  "cacheDirectory": "/absolute/hdr-cache",
+  "capacityBytes": 8589934592,
+  "rangeStart": {"value": 0, "timescale": 30},
+  "rangeEnd": {"value": 6, "timescale": 30},
+  "segmentFrames": 3,
+  "prerollFrames": 1
+}
+```
+
+Omitting both range fields selects the whole video; defaults are 60 frames per segment and eight frames of preroll. Processing/model/effect options come from the same filter configuration and are included in cache identity. mpv supplies the actual selected demuxer's filename to the shared C API, which compares its canonical local path with `sourcePath`. A different source, nonlocal input or video track other than the first video stream is rejected. A second filter cannot silently read a first-track cache for another track.
+
+`vf-command enhance prepare start` starts or resumes preparation; `cancel` stops future work while keeping committed ranges reusable. `enhancement-state.prepared` exposes `configurationState`, `jobState`, `completedSegments`, `totalSegments`, `processedFrames`, `reusedSegments`, `completedRanges`, `availableRanges`, `cacheHits`, `cacheMisses` and any `error`. The successful terminal job state is `complete`. `availableRanges` describes the current committed index; historical completion can include ranges already evicted by the disk budget. Acquisition still validates data and pins active readers.
+
+Cache lookup uses exact source PTS and duration. A miss returns the HDR original through the same output lease and renderer path. The displayed frame's immutable `displayed-content-kind` distinguishes a cached enhanced frame from original fallback; the progress node's `lastOutput` describes background processing and must not label the currently displayed frame. `prepared-original` explicitly identifies a cached zero-strength reference. Prepared cache speed never qualifies neural Live mode.
+
+The current float reference cache reads Float32 pixels from disk and packs a CPU-complete RGBA16F IOSurface before native hardware import. Measurements expose cache-read and packing wall time. This path preserves linear HDR precision; the separately evaluated HDR10 codec policy is not yet the production cache backend.
 
 ## Timing, cancellation and ownership
 
@@ -76,7 +104,7 @@ Seeks and input geometry/colour discontinuities reset the engine generation and 
 
 The engine's completed buffer contains absolute-nit RGB. Libplacebo's linear working domain uses 1.0 = 203 nits, so the adapter performs one explicit Metal normalization pass into a bounded six-buffer RGBA16F pool. It preserves negative values and HDR headroom. A threadgroup reduction measures transformed peak luminance; reading that four-byte scalar after command completion supplies output peak metadata. Source-only ICC, Dolby Vision, film-grain and dynamic HDR metadata are cleared from transformed pixels.
 
-The VideoToolbox mapper imports packed float Metal textures through libplacebo's existing `PL_HANDLE_MTL_TEX` path. The mapper now permits floating-point textures and uses packed-buffer dimensions for RGBA16F. No CPU pixel upload/download occurs in this adapter. Resource counts include one full-frame GPU normalization pass and one four-byte CPU peak readback per output. Import and rendering follow libplacebo's retained texture lifetimes.
+The VideoToolbox mapper imports packed float Metal textures through libplacebo's existing `PL_HANDLE_MTL_TEX` path. The mapper permits floating-point textures and uses packed-buffer dimensions for RGBA16F. The direct decoder/neural adapter path performs no CPU pixel upload/download. Resource counts include one full-frame GPU normalization pass and one four-byte CPU peak readback per output; Prepared additionally performs its documented disk read and Float32-to-RGBA16F packing. Import and rendering follow libplacebo's retained texture lifetimes.
 
 Shutdown closes session admission, cancels pending generations, drains the final normalization command and waits for actual engine idleness on mpv's core thread before destroying the session. AppKit remains responsive because the native host runs libmpv calls on its worker. Process or dylib teardown must not race MLX's global Metal resource destruction.
 
@@ -102,6 +130,8 @@ The coalesced final seek selected 0.7 seconds: its original appeared in renderer
 
 Evidence is in `artifacts/mpv-policy-pq-controlled-neural.json`, `.engine.json` and `.configuration.json`. The configuration records source/weight hashes, drawable verification and the power snapshot. A/V comes from mpv's audio clock property; preview latency observes renderer-current state rather than physical scanout. A separate Matroska smoke verifies nominal 1/30-second duration when the decoder PTS scale cannot represent it exactly. Older loop-remux or native-keyboard-interrupted runs are not controlled drift evidence.
 
+`python3 scripts/test-mpv-prepared.py --model models/neural-rendering/NeuralRendering.dlssmodel --report artifacts/mpv-prepared-neural-smoke.json` passed with real neural processing. The first process prepared six frames in two segments; seeking to 0.1 seconds displayed an exact cache hit labeled `prepared-enhanced`, and 0.7 seconds displayed an original miss. A second process reused both segments and processed zero frames. Both exited cleanly, and source-mismatch/second-video guards rejected unsafe configurations. The image-generation unit test also verifies immutable provenance across retained pair switches.
+
 The nine-second embedded HLG model smoke passed with the same processing dimensions and gain bound. It exercised exact seeks, pause/resume, resize, fullscreen and teardown. The surface reached RGBA16F with extended linear BT.2020 and EDR enabled; no renderer-owned window appeared, and removing the renderer left the host window alive. The report recorded ten dropped frames and a 1.172-second maximum absolute A/V offset including startup and lifecycle actions. This proves the embedding and shutdown path, while leaving sustained pacing unqualified. The machine-readable report is `artifacts/mpv-hdr-host-hlg-model.json`.
 
-Prepared mode uses the separate persistent preparation/cache integration. Sustained neural Live qualification, longer drift runs and physical presentation measurements remain acceptance work; absent metrics are reported as unavailable. Current development measurements target M3.
+Sustained neural Live qualification, longer drift runs and physical presentation measurements remain acceptance work; absent metrics are reported as unavailable. Current development measurements target M3.

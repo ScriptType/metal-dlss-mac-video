@@ -46,10 +46,62 @@ final class PlayerSmokeCheck {
     private func selected(_ type: String, id: Int) -> Bool {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
+    private func runPrepared() async throws {
+        func progress() -> [String: Any] { state()["prepared"] as? [String: Any] ?? [:] }
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        try await wait("Prepared capability available for local MP4", seconds: 20) {
+            self.number("duration") > 0 && (self.state()["capabilities"] as? [String: Any])?["prepared"] as? Bool == true
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("Prepared test paused") { self.state()["paused"] as? Bool == true }
+        try await change("mode", value: "prepared")
+        try await wait("filter-owned Prepared context ready", seconds: 20) { progress()["configurationState"] as? String == "ready" }
+        try await change("timeline", value: "0.1")
+        try await wait("unprepared miss visibly remains original") {
+            native()["displayed-content-kind"] as? String == "original" && (progress()["cacheMisses"] as? Int ?? 0) > 0
+        }
+        try await click("prepare-open")
+        let oldConfiguration = number("configurationID")
+        try await change("cacheCapacityGiB", value: "1")
+        try await wait("capacity rebuild drains previous cache owner", seconds: 20) {
+            self.number("configurationID") > oldConfiguration && progress()["configurationState"] as? String == "ready" && self.state()["error"] == nil
+        }
+        try await click("prepare-start")
+        try await wait("preparation advances while UI remains active", seconds: 20) {
+            progress()["jobState"] as? String == "preparing" && (progress()["processedFrames"] as? Int ?? 0) > 0
+        }
+        try await click("prepare-cancel")
+        try await wait("preparation cancels", seconds: 20) { progress()["jobState"] as? String == "cancelled" }
+        try await click("prepare-start")
+        try await wait("preparation resumes to committed completion", seconds: 60) {
+            progress()["jobState"] as? String == "complete" && (progress()["availableRanges"] as? [[String: Any]] ?? []).count > 0
+        }
+        guard try await script("return document.querySelectorAll('#prepared-ranges button').length > 0;") == "true" else {
+            throw Failure(message: "Committed Prepared ranges are missing from the dialog")
+        }
+        _ = try await script("document.querySelector('#prepared-ranges button').click();return true;")
+        try await wait("coverage button seeks to a prepared enhanced frame", seconds: 20) {
+            native()["displayed-content-kind"] as? String == "prepared-enhanced" && (progress()["cacheHits"] as? Int ?? 0) > 0
+        }
+        try await click("prepare-open")
+        try await click("prepare-start")
+        try await wait("completed preparation reuses segments without model work", seconds: 20) {
+            let total = progress()["totalSegments"] as? Int ?? 0
+            return progress()["jobState"] as? String == "complete" && total > 0 && progress()["reusedSegments"] as? Int == total && progress()["processedFrames"] as? Int == 0
+        }
+        try await click("prepare-close")
+        guard state()["error"] == nil, progress()["error"] == nil else { throw Failure(message: "Prepared playback reported an error") }
+        guard let layer = video.subviews.first?.layer as? CAMetalLayer, layer.pixelFormat == .rgba16Float,
+              layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Prepared enhanced output is not float EDR") }
+        checks.append("Prepared neural cache output uses float EDR with no playback error")
+    }
     func start() { Task { await run() } }
     private func run() async {
         var failure: String?
         do {
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "prepared" {
+                try await runPrepared()
+            } else {
             try await wait("media metadata and native view loaded", seconds: 20) {
                 self.number("duration") > 0 && (self.state()["tracks"] as? [[String: Any]] ?? []).count >= 4 && !self.video.subviews.isEmpty
             }
@@ -122,6 +174,7 @@ final class PlayerSmokeCheck {
             checks.append("retained comparison preserved rational PTS/generation without inference submission; float EDR active")
             guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Unknown playback error") }
             checks.append("no native playback error")
+            }
         } catch { failure = error.localizedDescription }
         let layer = video.subviews.first?.layer as? CAMetalLayer
         var report: [String: Any] = ["passed": failure == nil, "checks": checks, "snapshots": snapshots,

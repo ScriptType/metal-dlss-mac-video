@@ -92,6 +92,45 @@ function update(next) {
   element('compare').hidden = !next.capabilities?.sameFrameComparison;
   element('compare').textContent = processing.comparison === 'original' ? 'Show enhanced' : 'Compare original';
   element('compare').setAttribute('aria-pressed', String(processing.comparison === 'original'));
+  element('prepare-open').hidden = processing.mode !== 'prepared';
+  const prepared = next.prepared ?? {};
+  const preparing = ['preparing', 'running', 'cancelling'].includes(prepared.jobState);
+  const initializing = ['initializing', 'hashing', 'planning'].includes(prepared.configurationState);
+  const total = Math.max(1, prepared.totalSegments ?? 1);
+  const completed = Math.max(0, prepared.completedSegments ?? 0);
+  element('prepare-progress').max = total;
+  element('prepare-progress').value = Math.min(total, completed);
+  element('prepare-status').textContent = preparing
+    ? `${completed} of ${prepared.totalSegments ?? '—'} sections prepared`
+    : initializing ? 'Reading video…' : prepared.jobState === 'complete' ? 'Preparation complete'
+      : prepared.jobState === 'cancelled' ? 'Preparation cancelled' : prepared.jobState === 'failed' ? 'Preparation failed' : 'Ready to prepare';
+  element('prepare-start').textContent = completed > 0 || prepared.jobState === 'cancelled' ? 'Resume preparation' : 'Start preparation';
+  element('prepare-start').disabled = !next.capabilities?.prepared || preparing || initializing;
+  element('prepare-cancel').disabled = !preparing && !initializing;
+  setRange('cacheCapacityGiB', prepared.capacityBytes ? prepared.capacityBytes / 1073741824 : 8);
+  element('prepare-message').textContent = prepared.error || 'Completed sections play from the HDR cache. Other sections show the original video.';
+  const ranges = prepared.availableRanges ?? [];
+  const rangeSignature = JSON.stringify(ranges);
+  if (optionSignatures.get('prepared-ranges') !== rangeSignature) {
+    // Coalesce contiguous ranges for navigation; exact segment identities remain
+    // native. Limit displayed buttons while keeping every section seekable.
+    const merged = [];
+    for (const range of ranges) {
+      if (!Number.isFinite(range.startSeconds) || !Number.isFinite(range.endSeconds)) continue;
+      const last = merged.at(-1);
+      if (last && Math.abs(last.endSeconds - range.startSeconds) < 0.001) last.endSeconds = range.endSeconds;
+      else merged.push({ ...range });
+    }
+    element('prepared-ranges').replaceChildren(...merged.slice(0, 64).map(range => {
+      const button = document.createElement('button');
+      button.className = 'quiet';
+      button.textContent = `${timeLabel(range.startSeconds)}–${timeLabel(range.endSeconds)}`;
+      button.setAttribute('aria-label', `Play prepared section from ${timeLabel(range.startSeconds)} to ${timeLabel(range.endSeconds)}`);
+      button.addEventListener('click', () => { send('seek', range.startSeconds); element('preparation').close(); });
+      return button;
+    }));
+    optionSignatures.set('prepared-ranges', rangeSignature);
+  }
   if (document.activeElement !== element('quality')) element('quality').value = `${processing.width ?? 32}x${processing.height ?? 24}`;
   element('quality').disabled = !processing.modelAvailable;
   setRange('subtitleBrightness', processing.subtitleBrightness ?? 1);
@@ -120,6 +159,14 @@ element('mode').addEventListener('change', event => send('mode', event.target.va
 element('enhancement').addEventListener('change', event => send('enhancement', event.target.checked));
 element('settings-open').addEventListener('click', () => element('settings').showModal());
 element('settings-close').addEventListener('click', () => element('settings').close());
+element('prepare-open').addEventListener('click', () => element('preparation').showModal());
+element('prepare-close').addEventListener('click', () => element('preparation').close());
+element('prepare-start').addEventListener('click', () => send('prepare', 'start'));
+element('prepare-cancel').addEventListener('click', () => send('prepare', 'cancel'));
+element('cacheCapacityGiB').addEventListener('change', event => {
+  const value = Number(event.target.value);
+  if (Number.isInteger(value) && value >= 1 && value <= 64) send('cacheCapacityGiB', value);
+});
 element('quality').addEventListener('change', event => {
   const [width, height] = event.target.value.split('x').map(Number);
   if (Number.isInteger(width) && Number.isInteger(height)) send('quality', { width, height });

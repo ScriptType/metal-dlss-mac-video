@@ -33,6 +33,7 @@ func preparedPlaybackUsesExactCachedPTSAndResetsWithoutNeuralHistory() async thr
             sourceID: 1, generation: 10)
         let output = try await processor.process(EngineInput(descriptor))
         #expect(output.colour.transfer == FE_LINEAR.rawValue)
+        #expect(output.contentKind == .preparedOriginal)
         #expect(output.completedStageWallSeconds["prepared_cache_read"] != nil)
         #expect(CVPixelBufferGetPixelFormatType(output.buffer) == kCVPixelFormatType_64RGBAHalf)
         CVPixelBufferLockBaseAddress(output.buffer, .readOnly)
@@ -51,8 +52,9 @@ func preparedPlaybackUsesExactCachedPTSAndResetsWithoutNeuralHistory() async thr
     #expect(context.status.snapshot().lastGeneration == 11)
     #expect(context.status.snapshot().cacheHits == 7)
     let outside = try #require(try await reader.nextDecoded())
-    _ = try await processor.process(EngineInput(DecoderFrameDescriptor.make(pixelBuffer: outside.pixelBuffer.buffer,
+    let fallback = try await processor.process(EngineInput(DecoderFrameDescriptor.make(pixelBuffer: outside.pixelBuffer.buffer,
         metadata: outside.metadata, sourceID: 1, generation: 11)))
+    #expect(fallback.contentKind == .original)
     #expect(context.status.snapshot().cacheMisses == 1)
     #expect(context.status.snapshot().lastOutput == "original")
     await reader.cancel(); await processor.resetHistory()
@@ -102,4 +104,42 @@ func preparedCControlsBindOpenedSourceAndCancelAnImmediateStart() async throws {
     let value = try JSONSerialization.jsonObject(with: Data(bytes.dropLast().map { UInt8(bitPattern: $0) })) as? [String: Any]
     #expect(value?["jobState"] as? String == "cancelled")
     #expect(value?["processedFrames"] as? Int == 0)
+}
+
+@Test(.enabled(if: FileManager.default.fileExists(atPath: preparedFixture.path), "Requires PQ fixture"))
+func preparedReplacementSharesCacheAndRejectsChangedSource() async throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appendingPathComponent("source.mp4")
+    try FileManager.default.copyItem(at: preparedFixture, to: source)
+    let request = PreparedHDRRequest(sourcePath: source.path, cacheDirectory: directory.appendingPathComponent("cache").path,
+        capacityBytes: 64 * 1024 * 1024, rangeStart: try .init(value: 0, timescale: 30),
+        rangeEnd: try .init(value: 6, timescale: 30), segmentFrames: 3)
+    let first = try PreparedHDRContext(request: request, configuration: .init(processingWidth: 32, processingHeight: 24))
+    let replacement = try PreparedHDRContext(request: request, configuration: .init(processingWidth: 16, processingHeight: 16))
+    async let one: Void = first.waitUntilReady()
+    async let two: Void = replacement.waitUntilReady()
+    _ = try await (one, two)
+    #expect(first.status.snapshot().configurationState == "ready")
+    #expect(replacement.status.snapshot().configurationState == "ready")
+    let file = try FileHandle(forWritingTo: source)
+    try file.seekToEnd(); try file.write(contentsOf: Data([0])); try file.close()
+    var pixels: CVPixelBuffer?
+    #expect(CVPixelBufferCreate(kCFAllocatorDefault, 320, 192, kCVPixelFormatType_64RGBAHalf, nil, &pixels) == kCVReturnSuccess)
+    let buffer = try #require(pixels)
+    var descriptor = fe_frame()
+    descriptor.pixel_buffer = Unmanaged.passUnretained(buffer).toOpaque()
+    descriptor.pixel_format = kCVPixelFormatType_64RGBAHalf
+    descriptor.pts = fe_time(value: 0, timescale: 30); descriptor.duration = fe_time(value: 1, timescale: 30)
+    descriptor.geometry.width = 320; descriptor.geometry.height = 192
+    do {
+        _ = try await PreparedFrameProcessor(context: first).process(EngineInput(descriptor))
+        Issue.record("A mutated source must never produce a cache hit")
+    } catch FrameEngineError.invalid(let reason) {
+        #expect(reason.contains("source changed"))
+    }
+    #expect(first.status.snapshot().configurationState == "failed")
+    #expect(first.status.snapshot().cacheHits == 0)
+    await first.cancel(); await replacement.cancel()
 }

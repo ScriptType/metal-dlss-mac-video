@@ -70,8 +70,12 @@ public actor HDRPreparationCoordinator {
     private func run(sourceURL: URL, segments: [HDRPreparationSegment], token: UInt64) async throws {
         do {
             guard let first = segments.first else { state = .complete; return }
+            let sourceSignature = try PreparedSourceSignature.read(sourceURL.path)
             let fingerprint = try HDRCacheSource.fingerprint(url: sourceURL, streamIndex: first.identity.source.streamIndex,
                 interpretation: first.identity.source.interpretation)
+            guard try PreparedSourceSignature.read(sourceURL.path) == sourceSignature else {
+                throw HDRCacheError.invalidIdentity("Source changed while preparation was fingerprinting it")
+            }
             let modelHash: String
             if let modelURL = configuration.modelURL {
                 modelHash = try HDRCacheSource.fingerprint(url: modelURL.appendingPathComponent("weights.safetensors"), streamIndex: 0).contentSHA256
@@ -83,6 +87,9 @@ public actor HDRPreparationCoordinator {
             }
             for segment in segments {
                 try check(token)
+                guard try PreparedSourceSignature.read(sourceURL.path) == sourceSignature else {
+                    throw HDRCacheError.invalidIdentity("Source changed during preparation")
+                }
                 let identity = segment.identity
                 guard identity.source == fingerprint,
                       identity.settings.modelSHA256 == configuration.modelVersion,
@@ -105,6 +112,9 @@ public actor HDRPreparationCoordinator {
                 do {
                     try await prepare(sourceURL: sourceURL, segment: segment, writer: writer, token: token)
                     try check(token)
+                    guard try PreparedSourceSignature.read(sourceURL.path) == sourceSignature else {
+                        throw HDRCacheError.invalidIdentity("Source changed before the prepared segment could be published")
+                    }
                     _ = try await cache.publish(writer)
                     completedSegments += 1; completedRanges.append(identity.range)
                 } catch {

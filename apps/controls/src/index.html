@@ -42,7 +42,8 @@
     </div>
     <div class="processing-row" aria-label="Picture processing">
       <label class="enhancement-toggle"><input id="enhancement" type="checkbox" role="switch"><span>Neural enhancement</span></label>
-      <label class="select-label">Mode<select id="mode" aria-label="Playback mode"><option value="live">Live</option><option value="adaptive">Adaptive</option></select></label>
+      <label class="select-label">Mode<select id="mode" aria-label="Playback mode"><option value="live">Live</option><option value="adaptive">Adaptive</option><option value="prepared">Prepared</option></select></label>
+      <button id="prepare-open" class="quiet" hidden>Prepare…</button>
       <label class="effect-label" for="strength">Strength<input id="strength" type="range" min="0" max="1" step="0.01" value="1"><output id="strength-value">100%</output></label>
       <label class="effect-label" for="colorStrength">Colour<input id="colorStrength" type="range" min="0" max="1" step="0.01" value="1"><output id="colorStrength-value">100%</output></label>
       <button id="compare" data-command="compare" class="quiet" hidden>Compare original</button>
@@ -58,6 +59,15 @@
       <label>Subtitle delay (seconds)<input id="subtitleDelay" type="number" min="-60" max="60" step="0.1" value="0"></label>
     </div>
     <p>Processing resolution controls detail and speed. Video output follows the source.</p>
+  </dialog>
+  <dialog id="preparation" aria-labelledby="preparation-title">
+    <div class="settings-heading"><h2 id="preparation-title">Prepared playback</h2><button id="prepare-close" class="quiet" aria-label="Close preparation">Done</button></div>
+    <div class="preparation-body">
+      <div class="preparation-progress"><progress id="prepare-progress" max="1" value="0" aria-label="Preparation progress"></progress><output id="prepare-status" role="status" aria-live="polite">Ready to prepare</output></div>
+      <div class="preparation-actions"><button id="prepare-start" class="quiet">Start preparation</button><button id="prepare-cancel" class="quiet" disabled>Cancel</button><label for="cacheCapacityGiB">Cache limit<input id="cacheCapacityGiB" type="number" min="1" max="64" step="1" value="8">GiB</label></div>
+      <div id="prepared-ranges" aria-label="Prepared sections"></div>
+      <p id="prepare-message">Completed sections play from the HDR cache. Other sections show the original video.</p>
+    </div>
   </dialog>
 </body>
 </html>

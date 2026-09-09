@@ -84,6 +84,12 @@ public func feOutputRelease(_ pointer: UnsafeMutableRawPointer?) {
     if let pointer { Unmanaged<CompletedFrame>.fromOpaque(pointer).release() }
 }
 
+@_cdecl("fe_output_content_kind")
+public func feOutputContentKind(_ pointer: UnsafeRawPointer?) -> Int32 {
+    guard let pointer else { return FrameContentKind.unknown.rawValue }
+    return Unmanaged<CompletedFrame>.fromOpaque(pointer).takeUnretainedValue().contentKind.rawValue
+}
+
 @_cdecl("fe_session_generation")
 public func feSessionGeneration(_ pointer: UnsafeMutableRawPointer?) -> UInt64 {
     pointer.map { session($0).generation } ?? 0

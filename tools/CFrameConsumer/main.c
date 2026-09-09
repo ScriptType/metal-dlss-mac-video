@@ -13,6 +13,13 @@ static void retain_owner(void *owner) { assert(owner == &retained); ++retained; 
 static void release_owner(void *owner) { assert(owner == &retained); ++released; }
 
 int main(void) {
+    char error[1024];
+    assert(fe_runtime_configure("{\"maximumResidentModels\":2,\"maximumResidentModelBytes\":1073741824,"
+        "\"maximumProcessingPixels\":147456,\"mlxCacheBytes\":268435456}", error, sizeof(error)) == FE_ACCEPTED);
+    assert(fe_runtime_configure("{}", error, sizeof(error)) == FE_FAILED);
+    char runtime[1024];
+    size_t runtime_size = fe_runtime_resources_json(runtime, sizeof(runtime));
+    assert(runtime_size <= sizeof(runtime) && strstr(runtime, "\"residentModels\":0"));
     CFDictionaryRef surface = CFDictionaryCreate(NULL, NULL, NULL, 0,
         &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     const void *keys[] = { kCVPixelBufferIOSurfacePropertiesKey, kCVPixelBufferMetalCompatibilityKey };
@@ -30,8 +37,8 @@ int main(void) {
     fe_config config = { .struct_size = sizeof(config), .abi_version = FE_ABI_VERSION,
         .max_in_flight = 3, .memory_limit_bytes = 64 * 1024 * 1024,
         .processing_width = 4, .processing_height = 2, .reference_white_nits = 203,
-        .effect_strength = 0, .colour_strength = 0, .maximum_luminance_ratio = 2 };
-    char error[1024];
+        .effect_strength = 0, .colour_strength = 0, .maximum_luminance_ratio = 2,
+        .model_path = "/nonexistent-model-is-unused-at-zero-strength" };
     fe_session *session = fe_session_create(&config, error, sizeof(error));
     if (!session) { fprintf(stderr, "%s\n", error); return 1; }
     assert(fe_session_measurements_configure(session,
@@ -65,6 +72,7 @@ int main(void) {
         fprintf(stderr, "GPU completion timed out: %s\n", error); return 1;
     }
     const fe_frame *result = fe_output_frame(output);
+    assert(fe_output_content_kind(output) == FE_CONTENT_ORIGINAL);
     assert(result->pts.value == 1001 && result->pts.timescale == 24000);
     assert(result->frame_id == 3 && result->ready_event == NULL);
     CVPixelBufferRef result_buffer = result->pixel_buffer;
@@ -89,9 +97,12 @@ int main(void) {
     fe_session_destroy(session);
     // Both leases survive teardown, including the buffer returned by the C ABI.
     assert(CVPixelBufferGetWidth(fe_output_frame(redraw)->pixel_buffer) == 4);
+    assert(fe_output_content_kind(redraw) == FE_CONTENT_ORIGINAL);
     fe_output_release(output); fe_output_release(redraw);
     for (int i = 0; i < 1000 && released != 1; ++i) nanosleep(&delay, NULL);
     assert(released == 1);
+    assert(fe_runtime_resources_json(runtime, sizeof(runtime)) <= sizeof(runtime));
+    assert(strstr(runtime, "\"residentModels\":0"));
     printf("{\"c_abi\":1,\"completed_frames\":1,\"hdr_samples_nits\":[-2,203,4000],"
            "\"same_frame_redraw\":true,\"owner_released\":true,\"lease_survived_destroy\":true}\n");
     return 0;

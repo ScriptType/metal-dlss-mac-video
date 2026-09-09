@@ -8,14 +8,22 @@ import QuartzCore
 
 @main
 struct FrameBenchmarkCommand {
-    static func main() async throws {
+    static func main() async {
+        do { try await run() }
+        catch {
+            FileHandle.standardError.write(Data("hdr-benchmark: \(error.localizedDescription)\n".utf8))
+            exit(1)
+        }
+    }
+
+    static func run() async throws {
         let args = Array(CommandLine.arguments.dropFirst())
         func option(_ name: String) -> String? {
             guard let i = args.firstIndex(of: name), i + 1 < args.count else { return nil }
             return args[i + 1]
         }
         guard let source = option("--video"), let reportPath = option("--report") else {
-            print("Usage: hdr-benchmark --video FILE --report JSON [--frames N] [--warmup N] [--model DIR] [--width N --height N] [--strength 0...1] [--revision GIT_SHA]")
+            print("Usage: hdr-benchmark --video FILE --report JSON [--frames N] [--warmup N] [--model DIR] [--width N --height N] [--strength 0...1] [--revision GIT_SHA] [--reference JSON] [--power DESCRIPTION]")
             exit(64)
         }
         let limit = Int(option("--frames") ?? "120") ?? 120
@@ -50,46 +58,46 @@ struct FrameBenchmarkCommand {
             processor: HDRPipelineProcessor(configuration: .init(modelURL: model, modelVersion: modelHash,
                 processingWidth: width, processingHeight: height, strength: strength)), measurements: recorder)
         do {
-        var accepted = 0, consumed = 0
-        var lastPTS: (Int64, Int32)?
-        let deadline = CACurrentMediaTime() + Double(limit) * 120 + 60
-        func drain() throws {
-            while let output = session.poll() {
-                guard output.descriptor.generation == session.generation else { throw FrameEngineError.invalid("Obsolete output") }
-                consumed += 1
-                lastPTS = (output.descriptor.pts.value, output.descriptor.pts.timescale)
-                if consumed == 1, let reference = option("--reference") {
-                    try writeReference(output, path: reference, configuration: configuration)
+            var accepted = 0, consumed = 0
+            var lastPTS: (Int64, Int32)?
+            let deadline = CACurrentMediaTime() + Double(limit) * 120 + 60
+            func drain() throws {
+                while let output = session.poll() {
+                    guard output.descriptor.generation == session.generation else { throw FrameEngineError.invalid("Obsolete output") }
+                    consumed += 1
+                    lastPTS = (output.descriptor.pts.value, output.descriptor.pts.timescale)
+                    if consumed == 1, let reference = option("--reference") {
+                        try writeReference(output, path: reference, configuration: configuration)
+                    }
                 }
+                if session.statistics().failures > 0 { throw FrameEngineError.invalid(session.error) }
+                if CACurrentMediaTime() > deadline { throw FrameEngineError.invalid("Completed-work deadline exceeded") }
             }
-            if session.statistics().failures > 0 { throw FrameEngineError.invalid(session.error) }
-            if CACurrentMediaTime() > deadline { throw FrameEngineError.invalid("Completed-work deadline exceeded") }
-        }
-        while accepted < limit {
-            let frame = DecoderFrameDescriptor.make(pixelBuffer: decoded.pixelBuffer.buffer,
-                metadata: decoded.metadata, sourceID: 1, generation: session.generation)
-            while true {
-                let status = session.submit(frame)
-                if status == FE_ACCEPTED { accepted += 1; break }
-                guard status == FE_FULL else { throw FrameEngineError.invalid("Submission failed: \(status), \(session.error)") }
+            while accepted < limit {
+                let frame = DecoderFrameDescriptor.make(pixelBuffer: decoded.pixelBuffer.buffer,
+                    metadata: decoded.metadata, sourceID: 1, generation: session.generation)
+                while true {
+                    let status = session.submit(frame)
+                    if status == FE_ACCEPTED { accepted += 1; break }
+                    guard status == FE_FULL else { throw FrameEngineError.invalid("Submission failed: \(status), \(session.error)") }
+                    try drain()
+                    try await Task.sleep(for: .milliseconds(1))
+                }
                 try drain()
-                try await Task.sleep(for: .milliseconds(1))
+                guard accepted < limit, let next = try await reader.nextDecoded() else { break }
+                decoded = next
             }
-            try drain()
-            guard accepted < limit, let next = try await reader.nextDecoded() else { break }
-            decoded = next
-        }
-        while consumed < accepted {
-            try drain()
-            if consumed < accepted { try await Task.sleep(for: .milliseconds(1)) }
-        }
-        guard accepted > warmup, consumed == accepted else { throw FrameEngineError.invalid("Insufficient completed warmed output") }
-        session.close()
-        await session.waitUntilIdle()
-        await reader.cancel()
-        try recorder.write(to: URL(fileURLWithPath: reportPath))
-        let result = recorder.report()
-        print("completed=\(consumed) warmed=\(result.warmedSamples) fps=\(result.completedThroughputFPS ?? 0) last_pts=\(lastPTS?.0 ?? 0)/\(lastPTS?.1 ?? 1) report=\(reportPath)")
+            while consumed < accepted {
+                try drain()
+                if consumed < accepted { try await Task.sleep(for: .milliseconds(1)) }
+            }
+            guard accepted > warmup, consumed == accepted else { throw FrameEngineError.invalid("Insufficient completed warmed output") }
+            session.close()
+            await session.waitUntilIdle()
+            await reader.cancel()
+            try recorder.write(to: URL(fileURLWithPath: reportPath))
+            let result = recorder.report()
+            print("completed=\(consumed) warmed=\(result.warmedSamples) fps=\(result.completedThroughputFPS ?? 0) last_pts=\(lastPTS?.0 ?? 0)/\(lastPTS?.1 ?? 1) report=\(reportPath)")
         } catch {
             session.close()
             await session.waitUntilIdle()

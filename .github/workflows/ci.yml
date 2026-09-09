@@ -28,6 +28,7 @@ jobs:
           swift build --build-tests --jobs 2
           bash scripts/prepare-frame-runtime.sh
           swift test --skip-build --jobs 2
+          bash scripts/test-frame-api.sh
       - name: Check scripts and publication surface
         run: |
           for script in scripts/*.sh; do bash -n "$script"; done

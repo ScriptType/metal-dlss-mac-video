@@ -46,7 +46,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         window.delegate = self
         window.backgroundColor = .black
         window.collectionBehavior = [.fullScreenPrimary]
-        window.setFrameAutosaveName("HDRPlayer.mainWindow")
+        if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] == nil { window.setFrameAutosaveName("HDRPlayer.mainWindow") }
         let content = NSView()
         video = NSView()
         video.setAccessibilityElement(true)

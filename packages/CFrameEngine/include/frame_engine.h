@@ -17,6 +17,8 @@ typedef enum { FE_LINEAR = 0, FE_SRGB = 1, FE_BT709 = 2, FE_PQ = 3, FE_HLG = 4 }
 typedef enum { FE_BT2020 = 0, FE_BT709_PRIMARIES = 1, FE_DISPLAY_P3 = 2 } fe_primaries;
 typedef enum { FE_RGB = 0, FE_YUV709 = 1, FE_YUV2020 = 2, FE_YUV601 = 3 } fe_matrix;
 typedef enum { FE_FULL_RANGE = 0, FE_VIDEO_RANGE = 1 } fe_range;
+typedef enum { FE_CONTENT_UNKNOWN = 0, FE_CONTENT_ORIGINAL = 1, FE_CONTENT_ENHANCED = 2,
+               FE_CONTENT_PREPARED_ORIGINAL = 3, FE_CONTENT_PREPARED_ENHANCED = 4 } fe_content_kind;
 typedef struct { int64_t value; int32_t timescale; } fe_time;
 typedef struct {
     uint32_t width, height;
@@ -90,6 +92,9 @@ const fe_frame *fe_output_frame(const fe_output *output);
 // A polled output is already GPU-complete. Consumers retain the lease until their
 // own GPU completion. Output leases survive reset and session destruction.
 void fe_output_release(fe_output *output);
+// Immutable provenance of this output lease; use this for the displayed state,
+// not a context progress snapshot which may refer to a later queued frame.
+fe_content_kind fe_output_content_kind(const fe_output *output);
 // The adapter must compare this generation immediately before presentation.
 uint64_t fe_session_generation(fe_session *session);
 // Increments generation; drops queued/completed work and resets temporal history.

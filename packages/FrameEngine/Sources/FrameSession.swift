@@ -28,16 +28,23 @@ public final class EngineInput: @unchecked Sendable {
     deinit { if let owner = descriptor.owner { descriptor.release_owner?(owner) } }
 }
 
+public enum FrameContentKind: Int32, Sendable {
+    case unknown = 0, original = 1, enhanced = 2, preparedOriginal = 3, preparedEnhanced = 4
+}
+
 public struct ProcessedFrame: @unchecked Sendable {
     public let buffer: CVPixelBuffer
     public let colour: fe_colour
+    public let contentKind: FrameContentKind
     /// GPU stage intervals measured only after command completion.
     public let gpuSeconds: [String: Double]
     public let completedStageWallSeconds: [String: Double]
     public let allocatorBytes: [String: UInt64]
     public init(buffer: CVPixelBuffer, colour: fe_colour, gpuSeconds: [String: Double] = [:],
-                completedStageWallSeconds: [String: Double] = [:], allocatorBytes: [String: UInt64] = [:]) {
+                completedStageWallSeconds: [String: Double] = [:], allocatorBytes: [String: UInt64] = [:],
+                contentKind: FrameContentKind = .unknown) {
         self.buffer = buffer; self.colour = colour; self.gpuSeconds = gpuSeconds
+        self.contentKind = contentKind
         self.completedStageWallSeconds = completedStageWallSeconds; self.allocatorBytes = allocatorBytes
     }
 }
@@ -91,6 +98,7 @@ private final class FrameReservation: @unchecked Sendable {
 /// the presenter's GPU command completes; check generation at presentation time.
 public final class CompletedFrame: @unchecked Sendable {
     public let pixelBuffer: CVPixelBuffer
+    public let contentKind: FrameContentKind
     public let submittedHostSeconds: Double
     public let completedHostSeconds: Double
     public let gpuSeconds: [String: Double]
@@ -99,7 +107,7 @@ public final class CompletedFrame: @unchecked Sendable {
     private let reservation: FrameReservation
     fileprivate init(input: EngineInput, result: ProcessedFrame, reservation: FrameReservation,
                      submitted: Double, completed: Double) {
-        self.reservation = reservation; pixelBuffer = result.buffer
+        self.reservation = reservation; pixelBuffer = result.buffer; contentKind = result.contentKind
         submittedHostSeconds = submitted; completedHostSeconds = completed
         gpuSeconds = result.gpuSeconds
         storage = .allocate(capacity: 1)

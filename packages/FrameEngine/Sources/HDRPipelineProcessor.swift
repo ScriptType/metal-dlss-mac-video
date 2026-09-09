@@ -115,7 +115,8 @@ public actor HDRPipelineProcessor: FrameProcessor {
             allocatorBytes: ["mlx_active": memory.activeBytes, "mlx_cache": memory.cacheBytes,
                              "mlx_peak_active": memory.peakActiveBytes,
                              "resident_model_payload": resources.residentModelPayloadBytes,
-                             "runtime_mlx_cache_policy": resources.policy.mlxCacheBytes])
+                             "runtime_mlx_cache_policy": resources.policy.mlxCacheBytes],
+            contentKind: result.usedModel ? .enhanced : .original)
     }
 
     private static func metadata(_ frame: fe_frame) throws -> MLXHDRFrameMetadata {

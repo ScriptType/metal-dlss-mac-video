@@ -89,17 +89,20 @@ private final class MPVPlayerWorker: @unchecked Sendable {
     let onState: @Sendable (Data) -> Void
     let onFinish: @Sendable () -> Void
     private let lock = NSLock()
-    private var commands: [[String]] = []
+    private struct QueuedCommand { let args: [String]; let preparedRequest: Data?; let configurationID: UInt64; let removeExistingFilter: Bool }
+    private var commands: [QueuedCommand] = []
+    let preparedRequestURL: URL
     private var stopping = false
 
-    init(host: NSView, filter: String, volume: Double, muted: Bool, subtitleBrightness: Double, subtitleScale: Double, subtitleDelay: Double,
+    init(host: NSView, filter: String, preparedRequestURL: URL, volume: Double, muted: Bool, subtitleBrightness: Double, subtitleScale: Double, subtitleDelay: Double,
          onState: @escaping @Sendable (Data) -> Void, onFinish: @escaping @Sendable () -> Void) {
         hostPointer = Int64(Int(bitPattern: Unmanaged.passUnretained(host).toOpaque()))
+        self.preparedRequestURL = preparedRequestURL
         self.filter = filter; self.volume = volume; self.muted = muted; self.subtitleBrightness = subtitleBrightness
         self.subtitleScale = subtitleScale; self.subtitleDelay = subtitleDelay
         self.onState = onState; self.onFinish = onFinish
     }
-    func enqueue(_ args: [String]) {
+    func enqueue(_ args: [String], preparedRequest: Data? = nil, configurationID: UInt64 = 0, removeExistingFilter: Bool = false) {
         lock.lock(); defer { lock.unlock() }
         guard !stopping else { return }
         // Latest desired settings replace waiting settings while the core is
@@ -112,15 +115,15 @@ private final class MPVPlayerWorker: @unchecked Sendable {
             if first == "vf-command", command.count > 2 { return command.prefix(3).joined(separator: ":") }
             return nil
         }
-        if let replacement = key(args) { commands.removeAll { key($0) == replacement } }
+        if let replacement = key(args) { commands.removeAll { key($0.args) == replacement } }
         if args.first == "loadfile" {
-            commands.removeAll { ["seek", "frame-step", "frame-back-step"].contains($0.first ?? "") }
+            commands.removeAll { ["seek", "frame-step", "frame-back-step"].contains($0.args.first ?? "") }
         }
         if commands.count == 64 { commands.removeFirst() }
-        commands.append(args)
+        commands.append(QueuedCommand(args: args, preparedRequest: preparedRequest, configurationID: configurationID, removeExistingFilter: removeExistingFilter))
     }
     func stop() { lock.lock(); stopping = true; commands.removeAll(); lock.unlock() }
-    private func pending() -> ([String]?, Bool) {
+    private func pending() -> (QueuedCommand?, Bool) {
         lock.lock(); defer { lock.unlock() }
         return (commands.isEmpty ? nil : commands.removeFirst(), stopping)
     }
@@ -134,7 +137,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
         return pointers.withUnsafeBufferPointer { library.command(handle, $0.baseAddress) }
     }
     func run() {
-        defer { onFinish() }
+        defer { try? FileManager.default.removeItem(at: preparedRequestURL); onFinish() }
         do {
             let library = try MPVLibrary()
             guard let handle = library.create() else { throw MPVFailure(message: "Cannot create mpv playback core") }
@@ -153,6 +156,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
             guard initialized >= 0 else { throw MPVFailure(message: library.error(initialized)) }
             _ = library.requestLog(handle, "warn")
             var failure: String?
+            var appliedConfigurationID: UInt64 = 0
             var nextState = Date.distantPast
             var running = true
             func property(_ name: String) -> String? {
@@ -163,10 +167,25 @@ private final class MPVPlayerWorker: @unchecked Sendable {
             while running {
                 let (work, stop) = pending()
                 if stop { break }
-                if let args = work {
+                if let work {
+                    let args = work.args
+                    if work.removeExistingFilter, let filters = property("vf"), let json = filters.data(using: .utf8),
+                       let entries = (try? JSONSerialization.jsonObject(with: json)) as? [[String: Any]],
+                       entries.contains(where: { $0["label"] as? String == "enhance" }) {
+                        // vf set may construct its replacement before destroying
+                        // the old context. Explicit removal first drains its job
+                        // and releases the cache owner before capacity can change.
+                        let removed = invoke(["vf", "remove", "@enhance"], library: library, handle: handle)
+                        if removed < 0 { failure = "Cannot close previous preparation context: \(library.error(removed))"; continue }
+                    }
+                    if let request = work.preparedRequest {
+                        do { try request.write(to: preparedRequestURL, options: .atomic) }
+                        catch { failure = "Preparation configuration: \(error.localizedDescription)"; continue }
+                    }
                     let result = invoke(args, library: library, handle: handle)
                     if result < 0 { failure = "\(args.first ?? "Command"): \(library.error(result))" }
-                    else if args.first == "loadfile" { failure = nil }
+                    else if args.first == "loadfile" || (args.first == "vf" && args.dropFirst().first == "set") { failure = nil }
+                    if result >= 0, work.configurationID != 0 { appliedConfigurationID = work.configurationID }
                 }
                 if let event = library.waitEvent(handle, 0.04)?.pointee {
                     switch event.event_id {
@@ -204,7 +223,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                     let chapters: [[String: Any]] = array("chapter-list").enumerated().map { index, chapter in
                         ["index": index, "title": chapter["title"] ?? "Chapter \(index + 1)", "time": chapter["time"] ?? 0]
                     }
-                    var state: [String: Any] = ["initialized": true, "title": property("media-title") ?? "HDR Player", "source": property("path") ?? "",
+                    var state: [String: Any] = ["configurationID": appliedConfigurationID, "initialized": true, "title": property("media-title") ?? "HDR Player", "source": property("path") ?? "",
                         "paused": property("pause") == "yes", "position": number("time-pos"), "duration": number("duration"),
                         "volume": number("volume", fallback: volume), "muted": property("mute") == "yes", "loading": property("paused-for-cache") == "yes",
                         "tracks": tracks, "chapters": chapters, "chapter": Int(number("chapter", fallback: -1)),
@@ -245,6 +264,11 @@ final class MPVPlaybackController {
     private var subtitleBrightness: Double
     private var subtitleScale: Double
     private var subtitleDelay: Double
+    private var preparationFailure: String?
+    private var configurationID: UInt64 = 0
+    private var capacityBytes: Int64
+    private let cacheDirectory: URL
+    private let preparedRequestURL = FileManager.default.temporaryDirectory.appendingPathComponent("HDRPlayer-prepared-\(UUID().uuidString).json")
     private var beforeSleepPaused = true
     private(set) var state: [String: Any] = [:]
 
@@ -254,12 +278,19 @@ final class MPVPlaybackController {
             defaults = UserDefaults(suiteName: "HDRPlayer.Smoke")!
             defaults.removePersistentDomain(forName: "HDRPlayer.Smoke")
         } else { defaults = .standard }
+        let cacheBase = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first ?? FileManager.default.temporaryDirectory
+        if let override = ProcessInfo.processInfo.environment["HDRPLAYER_CACHE_DIRECTORY"] {
+            cacheDirectory = URL(fileURLWithPath: override, isDirectory: true)
+        } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] != nil {
+            cacheDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("HDRPlayer-smoke-cache-\(UUID().uuidString)", isDirectory: true)
+        } else { cacheDirectory = cacheBase.appendingPathComponent("HDRPlayer/Prepared", isDirectory: true) }
         let saved = defaults.dictionary(forKey: "HDRPlayer.preferences.v1") ?? [:]
         enabled = saved["enabled"] as? Bool ?? false
         strength = min(1, max(0, saved["strength"] as? Double ?? 1))
         colorStrength = min(1, max(0, saved["colorStrength"] as? Double ?? 1))
-        width = min(8192, max(16, saved["width"] as? Int ?? 32))
-        height = min(8192, max(16, saved["height"] as? Int ?? 24))
+        width = min(512, max(16, saved["width"] as? Int ?? 32))
+        height = min(288, max(16, saved["height"] as? Int ?? 24))
+        capacityBytes = Int64(min(64, max(1, saved["cacheCapacityGiB"] as? Double ?? 8)) * 1_073_741_824)
         // Qualification belongs to this running model/source session.
         mode = "adaptive"
         subtitleBrightness = min(1, max(0.1, saved["subtitleBrightness"] as? Double ?? 1))
@@ -277,7 +308,7 @@ final class MPVPlaybackController {
     }
     func start() {
         guard worker == nil else { return }
-        let worker = MPVPlayerWorker(host: hostView, filter: filter(), volume: state["volume"] as? Double ?? 100,
+        let worker = MPVPlayerWorker(host: hostView, filter: filter(), preparedRequestURL: preparedRequestURL, volume: state["volume"] as? Double ?? 100,
             muted: state["muted"] as? Bool ?? false, subtitleBrightness: subtitleBrightness, subtitleScale: subtitleScale, subtitleDelay: subtitleDelay,
             onState: { [weak self] data in DispatchQueue.main.async { self?.receive(data) } },
             onFinish: { [weak self] in DispatchQueue.main.async { self?.worker = nil; self?.onStopped?() } })
@@ -287,7 +318,10 @@ final class MPVPlaybackController {
     func stop() { if let worker { worker.stop() } else { onStopped?() } }
     func load(_ url: URL) {
         if worker == nil { start() }
+        if mode == "prepared" { mode = "adaptive"; reconfigure() }
         source = url.path
+        preparationFailure = nil
+        state.removeValue(forKey: "prepared")
         state["source"] = source; state["title"] = url.lastPathComponent; state["loading"] = true
         state.removeValue(forKey: "error")
         worker?.enqueue(["loadfile", url.path, "replace"])
@@ -314,7 +348,10 @@ final class MPVPlaybackController {
             if let track = value as? [String: Any], let type = track["type"] as? String,
                let property = ["audio": "aid", "video": "vid", "sub": "sid"][type] {
                 let id = (track["id"] as? NSNumber)?.stringValue ?? (track["id"] as? String)
-                if let id, Int(id) != nil || ["no", "auto"].contains(id) { worker?.enqueue(["set", property, id]) }
+                if let id, Int(id) != nil || ["no", "auto"].contains(id) {
+                    if type == "video", id != "1", mode == "prepared" { mode = "adaptive"; reconfigure() }
+                    worker?.enqueue(["set", property, id])
+                }
             }
         case "chapter": if let index = numeric(), index.isFinite, index >= 0, index < Double(Int.max) { worker?.enqueue(["set", "chapter", String(Int(index))]) }
         case "enhancement":
@@ -326,12 +363,24 @@ final class MPVPlaybackController {
         case "colorStrength": if let value = numeric(), value.isFinite { colorStrength = min(1, max(0, value)); reconfigure() }
         case "quality":
             if let size = value as? [String: NSNumber], let w = size["width"]?.intValue, let h = size["height"]?.intValue,
-               (16...8192).contains(w), (16...8192).contains(h) { width = w; height = h; reconfigure() }
+               (16...8192).contains(w), (16...8192).contains(h), w * h <= 512 * 288 { width = w; height = h; reconfigure() }
         case "mode":
             let modes = (state["processing"] as? [String: Any])?["availableModes"] as? [String] ?? []
             if let requested = value as? String, modes.contains(requested) {
+                let previous = mode
                 mode = requested
-                worker?.enqueue(["vf-command", "enhance", "policy", requested])
+                if requested == "prepared" { enabled = true; reconfigure() }
+                else if previous == "prepared" { reconfigure() }
+                else { worker?.enqueue(["vf-command", "enhance", "policy", requested]) }
+            }
+        case "prepare":
+            if mode == "prepared", let action = value as? String, ["start", "cancel"].contains(action) {
+                worker?.enqueue(["vf-command", "enhance", "prepare", action])
+            }
+        case "cacheCapacityGiB":
+            if let gib = numeric(), gib.isFinite, (1...64).contains(gib) {
+                capacityBytes = Int64(gib * 1_073_741_824)
+                if mode == "prepared" { reconfigure() }
             }
         case "compare":
             let native = state["nativeEnhancement"] as? [String: Any] ?? [:]
@@ -352,52 +401,121 @@ final class MPVPlaybackController {
     }
     private func filter() -> String {
         let model = modelURL.map { "model=%\($0.path.utf8.count)%\($0.path):" } ?? ""
-        return "@enhance:metal-hdr=\(model)processing-width=\(width):processing-height=\(height):strength=\(strength):colour-strength=\(colorStrength):maximum-luminance-ratio=2:reference-white=203:policy=adaptive:bypass=\(enabled ? "no" : "yes")"
+        let prepared = mode == "prepared" ? "prepared-config=%\(preparedRequestURL.path.utf8.count)%\(preparedRequestURL.path):prepare=no:" : ""
+        return "@enhance:metal-hdr=\(model)\(prepared)processing-width=\(width):processing-height=\(height):strength=\(strength):colour-strength=\(colorStrength):maximum-luminance-ratio=2:reference-white=203:policy=adaptive:bypass=\(enabled ? "no" : "yes")"
     }
     private func reconfigure() {
-        mode = "adaptive"
-        state["message"] = "Reconfiguring enhancement; temporal history resets."
+        if mode == "live" { mode = "adaptive" }
+        if mode == "prepared" { preparationFailure = nil }
+        state["message"] = mode == "prepared" ? "Updating Prepared cache configuration; the previous job is cancelled and completed segments remain reusable." : "Reconfiguring enhancement; temporal history resets."
+        state["configurationPending"] = true
+        configurationID &+= 1
         state["loading"] = true
-        worker?.enqueue(["vf", "set", filter()])
+        var request: Data?
+        if mode == "prepared" {
+            let json: [String: Any] = ["sourcePath": source, "cacheDirectory": cacheDirectory.path,
+                "capacityBytes": capacityBytes, "segmentFrames": 60, "prerollFrames": 8]
+            request = try? JSONSerialization.data(withJSONObject: json, options: [.sortedKeys])
+            guard request != nil else { state["error"] = "Cannot encode preparation configuration"; return }
+        }
+        let removingPrepared = mode == "prepared" || (state["nativeEnhancement"] as? [String: Any])?["policy"] as? String == "prepared"
+        worker?.enqueue(["vf", "set", filter()], preparedRequest: request, configurationID: configurationID,
+            removeExistingFilter: removingPrepared)
     }
     private func receive(_ data: Data) {
         guard let incoming = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { return }
         state.merge(incoming) { _, new in new }
+        if incoming["configurationID"] as? UInt64 == configurationID || incoming["error"] != nil {
+            state["configurationPending"] = false
+        }
         if let native = incoming["nativeEnhancement"] as? [String: Any],
-           let actual = native["policy"] as? String, ["live", "adaptive"].contains(actual) { mode = actual }
+           mode == "live", native["policy"] as? String == "adaptive" { mode = "adaptive" }
+        if mode == "prepared" {
+            let native = incoming["nativeEnhancement"] as? [String: Any] ?? [:]
+            let progress = native["prepared"] as? [String: Any] ?? [:]
+            if progress["configurationState"] as? String == "failed" {
+                preparationFailure = progress["error"] as? String ?? "This source cannot be prepared."
+            } else if let error = incoming["error"] as? String { preparationFailure = error }
+        }
         if incoming["error"] == nil { state.removeValue(forKey: "error") }
         publish()
     }
     private func updateProcessing() {
-        let error = state["error"] as? String
         let native = state["nativeEnhancement"] as? [String: Any] ?? [:]
-        let available = (native["processing-width"] as? Int ?? 0) > 0 && modelURL != nil && error == nil
+        let progress = native["prepared"] as? [String: Any] ?? [:]
+        let error = state["error"] as? String ?? (mode == "prepared" ? preparationFailure : nil) ?? progress["error"] as? String
+        let available = modelURL != nil && (state["duration"] as? Double ?? 0) > 0
         let qualified = native["live-qualified"] as? Bool == true
         let buffering = native["buffering"] as? Bool == true
         let preview = native["preview-pending"] as? Bool == true
-        let modes = available ? (qualified && enabled ? ["adaptive", "live"] : ["adaptive"]) : []
+        let selectedVideo = (state["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
+        var preparedReason: String?
+        if native["prepared-supported"] as? Bool != true { preparedReason = "This playback core does not support Prepared mode." }
+        else if modelURL == nil { preparedReason = "A neural model is required." }
+        else if !source.hasPrefix("/") { preparedReason = "Prepared mode requires a local video file." }
+        else if !["mp4", "m4v", "mov"].contains(URL(fileURLWithPath: source).pathExtension.lowercased()) {
+            preparedReason = "Prepared currently supports MP4, M4V and MOV containers."
+        }
+        else if selectedVideo?["id"] as? Int != 1 { preparedReason = "Prepared mode supports the first video track only." }
+        else if let preparationFailure { preparedReason = preparationFailure }
+        let preparedAvailable = preparedReason == nil
+        var modes = available ? (qualified && enabled ? ["adaptive", "live"] : ["adaptive"]) : []
+        if preparedAvailable { modes.append("prepared") }
+        func ranges(_ key: String) -> [[String: Any]] {
+            (progress[key] as? [[String: Any]] ?? []).compactMap { range in
+                func seconds(_ key: String) -> Double? {
+                    guard let time = range[key] as? [String: Any], let value = time["value"] as? NSNumber,
+                          let scale = time["timescale"] as? NSNumber, scale.doubleValue > 0 else { return nil }
+                    return value.doubleValue / scale.doubleValue
+                }
+                guard let start = seconds("start"), let end = seconds("end") else { return nil }
+                return ["startSeconds": start, "endSeconds": end]
+            }
+        }
+        var prepared = progress
+        prepared["capacityBytes"] = capacityBytes
+        prepared["cacheDirectory"] = cacheDirectory.path
+        if let preparationFailure { prepared["error"] = preparationFailure }
+        prepared["availableRanges"] = ranges("availableRanges")
+        prepared["completedRanges"] = ranges("completedRanges")
+        state["prepared"] = prepared
+        let displayedKind = native["displayed-content-kind"] as? String ?? "unknown"
         var message = "Original HDR playback"
         if enabled {
-            if preview { message = "Original seek preview; enhancing this timestamp…" }
+            if mode == "prepared" {
+                if progress["configurationState"] as? String == "initializing" || progress.isEmpty {
+                    message = "Prepared: checking source and cached ranges…"
+                } else if progress["jobState"] as? String == "preparing" {
+                    message = "Preparing HDR segments; playback uses committed ranges and original for misses."
+                } else if displayedKind == "prepared-enhanced" {
+                    message = "Prepared HDR cache playback"
+                } else if displayedKind == "prepared-original" {
+                    message = "Prepared original HDR frame (zero strength)."
+                } else if displayedKind == "original" {
+                    message = "Original HDR; this frame has no active prepared enhancement."
+                } else { message = "Prepared: ready to start or resume." }
+            } else if preview { message = "Original seek preview; enhancing this timestamp…" }
             else if buffering { message = "Adaptive: audio and video paused while enhancement catches up." }
             else if mode == "live" && qualified { message = "Live: current session meets the measured processing deadline." }
             else { message = "Adaptive enhancement; audio and video buffer together when needed." }
         }
+        if state["configurationPending"] as? Bool == true { message = state["message"] as? String ?? "Updating processing configuration…" }
         state["processing"] = ["mode": mode, "enabled": enabled, "strength": strength, "colorStrength": colorStrength,
             "width": width, "height": height, "modelAvailable": modelURL != nil, "liveQualified": qualified, "availableModes": modes,
-            "status": error != nil ? "error" : !enabled ? "original" : preview ? "preview" : buffering ? "buffering" : "enhancing",
+            "status": error != nil ? "error" : !enabled ? "original" : mode == "prepared" ? (progress["jobState"] as? String ?? "initializing") : preview ? "preview" : buffering ? "buffering" : "enhancing",
             "message": error ?? message, "subtitleBrightness": subtitleBrightness,
             "pendingFrames": native["pending-frames"] ?? 0, "completedFrames": native["completed-frames"] ?? 0,
             "completedP95Seconds": native["completed-p95-seconds"] ?? 0,
             "bufferCount": native["buffer-count"] ?? 0, "bufferSeconds": native["buffer-seconds"] ?? 0,
-            "comparison": native["comparison"] ?? "enhanced"] as [String: Any]
-        state["capabilities"] = ["prepared": false, "pip": false, "sameFrameComparison": native["compare-ready"] as? Bool ?? false,
+            "comparison": native["comparison"] ?? "enhanced", "displayedContentKind": displayedKind] as [String: Any]
+        state["capabilities"] = ["prepared": preparedAvailable, "preparedUnavailableReason": preparedReason ?? "", "pip": false, "sameFrameComparison": native["compare-ready"] as? Bool ?? false,
             "playbackModes": !modes.isEmpty]
     }
     private func publish() { updateProcessing(); onState?(state) }
     private func persist() {
         defaults.set(["enabled": enabled, "strength": strength, "colorStrength": colorStrength, "width": width, "height": height,
             "mode": mode, "volume": state["volume"] as? Double ?? 100, "muted": state["muted"] as? Bool ?? false,
-            "subtitleBrightness": subtitleBrightness, "subtitleScale": subtitleScale, "subtitleDelay": subtitleDelay], forKey: "HDRPlayer.preferences.v1")
+            "subtitleBrightness": subtitleBrightness, "subtitleScale": subtitleScale, "subtitleDelay": subtitleDelay,
+            "cacheCapacityGiB": Double(capacityBytes) / 1_073_741_824], forKey: "HDRPlayer.preferences.v1")
     }
 }

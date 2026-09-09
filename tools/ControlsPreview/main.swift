@@ -29,8 +29,9 @@ final class Preview: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKSc
           volume: 72, muted: false, fullscreen: false,
           tracks: [{id:1,type:'audio',title:'English · 5.1',selected:true},{id:2,type:'audio',title:'Japanese'},{id:3,type:'sub',title:'English SDH',selected:true}],
           chapters: [{index:0,title:'Opening',time:0},{index:1,title:'The coast',time:65}], chapter:1,
-          processing: {mode:'adaptive',availableModes:[],enabled:true,modelAvailable:true,strength:0.65,colorStrength:0.8,width:320,height:192,status:'Processing',message:'HDR preserved · processing frame'},
-          capabilities: {prepared:false,pip:false,sameFrameComparison:false}
+          processing: {mode:'prepared',availableModes:['adaptive','prepared'],enabled:true,modelAvailable:true,strength:0.65,colorStrength:0.8,width:320,height:192,status:'Prepared HDR',message:'HDR preserved · prepared section',comparison:'enhanced'},
+          prepared: {configurationState:'ready',jobState:'preparing',completedSegments:4,totalSegments:12,capacityBytes:8589934592,availableRanges:[{startSeconds:0,endSeconds:8}]},
+          capabilities: {prepared:true,pip:false,sameFrameComparison:true}
         }}));
         document.querySelector('#mute').click();
         document.querySelector('#volume').value = 43;
@@ -38,6 +39,7 @@ final class Preview: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKSc
         document.querySelector('#timeline').value = 87.5;
         document.querySelector('#timeline').dispatchEvent(new Event('change'));
         ({scrollWidth:document.documentElement.scrollWidth, width:innerWidth, height:document.querySelector('main').getBoundingClientRect().height,
+          controlsBottom:Math.max(...Array.from(document.querySelectorAll('main button,main input,main output,main select')).filter(e=>!e.hidden).map(e=>e.getBoundingClientRect().bottom)),
           disabledModes:document.querySelector('#mode').disabled, hiddenComparison:document.querySelector('#compare').hidden});
         """
         Task {
@@ -55,6 +57,7 @@ final class Preview: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKSc
                 print(String(decoding: json, as: UTF8.self))
                 guard let values = layout as? [String: Any], let scroll = values["scrollWidth"] as? Double,
                       let width = values["width"] as? Double, scroll <= width,
+                      let bottom = values["controlsBottom"] as? Double, bottom <= 196,
                       messages.contains(where: { $0["command"] as? String == "seek" && $0["value"] as? Double == 87.5 }) else { exit(1) }
                 NSApp.terminate(nil)
             } catch { fputs("\(error)\n", stderr); exit(1) }
