@@ -6,7 +6,7 @@
       "url": "https://github.com/RankFTW/rhi-repo/releases/download/dlssnr-310.8.0/nvngx_dlssnr_310.8.0.zip",
       "bytes": 109425288,
       "sha256": "388c0a7912e15ec911b9c9e11a692142b11fe387ddf2b637d8c358138fffb3ac",
-      "note": "Third-party mirror; different DLL hash from MLX-DLSS reference; smoke-tested, no NVIDIA parity claim"
+      "note": "Third-party mirror of the NVIDIA-signed original; signature verified with osslsigncode, WEIGHTS_HT byte-identical to MLX-DLSS reference. See docs/nr-dll-verification.md."
     },
     {
       "path": "models/sources/libnvidia-ngx-dlssg.so.310.7.0",

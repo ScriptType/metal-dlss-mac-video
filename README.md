@@ -47,10 +47,10 @@ Bootstrap installs missing build dependencies without upgrading existing formula
 
 | Model | Preparation result |
 |---|---|
-| DLSS neural rendering | Extracted; image and temporal-video smoke tests pass on M3. Source DLL differs from upstream's reference hash; parity is unverified. |
+| DLSS neural rendering | NVIDIA-signed source verified; embedded weights match upstream's reference byte for byte. Image and temporal-video smoke tests pass on M3. [DLL verification](docs/nr-dll-verification.md). |
 | DLSS frame generation | Extracted from NVIDIA SDK 310.7.0; native three-to-five-frame smoke passes. |
 | RTX VSR 2× | Extracted from NVIDIA's VFX package, matching upstream's exact source hash; image smoke passes. |
-| DLSS SR 2× | SDK library downloaded. Upstream requires a one-time NVIDIA/CUDA capture; no `.srmodel` is ready. An M5 alone cannot perform that capture. |
+| DLSS SR 2× | Optional and deferred. SDK library downloaded; preparing a `.srmodel` later would require a one-time NVIDIA/CUDA capture. |
 
 Sources and file hashes are in [downloads](config/downloads.json) and the [model manifest](models/manifest.json). These are experimental compatibility models, not official NVIDIA macOS support. See the [upstream preparation instructions](https://github.com/iamwavecut/MLX-DLSS/blob/6499d59c900f5e525d800e951f0000880d85c9f9/docs/super-resolution.md).
 

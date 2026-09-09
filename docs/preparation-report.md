@@ -5,7 +5,7 @@ This records the local preparation session on Apple M3 with 16 GiB unified memor
 ## Prepared
 
 - Public root repository and an MLX-DLSS fork, with the plan preserved unchanged.
-- Four source submodules pinned to the plan's exact commits and three local reference checkouts.
+- Four source submodules based on the plan's exact commits and three local reference checkouts. The MLX-DLSS fork adds a metadata-only entry recognizing the signed NR DLL hash.
 - Python 3.12.14 environment, locked Python packages, Rust 1.98.0, Tailwind 4.3.3, and native build prerequisites.
 - Missing Xcode components repaired/installed. System `xcode-select` and global Git identity were not changed; the project uses the GitHub noreply identity.
 - Source-built MLX CLI and app, mpv/libmpv, libplacebo 7.371.0, Erika C ABI library, native demo, and VideoToolbox/Metal import diagnostic.
@@ -34,13 +34,14 @@ Build tools observed: CMake 4.4.3, Meson 1.12.0, Ninja 1.13.2, Homebrew FFmpeg/f
 | RTX VSR | 320×192 → 640×384 image | `artifacts/vsr-smoke.json`, `artifacts/vsr-smoke.png` |
 | Download/model integrity | Locked source and output hashes verified | `artifacts/models-verify-downloads.log` |
 | Fresh model regeneration | Repeated extraction produces identical locked hashes; tensor payloads unchanged by header canonicalization | `artifacts/models-fresh-reproduction.log` |
+| NR DLL follow-up | Downloaded original passes NVIDIA signature verification; exact upstream reference fails. Both contain identical 147,695,410-byte weight resources and 153 packed tensors. | [Verification report](nr-dll-verification.md), `artifacts/dll-audit/` |
 
 Model runs were tiny and included startup/compilation overhead. No sustained throughput, final image-quality result, NVIDIA parity result, or M5 performance claim follows from them. The GPU test verifies extended-range storage; it does not validate colour conversions or an HDR display.
 
 ## Remaining boundaries
 
-- DLSS SR model preparation requires a one-time CUDA capture on an NVIDIA GPU. The exact SDK library and converter are ready. No `.srmodel` was generated. An M5 does not replace the NVIDIA capture requirement.
-- NR's downloaded DLL has a different hash from the upstream reference. It extracts and runs, but model equivalence and vendor-output parity remain unverified; all hashes and provenance are recorded.
+- DLSS SR is optional and deferred. If revisited, model preparation requires a one-time CUDA capture on an NVIDIA GPU. The SDK library and converter are ready; no `.srmodel` was generated.
+- NR weight equivalence to upstream is verified. NVIDIA runtime-output parity remains unmeasured.
 - HDR enhancement, the shared scheduler/C ABI, mpv/Erika neural adapters, cache, finished UI and target-machine benchmarks are implementation work. The current harness plays the original through AVFoundation; the upstream neural video exporter is SDR.
 - The app is a local ad-hoc signed development build. Notarization, distributable dependency packaging and app-store preparation are outside this baseline.
 - The window was launched, but macOS denied window screenshot capture. No claim of visually verified UI/HDR display accuracy is made.

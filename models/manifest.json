@@ -4,7 +4,15 @@
     {
       "name": "neural-rendering",
       "status": "smoke-tested",
-      "note": "Extracted from e16bcf15 source variant; image and three-frame video smoke passed. Upstream reference DLL hash differs.",
+      "note": "Extracted from the verified NVIDIA-signed original; WEIGHTS_HT byte-identical to MLX-DLSS reference. Image and three-frame video smoke passed.",
+      "provenance": {
+        "report": "docs/nr-dll-verification.md",
+        "sourceSha256": "e16bcf15e16e13f527491cdf7845b2fe6521a738d8f7c9c721866a8496e1fc8e",
+        "referenceSha256": "ceb6432f6fbdf44d886014bcd47241932bf8b67439feef9bbdd0961436662650",
+        "weightsResourceSha256": "836f445d06ecd2e59bb9f17b84b91c143396fd76ccda1c9dc7fe81d5edd548f4",
+        "weightsResourceBytes": 147695410,
+        "packedTensorCount": 153
+      },
       "files": [
         {
           "path": "models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
@@ -44,8 +52,8 @@
     },
     {
       "name": "dlss-sr",
-      "status": "requires-nvidia-capture",
-      "note": "Library downloaded; one-time CUDA capture required by upstream. An M5 cannot perform that capture.",
+      "status": "deferred",
+      "note": "Optional; deferred by project priority. Library downloaded; one-time CUDA capture would be required by upstream. An M5 cannot perform that capture.",
       "files": []
     }
   ]

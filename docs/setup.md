@@ -1,6 +1,6 @@
 # Development setup
 
-The authoritative feature scope is [the plan](../mac-hdr-player-plan.md). This workspace keeps the exact source revisions from that plan; it does not silently upgrade them.
+The authoritative feature scope is [the plan](../mac-hdr-player-plan.md). Source submodules start from the plan's exact revisions. The MLX-DLSS fork adds recognition of the verified NVIDIA-signed NR DLL hash; inference and extraction code remain at the plan's baseline.
 
 ## Toolchains
 
@@ -50,11 +50,11 @@ The mpv build links the locally built, pinned libplacebo 7.371.0. Build scripts 
 
 The download script verifies archive size and SHA-256 before extraction, extracts only named members, and verifies the final model files against the committed manifest. It sorts Safetensors JSON headers before each conversion stage because upstream metadata ordering is nondeterministic; tensor bytes are copied unchanged. New models are prepared in staging before publication. Existing mismatched files produce an error instead of being overwritten. Partial downloads remain under `.part`; rerunning downloads them again.
 
-NR provenance: the public RankFTW `dlssnr-310.8.0` archive contains a DLL with SHA-256 `e16bcf15e16e13f527491cdf7845b2fe6521a738d8f7c9c721866a8496e1fc8e`. MLX-DLSS identifies a different DLL (`ceb6432f…`) as its reference. Extraction and tiny native inference work with the downloaded variant, but this does not establish matching weights, fidelity, or NVIDIA parity. The source and generated hashes are locked so later comparisons remain reproducible. No checksum check in upstream was weakened.
+NR provenance: the public RankFTW `dlssnr-310.8.0` archive contains the NVIDIA-signed DLL with SHA-256 `e16bcf15e16e13f527491cdf7845b2fe6521a738d8f7c9c721866a8496e1fc8e`. Local Authenticode verification passes. The exact upstream reference (`ceb6432f…`) was also downloaded: its signature fails, but its entire `WEIGHTS_HT` resource is byte-identical to ours. Keep the signed original. The fork recognizes its hash, and source/model checksums remain locked. See [verification evidence and reproduction commands](nr-dll-verification.md). Weight equality is established; NVIDIA runtime-output parity remains unmeasured.
 
 FG comes from the official NVIDIA DLSS SDK Git revision in `config/downloads.json`. VSR comes from NVIDIA's Python package index and its extracted library exactly matches the hash required by the upstream converter.
 
-DLSS SR remains pending a CUDA capture. Once a suitable capture is available, the prepared conversion command is:
+DLSS SR is optional and deferred by project priority. If revisited with a suitable CUDA capture, the prepared conversion command is:
 
 ```sh
 uv run --frozen mlxdlss-weights package-sr \
