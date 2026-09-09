@@ -26,7 +26,9 @@ struct FrameBenchmarkCommand {
         let strength = Float(option("--strength") ?? (model == nil ? "0" : "1")) ?? 0
         guard limit > warmup, warmup >= 0, limit <= 100_000, width > 0, height > 0,
               strength.isFinite, (0...1).contains(strength) else { throw FrameEngineError.invalid("Invalid benchmark settings") }
-        let reader = try await NativeHDRVideoReader(url: URL(fileURLWithPath: source), generation: 1)
+        let sourceURL = URL(fileURLWithPath: source)
+        let sourceIdentity = try HDRCacheSource.fingerprint(url: sourceURL, streamIndex: 0)
+        let reader = try await NativeHDRVideoReader(url: sourceURL, generation: 1)
         guard var decoded = try await reader.nextDecoded() else { throw FrameEngineError.invalid("Empty source") }
         var modelHash = "original"
         if let model {
@@ -34,7 +36,7 @@ struct FrameBenchmarkCommand {
             modelHash = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
         }
         let configuration = MeasurementConfiguration(adapter: "native-decoder/shared-engine",
-            source: URL(fileURLWithPath: source).lastPathComponent,
+            source: "\(sourceURL.lastPathComponent);sha256=\(sourceIdentity.contentSHA256)",
             sourceWidth: decoded.pixelBuffer.width, sourceHeight: decoded.pixelBuffer.height,
             processingWidth: width, processingHeight: height, displayWidth: decoded.pixelBuffer.width,
             displayHeight: decoded.pixelBuffer.height, sourceFPS: Double(reader.nominalFrameRate),
@@ -47,7 +49,7 @@ struct FrameBenchmarkCommand {
             processingWidth: width, processingHeight: height),
             processor: HDRPipelineProcessor(configuration: .init(modelURL: model, modelVersion: modelHash,
                 processingWidth: width, processingHeight: height, strength: strength)), measurements: recorder)
-        defer { session.close() }
+        do {
         var accepted = 0, consumed = 0
         var lastPTS: (Int64, Int32)?
         let deadline = CACurrentMediaTime() + Double(limit) * 120 + 60
@@ -56,6 +58,9 @@ struct FrameBenchmarkCommand {
                 guard output.descriptor.generation == session.generation else { throw FrameEngineError.invalid("Obsolete output") }
                 consumed += 1
                 lastPTS = (output.descriptor.pts.value, output.descriptor.pts.timescale)
+                if consumed == 1, let reference = option("--reference") {
+                    try writeReference(output, path: reference, configuration: configuration)
+                }
             }
             if session.statistics().failures > 0 { throw FrameEngineError.invalid(session.error) }
             if CACurrentMediaTime() > deadline { throw FrameEngineError.invalid("Completed-work deadline exceeded") }
@@ -79,8 +84,49 @@ struct FrameBenchmarkCommand {
             if consumed < accepted { try await Task.sleep(for: .milliseconds(1)) }
         }
         guard accepted > warmup, consumed == accepted else { throw FrameEngineError.invalid("Insufficient completed warmed output") }
+        session.close()
+        await session.waitUntilIdle()
+        await reader.cancel()
         try recorder.write(to: URL(fileURLWithPath: reportPath))
         let result = recorder.report()
         print("completed=\(consumed) warmed=\(result.warmedSamples) fps=\(result.completedThroughputFPS ?? 0) last_pts=\(lastPTS?.0 ?? 0)/\(lastPTS?.1 ?? 1) report=\(reportPath)")
+        } catch {
+            session.close()
+            await session.waitUntilIdle()
+            await reader.cancel()
+            throw error
+        }
+    }
+
+    /// Capture one completed startup frame before the warmed interval. The
+    /// numeric reference is independent of display mapping and 8-bit screenshots.
+    static func writeReference(_ output: CompletedFrame, path: String,
+                               configuration: MeasurementConfiguration) throws {
+        let buffer = output.pixelBuffer
+        guard CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else {
+            throw FrameEngineError.invalid("Cannot read completed HDR reference")
+        }
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+        guard let base = CVPixelBufferGetBaseAddress(buffer) else { throw FrameEngineError.invalid("Missing HDR storage") }
+        let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
+        let stride = CVPixelBufferGetBytesPerRow(buffer)
+        var samples: [[String: Any]] = []
+        for y in [height / 4, height * 3 / 4] {
+            let row = base.advanced(by: y * stride).assumingMemoryBound(to: UInt16.self)
+            for x in [0, width / 4, width / 2, width * 3 / 4, width - 1] {
+                let rgba = (0..<4).map { Float(Float16(bitPattern: row[x * 4 + $0])) }
+                guard rgba.allSatisfy(\.isFinite) else { throw FrameEngineError.invalid("Nonfinite HDR reference") }
+                samples.append(["x": x, "y": y, "rgba": rgba])
+            }
+        }
+        let descriptor = output.descriptor
+        let value: [String: Any] = ["schemaVersion": 1, "source": configuration.source,
+            "model": configuration.modelVersion, "implementationRevision": configuration.implementationRevision,
+            "width": width, "height": height, "pts": ["value": descriptor.pts.value, "timescale": Int64(descriptor.pts.timescale)],
+            "primaries": "BT.2020", "transfer": "linear", "units": "cd/m2", "storage": "RGBA16F",
+            "settingsJSON": configuration.settingsJSON, "samples": samples,
+            "scope": "One CPU readback of the first completed startup frame; before display mapping and warmed timing"]
+        try JSONSerialization.data(withJSONObject: value, options: [.prettyPrinted, .sortedKeys])
+            .write(to: URL(fileURLWithPath: path), options: .atomic)
     }
 }
