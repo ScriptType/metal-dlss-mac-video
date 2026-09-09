@@ -6,7 +6,10 @@ for script in scripts/*.sh; do bash -n "$script"; done
 python3 -m compileall -q scripts
 npm --prefix apps/controls run check
 npm --prefix apps/controls run build
-swift test --jobs "$BUILD_JOBS"
+swift build --build-tests --jobs "$BUILD_JOBS"
+bash scripts/prepare-frame-runtime.sh
+swift test --skip-build --jobs "$BUILD_JOBS"
+bash scripts/test-frame-api.sh
 uv run --frozen pytest -q vendor/MLX-DLSS/python/tests/test_vsr_weights.py \
   vendor/MLX-DLSS/Tests/ToolsTests/test_extract_dlssnr_weights.py \
   vendor/MLX-DLSS/Tests/ToolsTests/test_unpack_dlssnr_weights.py

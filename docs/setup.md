@@ -1,10 +1,10 @@
 # Development setup
 
-The authoritative feature scope is [the plan](../mac-hdr-player-plan.md). Source submodules start from the plan's exact revisions. The MLX-DLSS fork adds recognition of the verified NVIDIA-signed NR DLL hash; inference and extraction code remain at the plan's baseline.
+The authoritative feature scope is [the plan](../mac-hdr-player-plan.md). Pinned MLX-DLSS, mpv and Erika forks contain the HDR pipeline and shared-engine adapters. [Implementation status](implementation-status.md) distinguishes verified development work from remaining playback and hardware acceptance.
 
 ## Toolchains
 
-- Apple Silicon, macOS 26+, Xcode with Swift 6.2 or later and the downloadable Metal toolchain.
+- Apple Silicon, macOS 26+, full Xcode with Swift 6.3 or later and the downloadable Metal toolchain. The current locked MLX packages require the Xcode toolchain; older Command Line Tools are insufficient.
 - `scripts/env.sh` selects Xcode for project commands through `DEVELOPER_DIR`; the system `xcode-select` setting is unchanged.
 - Homebrew tools are declared in `Brewfile`. `ffmpeg-full` provides `zscale` for actual HDR transfer conversion; ordinary Homebrew `ffmpeg` lacks that filter.
 - Python 3.12 and all dependencies are pinned by `uv.lock`. `uv sync --frozen --all-groups` also prepares Core ML conversion tools. Linux-only NVIDIA VFX is read as a ZIP archive, not installed.
@@ -34,7 +34,14 @@ To package the upstream experimental app as well:
 bash -c 'source scripts/env.sh; vendor/MLX-DLSS/scripts/build-native-app.sh'
 ```
 
-`artifacts/HDR Player.app` is an ad-hoc signed development app, not notarized. It uses AVFoundation for original playback while mpv and Erika integrations are pending. Cmd+O opens a local file, Cmd+Q quits. The controls provide open/play/pause. MKV, advanced subtitles, and final playback features belong to the adapter stage.
+`artifacts/HDR Player.app` is an ad-hoc signed development app, not notarized. It embeds the patched mpv renderer with native audio/subtitles and local WKWebView controls. Cmd+O opens a local file and Cmd+Q quits. Transport, seeking, tracks, chapters, volume, subtitle settings, frame stepping and fullscreen have an opt-in real-DOM smoke check. Playback policy and Prepared mode retain their acceptance gates.
+
+```sh
+python3 scripts/generate-player-fixture.py
+HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-ui.json .build/debug/HDRPlayer assets/test-clips/player-controls.mkv
+```
+
+The separate `.build/debug/HDRHarness` is the video-only numeric/EDR diagnostic tool; see [presentation commands](hdr-presentation.md).
 
 Source-built candidates:
 
@@ -44,7 +51,7 @@ artifacts/erika-target/debug/macos_native_demo assets/test-clips/hdr10-30.mp4
 artifacts/erika-target/debug/metal_import_videotoolbox assets/test-clips/hdr10-30.mp4
 ```
 
-The mpv build links the locally built, pinned libplacebo 7.371.0. Build scripts supply a missing dav1d include directory for libplacebo's upstream header tests. There are no local changes to those upstream sources. Build outputs use local absolute paths; rebuild them after moving the checkout.
+The mpv build links the locally built, pinned libplacebo 7.371.0. Build scripts supply a missing dav1d include directory for libplacebo's upstream header tests. Use `scripts/build-mpv-adapter.sh` and `scripts/build-erika-adapter.sh` for the shared HDR integrations. Unpackaged build outputs use local absolute paths; rebuild them after moving the checkout.
 
 ## Models
 
@@ -65,7 +72,7 @@ No cloud GPU was rented and no NVIDIA account is required for the downloads alre
 
 ## M3 and M5
 
-`config/m3-dev.json` limits the smoke workload to three 320×192 frames and builds to two jobs. The memory/cache fields are proposed budgets for the future engine, not enforced limits in the upstream app. Use those tiny inputs during development.
+`config/m3-dev.json` defines the small model smoke workload and two compiler jobs. The shared engine separately enforces configured frame admission limits, and HDR segment storage enforces disk capacity. Process-wide model residency remains an explicit acceptance item. Use the M3 for correctness, sustained adapter benchmarks and implementation choices; label results with the actual source and processing sizes.
 
 The M5 configuration is an unmeasured starting point. To reproduce the software on the new machine, clone and bootstrap. Generated binaries, model archives, and caches are deliberately excluded from Git; bootstrap downloads or rebuilds them. `BUILD_JOBS=6 bash scripts/build-mlx.sh` enables additional compiler workers after confirming available memory.
 

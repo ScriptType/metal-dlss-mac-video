@@ -8,11 +8,13 @@ permissions:
 jobs:
   harness:
     runs-on: macos-26
-    timeout-minutes: 15
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
+      - run: git submodule update --init vendor/MLX-DLSS vendor/mpv
+      - run: brew install cmake ninja
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: '24'
@@ -21,8 +23,11 @@ jobs:
       - run: npm --prefix apps/controls ci
       - run: npm --prefix apps/controls run check
       - run: npm --prefix apps/controls run build
-      - run: swift build --jobs 2
-      - run: swift test --jobs 2
+      - run: |
+          source scripts/env.sh
+          swift build --build-tests --jobs 2
+          bash scripts/prepare-frame-runtime.sh
+          swift test --skip-build --jobs 2
       - name: Check scripts and publication surface
         run: |
           for script in scripts/*.sh; do bash -n "$script"; done

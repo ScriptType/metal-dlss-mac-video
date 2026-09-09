@@ -1,8 +1,8 @@
 # Metal DLSS Mac Video
 
-Development workspace for a native macOS HDR player with experimental MLX/Metal neural enhancement. Target hardware: M5 Max with 64 GB. The current M3 with 16 GB is used for correctness checks and small inference runs.
+Development workspace for a native macOS HDR player with experimental MLX/Metal neural enhancement. Development and benchmarks currently run on an M3 with 16 GB. M5 Max with 64 GB is the next target; its performance remains unmeasured.
 
-**Status: development preparation, not a finished HDR enhancement player.** The native bypass harness plays local video; MLX-DLSS runs separately. The shared asynchronous engine, HDR reconstruction, and player adapters remain to be implemented according to the [original plan](mac-hdr-player-plan.md).
+**Status: implementation in progress.** Native NV12/P010 HDR import, retained-original neural reconstruction, an asynchronous C-compatible frame engine, native playback adapters and persistent float HDR segments are implemented. The AppKit/WKWebView player uses provisional mpv with native video, audio, subtitles and chapters. Playback policy and cached playback are being integrated. The [original plan](mac-hdr-player-plan.md) and [implementation status](docs/implementation-status.md) define the remaining acceptance work.
 
 ## Start here
 
@@ -10,12 +10,13 @@ On the prepared Mac:
 
 ```sh
 open "artifacts/HDR Player.app"
-open "vendor/MLX-DLSS/.build/MLX DLSS.app"
+bash scripts/build-harness.sh
+bash scripts/test-frame-api.sh
 bash scripts/doctor.sh
 uv run --frozen scripts/smoke-models.py
 ```
 
-In MLX-DLSS, select `models/neural-rendering/NeuralRendering.dlssmodel` for neural rendering, `models/framegen.safetensors` for frame generation, and `models/vsr.safetensors` for RTX VSR. Its current video exports are SDR.
+HDR Player embeds the patched mpv renderer and provides local playback controls; see [native player and packaging](docs/native-player.md). The separate HDRHarness executable provides video-only SDR/PQ/HLG playback and floating-point captures; see [presentation commands](docs/hdr-presentation.md). [Frame-engine commands](docs/frame-engine.md) exercise the integrated neural HDR path and completed-work instrumentation. MLX-DLSS's separate media exporter remains explicitly SDR.
 
 On another Apple Silicon Mac with macOS 26+, full Xcode, and Homebrew:
 
@@ -31,11 +32,15 @@ Bootstrap installs missing build dependencies without upgrading existing formula
 
 | Path | Purpose |
 |---|---|
-| `apps/macos` | AppKit/AVPlayerView native bypass harness, WKWebView controls |
+| `apps/macos` | AppKit player, native mpv embedding and WKWebView command/state bridge |
+| `apps/harness` | Video-only native RGBA16F/EDR diagnostic harness |
 | `apps/controls` | Tailwind CLI sources and npm lockfile; assets bundled locally |
-| `packages/FrameEngine` | Initial Metal storage and CoreVideo decode diagnostics |
+| `packages/FrameEngine` | HDR processing, bounded scheduler, metrics, float cache and preparation coordinator |
+| `packages/CFrameEngine` | Shared C frame/session API and ownership contract |
 | `tools/HDRProbe` | JSON GPU and decoded-frame reports |
-| `vendor/MLX-DLSS` | Fork at the plan revision, branch `hdr-player` |
+| `tools/FrameBenchmark` | Native decoder/shared-engine completed-work benchmark |
+| `tools/CFrameConsumer` | Plain C HDR round trip and resource-lifetime check |
+| `vendor/MLX-DLSS` | HDR reader/import/reconstruction fork, branch `hdr-player` |
 | `vendor/mpv`, `vendor/libplacebo`, `vendor/Erika` | Pinned Git submodules for adapter work |
 | `references` | Pinned Windows reference sources, fetched locally |
 | `models` | Local proprietary sources and extracted weights, excluded from Git |
@@ -57,11 +62,11 @@ Sources and file hashes are in [downloads](config/downloads.json) and the [model
 ## Validation
 
 ```sh
-bash scripts/check.sh          # harness, tool tests, assets and local GPU/decode checks
+bash scripts/check.sh          # engine/cache/harness tests, C ABI, assets and GPU/decode checks
 bash scripts/test-cores.sh     # existing mpv/libplacebo/MLX core suites
 python3 scripts/fetch-models.py --verify
 ```
 
-Read [the preparation report](docs/preparation-report.md) for measured results and their limits. CI builds the standalone harness and checks project sources without downloading NVIDIA binaries or weights. Visual HDR accuracy and sustained performance require local hardware validation.
+Read the [frame-engine contract](docs/frame-engine.md), [presentation policy](docs/hdr-presentation.md) and [cache encoding policy](docs/hdr-cache.md). The [preparation report](docs/preparation-report.md) records the original baseline. CI builds the harness/engine without downloading NVIDIA binaries or weights. Physical HDR accuracy, sustained playback and target performance retain their explicit hardware validation gates.
 
 Original project code is GPL-3.0-or-later. Third-party code retains its own licences; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Model files are local research assets and are not included in this source repository.

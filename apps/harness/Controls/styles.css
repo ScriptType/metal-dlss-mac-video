@@ -1,0 +1,2 @@
+:root { color-scheme: dark; font: 12px -apple-system, sans-serif; color: #eee; background: #18181b; }
+body { margin: 0; } main { height: 128px; padding: 12px 24px; box-sizing: border-box; } p { margin: 0 0 10px; } p:nth-child(2) { color: #aaa; } nav { display: flex; gap: 8px; } button { background: #333; color: #eee; border: 0; border-radius: 5px; padding: 7px 12px; cursor: pointer; } button:focus-visible { outline: 2px solid #5eead4; }

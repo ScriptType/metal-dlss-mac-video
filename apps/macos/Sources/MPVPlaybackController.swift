@@ -1,0 +1,403 @@
+import AppKit
+import CMpv
+import Foundation
+
+private struct MPVFailure: Error, LocalizedError {
+    let message: String
+    var errorDescription: String? { message }
+}
+
+/// Runtime loading keeps the app shell independent of the provisional core and
+/// loads exactly one shared FrameEngine/MLX instance through the patched libmpv.
+private final class MPVLibrary: @unchecked Sendable {
+    typealias Create = @convention(c) () -> OpaquePointer?
+    typealias Initialize = @convention(c) (OpaquePointer?) -> Int32
+    typealias SetString = @convention(c) (OpaquePointer?, UnsafePointer<CChar>?, UnsafePointer<CChar>?) -> Int32
+    typealias Command = @convention(c) (OpaquePointer?, UnsafePointer<UnsafePointer<CChar>?>?) -> Int32
+    typealias WaitEvent = @convention(c) (OpaquePointer?, Double) -> UnsafeMutablePointer<mpv_event>?
+    typealias GetString = @convention(c) (OpaquePointer?, UnsafePointer<CChar>?) -> UnsafeMutablePointer<CChar>?
+    typealias Free = @convention(c) (UnsafeMutableRawPointer?) -> Void
+    typealias Destroy = @convention(c) (OpaquePointer?) -> Void
+    typealias ErrorString = @convention(c) (Int32) -> UnsafePointer<CChar>?
+    typealias Log = @convention(c) (OpaquePointer?, UnsafePointer<CChar>?) -> Int32
+    let create: Create
+    let initialize: Initialize
+    let setOption: SetString
+    let command: Command
+    let waitEvent: WaitEvent
+    let getString: GetString
+    let free: Free
+    let destroy: Destroy
+    let errorString: ErrorString
+    let requestLog: Log
+    let path: String
+
+    init() throws {
+        if let driver = Bundle.main.resourceURL?.appendingPathComponent("vulkan/icd.d/MoltenVK_icd.json"),
+           FileManager.default.fileExists(atPath: driver.path) {
+            setenv("VK_DRIVER_FILES", driver.path, 0)
+        }
+        let candidates = [ProcessInfo.processInfo.environment["METAL_DLSS_MPV_LIBRARY"],
+            Bundle.main.privateFrameworksURL?.appendingPathComponent("libmpv.2.dylib").path,
+            Self.projectRoot()?.appendingPathComponent("artifacts/mpv-build/libmpv.2.dylib").path].compactMap { $0 }
+        var library: UnsafeMutableRawPointer?
+        var selected = ""
+        var errors: [String] = []
+        for candidate in candidates where FileManager.default.fileExists(atPath: candidate) {
+            if let loaded = dlopen(candidate, RTLD_NOW | RTLD_LOCAL) { library = loaded; selected = candidate; break }
+            if let error = dlerror() { errors.append(String(cString: error)) }
+        }
+        guard let library else { throw MPVFailure(message: "Patched mpv is unavailable. Run scripts/build-mpv-adapter.sh. " + errors.joined(separator: "; ")) }
+        path = selected
+        func symbol<T>(_ name: String, as type: T.Type) throws -> T {
+            guard let value = dlsym(library, name) else { throw MPVFailure(message: "mpv symbol unavailable: \(name)") }
+            return unsafeBitCast(value, to: type)
+        }
+        create = try symbol("mpv_create", as: Create.self)
+        initialize = try symbol("mpv_initialize", as: Initialize.self)
+        setOption = try symbol("mpv_set_option_string", as: SetString.self)
+        command = try symbol("mpv_command", as: Command.self)
+        waitEvent = try symbol("mpv_wait_event", as: WaitEvent.self)
+        getString = try symbol("mpv_get_property_string", as: GetString.self)
+        free = try symbol("mpv_free", as: Free.self)
+        destroy = try symbol("mpv_terminate_destroy", as: Destroy.self)
+        errorString = try symbol("mpv_error_string", as: ErrorString.self)
+        requestLog = try symbol("mpv_request_log_messages", as: Log.self)
+        // Keep the library loaded until process exit: AppKit/Vulkan may retain
+        // deferred native callbacks after a particular player has been destroyed.
+    }
+    static func projectRoot() -> URL? {
+        var candidates = [URL(fileURLWithPath: FileManager.default.currentDirectoryPath),
+            Bundle.main.bundleURL, Bundle.main.executableURL?.deletingLastPathComponent()].compactMap { $0 }
+        for _ in 0..<8 {
+            for root in candidates where FileManager.default.fileExists(atPath: root.appendingPathComponent("vendor/mpv/include/mpv/client.h").path) { return root }
+            candidates = candidates.map { $0.deletingLastPathComponent() }
+        }
+        return nil
+    }
+    func error(_ code: Int32) -> String { errorString(code).map { String(cString: $0) } ?? "mpv error \(code)" }
+}
+
+private final class MPVPlayerWorker: @unchecked Sendable {
+    let hostPointer: Int64
+    let filter: String
+    let volume: Double
+    let muted: Bool
+    let subtitleBrightness: Double
+    let subtitleScale: Double
+    let subtitleDelay: Double
+    let onState: @Sendable (Data) -> Void
+    let onFinish: @Sendable () -> Void
+    private let lock = NSLock()
+    private var commands: [[String]] = []
+    private var stopping = false
+
+    init(host: NSView, filter: String, volume: Double, muted: Bool, subtitleBrightness: Double, subtitleScale: Double, subtitleDelay: Double,
+         onState: @escaping @Sendable (Data) -> Void, onFinish: @escaping @Sendable () -> Void) {
+        hostPointer = Int64(Int(bitPattern: Unmanaged.passUnretained(host).toOpaque()))
+        self.filter = filter; self.volume = volume; self.muted = muted; self.subtitleBrightness = subtitleBrightness
+        self.subtitleScale = subtitleScale; self.subtitleDelay = subtitleDelay
+        self.onState = onState; self.onFinish = onFinish
+    }
+    func enqueue(_ args: [String]) {
+        lock.lock(); defer { lock.unlock() }
+        guard !stopping else { return }
+        // Latest desired settings replace waiting settings while the core is
+        // occupied. Relative frame/toggle actions retain their FIFO order.
+        func key(_ command: [String]) -> String? {
+            guard let first = command.first else { return nil }
+            if ["seek", "loadfile"].contains(first) { return first }
+            if first == "set", command.count > 1 { return "set:" + command[1] }
+            if first == "vf", command.dropFirst().first == "set" { return "vf:set" }
+            if first == "vf-command", command.count > 2 { return command.prefix(3).joined(separator: ":") }
+            return nil
+        }
+        if let replacement = key(args) { commands.removeAll { key($0) == replacement } }
+        if args.first == "loadfile" {
+            commands.removeAll { ["seek", "frame-step", "frame-back-step"].contains($0.first ?? "") }
+        }
+        if commands.count == 64 { commands.removeFirst() }
+        commands.append(args)
+    }
+    func stop() { lock.lock(); stopping = true; commands.removeAll(); lock.unlock() }
+    private func pending() -> ([String]?, Bool) {
+        lock.lock(); defer { lock.unlock() }
+        return (commands.isEmpty ? nil : commands.removeFirst(), stopping)
+    }
+    private func publish(_ value: [String: Any]) {
+        if let data = try? JSONSerialization.data(withJSONObject: value, options: [.sortedKeys]) { onState(data) }
+    }
+    private func invoke(_ args: [String], library: MPVLibrary, handle: OpaquePointer) -> Int32 {
+        let strings = args.map { strdup($0)! }
+        defer { strings.forEach { Darwin.free($0) } }
+        let pointers = strings.map { Optional(UnsafePointer<CChar>($0)) } + [nil]
+        return pointers.withUnsafeBufferPointer { library.command(handle, $0.baseAddress) }
+    }
+    func run() {
+        defer { onFinish() }
+        do {
+            let library = try MPVLibrary()
+            guard let handle = library.create() else { throw MPVFailure(message: "Cannot create mpv playback core") }
+            defer { library.destroy(handle) }
+            let options: [String: String] = ["config": "no", "vo": "gpu-next", "gpu-api": "vulkan", "gpu-context": "macvk",
+                "wid": String(hostPointer), "hwdec": "videotoolbox", "idle": "yes", "keep-open": "yes",
+                "target-colorspace-hint": "yes", "vf": filter, "input-default-bindings": "no", "input-vo-keyboard": "no",
+                "osc": "no", "osd-level": "0", "blend-subtitles": "no", "volume": String(volume), "mute": muted ? "yes" : "no",
+                "cache-pause": "yes", "msg-level": "all=warn", "sub-color": Self.subtitleColor(subtitleBrightness),
+                "sub-scale": String(subtitleScale), "sub-delay": String(subtitleDelay)]
+            for (key, value) in options {
+                let code = library.setOption(handle, key, value)
+                if code < 0 { throw MPVFailure(message: "\(key): \(library.error(code))") }
+            }
+            let initialized = library.initialize(handle)
+            guard initialized >= 0 else { throw MPVFailure(message: library.error(initialized)) }
+            _ = library.requestLog(handle, "warn")
+            var failure: String?
+            var nextState = Date.distantPast
+            var running = true
+            func property(_ name: String) -> String? {
+                guard let value = library.getString(handle, name) else { return nil }
+                defer { library.free(UnsafeMutableRawPointer(value)) }
+                return String(cString: value)
+            }
+            while running {
+                let (work, stop) = pending()
+                if stop { break }
+                if let args = work {
+                    let result = invoke(args, library: library, handle: handle)
+                    if result < 0 { failure = "\(args.first ?? "Command"): \(library.error(result))" }
+                    else if args.first == "loadfile" { failure = nil }
+                }
+                if let event = library.waitEvent(handle, 0.04)?.pointee {
+                    switch event.event_id {
+                    case MPV_EVENT_SHUTDOWN: running = false
+                    case MPV_EVENT_LOG_MESSAGE:
+                        if let raw = event.data {
+                            let message = raw.assumingMemoryBound(to: mpv_event_log_message.self).pointee
+                            if message.log_level.rawValue <= MPV_LOG_LEVEL_ERROR.rawValue {
+                                failure = String(cString: message.text).trimmingCharacters(in: .whitespacesAndNewlines)
+                                fputs("mpv[\(String(cString: message.prefix))]: \(failure!)\n", stderr)
+                            }
+                        }
+                    case MPV_EVENT_END_FILE:
+                        if let raw = event.data {
+                            let end = raw.assumingMemoryBound(to: mpv_event_end_file.self).pointee
+                            if end.error < 0 { failure = library.error(end.error) }
+                        }
+                    default: break
+                    }
+                }
+                if Date() >= nextState {
+                    nextState = Date().addingTimeInterval(0.12)
+                    func number(_ key: String, fallback: Double = 0) -> Double {
+                        let value = property(key).flatMap(Double.init) ?? fallback
+                        return value.isFinite ? value : fallback
+                    }
+                    func array(_ key: String) -> [[String: Any]] {
+                        guard let text = property(key), let data = text.data(using: .utf8) else { return [] }
+                        return (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]] ?? []
+                    }
+                    let tracks: [[String: Any]] = array("track-list").map { track in
+                        ["id": track["id"] ?? 0, "type": track["type"] ?? "unknown", "title": track["title"] ?? track["codec"] ?? "Track",
+                         "language": track["lang"] ?? (track["metadata"] as? [String: Any])?["language"] ?? "", "selected": track["selected"] ?? false, "external": track["external"] ?? false]
+                    }
+                    let chapters: [[String: Any]] = array("chapter-list").enumerated().map { index, chapter in
+                        ["index": index, "title": chapter["title"] ?? "Chapter \(index + 1)", "time": chapter["time"] ?? 0]
+                    }
+                    var state: [String: Any] = ["initialized": true, "title": property("media-title") ?? "HDR Player", "source": property("path") ?? "",
+                        "paused": property("pause") == "yes", "position": number("time-pos"), "duration": number("duration"),
+                        "volume": number("volume", fallback: volume), "muted": property("mute") == "yes", "loading": property("paused-for-cache") == "yes",
+                        "tracks": tracks, "chapters": chapters, "chapter": Int(number("chapter", fallback: -1)),
+                        "sourceFPS": number("container-fps"), "frameDrops": Int(number("frame-drop-count")),
+                        "decoderDrops": Int(number("decoder-frame-drop-count")), "coreLibrary": library.path,
+                        "subtitleDelay": number("sub-delay"), "subtitleScale": number("sub-scale", fallback: 1)]
+                    if let text = property("enhancement-state"), let data = text.data(using: .utf8),
+                       let enhancement = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] {
+                        state["nativeEnhancement"] = enhancement
+                    }
+                    if let failure { state["error"] = failure }
+                    publish(state)
+                }
+            }
+        } catch { publish(["initialized": false, "loading": false, "error": error.localizedDescription]) }
+    }
+    static func subtitleColor(_ brightness: Double) -> String {
+        let component = Int((max(0.1, min(1, brightness)) * 255).rounded())
+        return String(format: "#%02X%02X%02XFF", component, component, component)
+    }
+}
+
+@MainActor
+final class MPVPlaybackController {
+    let hostView: NSView
+    var onState: (([String: Any]) -> Void)?
+    var onStopped: (() -> Void)?
+    private let defaults: UserDefaults
+    private var worker: MPVPlayerWorker?
+    private var source = ""
+    private var modelURL: URL?
+    private var enabled: Bool
+    private var strength: Double
+    private var colorStrength: Double
+    private var width: Int
+    private var height: Int
+    private var mode: String
+    private var subtitleBrightness: Double
+    private var subtitleScale: Double
+    private var subtitleDelay: Double
+    private var beforeSleepPaused = true
+    private(set) var state: [String: Any] = [:]
+
+    init(hostView: NSView) {
+        self.hostView = hostView
+        if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] != nil {
+            defaults = UserDefaults(suiteName: "HDRPlayer.Smoke")!
+            defaults.removePersistentDomain(forName: "HDRPlayer.Smoke")
+        } else { defaults = .standard }
+        let saved = defaults.dictionary(forKey: "HDRPlayer.preferences.v1") ?? [:]
+        enabled = saved["enabled"] as? Bool ?? false
+        strength = min(1, max(0, saved["strength"] as? Double ?? 1))
+        colorStrength = min(1, max(0, saved["colorStrength"] as? Double ?? 1))
+        width = min(8192, max(16, saved["width"] as? Int ?? 32))
+        height = min(8192, max(16, saved["height"] as? Int ?? 24))
+        // Qualification belongs to this running model/source session.
+        mode = "adaptive"
+        subtitleBrightness = min(1, max(0.1, saved["subtitleBrightness"] as? Double ?? 1))
+        subtitleScale = min(3, max(0.5, saved["subtitleScale"] as? Double ?? 1))
+        subtitleDelay = saved["subtitleDelay"] as? Double ?? 0
+        let candidates = [ProcessInfo.processInfo.environment["MLXDLSS_NEURAL_RENDERING_PACKAGE"].map { URL(fileURLWithPath: $0) },
+            Bundle.main.resourceURL?.appendingPathComponent("Models/NeuralRendering.dlssmodel"),
+            MPVLibrary.projectRoot()?.appendingPathComponent("models/neural-rendering/NeuralRendering.dlssmodel")].compactMap { $0 }
+        modelURL = candidates.first { FileManager.default.fileExists(atPath: $0.appendingPathComponent("weights.safetensors").path) }
+        if modelURL == nil { enabled = false }
+        state = ["version": 1, "title": "HDR Player", "source": "", "paused": true, "position": 0, "duration": 0,
+            "volume": saved["volume"] as? Double ?? 100, "muted": saved["muted"] as? Bool ?? false,
+            "fullscreen": false, "loading": false, "tracks": [], "chapters": [], "chapter": -1]
+        updateProcessing()
+    }
+    func start() {
+        guard worker == nil else { return }
+        let worker = MPVPlayerWorker(host: hostView, filter: filter(), volume: state["volume"] as? Double ?? 100,
+            muted: state["muted"] as? Bool ?? false, subtitleBrightness: subtitleBrightness, subtitleScale: subtitleScale, subtitleDelay: subtitleDelay,
+            onState: { [weak self] data in DispatchQueue.main.async { self?.receive(data) } },
+            onFinish: { [weak self] in DispatchQueue.main.async { self?.worker = nil; self?.onStopped?() } })
+        self.worker = worker
+        DispatchQueue.global(qos: .userInitiated).async { worker.run() }
+    }
+    func stop() { if let worker { worker.stop() } else { onStopped?() } }
+    func load(_ url: URL) {
+        if worker == nil { start() }
+        source = url.path
+        state["source"] = source; state["title"] = url.lastPathComponent; state["loading"] = true
+        state.removeValue(forKey: "error")
+        worker?.enqueue(["loadfile", url.path, "replace"])
+        worker?.enqueue(["set", "pause", "no"])
+        publish()
+    }
+    func fullscreenChanged(_ value: Bool) { state["fullscreen"] = value; publish() }
+    func sleep() { beforeSleepPaused = state["paused"] as? Bool ?? true; worker?.enqueue(["set", "pause", "yes"]) }
+    func wake() { if !beforeSleepPaused { worker?.enqueue(["set", "pause", "no"]) } }
+    func command(_ name: String, value: Any?) {
+        func numeric() -> Double? { (value as? NSNumber)?.doubleValue }
+        switch name {
+        case "play": worker?.enqueue(["set", "pause", "no"])
+        case "pause": worker?.enqueue(["set", "pause", "yes"])
+        case "togglePause": worker?.enqueue(["cycle", "pause"])
+        case "seek":
+            if let position = numeric(), position.isFinite { worker?.enqueue(["seek", String(max(0, position)), "absolute+exact"]) }
+        case "frameStep": worker?.enqueue([(numeric() ?? 1) < 0 ? "frame-back-step" : "frame-step"])
+        case "volume":
+            if let volume = numeric(), volume.isFinite { state["volume"] = min(100, max(0, volume)); worker?.enqueue(["set", "volume", String(min(100, max(0, volume)))]) }
+        case "mute":
+            if let mute = value as? Bool { state["muted"] = mute; worker?.enqueue(["set", "mute", mute ? "yes" : "no"]) }
+        case "track":
+            if let track = value as? [String: Any], let type = track["type"] as? String,
+               let property = ["audio": "aid", "video": "vid", "sub": "sid"][type] {
+                let id = (track["id"] as? NSNumber)?.stringValue ?? (track["id"] as? String)
+                if let id, Int(id) != nil || ["no", "auto"].contains(id) { worker?.enqueue(["set", property, id]) }
+            }
+        case "chapter": if let index = numeric(), index.isFinite, index >= 0, index < Double(Int.max) { worker?.enqueue(["set", "chapter", String(Int(index))]) }
+        case "enhancement":
+            if let value = value as? Bool, modelURL != nil {
+                enabled = value
+                worker?.enqueue(["vf-command", "enhance", "bypass", enabled ? "no" : "yes"])
+            }
+        case "strength": if let value = numeric(), value.isFinite { strength = min(1, max(0, value)); reconfigure() }
+        case "colorStrength": if let value = numeric(), value.isFinite { colorStrength = min(1, max(0, value)); reconfigure() }
+        case "quality":
+            if let size = value as? [String: NSNumber], let w = size["width"]?.intValue, let h = size["height"]?.intValue,
+               (16...8192).contains(w), (16...8192).contains(h) { width = w; height = h; reconfigure() }
+        case "mode":
+            let modes = (state["processing"] as? [String: Any])?["availableModes"] as? [String] ?? []
+            if let requested = value as? String, modes.contains(requested) {
+                mode = requested
+                worker?.enqueue(["vf-command", "enhance", "policy", requested])
+            }
+        case "compare":
+            let native = state["nativeEnhancement"] as? [String: Any] ?? [:]
+            if native["compare-ready"] as? Bool == true {
+                let selection = value as? String ?? (native["comparison"] as? String == "original" ? "enhanced" : "original")
+                if ["original", "enhanced"].contains(selection) { worker?.enqueue(["vf-command", "enhance", "compare", selection]) }
+            }
+        case "subtitleBrightness":
+            if let value = numeric(), value.isFinite {
+                subtitleBrightness = min(1, max(0.1, value))
+                worker?.enqueue(["set", "sub-color", MPVPlayerWorker.subtitleColor(subtitleBrightness)])
+            }
+        case "subtitleDelay": if let value = numeric(), value.isFinite { subtitleDelay = min(3600, max(-3600, value)); worker?.enqueue(["set", "sub-delay", String(subtitleDelay)]) }
+        case "subtitleScale": if let value = numeric(), value.isFinite { subtitleScale = min(3, max(0.5, value)); worker?.enqueue(["set", "sub-scale", String(subtitleScale)]) }
+        default: break
+        }
+        persist(); publish()
+    }
+    private func filter() -> String {
+        let model = modelURL.map { "model=%\($0.path.utf8.count)%\($0.path):" } ?? ""
+        return "@enhance:metal-hdr=\(model)processing-width=\(width):processing-height=\(height):strength=\(strength):colour-strength=\(colorStrength):maximum-luminance-ratio=2:reference-white=203:policy=adaptive:bypass=\(enabled ? "no" : "yes")"
+    }
+    private func reconfigure() {
+        mode = "adaptive"
+        state["message"] = "Reconfiguring enhancement; temporal history resets."
+        state["loading"] = true
+        worker?.enqueue(["vf", "set", filter()])
+    }
+    private func receive(_ data: Data) {
+        guard let incoming = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { return }
+        state.merge(incoming) { _, new in new }
+        if let native = incoming["nativeEnhancement"] as? [String: Any],
+           let actual = native["policy"] as? String, ["live", "adaptive"].contains(actual) { mode = actual }
+        if incoming["error"] == nil { state.removeValue(forKey: "error") }
+        publish()
+    }
+    private func updateProcessing() {
+        let error = state["error"] as? String
+        let native = state["nativeEnhancement"] as? [String: Any] ?? [:]
+        let available = (native["processing-width"] as? Int ?? 0) > 0 && modelURL != nil && error == nil
+        let qualified = native["live-qualified"] as? Bool == true
+        let buffering = native["buffering"] as? Bool == true
+        let preview = native["preview-pending"] as? Bool == true
+        let modes = available ? (qualified && enabled ? ["adaptive", "live"] : ["adaptive"]) : []
+        var message = "Original HDR playback"
+        if enabled {
+            if preview { message = "Original seek preview; enhancing this timestamp…" }
+            else if buffering { message = "Adaptive: audio and video paused while enhancement catches up." }
+            else if mode == "live" && qualified { message = "Live: current session meets the measured processing deadline." }
+            else { message = "Adaptive enhancement; audio and video buffer together when needed." }
+        }
+        state["processing"] = ["mode": mode, "enabled": enabled, "strength": strength, "colorStrength": colorStrength,
+            "width": width, "height": height, "modelAvailable": modelURL != nil, "liveQualified": qualified, "availableModes": modes,
+            "status": error != nil ? "error" : !enabled ? "original" : preview ? "preview" : buffering ? "buffering" : "enhancing",
+            "message": error ?? message, "subtitleBrightness": subtitleBrightness,
+            "pendingFrames": native["pending-frames"] ?? 0, "completedFrames": native["completed-frames"] ?? 0,
+            "completedP95Seconds": native["completed-p95-seconds"] ?? 0,
+            "bufferCount": native["buffer-count"] ?? 0, "bufferSeconds": native["buffer-seconds"] ?? 0,
+            "comparison": native["comparison"] ?? "enhanced"] as [String: Any]
+        state["capabilities"] = ["prepared": false, "pip": false, "sameFrameComparison": native["compare-ready"] as? Bool ?? false,
+            "playbackModes": !modes.isEmpty]
+    }
+    private func publish() { updateProcessing(); onState?(state) }
+    private func persist() {
+        defaults.set(["enabled": enabled, "strength": strength, "colorStrength": colorStrength, "width": width, "height": height,
+            "mode": mode, "volume": state["volume"] as? Double ?? 100, "muted": state["muted"] as? Bool ?? false,
+            "subtitleBrightness": subtitleBrightness, "subtitleScale": subtitleScale, "subtitleDelay": subtitleDelay], forKey: "HDRPlayer.preferences.v1")
+    }
+}

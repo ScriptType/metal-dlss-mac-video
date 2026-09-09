@@ -27,3 +27,4 @@ references/*
 *.xcuserstate
 **/xcuserdata/
 apps/macos/Sources/Resources/Controls/
+apps/harness/Sources/Resources/Controls/

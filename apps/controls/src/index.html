@@ -8,17 +8,56 @@
   <link rel="stylesheet" href="styles.css">
   <script src="controls.js" defer></script>
 </head>
-<body class="bg-zinc-950 font-sans text-zinc-100">
-  <main class="flex h-32 items-center justify-between gap-6 px-6">
-    <div>
-      <p class="text-sm font-semibold tracking-wide">HDR Player <span class="ml-2 rounded bg-teal-950 px-2 py-1 text-xs text-teal-300">Native bypass</span></p>
-      <p class="mt-3 text-xs text-zinc-400">Open a local video to start playback.</p>
+<body>
+  <main aria-label="Video playback controls">
+    <div class="source-row">
+      <div class="source-title"><span class="hdr-badge">HDR</span><span id="title">Open a video</span></div>
+      <output id="status" role="status" aria-live="polite">Native video · waiting for player</output>
+      <button id="open" data-command="open" class="quiet" title="Open video (⌘O)">Open video</button>
     </div>
-    <nav aria-label="Playback" class="flex gap-2">
-      <button data-action="open" class="rounded-lg bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-white focus-visible:outline-2 focus-visible:outline-teal-400">Open video</button>
-      <button data-action="play" class="rounded-lg bg-zinc-800 px-4 py-2 text-sm hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-teal-400">Play</button>
-      <button data-action="pause" class="rounded-lg bg-zinc-800 px-4 py-2 text-sm hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-teal-400">Pause</button>
-    </nav>
+    <div class="timeline-row">
+      <output id="position" aria-label="Playback position">0:00</output>
+      <input id="timeline" type="range" min="0" max="1" step="0.001" value="0" aria-label="Seek video" disabled>
+      <output id="duration" aria-label="Video duration">0:00</output>
+    </div>
+    <div class="transport-row">
+      <nav class="transport" aria-label="Playback">
+        <button data-command="frameStep" data-value="-1" class="icon-button" aria-label="Previous frame" title="Previous frame (,)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 5 8 12l10 7Z"/></svg></button>
+        <button id="play" data-command="togglePause" class="play-button" aria-label="Play" title="Play or pause (Space)"><svg id="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></button>
+        <button data-command="frameStep" data-value="1" class="icon-button" aria-label="Next frame" title="Next frame (.)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 5l10 7-10 7Z"/></svg></button>
+      </nav>
+      <div class="volume-group">
+        <button id="mute" class="icon-button" aria-label="Mute" aria-pressed="false" title="Mute (M)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 5H2v4h3l6 5ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg></button>
+        <input id="volume" type="range" min="0" max="100" step="1" value="100" aria-label="Volume">
+        <output id="volume-value">100%</output>
+      </div>
+      <div class="track-group">
+        <label class="select-label">Audio<select id="audio" aria-label="Audio track"><option value="auto">Automatic</option></select></label>
+        <label class="select-label">Subtitles<select id="sub" aria-label="Subtitle track"><option value="no">Off</option></select></label>
+        <label class="select-label" id="video-label" hidden>Video<select id="video" aria-label="Video track"></select></label>
+        <label class="select-label" id="chapter-label" hidden>Chapter<select id="chapter" aria-label="Chapter"></select></label>
+      </div>
+      <button id="settings-open" class="icon-button" aria-label="Picture and subtitle settings" title="Picture and subtitle settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16M8 3v6M16 9v6M10 15v6"/></svg></button>
+      <button id="fullscreen" class="icon-button" aria-label="Enter fullscreen" title="Fullscreen (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></svg></button>
+    </div>
+    <div class="processing-row" aria-label="Picture processing">
+      <label class="enhancement-toggle"><input id="enhancement" type="checkbox" role="switch"><span>Neural enhancement</span></label>
+      <label class="select-label">Mode<select id="mode" aria-label="Playback mode"><option value="live">Live</option><option value="adaptive">Adaptive</option></select></label>
+      <label class="effect-label" for="strength">Strength<input id="strength" type="range" min="0" max="1" step="0.01" value="1"><output id="strength-value">100%</output></label>
+      <label class="effect-label" for="colorStrength">Colour<input id="colorStrength" type="range" min="0" max="1" step="0.01" value="1"><output id="colorStrength-value">100%</output></label>
+      <button id="compare" data-command="compare" class="quiet" hidden>Compare original</button>
+      <output id="processing-detail">Original HDR</output>
+    </div>
   </main>
+  <dialog id="settings" aria-labelledby="settings-title">
+    <div class="settings-heading"><h2 id="settings-title">Picture &amp; subtitles</h2><button id="settings-close" class="quiet" aria-label="Close settings">Done</button></div>
+    <div class="settings-grid">
+      <label>Processing resolution<select id="quality" aria-label="Neural processing resolution"><option value="32x24">32 × 24</option><option value="160x96">160 × 96</option><option value="320x192">320 × 192</option><option value="512x288">512 × 288</option></select></label>
+      <label>Subtitle brightness<input id="subtitleBrightness" type="range" min="0.1" max="1" step="0.05" value="1"></label>
+      <label>Subtitle size<input id="subtitleScale" type="range" min="0.5" max="3" step="0.1" value="1"></label>
+      <label>Subtitle delay (seconds)<input id="subtitleDelay" type="number" min="-60" max="60" step="0.1" value="0"></label>
+    </div>
+    <p>Processing resolution controls detail and speed. Video output follows the source.</p>
+  </dialog>
 </body>
 </html>
