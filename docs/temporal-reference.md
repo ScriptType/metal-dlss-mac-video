@@ -127,7 +127,41 @@ Only frame 24 in the flash arm differs: every source RGB component is multiplied
 
 At the default size, paired RGB inputs occupy 265,420,800 bytes. Two later four-view captures require 1,061,683,200 bytes more. Including a 2 GiB free-space reserve and 12 MiB metadata allowance across preparation and both captures requires 3,487,170,560 free bytes before starting the whole sequence. Preparation itself checks only its input payload and 4 MiB metadata requirement; a capture runner must enforce its own remaining-space and execution limits.
 
-For a later matched neural observation, use a separate fresh persistent processor per arm and supply all 48 frames with the same pinned model/runtime and 512 × 288 processing, Float16 precision, strength/colour strength 1, ratio 2, white 203 nits and automatic motion. Keep normal noise/history evolution and automatic reset decisions. Compare outputs at the same frame ordinal in the control and flash captures, retaining both reset inventories and all pre-event, event and recovery frames. Comparing a post-flash output only with a different earlier noise/history position would confound the experiment. This fixture prepares the explicit flash corpus case; it does not establish neural recovery, an ideal enhanced target, perceived flicker, a defect or source-rate performance.
+For a matched neural observation, use a separate fresh persistent processor per arm and supply all 48 frames with the same pinned model/runtime and 512 × 288 processing, Float16 precision, strength/colour strength 1, ratio 2, white 203 nits and automatic motion. Keep normal noise/history evolution and automatic reset decisions. Compare outputs at the same frame ordinal in the control and flash captures, retaining both reset inventories and all pre-event, event and returned-input frames. Comparing a post-flash output only with a different earlier noise/history position would confound the experiment. This fixture supplies the explicit flash corpus case; it does not establish neural recovery, an ideal enhanced target, perceived flicker, a defect or source-rate performance.
+
+### Matched flash analysis
+
+```sh
+uv run --frozen python scripts/analyze-flash-reference.py \
+  --input-pair artifacts/global-flash-input/pair.json \
+  --control artifacts/global-flash-control-capture/manifest.json \
+  --flash artifacts/global-flash-flash-capture/manifest.json \
+  --output artifacts/global-flash-analysis
+```
+
+The analysis first requires both complete 48-frame captures, their original input pair, exact source/timing/model/runtime pairing and all four finite, hashed views per frame. All four views at each pre-flash ordinal 0–23 must match between arms before post-flash interpretation is admitted. A failure is retained without selecting only matching frames. Automatic history-reset flags are observations, not prescribed results.
+
+For each RGB component at the same pixel and ordinal, define control residual `R_control = E_control − O_control`, flash residual `R_flash = E_flash − O_flash`, and paired residual difference `D = R_flash − R_control`. Each arm's original is subtracted before comparing enhancement, including frame 24 where the flash original is deliberately brighter. Once original pixels return to their matched values at frame 25, `D` also equals the difference between enhanced outputs. The control retains its own natural temporal variation.
+
+Report whole-frame signed mean, mean absolute, RMS and maximum absolute component values in nits for all 48 ordinals. Summaries retain the pre-event interval 0–23, event frame 24 and returned-input interval 25–47 separately. Component RMS weights red, green and blue equally; it is not luminance or a perceptual score. Any recovery zoom supplements the full series without removing the event. A later output or the control is an empirical comparison, not an ideal enhanced target or an accepted recovery threshold.
+
+### M3 paired flash observation
+
+The [paired capture evidence](evidence/m3-global-flash.json) retains both complete 48-frame runs at 640 × 360 source/reference resolution and 512 × 288 neural processing. All 384 raw views were finite and matched their recorded hashes; all 96 original views matched the prepared source bytes. The 96 pre-event view pairs were byte-identical. Both runs reported a history reset only at frame 0, with no reset at the flash. Maximum identity-minus-original component errors were 0.000003814697265625 nit for control and 0.0000152587890625 nit for flash.
+
+The [complete scalar CSV](evidence/m3-global-flash.csv) preserves 144 residual records across all 48 ordinals. Independent saved-pixel recomputation matched every per-frame metric and all pooled mean/RMS values exactly. Three CPU controls separately exercise known paired residuals and rejection of resealed pre-event or source-event mismatches; their fabricated captures are not model evidence.
+
+| Interval | Control E−O RMS (nit) | Flash E−O RMS (nit) | Paired D RMS (nit) |
+| --- | ---: | ---: | ---: |
+| Pre-event 0–23 | 40.452169 | 40.452169 | 0 |
+| Event 24 | 39.838066 | 49.686404 | 10.331803 |
+| Returned input 25–47 | 41.034586 | 41.148813 | 3.128464 |
+
+These interval values pool squared component residuals before taking the square root. At frame 24, maximum absolute paired D was 722.585449 nit. The returned-input series was nonmonotonic: its largest frame RMS was 7.118499 nit at frame 25, and frame 47 was 2.241336 nit. This records a response relative to the matched evolving control; it does not isolate individual noise/history contributions or establish a perceptual, defect, recovery or throughput threshold.
+
+![All 48 frames of control and flash RGB residual RMS, with the event at frame 24 and the returned-input interval at frames 25–47.](evidence/m3-global-flash.png)
+
+The [standalone PDF](evidence/m3-global-flash.pdf) contains the same complete series. The figure uses equal-weight RGB component RMS throughout, with no frame filtering or luminance conversion.
 
 ## Motion-aligned occlusion analysis
 
@@ -162,7 +196,7 @@ The 10,440 background pixels revealed at frame 21 show a 51.6538-nit RMS residua
 
 The capture process exits successfully in 77.192 seconds, with peak sampled RSS 639,041,536 bytes and at least 6,602,280,960 free disk bytes; both power readings show AC. All 311 frozen input/runtime/source pins remain unchanged. The original wrapper's final model check reports failure because it compared absolute and relative directory paths literally. That failed report is preserved. A separate audit verifies the paths resolve to the same directory, both model hashes match and the completed capture passes the remaining checks; no capture was repeated or rewritten. Process duration includes preflight, inference, readback and writes and differs from the manifest's later timing origin.
 
-The observations identify temporal residual variation for further investigation. They do not establish its cause, acceptable temporal quality, absence of ghosting, source-rate Live, physical HDR or native playback. Grain/global-flash cases and natural-scene quality retain their separate requirements. Raw views and the fixed SDR review remain at `artifacts/temporal-occlusion-reference-1/capture-1` and `review-1` respectively.
+The observations identify temporal residual variation for further investigation. They do not establish its cause, acceptable temporal quality, absence of ghosting, source-rate Live, physical HDR or native playback. The paired observation above extends flash coverage; grain and natural-scene quality retain their separate requirements. Raw views and the fixed SDR review remain at `artifacts/temporal-occlusion-reference-1/capture-1` and `review-1` respectively.
 
 ## M3 natural-sequence observation
 
