@@ -53,3 +53,4 @@ jobs:
           uv run --frozen python scripts/test_apple_hdr_reference.py
           uv run --frozen python scripts/test_occlusion_reference_analysis.py
           uv run --frozen python scripts/test_flash_reference_analysis.py
+          uv run --frozen python scripts/test_grain_reference_analysis.py
