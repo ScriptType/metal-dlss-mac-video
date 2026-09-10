@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-09-10",
+  "hardware": {
+    "chip": "Apple M3",
+    "memoryGiB": 16,
+    "os": "26.5"
+  },
+  "scope": "Retained-frame CPU motion analysis and two fresh neural controls; numerical evidence only, with no temporal-quality or physical-display acceptance.",
+  "decision": "The extra wall-luminance/residual variation survives the tested original-only global translations and fixed common masks. These results do not justify attributing it solely to camera motion, nor identify a model/runtime defect or perceptual failure.",
+  "source": {
+    "reference": "m3-apple-temporal-reference.json",
+    "sourceFrameRangeInclusive": [
+      1498,
+      1527
+    ],
+    "frameDuration": {
+      "value": 1001,
+      "timescale": 24000
+    },
+    "referenceDimensions": [
+      960,
+      540
+    ],
+    "processingDimensions": [
+      320,
+      192
+    ],
+    "luminance": "Linear BT.2020 Y=0.2627R+0.678G+0.0593B in cd/m2",
+    "historicalWallROIxyxy": [
+      20,
+      40,
+      180,
+      360
+    ],
+    "captureManifest": {
+      "path": "artifacts/apple-temporal-reference-capture-1/manifest.json",
+      "bytes": 199295,
+      "sha256": "0bbc1a06fda533338ac520a6615c686deb6ff23705c49ea79f66be1f6f7abce2"
+    }
+  },
+  "motionAnalysis": {
+    "primaryResults": [
+      {
+        "configuration": "anchor1498/primary",
+        "commonPixels": 42950,
+        "fraction": 0.8388671875,
+        "maximumAdjacentOriginalNits": 0.26192967826069946,
+        "maximumAdjacentEnhancedNits": 0.9770955241397274,
+        "maximumAdjacentResidualNits": 0.9383156707137772,
+        "maximumResidualPair": [
+          1526,
+          1527
+        ],
+        "finalPairSignedChangesNits": {
+          "original": -0.03877985342595025,
+          "identity": -0.03877987713974562,
+          "enhanced": -0.9770955241397274,
+          "residual": -0.9383156707137772,
+          "identityResidual": -2.3713795371804736e-08
+        },
+        "maximumSameMaskZeroVsAlignedResidualChangeNits": 0.005785939744647806,
+        "sampledNineOffsetMaximumAdjacentIntervalSeparationNits": 0.9033786071613772,
+        "identityOriginalMaximumPixelLuminanceErrorNits": 3.814697272730427e-06
+      },
+      {
+        "configuration": "anchor1512/primary",
+        "commonPixels": 42464,
+        "fraction": 0.829375,
+        "maximumAdjacentOriginalNits": 0.26047224535692237,
+        "maximumAdjacentEnhancedNits": 0.9829722211224166,
+        "maximumAdjacentResidualNits": 0.9422298591317642,
+        "maximumResidualPair": [
+          1526,
+          1527
+        ],
+        "finalPairSignedChangesNits": {
+          "original": -0.0407423619906524,
+          "identity": -0.04074238977911193,
+          "enhanced": -0.9829722211224166,
+          "residual": -0.9422298591317642,
+          "identityResidual": -2.778845953343989e-08
+        },
+        "maximumSameMaskZeroVsAlignedResidualChangeNits": 0.009590090872102053,
+        "sampledNineOffsetMaximumAdjacentIntervalSeparationNits": 0.9074971319346565,
+        "identityOriginalMaximumPixelLuminanceErrorNits": 3.814697272730427e-06
+      }
+    ],
+    "controls": {
+      "count": 5,
+      "knownShiftLogNuisanceErrorPixels": 0.0003283420888327306,
+      "knownShiftPlusTwoNitOffsetErrorPixels": 0.00035846323805716106,
+      "flatPatchRejected": true,
+      "integerBilinearIdentityExact": true,
+      "identicalViewsSameTransformMaskErrorNits": 0
+    },
+    "execution": {
+      "command": "VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 uv run --frozen python -u artifacts/apple-temporal-motion-audit-1/analyze.py",
+      "plotCommand": "VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 uv run --frozen --with matplotlib==3.10.8 python artifacts/apple-temporal-motion-audit-1/plot-final.py",
+      "elapsedCPUWallSeconds": 26.20346608303953,
+      "peakResidentBytes": 247545856,
+      "gpuUsed": false,
+      "runtimeRebuild": false,
+      "all101PinnedInputsUnchanged": true
+    },
+    "method": {
+      "registrationSupportXYXY": [
+        12,
+        24,
+        312,
+        284
+      ],
+      "anchors": [
+        1498,
+        1512
+      ],
+      "all60RegistrationsPassStatedGuards": true,
+      "photometricParameters": "Nuisance fit for registration only; measured luminance is never normalized.",
+      "commonMasks": "Intersect original-only edge and correspondence guards over all 30 frames; reuse identical transform/mask for all three measured views.",
+      "usableSupportMinimumFraction": 0.25,
+      "strictMasksExcluded": true,
+      "displacementSensitivity": "Nine predefined offsets with dx,dy in {-1,0,1} pixels; sampled sensitivity, not a continuous-motion bound."
+    },
+    "independentReview": "All six masks, 101 artifact pins and 2,433 arithmetic comparisons replayed; maximum difference 2.42e-14."
+  },
+  "freshControls": {
+    "sourceFrameIndices": [
+      1526,
+      1527
+    ],
+    "benchmarkSHA256": "7c27d54aaf7c42d986d9e442cb16df65145e43c0e526850be3342acb273cef30",
+    "sameBenchmarkAsContinuousCapture": true,
+    "rootRevision": "1369cad53f2613b11802cbc757b3a271b9edc34c",
+    "mlxDLSSRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+    "settings": {
+      "colourStrength": 1,
+      "maximumLuminanceRatio": 2,
+      "mlxCacheBytes": 268435456,
+      "motionRequested": "automatic",
+      "precision": "float16",
+      "processingHeight": 192,
+      "processingWidth": 320,
+      "referenceWhiteNits": 203,
+      "sceneCutThreshold": 0.3,
+      "strength": 1,
+      "temporal": true
+    },
+    "frozenFilesUnchanged": true,
+    "processExitCodes": [
+      0,
+      0
+    ],
+    "wholeHistoricalWallMeans": [
+      {
+        "sourceFrameIndex": 1526,
+        "originalMeanNits": 49.098995930495306,
+        "continuousEnhancedMeanNits": 49.525408091084955,
+        "freshEnhancedMeanNits": 51.986379306685706,
+        "continuousResidualMeanNits": 0.42641216058964915,
+        "freshResidualMeanNits": 2.8873833761903995
+      },
+      {
+        "sourceFrameIndex": 1527,
+        "originalMeanNits": 49.04007200301407,
+        "continuousEnhancedMeanNits": 48.54003550355662,
+        "freshEnhancedMeanNits": 49.928450971572836,
+        "continuousResidualMeanNits": -0.5000364994574511,
+        "freshResidualMeanNits": 0.8883789685587686
+      }
+    ],
+    "adjacentChange1527Minus1526": {
+      "fresh": {
+        "original": -0.058923927481238536,
+        "identity": -0.058923935063106114,
+        "enhanced": -2.0579283351128694,
+        "enhancedMinusOriginal": -1.999004407631631
+      },
+      "continuous": {
+        "original": -0.058923927481238536,
+        "identity": -0.058923935063106114,
+        "enhanced": -0.9853725875283388,
+        "enhancedMinusOriginal": -0.9264486600471002
+      }
+    },
+    "interpretation": "Independent fresh processing changes both temporal history and noise index. The larger fresh difference does not isolate either cause. Original, proxy and identity payloads remain byte-identical to continuous capture; enhanced differs."
+  },
+  "limitations": [
+    "Only 30 retained frames at 960x540 reference size and 320x192 neural processing; no broader or full-resolution quality acceptance.",
+    "The smooth wall and architectural support leave local vertical motion and parallax uncertain. Translation is not ground-truth dense motion or disocclusion.",
+    "Original-consistency masks may exclude real lighting changes as well as occlusions. Primary and loose masks are usable; strict masks remain excluded below 25% common support.",
+    "The nine fixed displacement offsets provide sampled sensitivity, not a continuous deformation bound. No perceptual threshold is selected.",
+    "Identity agreement checks retained HDR reconstruction and interpolation; it does not prove the enhanced prediction is perceptually acceptable.",
+    "Retained views lack internal SDR model output, dense flow and confidence. The fresh controls reset both history and noise index and do not isolate either cause.",
+    "No production algorithm, model or prior capture changed. No flicker, physical display, general temporal quality or Live-performance acceptance follows."
+  ],
+  "artifactPins": [
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/summary.json",
+      "bytes": 7623,
+      "sha256": "f788f9e752fe96aa454c3a32d625053cdf1ce22af6d05a39da0e96d97754af4f"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/report.json",
+      "bytes": 577310,
+      "sha256": "99ddce01bcb7902a0e9f88a55f1fe70603bf2e2b42e9072b09d52f678487cb3b"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/analyze.py",
+      "bytes": 19779,
+      "sha256": "f9073b8a95af16d50ef80ec4a0d05ef3af39699057e0cd13e92fdcbbf51319e7"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/configuration.json",
+      "bytes": 2089,
+      "sha256": "46f073e643e85364c55a70279c2b34ce3025d3efe3da9b6efdbf2bf2b49f1d53"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/cpu-checks.json",
+      "bytes": 7935,
+      "sha256": "10baed4c89a2bcd51e74d3634e696a86f9f462808da82b02213f9459d1fc7d13"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/brightness-offset-control.json",
+      "bytes": 4338,
+      "sha256": "8c5dccd66338f8cd20b703aaeb42ca8cbc17db4e63e3a38b4abf8c742e793ae3"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/plot-final-provenance.json",
+      "bytes": 784,
+      "sha256": "4849074d46c2f8d8f444459301ddb49eb854f41b6531b0fa5b387ed8f0a40423"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-audit-1/registration-contact.png",
+      "bytes": 690804,
+      "sha256": "fe6dfad2d21168fccbb9ee3f533cb63fce527ef6d0f003f35c5827dab5f2629d"
+    },
+    {
+      "path": "artifacts/apple-temporal-motion-independent-review-1/report.json",
+      "bytes": 4082,
+      "sha256": "9daa6360abd1c3197defe6c3a54775c1e4752f8f11b95a35f45fcee2364dd473"
+    },
+    {
+      "path": "artifacts/apple-temporal-source-audit-1/report.json",
+      "bytes": 11798,
+      "sha256": "c7f27ecd33811af2bfee27fd6d727b90a98980c1b598788c3a4f17910092cfac"
+    },
+    {
+      "path": "artifacts/apple-temporal-fresh-pair-1/report.json",
+      "bytes": 33178,
+      "sha256": "db8ac40b8f5017c8a48ef81ffc8742626cbb584f01e85b7d36dfea7d45e20a43"
+    },
+    {
+      "path": "artifacts/apple-temporal-fresh-pair-1/root-review.json",
+      "bytes": 351,
+      "sha256": "ca30d3dcfe2fae89e0b20d77a1f316b120874b60256037115d1abbae93e24db5"
+    },
+    {
+      "path": "docs/evidence/m3-apple-temporal-motion.csv",
+      "bytes": 50048,
+      "sha256": "63cc291ec8b5862f0624c8fc6e53c5873b486a5f4e08fca45b6f9870a295fce7"
+    },
+    {
+      "path": "docs/evidence/m3-apple-temporal-motion.pdf",
+      "bytes": 28668,
+      "sha256": "04a9e44855c82ae77b324144ed891088e346760fd885eaca0142e47198c2d1f2"
+    }
+  ]
+}
