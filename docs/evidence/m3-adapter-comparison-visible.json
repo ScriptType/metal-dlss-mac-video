@@ -1,0 +1,627 @@
+{
+  "schemaVersion": 2,
+  "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+  "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+  "revisions": {
+    "root": {
+      "revision": "56da6303685ab9abf23efc369772d38c4666f2c8",
+      "status": [
+        "?? scripts/system-pip-accessibility.swift"
+      ],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {
+        "scripts/system-pip-accessibility.swift": "fd567de94fd33228ddf68e23f27b7e11845fadced08cb3d47a1de93cb8d51d4d"
+      }
+    },
+    "mpv": {
+      "revision": "904d1e05dfa9be551acd95fe562722c0e3b26e33",
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {}
+    },
+    "Erika": {
+      "revision": "59dabfaaf24a92742e6707e3df64665bff7b1c9b",
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {}
+    },
+    "MLX-DLSS": {
+      "revision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {}
+    }
+  },
+  "binarySHA256": {
+    "artifacts/mpv-build/mpv": "8a96f24962ebbbb41acea2c7c25d1c5c56387bde1fb464f7069103c1a639f902",
+    "artifacts/mpv-build/libmpv.2.dylib": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+    "artifacts/erika-target/debug/macos_native_demo": "929c0eed6f233abbd2b398d599da650b384a423830edac2ef09480be3f841154",
+    ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+    ".build/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "artifacts/erika-target/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+  },
+  "processingWidth": 160,
+  "processingHeight": 96,
+  "drawableWidth": 960,
+  "drawableHeight": 496,
+  "scope": "M3 development comparison; same source/model/shape/drawable, actual native visibility gated and app-muted audio; no final M5 selection",
+  "limitations": [
+    "mpv Adaptive buffers both clocks; Erika currently drops unsustainable admissions",
+    "Navigation harnesses differ: mpv rapid original-first seek/comparison, Erika one scheduled seek",
+    "mpv A/V is cached audio-minus-video at queue time; Erika is video-minus-audio estimated at drawable presentation",
+    "Physical display luminance, temporal quality, copies and energy remain separate acceptance checks",
+    "Native visibility eligibility requires actual visible/unoccluded/unminimized state over all warmed completed-work intervals and mpv playback-clock interval, with no observation gaps over 1.5 s; it does not qualify synchronization, physical presentation or select a core",
+    "All vendor source trees were clean at capture; exact root revision/status and untracked source hashes are recorded. Binary hashes identify development builds independently of checkout revision.",
+    "Earlier failures remain in separate evidence. Throughput differences across captures cannot be attributed solely to visibility/ordering: runtime builds, process warm-up and power/desktop conditions differ.",
+    "One warmed Erika output per run has no usable current-generation presentation; those frames remain in the reports and are not fabricated as A/V samples."
+  ],
+  "capturePassed": true,
+  "visibilityEligible": true,
+  "presentationComparisonQualified": false,
+  "rawComparisonSHA256": "64cba12674e24732ab29b59acd65f138554526a708055ef835ae51a41e602d07",
+  "captureDirectory": "artifacts/m3-adapter-comparison-visible-2",
+  "assessment": "All four captures and native visibility gates passed with unchanged binaries. mpv meets its measured cached scheduling-offset target; Erika has hundreds-of-milliseconds video lag under admission-dropping overload. Physical synchronization, full-quality throughput and final M5 selection remain unqualified.",
+  "binaryHashesVerifiedAfterFinalExit": true,
+  "runs": [
+    {
+      "adapter": "mpv",
+      "index": 1,
+      "startedUnixSeconds": 1789003722.806953,
+      "report": "mpv-1.json",
+      "completed": 397,
+      "warmed": 393,
+      "completedFPS": 13.17039809397417,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t45%; discharging; 3:02 remaining present: true",
+      "visibility": {
+        "completedWork": {
+          "eligible": true,
+          "startHostSeconds": 1017914.7639255002,
+          "endHostSeconds": 1017944.6593849586,
+          "durationSeconds": 29.89545945834834,
+          "nativeObservationCount": 121,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.25097362499218434,
+          "observedVisibleSeconds": 29.89545945834834,
+          "observedInactiveSeconds": 0.0,
+          "ineligibleObservations": [],
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+        },
+        "playbackClock": {
+          "eligible": true,
+          "startHostSeconds": 1017914.6306395,
+          "endHostSeconds": 1017944.656574083,
+          "durationSeconds": 30.025934583041817,
+          "nativeObservationCount": 122,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.25097362499218434,
+          "observedVisibleSeconds": 30.025934583041817,
+          "observedInactiveSeconds": 0.0,
+          "ineligibleObservations": [],
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+        },
+        "eligible": true
+      },
+      "warmedAVOffsetSeconds": null,
+      "completedWorkSeconds": {
+        "p99": 0.12168263170402491,
+        "maximum": 0.17491241660900414,
+        "p50": 0.06541145837400109,
+        "count": 393,
+        "minimum": 0.0635830833343789,
+        "p95": 0.11398234167136251
+      },
+      "completedStageWallSeconds": {
+        "reconstruction": {
+          "minimum": 0.000986292,
+          "p50": 0.001533167,
+          "p95": 0.0021287832,
+          "maximum": 0.004774583000000001,
+          "p99": 0.00227778056,
+          "count": 393
+        },
+        "inference": {
+          "minimum": 0.050326792,
+          "p50": 0.051296209,
+          "p95": 0.09492742499999998,
+          "maximum": 0.155165167,
+          "p99": 0.10332481027999992,
+          "count": 393
+        },
+        "proxy": {
+          "minimum": 0.000210583,
+          "p50": 0.00041075,
+          "p95": 0.0005411337999999998,
+          "maximum": 0.000987125,
+          "p99": 0.0005889796399999998,
+          "count": 393
+        },
+        "motion": {
+          "minimum": 0.01063625,
+          "p50": 0.011295917,
+          "p95": 0.015000324999999998,
+          "maximum": 0.020475583,
+          "p99": 0.016447979999999997,
+          "count": 393
+        }
+      },
+      "gpuStageSeconds": {
+        "rgba16f_pack": {
+          "minimum": 8.499948307871819e-06,
+          "p50": 8.66665504872799e-06,
+          "p95": 1.2125005014240742e-05,
+          "maximum": 0.000220166752114892,
+          "p99": 3.1144991517066915e-05,
+          "count": 393
+        },
+        "planar_import": {
+          "minimum": 4.333339165896177e-05,
+          "p50": 4.412501584738493e-05,
+          "p95": 9.372495114803314e-05,
+          "maximum": 0.00030087505001574755,
+          "p99": 9.518003091216083e-05,
+          "count": 393
+        }
+      },
+      "peakSampledResidentBytes": 483917824,
+      "maximumQueueSlots": 2,
+      "peakRetainedBytes": 5777024,
+      "maximumAllocatorBytes": {
+        "mlx_active": 305442664,
+        "resident_model_payload": 291576650,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_cache": 274957986,
+        "mlx_peak_active": 565571636
+      },
+      "unavailableMetrics": [
+        "presentation timing, drops and duplicates",
+        "audio/video offset",
+        "seek latency",
+        "power and energy",
+        "isolated neural/proxy GPU intervals; completed wall stages are separate"
+      ],
+      "policy": {
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.001333,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+        "steadyMedianAVOffsetSeconds": -0.0,
+        "steadySampleCount": 938,
+        "synchronisation20msTargetMet": true,
+        "adaptiveBufferedSeconds": 17.634434,
+        "adaptiveBufferEpisodes": 394,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "exitCode": 0,
+        "steadyMedianAVDriftSeconds": 0.0
+      },
+      "reportSHA256": {
+        "mpv-1.json": "e0ff9ea330e4f1d42774749aa2edb1269cc924c1002adee4a41be966b311dda6",
+        "mpv-1.native.log": "c1352503209f4e74dc54f33048875fa3361d1f5a864790f54d6c10ac2bda76ec",
+        "mpv-1.visibility.json": "21d1860e0be296136ba0769394019884677f94b3cd54fffb8bb741decfe3a748",
+        "mpv-1.engine.json": "8ebe9b616b85c6f4a5228f1bed8504a914e9e76fa7955d44bf342ef38d2ace1b"
+      }
+    },
+    {
+      "adapter": "erika",
+      "index": 1,
+      "startedUnixSeconds": 1789003756.297067,
+      "report": "erika-1.json",
+      "completed": 305,
+      "warmed": 299,
+      "completedFPS": 9.351987635320352,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t44%; discharging; 2:52 remaining present: true; app-muted=1; no energy measurement",
+      "visibility": {
+        "completedWork": {
+          "eligible": true,
+          "startHostSeconds": 1017948.2355401668,
+          "endHostSeconds": 1017980.2348764169,
+          "durationSeconds": 31.999336250009947,
+          "nativeObservationCount": 33,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 1.0180504583986476,
+          "observedVisibleSeconds": 31.999336250009947,
+          "observedInactiveSeconds": 0.0,
+          "ineligibleObservations": [],
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+        },
+        "eligible": true
+      },
+      "warmedAVOffsetSeconds": {
+        "p99": -0.25626199876520556,
+        "maximum": -0.20598431336149914,
+        "minimum": -0.524736370374157,
+        "count": 298,
+        "p95": -0.2578786457701702,
+        "p50": -0.28991648469280085
+      },
+      "completedWorkSeconds": {
+        "p99": 0.18437434008810644,
+        "maximum": 0.21674229169730097,
+        "minimum": 0.07096787507180125,
+        "count": 299,
+        "p95": 0.132080033305101,
+        "p50": 0.09939995838794857
+      },
+      "completedStageWallSeconds": {
+        "inference": {
+          "p99": 0.12536081099999974,
+          "p50": 0.053474792,
+          "count": 299,
+          "minimum": 0.051381292,
+          "maximum": 0.167372417,
+          "p95": 0.08557707529999999
+        },
+        "reconstruction": {
+          "p99": 0.003910610319999996,
+          "p50": 0.0013554169999999998,
+          "count": 299,
+          "minimum": 0.000885874,
+          "maximum": 0.004174917,
+          "p95": 0.0025160033
+        },
+        "proxy": {
+          "p99": 0.0029777643399999986,
+          "p50": 0.000659792,
+          "count": 299,
+          "minimum": 0.0003475,
+          "maximum": 0.004474208,
+          "p95": 0.0019720919999999986
+        },
+        "motion": {
+          "p99": 0.004365130499999998,
+          "p50": 0.001383,
+          "count": 299,
+          "minimum": 0.001177625,
+          "maximum": 0.013617625,
+          "p95": 0.003911320499999997
+        }
+      },
+      "gpuStageSeconds": {
+        "rgba16f_pack": {
+          "minimum": 8.624978363513947e-06,
+          "p95": 1.5224923845380525e-05,
+          "maximum": 0.00013729161582887173,
+          "p99": 4.9310834147035265e-05,
+          "p50": 8.958275429904461e-06,
+          "count": 299
+        },
+        "planar_import": {
+          "minimum": 4.337495192885399e-05,
+          "p95": 7.220834959298372e-05,
+          "maximum": 0.0002571250079199672,
+          "p99": 0.0001653467211872339,
+          "p50": 4.425004590302706e-05,
+          "count": 299
+        }
+      },
+      "peakSampledResidentBytes": 473481216,
+      "maximumQueueSlots": 3,
+      "peakRetainedBytes": 8665536,
+      "maximumAllocatorBytes": {
+        "resident_model_payload": 291576650,
+        "mlx_peak_active": 565309504,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 305540968,
+        "mlx_cache": 269140530
+      },
+      "unavailableMetrics": [
+        "GPU copy count",
+        "CPU readback count",
+        "CPU wait count",
+        "power and energy",
+        "isolated neural/proxy GPU intervals; completed wall stages are separate"
+      ],
+      "presentationDiagnostics": {
+        "gpu_completed": 1959,
+        "gpu_failed": 0,
+        "presented": 1959,
+        "stale_callbacks": 1,
+        "submitted": 1959,
+        "unpresented": 0
+      },
+      "admissionDrops": 674,
+      "staleCompletions": 0,
+      "uniquePresentedOutputs": 304,
+      "warmedOutputsWithoutUsablePresentation": [
+        {
+          "frameID": 67,
+          "generation": 4,
+          "submittedHostSeconds": 1017949.6350355418,
+          "completedHostSeconds": 1017949.7909860419
+        }
+      ],
+      "reportSHA256": {
+        "erika-1.json": "3c189189d175a249011e27f1f2bd0a9b03dc40c5301bad481171e58b4d6cdb50",
+        "erika-1.native.log": "4d12847c79fd9835c6387b619141e50a3a34da12110fff041e297c8e41a4ecb5",
+        "erika-1.visibility.json": "a55d1d9cfe1873d1fe2a4c2811d2e94ff7394fb197e21710b5824536b89720d7",
+        "erika-1.json.adapter.json": "06afe2fd4ba1bcbc4c7acbda2d35e5ca9f662ce30fde8cf6d6019651c9feb122"
+      }
+    },
+    {
+      "adapter": "mpv",
+      "index": 2,
+      "startedUnixSeconds": 1789003791.620335,
+      "report": "mpv-2.json",
+      "completed": 424,
+      "warmed": 420,
+      "completedFPS": 14.075541133764823,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t44%; discharging; 2:42 remaining present: true",
+      "visibility": {
+        "completedWork": {
+          "eligible": true,
+          "startHostSeconds": 1017983.3610946252,
+          "endHostSeconds": 1018013.2330636252,
+          "durationSeconds": 29.871968999970704,
+          "nativeObservationCount": 121,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.2510234584333375,
+          "observedVisibleSeconds": 29.871968999970704,
+          "observedInactiveSeconds": 0.0,
+          "ineligibleObservations": [],
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+        },
+        "playbackClock": {
+          "eligible": true,
+          "startHostSeconds": 1017983.242341958,
+          "endHostSeconds": 1018013.256739,
+          "durationSeconds": 30.01439704198856,
+          "nativeObservationCount": 121,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.2510234584333375,
+          "observedVisibleSeconds": 30.01439704198856,
+          "observedInactiveSeconds": 0.0,
+          "ineligibleObservations": [],
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+        },
+        "eligible": true
+      },
+      "warmedAVOffsetSeconds": null,
+      "completedWorkSeconds": {
+        "p99": 0.09116859751753509,
+        "p95": 0.08202999787754378,
+        "maximum": 0.12574512499850243,
+        "count": 420,
+        "minimum": 0.06298741663340479,
+        "p50": 0.06944943754933774
+      },
+      "completedStageWallSeconds": {
+        "proxy": {
+          "count": 420,
+          "minimum": 0.000228834,
+          "p95": 0.00045032709999999997,
+          "maximum": 0.001016375,
+          "p50": 0.000378604,
+          "p99": 0.0005359882100000001
+        },
+        "motion": {
+          "count": 420,
+          "minimum": 0.010615625,
+          "p95": 0.01569543125,
+          "maximum": 0.020904334,
+          "p50": 0.0117641455,
+          "p99": 0.01868410571
+        },
+        "reconstruction": {
+          "count": 420,
+          "minimum": 0.000948333,
+          "p95": 0.00195062505,
+          "maximum": 0.005120708,
+          "p50": 0.001313646,
+          "p99": 0.0043502138300000005
+        },
+        "inference": {
+          "count": 420,
+          "minimum": 0.049679333,
+          "p95": 0.06513797644999998,
+          "maximum": 0.106676125,
+          "p50": 0.0532307495,
+          "p99": 0.07311672973
+        }
+      },
+      "gpuStageSeconds": {
+        "rgba16f_pack": {
+          "count": 420,
+          "minimum": 8.541624993085861e-06,
+          "p95": 3.0643778154626474e-05,
+          "maximum": 0.0005025833379477262,
+          "p50": 8.750008419156075e-06,
+          "p99": 0.0001471558108460159
+        },
+        "planar_import": {
+          "count": 420,
+          "minimum": 4.329171497374773e-05,
+          "p95": 6.438749260269104e-05,
+          "maximum": 0.00010474992450326681,
+          "p50": 4.400010220706463e-05,
+          "p99": 7.510746479965746e-05
+        }
+      },
+      "peakSampledResidentBytes": 507346944,
+      "maximumQueueSlots": 2,
+      "peakRetainedBytes": 5777024,
+      "maximumAllocatorBytes": {
+        "mlx_peak_active": 565571636,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 305442664,
+        "mlx_cache": 274957986,
+        "resident_model_payload": 291576650
+      },
+      "unavailableMetrics": [
+        "presentation timing, drops and duplicates",
+        "audio/video offset",
+        "seek latency",
+        "power and energy",
+        "isolated neural/proxy GPU intervals; completed wall stages are separate"
+      ],
+      "policy": {
+        "steadyMaximumAbsoluteAVOffsetSeconds": 1e-05,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+        "steadyMedianAVOffsetSeconds": 0.0,
+        "steadySampleCount": 943,
+        "synchronisation20msTargetMet": true,
+        "adaptiveBufferedSeconds": 16.641883999999997,
+        "adaptiveBufferEpisodes": 420,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "exitCode": 0,
+        "steadyMedianAVDriftSeconds": 0.0
+      },
+      "reportSHA256": {
+        "mpv-2.json": "953b7e78fc32bb7e463c6c3c6ee8307b78c47a8f08bb7bc66942d1164230a886",
+        "mpv-2.native.log": "86fe5cd7636dc4d044cd8f2eb0d792e75d0956eb466b77149f92baf5902ad20b",
+        "mpv-2.visibility.json": "558cb8770dcb0e14b8342878f009caf273ec6abb571adbbeca0f631f06092edc",
+        "mpv-2.engine.json": "96416ba7c663381b67afad943f2b0b0fa04e093237fab9cee2c26bbfe6ba9243"
+      }
+    },
+    {
+      "adapter": "erika",
+      "index": 2,
+      "startedUnixSeconds": 1789003824.784342,
+      "report": "erika-2.json",
+      "completed": 291,
+      "warmed": 285,
+      "completedFPS": 8.864459303759856,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t43%; discharging; 2:32 remaining present: true; app-muted=1; no energy measurement",
+      "visibility": {
+        "completedWork": {
+          "eligible": true,
+          "startHostSeconds": 1018016.4082820002,
+          "endHostSeconds": 1018048.5885702502,
+          "durationSeconds": 32.180288249976,
+          "nativeObservationCount": 32,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 1.0167225417681038,
+          "observedVisibleSeconds": 32.180288249976,
+          "observedInactiveSeconds": 0.0,
+          "ineligibleObservations": [],
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+        },
+        "eligible": true
+      },
+      "warmedAVOffsetSeconds": {
+        "p50": -0.3090464664882615,
+        "p95": -0.2594404933968883,
+        "p99": -0.25292561897848026,
+        "count": 284,
+        "minimum": -0.4854006759975995,
+        "maximum": -0.19800993928863253
+      },
+      "completedWorkSeconds": {
+        "p50": 0.10654466669075191,
+        "p95": 0.14510175834875555,
+        "p99": 0.1582486616680399,
+        "count": 285,
+        "minimum": 0.08586262504104525,
+        "maximum": 0.18465408333577216
+      },
+      "completedStageWallSeconds": {
+        "reconstruction": {
+          "maximum": 0.006310458,
+          "count": 285,
+          "minimum": 0.000862876,
+          "p50": 0.001292625,
+          "p99": 0.004854253440000001,
+          "p95": 0.0040338924
+        },
+        "inference": {
+          "maximum": 0.131408083,
+          "count": 285,
+          "minimum": 0.051464417,
+          "p50": 0.060392292,
+          "p99": 0.10549095444000006,
+          "p95": 0.09460732460000001
+        },
+        "proxy": {
+          "maximum": 0.004058875,
+          "count": 285,
+          "minimum": 0.000350958,
+          "p50": 0.000652208,
+          "p99": 0.0032567455600000005,
+          "p95": 0.0027141250000000004
+        },
+        "motion": {
+          "maximum": 0.014529708,
+          "count": 285,
+          "minimum": 0.001175417,
+          "p50": 0.001341375,
+          "p99": 0.004647211000000014,
+          "p95": 0.0040287000000000005
+        }
+      },
+      "gpuStageSeconds": {
+        "planar_import": {
+          "maximum": 0.000491625047288835,
+          "count": 285,
+          "minimum": 4.341662861406803e-05,
+          "p50": 4.437495954334736e-05,
+          "p99": 0.00012280336581170582,
+          "p95": 9.121671319007875e-05
+        },
+        "rgba16f_pack": {
+          "maximum": 0.0009720417438074946,
+          "count": 285,
+          "minimum": 8.625094778835773e-06,
+          "p50": 9.124982170760632e-06,
+          "p99": 0.00017325994558632497,
+          "p95": 4.0708365850150587e-05
+        }
+      },
+      "peakSampledResidentBytes": 485031936,
+      "maximumQueueSlots": 3,
+      "peakRetainedBytes": 8665536,
+      "maximumAllocatorBytes": {
+        "mlx_cache": 269222590,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_peak_active": 565456960,
+        "resident_model_payload": 291576650,
+        "mlx_active": 305704808
+      },
+      "unavailableMetrics": [
+        "GPU copy count",
+        "CPU readback count",
+        "CPU wait count",
+        "power and energy",
+        "isolated neural/proxy GPU intervals; completed wall stages are separate"
+      ],
+      "presentationDiagnostics": {
+        "gpu_completed": 1966,
+        "gpu_failed": 0,
+        "presented": 1965,
+        "stale_callbacks": 0,
+        "submitted": 1966,
+        "unpresented": 1
+      },
+      "admissionDrops": 693,
+      "staleCompletions": 0,
+      "uniquePresentedOutputs": 290,
+      "warmedOutputsWithoutUsablePresentation": [
+        {
+          "frameID": 896,
+          "generation": 6,
+          "submittedHostSeconds": 1018048.3246806669,
+          "completedHostSeconds": 1018048.5885702502
+        }
+      ],
+      "reportSHA256": {
+        "erika-2.json": "ab7036477c5cbd9d8646808fd059bbb9f96a432017bf8d101becdf7da95781d0",
+        "erika-2.native.log": "b38fabacedec0fb467b28e51396d9890c5a5eddd24bfbd8ada92dbfdf0e21332",
+        "erika-2.visibility.json": "e2e076110ea7ba4dbbea7513a10434ade0466750b76f3659087c69ebb54d72a9",
+        "erika-2.json.adapter.json": "af442598e3ef749506a0ba75f83eff010a60c9b69dcee625b10e9ec9e2bbba37"
+      }
+    }
+  ]
+}

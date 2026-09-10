@@ -1,8 +1,27 @@
 # Playback-core comparison
 
-mpv remains the provisional application core. Final selection requires the matched M5 results specified in issue #11. The current M3 capture provides development evidence and exposes remaining integration problems.
+mpv remains the provisional application core. The latest M3 comparison passes actual native visibility coverage for all four runs and its measured mpv scheduling-offset target. Erika's visible playback still lags audio under overload. Final selection requires the matched M5 and quality results specified in issue #11.
 
-## M3 workload and capture
+## Visible M3 comparison
+
+The [latest four-run capture](evidence/m3-adapter-comparison-visible.json) alternated mpv, Erika, mpv, Erika on Apple M3/16 GB. All four passed actual window visibility coverage, with maximum observation gaps of 0.251 seconds for mpv and 1.019 seconds for Erika. The complete warmed-work intervals and both mpv timed playback-clock intervals were covered. All application processes exited cleanly, and executable/shared-runtime/Metal-library hashes remained unchanged.
+
+Each run used the same 60-second PQ/30-fps source with audio, model weights, 160×96 neural processing, 320×192 source/output geometry and 960×496 native drawable. Strength/colour strength were 1, reference white 203 nits and maximum gain 2. Runs were sequential on battery at 45–43%, with application-muted device clocks. Source revisions and build hashes are recorded separately: these are development binaries, with clean vendor source checkouts at capture. mpv measured 30 seconds after its seek/comparison sequence; Erika ran for 34 seconds with a seek at four seconds. Their overload policies, navigation sequences and display mapping still differ.
+
+| Adapter / run | Completed / warmed | Completed FPS | Work p95 | Sampled RSS peak |
+|---|---:|---:|---:|---:|
+| mpv / A | 397 / 393 | 13.17 | 114.0 ms | 484 MB |
+| Erika / A | 305 / 299 | 9.35 | 132.1 ms | 473 MB |
+| mpv / B | 424 / 420 | 14.08 | 82.0 ms | 507 MB |
+| Erika / B | 291 / 285 | 8.86 | 145.1 ms | 485 MB |
+
+mpv's Adaptive policy buffered both clocks for 17.63/16.64 seconds, with no decoder/VO drops, no stale-generation observations and at most two pending inputs. Its cached audio-minus-video queue samples had maximum absolute offsets of 1.333/0.010 ms and p95 of 0 ms across 938/943 steady observations. Both met the measured 20-ms scheduling target. These samples do not measure physical audio/video scanout.
+
+Erika recorded 1,959 positive and zero skipped drawable callbacks in A, and 1,965 positive plus one skipped callback in B. All 1,959/1,966 GPU commands completed successfully. Its 298/284 warmed drawable A/V samples had median video-minus-audio offsets of −290/−309 ms, with ranges −525…−206/−485…−198 ms. One warmed output per run lacks a usable current-generation presentation and remains in the report; one prior-generation callback in A was rejected by the existing generation check. The adapter rejected 674/693 new admissions while repeating completed frames. Native visibility and callback delivery are now established for these runs; synchronized overload behavior remains unqualified.
+
+Shared retained-frame storage peaked at 5,777,024 bytes/two occupied slots for mpv and 8,665,536 bytes/three slots for Erika. Model/MLX allocator storage and sampled RSS are separate measurements. Copy/wait/readback totals, energy, physical HDR output and temporal image quality remain unavailable or separate qualification work. These results measure development configurations below the 30-fps source rate; they do not establish full-quality source-rate Live or a final M5 winner. Throughput changes relative to earlier captures cannot be attributed solely to visibility: builds, process warm-up and power/desktop conditions also differ.
+
+## Earlier captures without visibility qualification
 
 Four runs alternated mpv, Erika, mpv, Erika on Apple M3/16 GB with the same 60-second PQ source, model weights, 160×96 neural processing, 320×192 source/output geometry and 960×496 native drawable. Strength/colour strength were 1, reference white 203 nits and maximum gain 2. Both applications requested foreground activation and muted their own audio while retaining the device clock. Runs were sequential on battery at 58–57%; executable, shared-runtime and Metal-library hashes stayed unchanged. Source trees were development snapshots whose revisions and diff hashes are recorded.
 
@@ -23,9 +42,9 @@ Subsequent [controlled Erika diagnostics](erika-adapter.md#controlled-presentati
 
 The [machine-readable capture](evidence/m3-adapter-comparison.json) retains stage distributions, resource counters, timing limits and provenance. Full local reports/logs are under `artifacts/m3-adapter-comparison/`. Unavailable copy/readback/wait, energy, scanout and image-quality evidence stays explicit. No throughput difference is attributed solely to an adapter because overload policy, presentation callbacks and navigation differ.
 
-## Repeat with actual window visibility
+## Earlier visibility check
 
-The [four-run visibility repeat](evidence/m3-adapter-comparison-visibility.json) completed with unchanged binaries and retained all samples. It remains ineligible as a matched presentation comparison: both mpv windows were absent from the visible native stack, while both Erika windows passed continuous native visibility coverage. Requested activation did not establish visibility. A separate metadata-only probe confirmed that the mpv diagnostic selected the actual playback window with valid in-display bounds. The subsequent [CLI ordering correction](mpv-adapter.md#native-cli-window-visibility) passed bounded probes; another matched run is required to qualify continuous visible playback.
+The [earlier four-run visibility check](evidence/m3-adapter-comparison-visibility.json) completed with unchanged binaries and retained all samples. It remains ineligible as a matched presentation comparison: both mpv windows were absent from the visible native stack, while both Erika windows passed continuous native visibility coverage. Requested activation did not establish visibility. A separate metadata-only probe confirmed that the mpv diagnostic selected the actual playback window with valid in-display bounds. The [CLI ordering correction](mpv-adapter.md#native-cli-window-visibility) passed bounded probes and the latest visible comparison above; those results do not replace this failed capture.
 
 | Adapter / run | Completed / warmed | Completed FPS | Native visibility eligible | Warmed drawable A/V samples |
 |---|---:|---:|---|---:|
@@ -34,7 +53,7 @@ The [four-run visibility repeat](evidence/m3-adapter-comparison-visibility.json)
 | mpv / B | 334 / 330 | 11.18 | No | Unavailable |
 | Erika / B | 235 / 229 | 7.31 | Yes | 229 |
 
-Erika now recorded 1,927 positive and two zero timestamps in A, and 1,938 positive and three zero timestamps in B. All 1,929/1,941 GPU commands succeeded. One callback from the prior seek generation was identified and rejected by the existing generation check. Its median video-minus-audio estimates were −380/−382 ms, with ranges −695…−310/−671…−289 ms: visible playback still fails synchronized overload acceptance. mpv's cached queue A/V maxima were 15.851/0.006 ms with zero decoder/VO drops and at most two pending inputs; occlusion prevents treating those results as valid visible-playback comparison evidence. No throughput winner is inferred from these runs.
+Erika recorded 1,927 positive and two zero timestamps in A, and 1,938 positive and three zero timestamps in B. All 1,929/1,941 GPU commands succeeded. One callback from the prior seek generation was identified and rejected by the existing generation check. Its median video-minus-audio estimates were −380/−382 ms, with ranges −695…−310/−671…−289 ms: visible playback still fails synchronized overload acceptance. mpv's cached queue A/V maxima were 15.851/0.006 ms with zero decoder/VO drops and at most two pending inputs; occlusion prevents treating those results as valid visible-playback comparison evidence. No throughput winner is inferred from these runs.
 
 ## Reproduction
 
@@ -57,4 +76,4 @@ The Erika example accepts `ERIKA_ADAPTER_DISPLAY_WIDTH/HEIGHT` as physical video
 
 ## Remaining decision evidence
 
-Before final selection, repeat the matched comparison with actual visibility coverage and the current mpv clock correction, and qualify Erika's synchronized overload policy. Then run the same retained engine configuration on M5. Qualify source-rate Live, tracks/subtitles/chapters/frame stepping, natural temporal content, HDR mapping and window/display transitions. Direct Metal libplacebo and a custom playback core remain conditional; the current development capture does not activate either replacement.
+Before final selection, qualify Erika's synchronized overload policy and run the same retained engine configuration on M5. Qualify source-rate Live, tracks/subtitles/chapters/frame stepping, natural temporal content, HDR mapping and window/display transitions. Direct Metal libplacebo and a custom playback core remain conditional; the current development capture does not activate either replacement.
