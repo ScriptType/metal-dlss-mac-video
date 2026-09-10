@@ -1,0 +1,416 @@
+{
+  "schemaVersion": 1,
+  "scope": "Native HDR policy correction at the resized SDR model-input boundary, with generic recovered float behavior preserved. Numeric GPU, cache-isolation and rebuilt-app integration checks pass; natural temporal quality, physical HDR and source-rate Live remain unqualified.",
+  "passed": true,
+  "mlxRevision": "7af47d64b36b551ba091bedde0437c93ac92ff65",
+  "rootBaseRevision": "92f32be790e91cf2c072bb8231c4372ceca50bce",
+  "device": "Apple M3",
+  "os": "26.5",
+  "problem": "The source-size encoded proxy is bounded, but subsequent Lanczos resizing can overshoot before neural feature generation. Identity reconstruction bypasses that resize, so its passing error check does not cover the model input.",
+  "contract": "Bounded sRGB is the native HDR player policy. The generic recovered renderer and CPU/Python float preprocessing do not universally enforce it; this is not a claim of NVIDIA inference parity.",
+  "implementation": {
+    "admission": "NativeHDRProcessor opts into processingInputRange .boundedSRGB; the actual helper bounds the final resized tensor to0...1 before renderArrays.",
+    "consumers": "Feature construction and head-to-colour postprocessing consume the same bounded colour tensor.",
+    "genericDefault": ".preserve",
+    "unchanged": "Generic resampler, recovered feature equations, weights, original/proxy/identity generation, motion input, reconstruction equations and final HDR output bounds.",
+    "enhancedPixelsMayChange": true,
+    "preparedCacheImplementationVersion": "frame-engine-prepared-v2;native-hdr-bounded-srgb-v1",
+    "preparedCachePolicy": "modelInputRange: bounded-sRGB-after-resample; old prepared identities are not reused or deleted by the policy change.",
+    "referenceManifest": "Records modelInputRange and hashes backend/resampler source; the exported proxy is still the source-size encoded view."
+  },
+  "preChangeCPUWitness": {
+    "report": {
+      "path": "artifacts/native-hdr-sdr-input-bound-cpu-1/report.json",
+      "bytes": 21528,
+      "sha256": "f7305c03f18ad10c32380eba585c98158971013bd0c1d90421eaac4742ec9ad1"
+    },
+    "syntheticStep": {
+      "inputExtent": 1920,
+      "outputExtent": 320,
+      "input": {
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "components": 1920,
+        "negativeComponents": 0,
+        "aboveOneComponents": 0,
+        "belowNegativeOneMicro": 0,
+        "aboveOnePlusOneMicro": 0,
+        "nonfiniteComponents": 0
+      },
+      "resized": {
+        "minimum": -0.01728631928563118,
+        "maximum": 1.0172864198684692,
+        "components": 320,
+        "negativeComponents": 1,
+        "aboveOneComponents": 2,
+        "belowNegativeOneMicro": 1,
+        "aboveOnePlusOneMicro": 1,
+        "nonfiniteComponents": 0
+      }
+    },
+    "sourceGeometry": [
+      1920,
+      1080
+    ],
+    "processingGeometry": [
+      320,
+      192
+    ],
+    "cases": [
+      {
+        "sourceFrameIndex": 1498,
+        "pts": {
+          "timescale": 24000,
+          "value": 1740499
+        },
+        "duration": {
+          "timescale": 24000,
+          "value": 1001
+        },
+        "input": {
+          "path": "artifacts/apple-temporal-full-capture-1/frame-0010/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+        },
+        "inputStatistics": {
+          "minimum": 0.0,
+          "maximum": 0.9999999403953552,
+          "components": 6220800,
+          "negativeComponents": 0,
+          "aboveOneComponents": 0,
+          "belowNegativeOneMicro": 0,
+          "aboveOnePlusOneMicro": 0,
+          "nonfiniteComponents": 0
+        },
+        "processingStatistics": {
+          "minimum": -0.0642760694026947,
+          "maximum": 1.0834726095199585,
+          "components": 184320,
+          "negativeComponents": 2930,
+          "aboveOneComponents": 820,
+          "belowNegativeOneMicro": 2563,
+          "aboveOnePlusOneMicro": 815,
+          "nonfiniteComponents": 0
+        }
+      },
+      {
+        "sourceFrameIndex": 1526,
+        "pts": {
+          "timescale": 24000,
+          "value": 1768527
+        },
+        "duration": {
+          "timescale": 24000,
+          "value": 1001
+        },
+        "input": {
+          "path": "artifacts/apple-temporal-full-capture-1/frame-0038/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "bff9c3e9c8216a95793a758400f097ee234d701f9bee312e9e473684fd4ae2d7"
+        },
+        "inputStatistics": {
+          "minimum": 0.0,
+          "maximum": 0.9999999403953552,
+          "components": 6220800,
+          "negativeComponents": 0,
+          "aboveOneComponents": 0,
+          "belowNegativeOneMicro": 0,
+          "aboveOnePlusOneMicro": 0,
+          "nonfiniteComponents": 0
+        },
+        "processingStatistics": {
+          "minimum": -0.08539314568042755,
+          "maximum": 1.0974781513214111,
+          "components": 184320,
+          "negativeComponents": 2378,
+          "aboveOneComponents": 922,
+          "belowNegativeOneMicro": 1978,
+          "aboveOnePlusOneMicro": 920,
+          "nonfiniteComponents": 0
+        }
+      },
+      {
+        "sourceFrameIndex": 1527,
+        "pts": {
+          "timescale": 24000,
+          "value": 1769528
+        },
+        "duration": {
+          "timescale": 24000,
+          "value": 1001
+        },
+        "input": {
+          "path": "artifacts/apple-temporal-full-capture-1/frame-0039/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "d684fe55188e8e38986d7714432b069764b82f6cb15021820bb3ccbaaa98d123"
+        },
+        "inputStatistics": {
+          "minimum": 0.0,
+          "maximum": 0.9999999403953552,
+          "components": 6220800,
+          "negativeComponents": 0,
+          "aboveOneComponents": 0,
+          "belowNegativeOneMicro": 0,
+          "aboveOnePlusOneMicro": 0,
+          "nonfiniteComponents": 0
+        },
+        "processingStatistics": {
+          "minimum": -0.08166409283876419,
+          "maximum": 1.0831210613250732,
+          "components": 184320,
+          "negativeComponents": 2361,
+          "aboveOneComponents": 889,
+          "belowNegativeOneMicro": 1977,
+          "aboveOnePlusOneMicro": 882,
+          "nonfiniteComponents": 0
+        }
+      }
+    ],
+    "arithmetic": "Current Swift Double Lanczos coefficient formula, coefficients converted to Float32; horizontal then vertical Float32 multiply/add in tap order. No GPU inference or boundary readback.",
+    "pinsUnchanged": true,
+    "pinCount": 34,
+    "scope": "CPU witness of existing resampling math on three retained natural proxies. It is not captured GPU admission and does not identify a cause of the observed wall variation."
+  },
+  "focusedForkValidation": {
+    "report": {
+      "path": "artifacts/native-hdr-sdr-input-bound-tests-1/report.json",
+      "bytes": 10773,
+      "sha256": "778d3cf0ede4346a212219023fa26b4f8295fe9d959d6c5ec1fcb08b10c21c4b"
+    },
+    "command": [
+      "swift",
+      "test",
+      "--package-path",
+      "vendor/MLX-DLSS",
+      "-c",
+      "release",
+      "--jobs",
+      "2",
+      "--filter",
+      "MLXNeuralRenderingInputRangeTests|MLXVideoOutputTests|MLXNeuralRenderingDisplayCodecTests|NeuralRenderingDisplayCodecTests|NativeHDRProcessorTests/testBypassRetainsOriginalAndSameFrameDiagnosticViews|NativeHDRProcessorTests/testRealTinyModelSequencePreservesHDRAndResetsGeneration"
+    ],
+    "environment": {
+      "setup": "source scripts/env.sh",
+      "MLXDLSS_NEURAL_RENDERING_PACKAGE": "models/neural-rendering/NeuralRendering.dlssmodel"
+    },
+    "buildAndTestExitStatus": 0,
+    "buildSeconds": 45.75,
+    "testsPassed": 21,
+    "testsFailed": 0,
+    "testsSkipped": 0,
+    "testCases": [
+      "DLSSMLXTests.MLXNeuralRenderingDisplayCodecTests testBT2020IdentityAndEnhancedWideGamutMatchCPU",
+      "DLSSMLXTests.MLXNeuralRenderingDisplayCodecTests testDeviceEncodeMatchesPortableReference",
+      "DLSSMLXTests.MLXNeuralRenderingDisplayCodecTests testDeviceResolveMatchesPortableReference",
+      "DLSSMLXTests.MLXNeuralRenderingDisplayCodecTests testZeroStrengthReturnsOriginalWithoutADeviceRoundTrip",
+      "DLSSMLXTests.MLXNeuralRenderingInputRangeTests testAsymmetricUpsizeBoundsOnlyAdmittedProxy",
+      "DLSSMLXTests.MLXNeuralRenderingInputRangeTests testBoundedAdmissionAfterBothResizePassesMatchesIndependentPillowReference",
+      "DLSSMLXTests.MLXNeuralRenderingInputRangeTests testEqualDimensionsPreserveBoundedInputExactlyAndDefaultKeepsExtendedValues",
+      "DLSSMLXTests.MLXVideoOutputTests testBoxAveragesEveryPixelAndKeepsChannelsSeparate",
+      "DLSSMLXTests.MLXVideoOutputTests testDetailMatchesDirectTwoDimensionalGaussianWithReplicatedEdges",
+      "DLSSMLXTests.MLXVideoOutputTests testFinalPackingClampsAndRoundsWithoutQuantizingFloatFrames",
+      "DLSSMLXTests.MLXVideoOutputTests testLanczosMatchesIndependentPillowFloatReferenceAtOddBorders",
+      "DLSSMediaTests.NativeHDRProcessorTests testBypassRetainsOriginalAndSameFrameDiagnosticViews",
+      "DLSSMediaTests.NativeHDRProcessorTests testRealTinyModelSequencePreservesHDRAndResetsGeneration",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testEncodePassthroughPreservesExactBytes",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testEncodesLinearMidGreyAsSRGB",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testEncodeUsesSoftKneeInsteadOfClippingBrightInput",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testRejectsInvalidConfigurationAndMismatchedShape",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testResolveEmptyModelIsByteExactNoOp",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testResolveHighlightBranchReturnsUnrepresentedHeadroom",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testResolveShadowBranchRescalesModelPicture",
+      "DLSSCoreTests.NeuralRenderingDisplayCodecTests testResolveZeroStrengthIsByteExactNoOp"
+    ],
+    "gpuBoundaryTestCount": 3,
+    "boundaryCoverage": "Actual production helper; asymmetric up/down resize versus independent Pillow Float32 goldens, final0...1 finite bounds, default/explicit preserved overshoot, equal-size exact input and signed/superwhite generic preservation.",
+    "integratedModel": {
+      "frames": 3,
+      "sourceGeometry": [
+        96,
+        64
+      ],
+      "processingGeometry": [
+        64,
+        40
+      ],
+      "motion": "zero",
+      "historyResets": [
+        true,
+        false,
+        true
+      ],
+      "maximumNits": [
+        1037.8704,
+        1049.5612,
+        1037.8704
+      ],
+      "identityMaximumAbsoluteErrorNits": 6.1035156e-05
+    },
+    "scope": "GPU admission tests load no model; a separate three-frame real-model test uses96x64 source and64x40 processing, with exact original-object bypass and generation resets."
+  },
+  "rootValidation": {
+    "command": [
+      "bash",
+      "scripts/check.sh"
+    ],
+    "exitCode": 0,
+    "swiftTestsPassed": 40,
+    "cacheMigrationRegression": "Valid historical segment with otherwise identical identity misses under current implementation version and is absent from current completed ranges; original identity still reads unchanged data.",
+    "realPreparedEquivalencePassed": true,
+    "plainCRealGPUConsumerPassed": true,
+    "referenceCPUTests": 30,
+    "reviewerCPUTests": 31,
+    "preparationCPUTests": 13,
+    "extractionPythonTests": 25,
+    "buildHarnessExitCode": 0,
+    "strictBundleSignatureVerified": true
+  },
+  "rebuiltAppValidation": {
+    "passed": true,
+    "scope": "Actual DOM/media teardown; no physical sleep or VoiceOver qualification",
+    "checks": [
+      "Existing DOM/media smoke passed and the process exited cleanly",
+      "Termination request precedes native view/core destruction and final log flush",
+      "Source, paused transport state and native rational displayed timestamps were recorded",
+      "No physical sleep cycle was inferred during the media-only check"
+    ],
+    "binaries": {
+      "HDRPlayer": {
+        "path": "artifacts/HDR Player.app/Contents/MacOS/HDRPlayer",
+        "beforeSHA256": "d31ccbd6a541c1b505f1149e8c01b183073a211cd0b15a41d5e7940ac4409027",
+        "afterSHA256": "d31ccbd6a541c1b505f1149e8c01b183073a211cd0b15a41d5e7940ac4409027"
+      },
+      "libmpv": {
+        "path": "artifacts/HDR Player.app/Contents/Frameworks/libmpv.2.dylib",
+        "beforeSHA256": "4554dd5bdcd2a47308f1fb683293960c71fd3c5a6ba7cd95d78aa9d5fecd4e80",
+        "afterSHA256": "4554dd5bdcd2a47308f1fb683293960c71fd3c5a6ba7cd95d78aa9d5fecd4e80"
+      },
+      "FrameEngineShared": {
+        "path": "artifacts/HDR Player.app/Contents/Frameworks/libFrameEngineShared.dylib",
+        "beforeSHA256": "fbd6a028c0759b2b41a5a3a2ed960f1d69c7520ea464450b49cdf0ae37d59173",
+        "afterSHA256": "fbd6a028c0759b2b41a5a3a2ed960f1d69c7520ea464450b49cdf0ae37d59173"
+      }
+    },
+    "exitCode": 0,
+    "domChecksPassed": 23,
+    "exactTimestampSnapshots": 58,
+    "binariesUnchanged": true
+  },
+  "sourcePins": [
+    {
+      "path": "packages/FrameEngine/Sources/PreparedFrameProcessor.swift",
+      "bytes": 23052,
+      "sha256": "3cf2a9cd14e1294c691d7dc542466a280e7ed3f1e9589da680ab58f09b17473a"
+    },
+    {
+      "path": "packages/FrameEngine/Tests/HDRCacheTests.swift",
+      "bytes": 16573,
+      "sha256": "a72952a2b3b9624cfed503a45084be2ee0cf753011c33acbcb35530bd9ac1999"
+    },
+    {
+      "path": "tools/FrameBenchmark/FrameReferenceSequence.swift",
+      "bytes": 33227,
+      "sha256": "120badd7e6bc9dc790d0cac42d286935e4dda1b1a6a38d1406fd1cf26457c0d2"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift",
+      "bytes": 8741,
+      "sha256": "7a66e04760623582c0f1848ca1437a6724fcce7b4ada69088454143bebce8155"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDeviceTemporalBackend.swift",
+      "bytes": 47380,
+      "sha256": "9f662b490cedd2ec8e8719cbdb862acccbe7a52614e78cca31de7941a6e5f37e"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoOutput.swift",
+      "bytes": 12359,
+      "sha256": "5c3ba05fac4d9d22b4a6d38046f588a61edbc77c144d10a38a88de8fde8b98a6"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMLXTests/MLXNeuralRenderingInputRangeTests.swift",
+      "bytes": 5405,
+      "sha256": "efee5a71ec5935d0ed7dd9f6d5d994fb4369d8035970c785d9702b5f52fdaf60"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeHDRProcessorTests.swift",
+      "bytes": 5551,
+      "sha256": "fa443d1247b8b925817ea7d7b2e5cd753086694f4ee5eeb16eb2da9bfa0941d4"
+    }
+  ],
+  "runtimePins": [
+    {
+      "path": ".build/debug/hdr-benchmark",
+      "bytes": 50590720,
+      "sha256": "00ca2f074258bb84921f41524f2a679e62b06f5550b5680073163b9be608bce0"
+    },
+    {
+      "path": ".build/debug/libFrameEngineShared.dylib",
+      "bytes": 50161944,
+      "sha256": "221fad5eeaa21866903412d3490707a66d8b64d1bf40566b3ba511eca0af1771"
+    },
+    {
+      "path": ".build/debug/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-cpu-1/report.json",
+      "bytes": 21528,
+      "sha256": "f7305c03f18ad10c32380eba585c98158971013bd0c1d90421eaac4742ec9ad1"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-cpu-1/replay.py",
+      "bytes": 6237,
+      "sha256": "a8d36c4209e04717840e70cc0436cd5da6247628ee832c5b394f68a91ff03269"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-tests-1/report.json",
+      "bytes": 10773,
+      "sha256": "778d3cf0ede4346a212219023fa26b4f8295fe9d959d6c5ec1fcb08b10c21c4b"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-root-1/check.log",
+      "bytes": 15078,
+      "sha256": "d7f75f85c38055f30edf4cc5edef69a6b61b41e7842784f9a57db4b25c4589c8"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-root-1/build-harness.log",
+      "bytes": 2699,
+      "sha256": "499c67c4703ae838856f1ce5bbd520d7a4563bc661c54b9d8873b816ab6d9ee7"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-root-1/validated-root.patch",
+      "bytes": 11590,
+      "sha256": "3544c75fac04be367c6bcacc59135efddc0ea0ebc14c29532934b7081ec617ed"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-player-1/report.json",
+      "bytes": 1620,
+      "sha256": "3fca2fbf639648d5b5b8222320d917e362d6c142805cf374d3fc782b7e55715e"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-player-1/dom.json",
+      "bytes": 115720,
+      "sha256": "e74e3f5763f0c3209300cd8601027a7d2eefa2a08f4b7b390ecb5079e0753729"
+    },
+    {
+      "path": "artifacts/native-hdr-sdr-input-bound-player-1/lifecycle.jsonl",
+      "bytes": 56293,
+      "sha256": "43f30ca4ad49cbf989071c1f8bbfc6292261fcb4564c8769c9bd8a02184dc8b3"
+    },
+    {
+      "path": "artifacts/reference-runtime-before-sdr-input-bound-1/manifest.json",
+      "bytes": 983,
+      "sha256": "fceaca8cbfa637beb2194e7edcd8b3772134af7b139b1a5d5b5e5cb158674005"
+    }
+  ],
+  "limitations": [
+    "The four exported diagnostic views do not include the processing-size admitted tensor. Actual-helper GPU tests establish its range separately.",
+    "The pre-change full56-frame natural reference remains pinned in m3-apple-temporal-full.json and is not relabeled as post-fix evidence.",
+    "This contract fix is not proof that the measured temporal brightness variation is corrected or was caused by overshoot.",
+    "Static numeric/headroom checks and DOM automation do not establish physical HDR, temporal perception, speech accessibility or source-rate neural Live."
+  ]
+}

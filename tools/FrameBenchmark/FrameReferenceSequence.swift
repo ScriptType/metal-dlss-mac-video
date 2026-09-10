@@ -118,6 +118,7 @@ enum FrameReferenceSequence {
             "settings": ["processingWidth": width, "processingHeight": height, "strength": strength,
                 "colourStrength": colour, "maximumLuminanceRatio": ratio, "referenceWhiteNits": white,
                 "temporal": true, "motionRequested": motion.rawValue, "sceneCutThreshold": 0.3,
+                "modelInputRange": "bounded-sRGB-after-resample",
                 "precision": "float16", "mlxCacheBytes": 256 * 1024 * 1024],
             "model": ["path": model.path, "files": modelFiles],
             "runtime": runtimeProvenance(),
@@ -358,6 +359,8 @@ enum FrameReferenceSequence {
         for path in ["tools/FrameBenchmark/FrameReferenceSequence.swift", "tools/FrameBenchmark/FrameBenchmarkCommand.swift",
                      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift",
                      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift",
+                     "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDeviceTemporalBackend.swift",
+                     "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoOutput.swift",
                      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift"] {
             sources[path] = (try? fileDigest(cwd.appendingPathComponent(path))) ?? "unavailable"
         }

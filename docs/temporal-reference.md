@@ -59,6 +59,8 @@ Each frame directory is staged before atomic publication. The run manifest recor
 
 The report records source identity, exact PTS/duration, frame index, generation, settings, model files, implementation/binary hashes, Metal device, completed stage wall times, allocation snapshots and full-view hashes/statistics. All four views are generated from one result, without a second neural submission. `historyReset` combines input/geometry discontinuities and detected cuts. `knownInputDiscontinuities` identifies cold start, skipped source indices and PTS gaps exceeding the processor's existing threshold; it does not claim a specific internal reset reason. The public result does not expose cut scores or the selected automatic optical-flow backend.
 
+New captures record `modelInputRange: bounded-sRGB-after-resample`: native HDR processing bounds the resized model input before feature generation and postprocessing. The exported proxy remains the source-size encoded view. Its range alone does not prove the range of a resized model input. Earlier manifests retain their original runtime provenance and are not relabeled with the new policy.
+
 ## CPU review artifacts
 
 ```sh

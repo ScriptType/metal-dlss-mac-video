@@ -1,5 +1,5 @@
 import Foundation
-import FrameEngine
+@testable import FrameEngine
 import Testing
 
 private func cacheTime(_ value: Int64, _ scale: Int32 = 24) throws -> HDRCacheTime {
@@ -79,6 +79,24 @@ private func writeSegment(_ cache: HDRSegmentCache, identity: HDRCacheIdentity, 
     identity = try cacheIdentity()
     identity.preroll.start = try cacheTime(1)
     #expect(throws: HDRCacheError.self) { try identity.key() }
+}
+
+@Test func cacheDoesNotReusePreparedFramesFromBeforeBoundedModelInput() async throws {
+    let directory = try cacheDirectory()
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let cache = try HDRSegmentCache(directory: directory, capacityBytes: 1_048_576)
+    try await cache.recover()
+    var historical = try cacheIdentity()
+    historical.settings.implementationVersion = "frame-engine-prepared-v1;mlx-hdr-f2ce1772"
+    _ = try await writeSegment(cache, identity: historical)
+    var current = historical
+    current.settings.implementationVersion = PreparedHDRContext.cacheImplementationVersion
+    #expect(try current.key() != historical.key())
+    #expect(try await cache.acquire(identity: current) == nil)
+    #expect(try await cache.completedRanges(source: current.source, settings: current.settings).isEmpty)
+    let retained = try #require(try await cache.acquire(identity: historical))
+    #expect(try await cache.read(retained, frameIndex: 0).rgba == cachePixels())
+    await cache.release(retained)
 }
 
 @Test func cacheFloatRoundTripPreservesHDRBitsAndTiming() async throws {

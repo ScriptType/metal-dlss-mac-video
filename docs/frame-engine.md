@@ -11,6 +11,10 @@ Inputs are immutable, IOSurface-backed NV12/P010 decoder planes or RGBA16F linea
 
 `model_path` names the extracted `.dlssmodel` directory. Null selects original bypass; `effect_strength=0` preserves the retained original before output packing. Processing dimensions configure the actual neural input independently of source/output dimensions. Changing source, temporal configuration or processing geometry requires a new generation or session as appropriate. Configuration strings are copied by `fe_session_create`; model loading and kernel construction occur on the worker.
 
+Native HDR processing bounds the resized sRGB tensor to 0–1 immediately before neural features and postprocessing consume it. This restores the proxy bounds after Lanczos resampling, whose negative filter weights can otherwise introduce overshoot. The generic recovered float-input path retains its existing range behavior; the HDR original and reconstructed output keep their separate, unclipped domains.
+
+The [M3 input-range regression](evidence/m3-native-hdr-model-input.json) includes three actual GPU boundary tests against independent Pillow references, a resized three-frame real-model sequence, exact bypass and Prepared cache-version isolation. All 21 focused fork tests and 40 root tests pass; the rebuilt app passes 23 controls/lifecycle checks. These establish the processing contract and integration, without attributing the separately measured temporal variation to this defect.
+
 ## Ownership and scheduling
 
 1. `fe_session_submit` validates the descriptor and returns accepted, full, cancelled, duplicate or failed without waiting for inference. On acceptance, the engine retains `pixel_buffer` and invokes `retain_owner` for any additional owner. Full/rejected input remains entirely caller-owned.

@@ -123,6 +123,9 @@ private actor PreparedCacheRegistry {
 /// One source/configuration owns one existing cache actor. Preparation and
 /// playback share its completed index and leases; there is no second cache.
 public actor PreparedHDRContext {
+    // Bump when processing semantics change, even if weights and user settings do not.
+    static let cacheImplementationVersion = "frame-engine-prepared-v2;native-hdr-bounded-srgb-v1"
+
     public nonisolated let status = PreparedHDRStatus()
     public nonisolated let request: PreparedHDRRequest
     public nonisolated let configuration: HDRPipelineConfiguration
@@ -309,11 +312,12 @@ public actor PreparedHDRContext {
         }
         let inventory = try await decoderProvider.inventory(sourceURL: sourceURL, videoStreamIndex: 0)
         let settings = HDRCacheSettings(modelSHA256: configuration.modelVersion,
-            implementationVersion: "frame-engine-prepared-v1;mlx-hdr-f2ce1772",
+            implementationVersion: cacheImplementationVersion,
             processingWidth: configuration.processingWidth, processingHeight: configuration.processingHeight,
             outputWidth: inventory.width, outputHeight: inventory.height,
             colourPolicy: ["storage": HDRSegmentCache.storagePolicy, "referenceWhiteNits": String(configuration.referenceWhiteNits),
-                "hlgPeakNits": "1000", "proxy": "srgb-bt709-proxy-v1", "reconstruction": "linear-bt2020-nits-ratio-v1", "displayMapping": "none"],
+                "hlgPeakNits": "1000", "proxy": "srgb-bt709-proxy-v1", "modelInputRange": "bounded-sRGB-after-resample",
+                "reconstruction": "linear-bt2020-nits-ratio-v1", "displayMapping": "none"],
             guides: ["motion": "NativeOpticalFlow-automatic-v1", "temporal": "persistent-neural-defaults-v1", "sceneCutThreshold": "0.3"],
             effects: ["strength": Double(configuration.strength), "colourStrength": Double(configuration.colourStrength),
                 "maximumLuminanceRatio": Double(configuration.maximumLuminanceRatio)],
