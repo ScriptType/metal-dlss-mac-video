@@ -19,6 +19,7 @@ import time
 from adapter_visibility import completed_window, qualify_visibility, window_events
 
 CORE_SOURCES = ("demux/demux_lavf.c", "demux/lavf_timing.h", "player/video.c", "player/command.c",
+    "player/audio.c", "player/playloop.c", "player/core.h", "player/hdr_audio_clock.h",
     "video/filter/vf_metal_hdr.m", "video/filter/metal_hdr_live_policy.h", "audio/out/buffer.c", "audio/out/ao_coreaudio.c",
     "video/out/vo.c", "video/out/mac_common.swift", "video/out/mac/common.swift", "video/out/mac/metal_layer.swift",
     "video/out/vulkan/context_mac.m")
@@ -185,6 +186,96 @@ def capture_visibility(engine, events, playback_start, playback_end):
     return visibility
 
 
+def finite_number(value):
+    return type(value) in (int, float) and math.isfinite(value)
+
+
+def summarize_scheduled_clock(samples):
+    """Use the native cached tuple; legacy avsync zeros cannot prove validity."""
+    result = {"diagnosticsAvailable": True, "validSamples": 0,
+              "inactiveSamples": 0, "invalidActiveSamples": 0,
+              "unavailableSamples": 0, "malformedSamples": 0,
+              "activeTailSamples": 0, "audioStatusCounts": {},
+              "maximumAbsoluteSeconds": None, "target20msMet": None}
+    offsets = []
+    for sample in samples:
+        if sample["elapsed"] < 2 or sample.get("paused") or sample.get("seeking"):
+            continue
+        state = sample["state"]
+        active = state.get("audio-clock-active")
+        valid = state.get("scheduled-avsync-valid")
+        status = state.get("audio-status")
+        video_status = state.get("video-status")
+        if type(active) is not bool or type(valid) is not bool or not isinstance(status, str) or not isinstance(video_status, str):
+            result["diagnosticsAvailable"] = False
+            result["unavailableSamples"] += 1
+            continue
+        result["audioStatusCounts"][status] = result["audioStatusCounts"].get(status, 0) + 1
+        values = [state.get(key) for key in ("scheduled-avsync-seconds",
+                  "scheduled-audio-pts-seconds", "scheduled-video-pts-seconds")]
+        if (valid and (not active or video_status != "playing" or not all(finite_number(value) for value in values))) or \
+                (not valid and any(value is not None for value in values)):
+            result["malformedSamples"] += 1
+            continue
+        if not active or video_status != "playing":
+            result["inactiveSamples"] += 1
+            continue
+        if status in ("draining", "eof"):
+            result["activeTailSamples"] += 1
+        if not valid:
+            result["invalidActiveSamples"] += 1
+            continue
+        result["validSamples"] += 1
+        offsets.append(values[0])
+    if offsets:
+        result["maximumAbsoluteSeconds"] = max(map(abs, offsets))
+        n = max(1, len(offsets) // 4)
+        result["firstQuarterMedianSeconds"] = statistics.median(offsets[:n])
+        result["lastQuarterMedianSeconds"] = statistics.median(offsets[-n:])
+        result["medianDriftSeconds"] = result["lastQuarterMedianSeconds"] - result["firstQuarterMedianSeconds"]
+        if result["diagnosticsAvailable"] and not result["malformedSamples"] and not result["invalidActiveSamples"]:
+            result["target20msMet"] = result["maximumAbsoluteSeconds"] <= .020
+    return result
+
+
+def enhancement_pause_transitions(log):
+    rows = []
+    for line in log.splitlines():
+        if "Adaptive enhancement buffer: both playback clocks paused;" not in line:
+            continue
+        match = re.search(r"video=(\S+) audio-before=(\S+) audio-after=(\S+) transition=(\S+)", line)
+        if not match:
+            raise ValueError("Malformed enhancement pause diagnostic")
+        values = list(map(float, match.groups()))
+        if not all(map(math.isfinite, values)) or values[3] < 0:
+            raise ValueError("Invalid enhancement pause diagnostic")
+        rows.append(dict(zip(("videoPTS", "audioBeforePTS", "audioAfterPTS", "transitionSeconds"), values)))
+    return rows
+
+
+def validate_eof_clock(report, log):
+    transitions = enhancement_pause_transitions(log)
+    # A quick reset could discard queued samples without a long blocking drain.
+    # At this harness's fixed speed 1, reject a clock jump beyond elapsed time.
+    clock_residuals = [row["audioAfterPTS"] - row["audioBeforePTS"] - row["transitionSeconds"]
+                       for row in transitions]
+    result = {"passed": False, "maximumPauseTransitionSeconds": max(
+        (row["transitionSeconds"] for row in transitions), default=None),
+        "pauseTransitionLimitSeconds": .050, "pauseTransitions": transitions,
+        "pauseAudioClockResidualRangeSeconds": [min(clock_residuals), max(clock_residuals)] if clock_residuals else None,
+        "maximumAbsolutePauseAudioClockResidualSeconds": max(map(abs, clock_residuals), default=None),
+        "pauseAudioClockResidualLimitSeconds": .020,
+        "nativeAudioEOF": "audio EOF reached" in log or "AO signaled EOF" in log,
+        "nativeVideoEOF": "video EOF reached" in log}
+    clock = report["scheduledClock"]
+    result["passed"] = bool(report.get("playbackReachedEOF") and result["nativeAudioEOF"] and
+        result["nativeVideoEOF"] and clock["activeTailSamples"] > 0 and
+        clock["target20msMet"] is True and transitions and
+        result["maximumPauseTransitionSeconds"] <= result["pauseTransitionLimitSeconds"] and
+        result["maximumAbsolutePauseAudioClockResidualSeconds"] <= result["pauseAudioClockResidualLimitSeconds"])
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("source", type=Path)
@@ -196,6 +287,8 @@ def main():
     targets.add_argument("--seek-target", help="Final target in player seconds (default 0.73); exact source inventory is mapped after native origin settles")
     targets.add_argument("--file-seek-target", help="Final target in original file seconds, accepting an exact fraction such as 1742501/24000")
     parser.add_argument("--require-visible", action="store_true", help="Require native window coverage over warmed completed work and playback clocks")
+    parser.add_argument("--require-eof-clock", action="store_true", help="Require native EOF, valid queued-tail scheduling, pause transitions within 50 ms and pause audio-clock residual within 20 ms")
+    parser.add_argument("--gapless-audio", choices=("no", "yes", "weak"), help="Explicit native gapless control; omitted preserves mpv's default")
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
     if not (1 <= args.width <= 16384 and 1 <= args.height <= 16384):
@@ -228,7 +321,7 @@ def main():
         "recordedUTC": datetime.now(timezone.utc).isoformat()}
     args.report.parent.mkdir(parents=True, exist_ok=True)
     report = {"source": str(args.source.resolve()), "model": str(args.model),
-              "reportSchemaVersion": 3,
+              "reportSchemaVersion": 4,
               "avOffsetDefinition": "raw mpv avsync: audioPTS - videoPTS + audioDelay + audioOffset; cached at video queue updates, opposite the shared engine video-minus-audio sign",
               "conditions": "M3 native gpu-next/macvk, source-rate audio clock, muted CoreAudio; Adaptive explicitly buffers both clocks; lifecycle excluded from steady samples",
               "samples": [], "errors": []}
@@ -272,6 +365,8 @@ def main():
                "--input-terminal=no",
                f"--input-ipc-server={ipc}", f"--vf={options}",
                f"--log-file={args.report.with_suffix('.log')}", str(args.source.resolve())]
+        if args.gapless_audio is not None:
+            cmd.insert(1, f"--gapless-audio={args.gapless_audio}")
         report["arguments"] = cmd
         environment = dict(os.environ)
         if args.require_visible:
@@ -404,6 +499,7 @@ def main():
             command("set_property", "pause", False)
             started = time.monotonic()
             report["playbackStartedHostSeconds"] = started
+            report["playbackReachedEOF"] = False
             packet_offset = seconds(report["timelineMapping"]["packetOffset"])
             inventory_set = set(inventory)
             while time.monotonic() - started < args.seconds:
@@ -423,6 +519,7 @@ def main():
                 if recovered_file_pts not in inventory_set:
                     raise RuntimeError("displayed decoder PTS does not recover an exact file inventory frame")
                 if command("get_property", "eof-reached", allow_error=True).get("data"):
+                    report["playbackReachedEOF"] = True
                     break
                 time.sleep(.025)
             report["playbackEndedHostSeconds"] = time.monotonic()
@@ -438,7 +535,9 @@ def main():
                 report["steadyLastQuarterMedianAVOffsetSeconds"] = statistics.median(steady[-window:])
                 report["steadyMedianAVDriftSeconds"] = statistics.median(steady[-window:]) - statistics.median(steady[:window])
             report["steadySampleCount"] = len(steady)
-            report["synchronisation20msTargetMet"] = max(absolute) <= .020 if absolute else None
+            report["rawProperty20msTargetMet"] = max(absolute) <= .020 if absolute else None
+            report["scheduledClock"] = summarize_scheduled_clock(report["samples"])
+            report["synchronisation20msTargetMet"] = report["scheduledClock"]["target20msMet"]
             report["maximumPendingFrames"] = max((s["state"]["pending-frames"] for s in report["samples"]), default=0)
             if report["maximumPendingFrames"] > 3:
                 raise RuntimeError("unbounded enhancement admission")
@@ -455,6 +554,10 @@ def main():
             report["liveDeadlineFallback"] = "unexercised: Live request rejected before warmed qualification; Adaptive deadline buffering measured directly"
             if report["staleGenerationObservations"]:
                 raise RuntimeError("stale generation observed during controlled playback")
+            if args.require_eof_clock:
+                report["eofClockValidation"] = validate_eof_clock(report, args.report.with_suffix(".log").read_text())
+                if not report["eofClockValidation"]["passed"]:
+                    raise RuntimeError("EOF clock/hold validation failed; inspect scheduledClock and eofClockValidation")
             report["passed"] = True
             command("quit")
         except Exception as error:

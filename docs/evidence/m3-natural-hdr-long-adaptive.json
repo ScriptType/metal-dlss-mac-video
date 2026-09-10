@@ -36,7 +36,6 @@
     "displayWidth": 960,
     "sourceWidth": 1920
   },
-  "passed": true,
   "exitCode": 0,
   "actualPlaybackWallSeconds": 376.87621829204727,
   "requestedMaximumWallSeconds": 600.0,
@@ -400,6 +399,49 @@
       "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
       "bytes": 107392404,
       "modifiedNanoseconds": 1789023199489724775
+    }
+  },
+  "harnessPassed": true,
+  "timingAcceptancePassed": false,
+  "postCaptureFinding": {
+    "cause": "Logical gapless audio EOF still has queued AO data. The next enhancement hold calls ao_set_paused with eof=true and synchronously drains the queue; raw avsync is no longer updated outside PLAYING.",
+    "continuousRunPauseSeconds": 0.17605225,
+    "continuousRunAudioBeforeSeconds": 98.299871585,
+    "continuousRunAudioAfterSeconds": 98.496,
+    "continuousRunVideoSeconds": 98.267125,
+    "shortReproductionPauseSeconds": 0.134800042,
+    "shortReproductionAudioBeforeSeconds": 98.344241251,
+    "shortReproductionAudioAfterSeconds": 98.496,
+    "shortReproductionVideoSeconds": 98.308833333,
+    "disposition": "Recorded raw metrics and frame/memory/visibility observations remain valid. Synchronization through EOF is not qualified; issue12 timing criterion reopened."
+  },
+  "historicalSourceLookup": {
+    "mpvRevision": "0b9bae001c14b8ab496e6ae2e9ac90dd6ee65788",
+    "rootRevision": "17711b309676546f94607a8b079e94e25c5c3436",
+    "archivedHarness": "artifacts/async-eof-runtime-baseline-0b9/source-root/scripts/test-mpv-policy.py",
+    "archivedVisibilityHelper": "artifacts/async-eof-runtime-baseline-0b9/source-root/scripts/adapter_visibility.py",
+    "baselineRuntimeManifest": "artifacts/async-eof-runtime-baseline-0b9/manifest.json"
+  },
+  "postCaptureArtifacts": {
+    "artifacts/natural-adaptive-tail-before-1/report.json": {
+      "bytes": 535745,
+      "sha256": "159698865aabfbc04128f0bd6d7bbff9a81543f61a19e07e932576d7e117073e"
+    },
+    "artifacts/natural-adaptive-tail-before-1/report.log": {
+      "bytes": 244508,
+      "sha256": "48c8de95ed4051ef003ed4a8e13aa031f11514ae829619ededa934795b36d326"
+    },
+    "artifacts/async-eof-runtime-baseline-0b9/manifest.json": {
+      "bytes": 1898,
+      "sha256": "b8da36ddf75cc1b0b7680b8184ac5aadc92bb04f638d083d6a3ef74955e0a2b5"
+    },
+    "artifacts/async-eof-runtime-baseline-0b9/source-root/scripts/test-mpv-policy.py": {
+      "bytes": 32135,
+      "sha256": "0f3c304d29bedd6f1fd774de1951683a2294c92fb3cc10628fc6442a523a15aa"
+    },
+    "artifacts/async-eof-runtime-baseline-0b9/source-root/scripts/adapter_visibility.py": {
+      "bytes": 5587,
+      "sha256": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
     }
   }
 }

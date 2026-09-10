@@ -177,6 +177,91 @@ class PolicyTimingTests(unittest.TestCase):
                 process.kill()
                 original_wait(timeout=5)
 
+    def clock_sample(self, status="playing", active=True, valid=True, offset=.003):
+        return {"elapsed": 3, "paused": False, "seeking": False, "avOffset": 0,
+            "state": {"audio-status": status, "video-status": "playing", "audio-clock-active": active,
+                "scheduled-avsync-valid": valid, "scheduled-avsync-seconds": offset if valid else None,
+                "scheduled-audio-pts-seconds": 98.3 if valid else None,
+                "scheduled-video-pts-seconds": 98.28 if valid else None}}
+
+    def test_legacy_zero_without_validity_cannot_qualify_clock(self):
+        result = smoke.summarize_scheduled_clock([{"elapsed": 3, "avOffset": 0, "state": {}}])
+        self.assertFalse(result["diagnosticsAvailable"])
+        self.assertEqual(result["unavailableSamples"], 1)
+        self.assertIsNone(result["target20msMet"])
+
+    def test_atomic_tail_offsets_override_legacy_zero_property(self):
+        result = smoke.summarize_scheduled_clock([self.clock_sample("eof", offset=.1348)])
+        self.assertEqual(result["activeTailSamples"], 1)
+        self.assertEqual(result["maximumAbsoluteSeconds"], .1348)
+        self.assertFalse(result["target20msMet"])
+
+    def test_playing_draining_and_logical_eof_use_same_clock_bound(self):
+        result = smoke.summarize_scheduled_clock([
+            self.clock_sample("playing", offset=-.020), self.clock_sample("draining", offset=.020),
+            self.clock_sample("eof", offset=.001)])
+        self.assertTrue(result["target20msMet"])
+        self.assertEqual(result["activeTailSamples"], 2)
+        self.assertEqual(result["validSamples"], 3)
+
+    def test_inactive_eof_is_unavailable_instead_of_zero_success(self):
+        result = smoke.summarize_scheduled_clock([self.clock_sample("eof", active=False, valid=False)])
+        self.assertEqual(result["inactiveSamples"], 1)
+        self.assertEqual(result["validSamples"], 0)
+        self.assertIsNone(result["target20msMet"])
+        result = smoke.summarize_scheduled_clock([self.clock_sample(), self.clock_sample(valid=False)])
+        self.assertEqual(result["invalidActiveSamples"], 1)
+        self.assertIsNone(result["target20msMet"])
+        sample = self.clock_sample(active=True, valid=False)
+        sample["state"]["video-status"] = "eof"
+        result = smoke.summarize_scheduled_clock([sample])
+        self.assertEqual(result["inactiveSamples"], 1)
+        self.assertEqual(result["invalidActiveSamples"], 0)
+
+    def test_malformed_or_stale_valid_tuple_prevents_qualification(self):
+        for value in (None, True, float("nan"), float("inf")):
+            sample = self.clock_sample()
+            sample["state"]["scheduled-avsync-seconds"] = value
+            result = smoke.summarize_scheduled_clock([sample, self.clock_sample()])
+            self.assertEqual(result["malformedSamples"], 1)
+            self.assertIsNone(result["target20msMet"])
+        sample = self.clock_sample(active=False)
+        self.assertEqual(smoke.summarize_scheduled_clock([sample])["malformedSamples"], 1)
+
+    def test_seek_pause_and_startup_are_explicitly_outside_steady_clock(self):
+        for field, value in (("elapsed", 1), ("paused", True), ("seeking", True)):
+            sample = self.clock_sample(offset=.3)
+            sample[field] = value
+            result = smoke.summarize_scheduled_clock([sample, self.clock_sample()])
+            self.assertEqual(result["validSamples"], 1)
+            self.assertTrue(result["target20msMet"])
+
+    def test_eof_guard_rejects_captured_gapless_drain_and_requires_tail_overlap(self):
+        log = "audio EOF reached\nvideo EOF reached\nAdaptive enhancement buffer: both playback clocks paused; video=98.308833333 audio-before=98.344241251 audio-after=98.496 transition=0.134800042\n"
+        report = {"playbackReachedEOF": True, "scheduledClock": smoke.summarize_scheduled_clock([self.clock_sample("eof")])}
+        self.assertFalse(smoke.validate_eof_clock(report, log)["passed"])
+        fast_jump = log.replace("0.134800042", "0.001")
+        self.assertFalse(smoke.validate_eof_clock(report, fast_jump)["passed"])
+        short_pause = fast_jump.replace("audio-after=98.496", "audio-after=98.345241251")
+        self.assertTrue(smoke.validate_eof_clock(report, short_pause)["passed"])
+        report["scheduledClock"] = smoke.summarize_scheduled_clock([self.clock_sample()])
+        self.assertFalse(smoke.validate_eof_clock(report, short_pause)["passed"])
+        self.assertFalse(smoke.validate_eof_clock(report, "")["passed"])
+
+    def test_eof_guard_rejects_backward_audio_clock_reset(self):
+        log = "audio EOF reached\nvideo EOF reached\nAdaptive enhancement buffer: both playback clocks paused; video=98.308833333 audio-before=98.344241251 audio-after=98.244241251 transition=0.001\n"
+        report = {"playbackReachedEOF": True, "scheduledClock": smoke.summarize_scheduled_clock([self.clock_sample("eof")])}
+        result = smoke.validate_eof_clock(report, log)
+        self.assertFalse(result["passed"])
+        self.assertAlmostEqual(result["pauseAudioClockResidualRangeSeconds"][0], -.101)
+
+    def test_malformed_pause_diagnostics_fail_instead_of_disappearing(self):
+        prefix = "Adaptive enhancement buffer: both playback clocks paused; "
+        for line in ("missing", "video=1 audio-before=1 audio-after=1 transition=nan",
+                     "video=1 audio-before=1 audio-after=1 transition=-1"):
+            with self.assertRaises(ValueError):
+                smoke.enhancement_pause_transitions(prefix + line)
+
 
 if __name__ == "__main__":
     unittest.main()

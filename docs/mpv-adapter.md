@@ -262,7 +262,9 @@ python3 scripts/test-mpv-policy.py \
 
 The [longer M3 run](evidence/m3-natural-hdr-long-adaptive.json) uses mpv `0b9bae001`, the same Apple HDR10+ source with AAC, 160×96 neural processing and 1920×1080 output. Continuous playback covers source frames 16–2359: all 2,344 frames complete in exact timestamp order, reaching the final file frame with zero pending work and clean shutdown. The 97.722625-second displayed-source span takes 376.876 seconds of wall time. There are 2,341 warmed completions at 6.22 FPS and 282.748 seconds of shared buffering; Live remains unavailable.
 
-All 11,610 post-startup scheduled A/V samples stay within 3.667 ms, with zero first/last-quarter median drift. The final keep-open EOF sample is paused; the 11,609 unpaused samples retain the same maximum. No decoder/VO drops or stale generations are reported. IPC observes 2,343 unique source frames: frame 2355 completes correctly but falls between adjacent observations, so this does not prove every frame was physically presented. Native visibility covers the entire interval. Sampled RSS peaks at 617,906,176 bytes and its quarter medians decrease; warmed MLX active memory remains approximately 402.16 MB and cache medians remain approximately 276.9 MB. The cache's 292,932,280-byte maximum is consistent with its documented soft limit. These are bounded scheduled-clock and memory observations, with physical A/V, longer-duration playback, other audio outputs and temporal/HDR quality still unqualified.
+Timing acceptance fails at EOF despite the reported clock numbers. Default gapless playback marks audio logically ended while samples remain queued; the next enhancement pause synchronously drains them for 176 ms, advancing audio from 98.299872 to 98.496 seconds while video remains at 98.267125. A short tail reproduction repeats the defect with a 135-ms drain. The ordinary `avsync` property stops updating outside the playing state, concealing this interval with zeros. Its 11,610 post-startup samples remain within 3.667 ms and have zero first/last-quarter median drift, but those raw values do not qualify synchronization through EOF. The final keep-open sample is paused; excluding it does not resolve the invalid clock coverage.
+
+The frame, visibility and memory observations remain valid. No decoder/VO drops or stale generations are reported. IPC observes 2,343 unique source frames: frame 2355 completes correctly but falls between adjacent observations, so this does not prove every frame was physically presented. Native visibility covers the entire interval. Sampled RSS peaks at 617,906,176 bytes and its quarter medians decrease; warmed MLX active memory remains approximately 402.16 MB and cache medians remain approximately 276.9 MB. The cache's 292,932,280-byte maximum is consistent with its documented soft limit. The raw evidence and failed EOF timing disposition are retained together.
 
 ```sh
 python3 scripts/test-mpv-policy.py \
@@ -273,3 +275,26 @@ python3 scripts/test-mpv-policy.py \
 ```
 
 The 600-second argument is a wall-time ceiling; this run exits earlier after native audio/video EOF. Player clock position and exact displayed-source progress are reported separately.
+
+### Clocked enhancement holds at audio EOF
+
+The mpv `f9213292a` fix keeps queued audio available to Adaptive/Live timing after logical audio EOF. Normal gapless state transitions remain intact. An enhancement hold pauses the queued tail without first synchronously draining it; ordinary EOF/user-pause behavior retains the existing drain decision. The same clock predicate serves synchronization, sparse scheduling and CoreAudio pause prelead, including enhancement enabled after audio has already reached logical EOF.
+
+`enhancement-state` now exposes audio/video status, clock activity and an atomic cached scheduling tuple: validity, offset, audio PTS and video PTS. Reset, track teardown and inactive playback invalidate the tuple; unavailable timing is null. The harness reports the original `avsync` property separately and bases its 20-ms scheduling result on valid tuples. `--require-eof-clock` also requires native audio/video EOF, observed queued-tail clock coverage and enhancement pause transitions no longer than 50 ms. At speed 1, the audio-clock change across each pause must match elapsed time within 20 ms, preventing a fast reset from hiding discarded audio. The separate 50-ms responsiveness guard detects the reproduced synchronous drain; it does not relax the 20-ms offset target.
+
+Both focused natural-tail runs cover source frames 2300–2359 at 160×96 processing. Default gapless playback records 254 valid scheduling samples, including 25 during logical EOF; explicit `--gapless-audio=no` records 253 valid samples, including 25 during draining. Both have zero maximum scheduled offset and zero median drift, with no missing or malformed active-clock diagnostics. Maximum pause transitions are 32.125 and 68.5 microseconds respectively, compared with the retained 134.800-ms baseline failure. Both reach native EOF with clean shutdown and eligible native visibility. Six production-helper CPU groups pass optimized and UBSan checks, and all 40 mpv tests pass.
+
+Clock validity ends when the AO reports it is no longer playing. This does not establish that the final hardware samples have physically drained. A cached scheduling offset can still be zero by construction for an early queued frame; acoustic/display timing requires independent measurement. These tail regressions do not replace the longer drift run or qualify source-rate Live.
+
+```sh
+bash scripts/test-mpv-audio-clock.sh
+python3 scripts/test_mpv_policy_timing.py
+python3 scripts/test-mpv-policy.py \
+  artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4 \
+  --model models/neural-rendering/NeuralRendering.dlssmodel \
+  --width 160 --height 96 --seconds 60 --file-seek-target 2543301/24000 \
+  --require-visible --require-eof-clock \
+  --report artifacts/natural-adaptive-tail-new/report.json
+```
+
+Repeat in a new report directory with `--gapless-audio=no` for the explicit draining control. Omit the file seek and use `--seconds 600` for the full remaining-clip regression.
