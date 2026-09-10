@@ -1,0 +1,492 @@
+diff --git a/Sources/DLSSMedia/NativeOpticalFlow.swift b/Sources/DLSSMedia/NativeOpticalFlow.swift
+index 7e9d976..7c38486 100644
+--- a/Sources/DLSSMedia/NativeOpticalFlow.swift
++++ b/Sources/DLSSMedia/NativeOpticalFlow.swift
+@@ -5,6 +5,52 @@ import Foundation
+ import VideoToolbox
+ import Vision
+ 
++/// Internal allocation control for matched tests; the public motion API is unchanged.
++enum NativeFlowOutputAllocation: String, Sendable { case fresh, pooled }
++
++/// CoreVideo recycles only released buffers. Never overwrite a destination that
++/// is still retained by VideoToolbox or an MLX managed-storage owner.
++final class NativeFlowOutputPool {
++  static let capacity = 4 // Two forward/backward pairs, including retained work.
++  private let pool: CVPixelBufferPool
++  private let allocationAttributes = [kCVPixelBufferPoolAllocationThresholdKey: NativeFlowOutputPool.capacity] as CFDictionary
++
++  init(width: Int, height: Int) throws {
++    guard width > 0, height > 0, width <= 16384, height <= 16384 else {
++      throw MLXMediaError("Invalid flow output extent")
++    }
++    var pool: CVPixelBufferPool?
++    // Retain unused buffers for this bounded session; default one-second aging
++    // would otherwise allocate again between slow reference-capture frames.
++    let status = CVPixelBufferPoolCreate(kCFAllocatorDefault,
++      [kCVPixelBufferPoolMaximumBufferAgeKey: 0] as CFDictionary, [
++      kCVPixelBufferWidthKey: width, kCVPixelBufferHeightKey: height,
++      kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_TwoComponent16Half,
++      kCVPixelBufferIOSurfacePropertiesKey: [:], kCVPixelBufferMetalCompatibilityKey: true,
++    ] as CFDictionary, &pool)
++    guard status == kCVReturnSuccess, let pool else {
++      throw MLXMediaError("Cannot create flow output pool: \(status)")
++    }
++    self.pool = pool
++  }
++
++  func makeBuffer() throws -> MLXPixelBuffer {
++    var buffer: CVPixelBuffer?
++    let status = CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(kCFAllocatorDefault, pool,
++      allocationAttributes, &buffer)
++    guard status == kCVReturnSuccess, let buffer else {
++      throw MLXMediaError("Cannot acquire flow output buffer: \(status)")
++    }
++    return MLXPixelBuffer(buffer)
++  }
++
++  func makePair() throws -> (MLXPixelBuffer, MLXPixelBuffer) {
++    let forward = try makeBuffer()
++    let backward = try makeBuffer()
++    return (forward, backward)
++  }
++}
++
+ /// One estimator owns one sequential session. Both directions are checked before
+ /// a history sample is accepted; a scene cut also resets the session's hints.
+ public actor NativeOpticalFlow {
+@@ -22,6 +68,10 @@ public actor NativeOpticalFlow {
+   private var inFlight = false
+ 
+   public init(width: Int, height: Int, mode: MediaMotion = .automatic) throws {
++    try self.init(width: width, height: height, mode: mode, outputAllocation: .pooled)
++  }
++
++  init(width: Int, height: Int, mode: MediaMotion, outputAllocation: NativeFlowOutputAllocation) throws {
+     self.width = width
+     self.height = height
+     imageIO = try NativeImageIO()
+@@ -40,7 +90,8 @@ public actor NativeOpticalFlow {
+         throw MLXMediaError("VideoToolbox optical flow is unavailable on this Mac")
+       }
+       do {
+-        session = try VideoToolboxFlowSession(width: workingWidth, height: workingHeight)
++        session = try VideoToolboxFlowSession(width: workingWidth, height: workingHeight,
++          outputAllocation: outputAllocation)
+       } catch let error as VTFrameProcessorError where mode == .automatic && error.code == .initializationFailed {
+         // A VM can advertise support without a working frame-processor driver.
+         selected = .vision
+@@ -95,8 +146,9 @@ private final class VideoToolboxFlowSession {
+   private let processor = VTFrameProcessor()
+   private let width: Int
+   private let height: Int
++  private let outputPool: NativeFlowOutputPool?
+ 
+-  init(width: Int, height: Int) throws {
++  init(width: Int, height: Int, outputAllocation: NativeFlowOutputAllocation) throws {
+     guard let configuration = VTOpticalFlowConfiguration(frameWidth: width, frameHeight: height,
+       qualityPrioritization: .normal, revision: .revision1),
+       let flowWidth = configuration.destinationPixelBufferAttributes[kCVPixelBufferWidthKey as String] as? Int,
+@@ -106,6 +158,8 @@ private final class VideoToolboxFlowSession {
+     }
+     self.width = flowWidth
+     self.height = flowHeight
++    outputPool = outputAllocation == .pooled
++      ? try NativeFlowOutputPool(width: flowWidth, height: flowHeight) : nil
+     try processor.startSession(configuration: configuration)
+   }
+ 
+@@ -113,8 +167,15 @@ private final class VideoToolboxFlowSession {
+ 
+   func process(previous: MLXPixelBuffer, current: MLXPixelBuffer, index: Int,
+                randomAccess: Bool, isolation: isolated (any Actor)? = #isolation) async throws -> (MLXPixelBuffer, MLXPixelBuffer) {
+-    let forward = try NativePixelBuffers.make(width: width, height: height, format: kCVPixelFormatType_TwoComponent16Half)
+-    let backward = try NativePixelBuffers.make(width: width, height: height, format: kCVPixelFormatType_TwoComponent16Half)
++    func destinations() throws -> (MLXPixelBuffer, MLXPixelBuffer) {
++      if let outputPool { return try outputPool.makePair() }
++      let forward = try NativePixelBuffers.make(width: width, height: height,
++        format: kCVPixelFormatType_TwoComponent16Half)
++      let backward = try NativePixelBuffers.make(width: width, height: height,
++        format: kCVPixelFormatType_TwoComponent16Half)
++      return (forward, backward)
++    }
++    let (forward, backward) = try destinations()
+     guard let source = VTFrameProcessorFrame(buffer: previous.buffer, presentationTimeStamp: CMTime(value: Int64(index - 1), timescale: 60)),
+       let next = VTFrameProcessorFrame(buffer: current.buffer, presentationTimeStamp: CMTime(value: Int64(index), timescale: 60)),
+       let flow = VTFrameProcessorOpticalFlow(forwardFlow: forward.buffer, backwardFlow: backward.buffer),
+diff --git a/Tests/DLSSMediaTests/NativeFlowOutputPoolTests.swift b/Tests/DLSSMediaTests/NativeFlowOutputPoolTests.swift
+new file mode 100644
+index 0000000..7983d4e
+--- /dev/null
++++ b/Tests/DLSSMediaTests/NativeFlowOutputPoolTests.swift
+@@ -0,0 +1,140 @@
++import CoreVideo
++import Foundation
++import IOSurface
++import MLX
++import VideoToolbox
++import XCTest
++@testable import DLSSMedia
++@testable import DLSSMLX
++
++struct NativeFlowSnapshot: Equatable {
++  let vectors: Data
++  let confidence: Data
++  let reset: Bool
++  let reliableFraction: Float
++  let warpedLumaError: Float
++
++  init(_ motion: MLXVideoMotion) {
++    vectors = motion.vectors.asData(access: .copy).data
++    confidence = motion.confidence.asData(access: .copy).data
++    reset = motion.reset
++    reliableFraction = motion.reliableFraction
++    warpedLumaError = motion.warpedLumaError
++  }
++
++  var finite: Bool {
++    [vectors, confidence].allSatisfy { data in
++      data.withUnsafeBytes { $0.bindMemory(to: Float.self).allSatisfy(\.isFinite) }
++    } && reliableFraction.isFinite && warpedLumaError.isFinite
++  }
++
++  static func == (a: Self, b: Self) -> Bool {
++    a.vectors == b.vectors && a.confidence == b.confidence && a.reset == b.reset &&
++      a.reliableFraction.bitPattern == b.reliableFraction.bitPattern &&
++      a.warpedLumaError.bitPattern == b.warpedLumaError.bitPattern
++  }
++}
++
++final class NativeFlowOutputPoolTests: XCTestCase, @unchecked Sendable {
++  private func surfaceID(_ buffer: MLXPixelBuffer) throws -> IOSurfaceID {
++    IOSurfaceGetID(try XCTUnwrap(CVPixelBufferGetIOSurface(buffer.buffer)?.takeUnretainedValue()))
++  }
++
++  func testRetainedBuffersEnforceCapacityAndReleasedBufferCanBeReused() throws {
++    let pool = try NativeFlowOutputPool(width: 17, height: 9)
++    var held: [MLXPixelBuffer] = []
++    for _ in 0..<NativeFlowOutputPool.capacity { held.append(try pool.makeBuffer()) }
++    let identities = try held.map(surfaceID)
++    XCTAssertEqual(Set(identities).count, 4)
++    for buffer in held {
++      XCTAssertEqual(buffer.width, 17)
++      XCTAssertEqual(buffer.height, 9)
++      XCTAssertEqual(CVPixelBufferGetPixelFormatType(buffer.buffer), kCVPixelFormatType_TwoComponent16Half)
++      XCTAssertNotNil(CVPixelBufferGetIOSurface(buffer.buffer))
++    }
++    XCTAssertThrowsError(try pool.makeBuffer()) { error in
++      XCTAssertTrue(error.localizedDescription.contains(String(kCVReturnWouldExceedAllocationThreshold)))
++    }
++    held.removeLast()
++    let replacement = try pool.makeBuffer()
++    XCTAssertEqual(try surfaceID(replacement), identities.last)
++    XCTAssertThrowsError(try pool.makeBuffer())
++    XCTAssertEqual(held.count, 3)
++  }
++
++  func testSecondDestinationFailureReleasesFirstTemporary() throws {
++    let pool = try NativeFlowOutputPool(width: 17, height: 9)
++    let held = try (0..<3).map { _ in try pool.makeBuffer() }
++    XCTAssertThrowsError(try pool.makePair())
++    let remaining = try pool.makeBuffer()
++    XCTAssertFalse(try held.map(surfaceID).contains(surfaceID(remaining)))
++    XCTAssertThrowsError(try pool.makeBuffer())
++    withExtendedLifetime(held) {}
++  }
++
++  func testLazyManagedOwnerPreventsRecyclingAndSurvivesPoolRelease() throws {
++    var pool: NativeFlowOutputPool? = try NativeFlowOutputPool(width: 17, height: 9)
++    var source: MLXPixelBuffer? = try pool!.makeBuffer()
++    let originalID = try surfaceID(source!)
++    let lockStatus = CVPixelBufferLockBaseAddress(source!.buffer, [])
++    XCTAssertEqual(lockStatus, kCVReturnSuccess)
++    guard lockStatus == kCVReturnSuccess else { return }
++    do {
++      defer { CVPixelBufferUnlockBaseAddress(source!.buffer, []) }
++      let scalarCount = CVPixelBufferGetBytesPerRow(source!.buffer) * source!.height / 2
++      let address = try XCTUnwrap(CVPixelBufferGetBaseAddress(source!.buffer))
++      address.assumingMemoryBound(to: Float16.self).initialize(repeating: Float16(0.25), count: scalarCount)
++    }
++    var storage: MLXArray? = try MLXVideoFrame.storage(source!.buffer, dtype: .float16)
++    let lazy = storage! + 1
++    source = nil; storage = nil
++    let held = try (0..<3).map { _ in try pool!.makeBuffer() }
++    XCTAssertFalse(try held.map(surfaceID).contains(originalID))
++    XCTAssertThrowsError(try pool!.makeBuffer())
++    pool = nil
++    eval(lazy)
++    XCTAssertTrue(lazy.asArray(Float.self).allSatisfy { $0 == 1.25 })
++    XCTAssertEqual(held.count, 3)
++    XCTAssertTrue(try held.map(surfaceID).allSatisfy { $0 != originalID })
++  }
++
++  func testSequentialVideoToolboxReuseMatchesFreshAndPreservesRetainedMotion() async throws {
++    guard #available(macOS 15.4, *), VTOpticalFlowConfiguration.isSupported else {
++      throw XCTSkip("VideoToolbox optical flow is unavailable")
++    }
++    let fresh: NativeOpticalFlow, pooled: NativeOpticalFlow
++    do {
++      fresh = try NativeOpticalFlow(width: 128, height: 96, mode: .videoToolbox, outputAllocation: .fresh)
++      pooled = try NativeOpticalFlow(width: 128, height: 96, mode: .videoToolbox, outputAllocation: .pooled)
++    } catch let error as VTFrameProcessorError where error.code == .initializationFailed {
++      throw XCTSkip("VideoToolbox cannot start its hardware processing pipeline")
++    }
++    var inputs = try (0..<8).map { try NativeOpticalFlowTests.texture(width: 128, height: 96, dx: $0 * 2, dy: -$0) }
++    inputs[6] = try [Float](repeating: 0, count: 128 * 96 * 3).withUnsafeBytes {
++      try MLXVideoFrame(rgb: Data($0), width: 128, height: 96)
++    }
++    inputs[7] = try [Float](repeating: 1, count: 128 * 96 * 3).withUnsafeBytes {
++      try MLXVideoFrame(rgb: Data($0), width: 128, height: 96)
++    }
++    let inputBytes = inputs.map { $0.copyRGBData() }
++    var retained: [(motion: MLXVideoMotion, snapshot: NativeFlowSnapshot)] = []
++    // Three traversals exceed the two-pair pool and exercise wrap discontinuities.
++    for _ in 0..<3 {
++      for index in inputs.indices {
++        let a = try await fresh.prepare(inputs[index], index: index, sceneCutThreshold: 0.3)
++        let b = try await pooled.prepare(inputs[index], index: index, sceneCutThreshold: 0.3)
++        XCTAssertEqual(a == nil, b == nil)
++        if let a, let b {
++          let expected = NativeFlowSnapshot(a), actual = NativeFlowSnapshot(b)
++          XCTAssertTrue(expected.finite && actual.finite)
++          XCTAssertTrue(actual == expected, "Fresh and pooled motion differ at source index \(index)")
++          retained.append((b, actual))
++        }
++        for old in retained { XCTAssertTrue(NativeFlowSnapshot(old.motion) == old.snapshot) }
++      }
++    }
++    XCTAssertEqual(retained.count, 23)
++    XCTAssertTrue(retained.contains { $0.snapshot.reset }, "Actual cut must exercise a reset")
++    for (frame, bytes) in zip(inputs, inputBytes) { XCTAssertEqual(frame.copyRGBData(), bytes) }
++  }
++}
+diff --git a/Tests/DLSSMediaTests/NativeFlowOutputPoolBenchmarkTests.swift b/Tests/DLSSMediaTests/NativeFlowOutputPoolBenchmarkTests.swift
+new file mode 100644
+index 0000000..d03661d
+--- /dev/null
++++ b/Tests/DLSSMediaTests/NativeFlowOutputPoolBenchmarkTests.swift
+@@ -0,0 +1,224 @@
++import CryptoKit
++import Foundation
++import MLX
++import VideoToolbox
++import XCTest
++@testable import DLSSMedia
++@testable import DLSSMLX
++
++/// Opt in with MLXDLSS_FLOW_POOL_INPUTS and MLXDLSS_FLOW_POOL_BENCH_OUTPUT.
++/// No model, decoder, processing-size resize or public playback settings change.
++final class NativeFlowOutputPoolBenchmarkTests: XCTestCase, @unchecked Sendable {
++  private struct Input: Decodable {
++    struct Pin: Decodable { let path: String; let bytes: Int; let sha256: String }
++    struct Time: Codable { let value: Int64; let timescale: Int32 }
++    struct Frame: Decodable {
++      let sourceFrameIndex: Int
++      let pts: Time
++      let duration: Time
++      let path: String
++      let sha256: String
++      let bytes: Int
++    }
++    let width: Int
++    let height: Int
++    let frames: [Frame]
++    let captureManifest: Pin
++    let source: Pin
++  }
++
++  private func require(_ value: Bool, _ message: String) throws {
++    if !value { throw NSError(domain: "NativeFlowPoolBenchmark", code: 1,
++      userInfo: [NSLocalizedDescriptionKey: message]) }
++  }
++  private func digest(_ data: Data) -> String {
++    SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
++  }
++  private func fileDigest(_ url: URL) throws -> String {
++    let handle = try FileHandle(forReadingFrom: url)
++    defer { try? handle.close() }
++    var hash = SHA256()
++    while let data = try handle.read(upToCount: 1024 * 1024), !data.isEmpty { hash.update(data: data) }
++    return hash.finalize().map { String(format: "%02x", $0) }.joined()
++  }
++  private func arraySummary(_ data: Data) -> [String: Any] {
++    var minimum = Float.infinity, maximum = -Float.infinity, sum = Double(0), nonfinite = 0
++    data.withUnsafeBytes { bytes in
++      for value in bytes.bindMemory(to: Float.self) {
++        if value.isFinite { minimum = min(minimum, value); maximum = max(maximum, value); sum += Double(value) }
++        else { nonfinite += 1 }
++      }
++    }
++    return ["sha256": digest(data), "bytes": data.count, "nonfiniteComponents": nonfinite,
++      "minimum": minimum.isFinite ? (Double(minimum) as Any) : NSNull(),
++      "maximum": maximum.isFinite ? (Double(maximum) as Any) : NSNull(),
++      "mean": sum / Double(max(1, data.count / 4))]
++  }
++
++  func testMatchedFullResolutionVideoToolboxPoolBenchmark() async throws {
++    let environment = ProcessInfo.processInfo.environment
++    guard let inputPath = environment["MLXDLSS_FLOW_POOL_INPUTS"],
++      let outputPath = environment["MLXDLSS_FLOW_POOL_BENCH_OUTPUT"] else {
++      throw XCTSkip("Opt-in real VideoToolbox flow allocation benchmark")
++    }
++    var root = URL(fileURLWithPath: #filePath)
++    for _ in 0..<5 { root.deleteLastPathComponent() }
++    let inputURL = URL(fileURLWithPath: inputPath)
++    let output = URL(fileURLWithPath: outputPath)
++    try require(!FileManager.default.fileExists(atPath: output.path) &&
++      (try? output.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink) != true,
++      "Benchmark output must be a new path")
++    try FileManager.default.createDirectory(at: output, withIntermediateDirectories: false)
++    var report: [String: Any] = ["schemaVersion": 1, "passed": false,
++      "scope": "Actual NativeOpticalFlow.prepare, fresh versus pooled VT outputs; completed stage wall, not isolated GPU time or Live throughput",
++      "roundPairs": 4, "traversalsPerCase": 3, "warmupCallsPerTraversal": 3,
++      "requestedBackend": MediaMotion.videoToolbox.rawValue, "modelLoaded": false,
++      "limitations": ["Only output allocation changes; source conversion, VT revision and working extent remain unchanged",
++        "Full array SHA256 and scalar bits compared for every matched call; direct byte comparisons at cut and first warmed frame of every traversal",
++        "Array readback, hashing and comparisons are outside prepare timing; they still influence total process duration and operating conditions",
++        "No inferred end-to-end, Live, temporal-quality or M5 acceptance"]]
++    var records: [[String: Any]] = []
++    var frozen: [String: String] = [:]
++    func publish() throws {
++      var snapshot = report
++      snapshot["samples"] = records
++      try JSONSerialization.data(withJSONObject: snapshot, options: [.prettyPrinted, .sortedKeys])
++        .write(to: output.appendingPathComponent("report.json"), options: .atomic)
++    }
++    let priorCachePolicy = MLXRuntimeDiagnostics.cacheLimitBytes
++    report["priorMLXCachePolicyBytes"] = priorCachePolicy
++    defer {
++      do {
++        try MLXRuntimeDiagnostics.setCacheLimitBytes(priorCachePolicy)
++        report["restoredMLXCachePolicyBytes"] = MLXRuntimeDiagnostics.cacheLimitBytes
++      } catch {
++        report["passed"] = false
++        report["cacheRestorationError"] = error.localizedDescription
++      }
++      try? publish()
++    }
++    do {
++      if #available(macOS 15.4, *) {
++        try require(VTOpticalFlowConfiguration.isSupported, "VideoToolbox optical flow unavailable; opt-in benchmark must perform actual work")
++      } else {
++        try require(false, "VideoToolbox optical flow requires macOS15.4; no benchmark skip or fallback")
++      }
++      let inputData = try Data(contentsOf: inputURL)
++      try require(digest(inputData) == "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181", "Input manifest pin mismatch")
++      let input = try JSONDecoder().decode(Input.self, from: inputData)
++      try require(input.width == 1920 && input.height == 1080 && input.frames.map(\.sourceFrameIndex) == Array(1496...1507), "Unexpected input dimensions/sequence")
++      report["inputManifestPath"] = inputURL.path
++      report["inputManifestSHA256"] = digest(inputData)
++      report["width"] = input.width; report["height"] = input.height
++      let paths = [".build/debug/hdr-benchmark", ".build/debug/libFrameEngineShared.dylib", ".build/debug/mlx.metallib",
++        "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift", "vendor/MLX-DLSS/Sources/DLSSMedia/NativeImageIO.swift",
++        "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoFrame.swift", "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoMotion.swift",
++        "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeFlowOutputPoolTests.swift",
++        "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeFlowOutputPoolBenchmarkTests.swift"]
++      for path in paths { frozen[root.appendingPathComponent(path).path] = try fileDigest(root.appendingPathComponent(path)) }
++      if let executable = Bundle(for: Self.self).executableURL { frozen[executable.path] = try fileDigest(executable) }
++      frozen[inputURL.path] = digest(inputData)
++      for pin in [input.captureManifest, input.source] {
++        let url = pin.path.hasPrefix("/") ? URL(fileURLWithPath: pin.path) : root.appendingPathComponent(pin.path)
++        let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize
++        try require(size == pin.bytes && fileDigest(url) == pin.sha256, "Source/capture pin mismatch")
++        frozen[url.path] = pin.sha256
++      }
++      try MLXRuntimeDiagnostics.setCacheLimitBytes(256 * 1024 * 1024)
++      report["benchmarkMLXCachePolicyBytes"] = MLXRuntimeDiagnostics.cacheLimitBytes
++      var frames: [MLXVideoFrame] = []
++      for frame in input.frames {
++        let url = frame.path.hasPrefix("/") ? URL(fileURLWithPath: frame.path) : root.appendingPathComponent(frame.path)
++        let data = try Data(contentsOf: url)
++        try require(data.count == frame.bytes && data.count == 1920 * 1080 * 12 && digest(data) == frame.sha256,
++          "Proxy input pin mismatch at \(frame.sourceFrameIndex)")
++        try require(frame.duration.value == 1001 && frame.duration.timescale == 24000 && frame.pts.timescale == 24000,
++          "Unexpected exact source timing")
++        frozen[url.path] = frame.sha256
++        frames.append(try MLXVideoFrame(rgb: data, width: input.width, height: input.height))
++      }
++      report["frozenSHA256Before"] = frozen
++      let fresh = try NativeOpticalFlow(width: input.width, height: input.height, mode: .videoToolbox, outputAllocation: .fresh)
++      let pooled = try NativeOpticalFlow(width: input.width, height: input.height, mode: .videoToolbox, outputAllocation: .pooled)
++      try require(fresh.backend == MediaMotion.videoToolbox.rawValue && pooled.backend == MediaMotion.videoToolbox.rawValue,
++        "Actual backend must be VideoToolbox")
++      report["actualBackends"] = ["fresh": fresh.backend, "pooled": pooled.backend]
++      var lastIndex: [String: Int] = [:]
++      var exact = true, directChecks = 0, comparedCalls = 0
++      for pair in 0..<4 {
++        let order: [NativeFlowOutputAllocation] = pair.isMultiple(of: 2) ? [.fresh, .pooled] : [.pooled, .fresh]
++        var reference: [[String: Any]] = []
++        var byteControls: [Int: NativeFlowSnapshot] = [:]
++        for (caseOrder, strategy) in order.enumerated() {
++          let estimator = strategy == .fresh ? fresh : pooled
++          for traversal in 0..<3 {
++            for index in frames.indices {
++              let source = input.frames[index], ordinal = traversal * frames.count + index
++              let wrapped = lastIndex[strategy.rawValue].map { $0 + 1 != source.sourceFrameIndex } ?? false
++              let start = DispatchTime.now().uptimeNanoseconds
++              let motion = try await estimator.prepare(frames[index], index: source.sourceFrameIndex, sceneCutThreshold: 0.3)
++              let elapsed = Double(DispatchTime.now().uptimeNanoseconds - start) / 1e9
++              let memory = MLXRuntimeDiagnostics.memorySnapshot()
++              lastIndex[strategy.rawValue] = source.sourceFrameIndex
++              var sample: [String: Any] = ["pair": pair, "caseOrder": caseOrder, "strategy": strategy.rawValue,
++                "traversal": traversal, "sourceFrameIndex": source.sourceFrameIndex,
++                "pts": ["value": source.pts.value, "timescale": Int64(source.pts.timescale)],
++                "duration": ["value": source.duration.value, "timescale": Int64(source.duration.timescale)],
++                "inputSHA256": source.sha256, "wrapDiscontinuity": wrapped, "excludedWarmup": index < 3,
++                "prepareCompletedWallSeconds": elapsed, "hasMotion": motion != nil,
++                "mlxBytes": ["active": memory.activeBytes, "cache": memory.cacheBytes, "peakActive": memory.peakActiveBytes]]
++              var signature: [String: Any] = ["hasMotion": motion != nil]
++              if let motion {
++                let snapshot = NativeFlowSnapshot(motion)
++                try require(snapshot.finite, "Nonfinite flow output at \(source.sourceFrameIndex)")
++                signature = ["hasMotion": true, "vectorsSHA256": digest(snapshot.vectors),
++                  "confidenceSHA256": digest(snapshot.confidence), "reset": snapshot.reset,
++                  "reliableFractionBits": snapshot.reliableFraction.bitPattern,
++                  "warpedLumaErrorBits": snapshot.warpedLumaError.bitPattern]
++                sample["vectors"] = arraySummary(snapshot.vectors)
++                sample["confidence"] = arraySummary(snapshot.confidence)
++                sample["reset"] = snapshot.reset; sample["reliableFraction"] = snapshot.reliableFraction
++                sample["warpedLumaError"] = snapshot.warpedLumaError
++                if index == 2 || index == 3 {
++                  if caseOrder == 0 { byteControls[ordinal] = snapshot }
++                  else {
++                    let matches = byteControls[ordinal] == snapshot
++                    sample["directBytesEqual"] = matches; directChecks += 1; exact = exact && matches
++                  }
++                }
++              }
++              sample["signature"] = signature
++              if caseOrder == 0 { reference.append(signature) }
++              else {
++                let equal = NSDictionary(dictionary: reference[ordinal]).isEqual(to: signature)
++                sample["matchedExact"] = equal; comparedCalls += 1; exact = exact && equal
++              }
++              records.append(sample)
++            }
++            report["allComparedOutputsExact"] = exact
++            try publish()
++          }
++        }
++      }
++      for (frame, source) in zip(frames, input.frames) {
++        try require(digest(frame.copyRGBData()) == source.sha256, "Retained input changed")
++      }
++      var after: [String: String] = [:]
++      for (path, expected) in frozen {
++        let actual = try fileDigest(URL(fileURLWithPath: path)); after[path] = actual
++        try require(actual == expected, "Frozen file changed: \(path)")
++      }
++      report["frozenSHA256After"] = after
++      report["frozenFilesUnchanged"] = true
++      report["comparedCalls"] = comparedCalls; report["directByteChecks"] = directChecks
++      report["allComparedOutputsExact"] = exact
++      report["passed"] = exact && records.count == 288 && comparedCalls == 144 && directChecks == 24
++      try publish()
++      XCTAssertTrue(report["passed"] as? Bool == true, "Matched benchmark output check failed; retained report has every sample")
++    } catch {
++      report["failure"] = error.localizedDescription
++      try? publish()
++      throw error
++    }
++  }
++}

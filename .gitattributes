@@ -1,3 +1,5 @@
 * text=auto eol=lf
 *.png binary
 *.jpg binary
+# Preserve blank context lines in the archived unified diff.
+docs/evidence/m3-flow-output-pool-candidate.patch whitespace=-blank-at-eol

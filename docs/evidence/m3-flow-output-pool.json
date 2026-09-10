@@ -1,0 +1,2145 @@
+{
+  "schemaVersion": 1,
+  "scope": "M3 development comparison of fresh versus pooled VideoToolbox flow outputs; completed NativeOpticalFlow.prepare wall time with no model or playback.",
+  "decision": "Rejected as an optimization: warmed sum and p95 were higher in all four matched pairs. Candidate sources restored; production code and root runtime unchanged.",
+  "optimizationRetained": false,
+  "functionalChecksPassed": true,
+  "liveQualified": false,
+  "m5Measured": false,
+  "hardware": {
+    "chip": "Apple M3",
+    "unifiedMemoryBytes": 17179869184,
+    "os": "macOS 26.5",
+    "swift": "Apple Swift 6.3.3",
+    "conditions": "One reserved GPU run; power and thermal state were not recorded in the benchmark report."
+  },
+  "rootRevisionAtCapture": "db2db9ea0fe0fb9493eb84af010308ea5485afe6",
+  "baseMLXRevision": "7af47d64b36b551ba091bedde0437c93ac92ff65",
+  "candidate": {
+    "patch": {
+      "path": "docs/evidence/m3-flow-output-pool-candidate.patch",
+      "bytes": 26364,
+      "sha256": "e02d0963c30f4b109c28fed7a7a230186a0b8a582b721d5bbe214393aa07907f"
+    },
+    "sourceAndExecutedRuntimeArchive": [
+      {
+        "source": {
+          "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift",
+          "bytes": 9481,
+          "sha256": "15584e9a7102c23f14c307c8981691041a65ccb2e17f757b9270e28fd0a884d6"
+        },
+        "archive": {
+          "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/Sources/DLSSMedia/NativeOpticalFlow.swift",
+          "bytes": 9481,
+          "sha256": "15584e9a7102c23f14c307c8981691041a65ccb2e17f757b9270e28fd0a884d6"
+        }
+      },
+      {
+        "source": {
+          "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeFlowOutputPoolTests.swift",
+          "bytes": 6430,
+          "sha256": "7a95d8144d3b4ab3c2eac5f92f57ba3f95af9c6e7939494753e171a1e7489e16"
+        },
+        "archive": {
+          "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/Tests/DLSSMediaTests/NativeFlowOutputPoolTests.swift",
+          "bytes": 6430,
+          "sha256": "7a95d8144d3b4ab3c2eac5f92f57ba3f95af9c6e7939494753e171a1e7489e16"
+        }
+      },
+      {
+        "source": {
+          "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeFlowOutputPoolBenchmarkTests.swift",
+          "bytes": 12999,
+          "sha256": "4cc352e373311e4fd278f1e994bbd791a1b970166fdcf428ca163e031921ea4f"
+        },
+        "archive": {
+          "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/Tests/DLSSMediaTests/NativeFlowOutputPoolBenchmarkTests.swift",
+          "bytes": 12999,
+          "sha256": "4cc352e373311e4fd278f1e994bbd791a1b970166fdcf428ca163e031921ea4f"
+        }
+      },
+      {
+        "source": {
+          "path": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+          "bytes": 34028288,
+          "sha256": "d34e21caec26bd6182899e7c7902622adbd611c6871857b64090968b706814d6"
+        },
+        "archive": {
+          "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/MLXDLSSPackageTests",
+          "bytes": 34028288,
+          "sha256": "d34e21caec26bd6182899e7c7902622adbd611c6871857b64090968b706814d6"
+        }
+      },
+      {
+        "source": {
+          "path": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/mlx.metallib",
+          "bytes": 107392404,
+          "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+        },
+        "archive": {
+          "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/mlx.metallib",
+          "bytes": 107392404,
+          "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+        }
+      }
+    ],
+    "allocation": "A session-owned CoreVideo pool for RG16F forward/backward destinations, capacity four, cached threshold attributes, maximum buffer age zero (no age-out). No fresh overflow fallback.",
+    "unchangedOperations": "Source-size RGBAHalf writer, CI resize to 960x540, VT configuration and 240x135 output extent, callback ownership, motion import, confidence and reset calculations.",
+    "poolExhaustion": "Throws; an incomplete pair releases its first temporary destination. Existing HDR processor/session error handling clears history.",
+    "restoration": {
+      "passed": true,
+      "baseMLXRevision": "7af47d64b36b551ba091bedde0437c93ac92ff65",
+      "candidateArchive": {
+        "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/manifest.json",
+        "bytes": 3034,
+        "sha256": "a84d84f1fba8e8f7f31dd7f5c0c0fe34fb9aab46b1a4e4f44ff6c93a3313a843"
+      },
+      "patch": {
+        "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/candidate.patch",
+        "bytes": 26364,
+        "sha256": "e02d0963c30f4b109c28fed7a7a230186a0b8a582b721d5bbe214393aa07907f"
+      },
+      "patchAppliesToBaseAndReproducesThreeArchivedSources": true,
+      "reversePatchCheck": true,
+      "restoredSource": {
+        "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift",
+        "bytes": 6706,
+        "sha256": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+      },
+      "removedArchivedTestSources": [
+        {
+          "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeFlowOutputPoolTests.swift",
+          "bytes": 6430,
+          "sha256": "7a95d8144d3b4ab3c2eac5f92f57ba3f95af9c6e7939494753e171a1e7489e16"
+        },
+        {
+          "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeFlowOutputPoolBenchmarkTests.swift",
+          "bytes": 12999,
+          "sha256": "4cc352e373311e4fd278f1e994bbd791a1b970166fdcf428ca163e031921ea4f"
+        }
+      ],
+      "vendorClean": true,
+      "rootRuntimeUnchanged": [
+        {
+          "path": ".build/debug/hdr-benchmark",
+          "bytes": 50590720,
+          "sha256": "00ca2f074258bb84921f41524f2a679e62b06f5550b5680073163b9be608bce0"
+        },
+        {
+          "path": ".build/debug/libFrameEngineShared.dylib",
+          "bytes": 50161944,
+          "sha256": "221fad5eeaa21866903412d3490707a66d8b64d1bf40566b3ba511eca0af1771"
+        },
+        {
+          "path": ".build/debug/mlx.metallib",
+          "bytes": 107392404,
+          "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+        }
+      ],
+      "candidateReleaseTestBuildScope": "Retained and archived historical candidate executable; not current restored source or production runtime."
+    }
+  },
+  "design": {
+    "inputManifest": {
+      "schemaVersion": 1,
+      "width": 1920,
+      "height": 1080,
+      "layout": "Float32 little-endian interleaved RGB",
+      "domain": "Source-size bounded encoded sRGB proxy exported by NativeHDRProcessor. No new decode/conversion or model inference.",
+      "frames": [
+        {
+          "sourceFrameIndex": 1496,
+          "pts": {
+            "timescale": 24000,
+            "value": 1738497
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0008/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f"
+        },
+        {
+          "sourceFrameIndex": 1497,
+          "pts": {
+            "timescale": 24000,
+            "value": 1739498
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0009/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af"
+        },
+        {
+          "sourceFrameIndex": 1498,
+          "pts": {
+            "timescale": 24000,
+            "value": 1740499
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+        },
+        {
+          "sourceFrameIndex": 1499,
+          "pts": {
+            "timescale": 24000,
+            "value": 1741500
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0011/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17"
+        },
+        {
+          "sourceFrameIndex": 1500,
+          "pts": {
+            "timescale": 24000,
+            "value": 1742501
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0012/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3"
+        },
+        {
+          "sourceFrameIndex": 1501,
+          "pts": {
+            "timescale": 24000,
+            "value": 1743502
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0013/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e"
+        },
+        {
+          "sourceFrameIndex": 1502,
+          "pts": {
+            "timescale": 24000,
+            "value": 1744503
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0014/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46"
+        },
+        {
+          "sourceFrameIndex": 1503,
+          "pts": {
+            "timescale": 24000,
+            "value": 1745504
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0015/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b"
+        },
+        {
+          "sourceFrameIndex": 1504,
+          "pts": {
+            "timescale": 24000,
+            "value": 1746505
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0016/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9"
+        },
+        {
+          "sourceFrameIndex": 1505,
+          "pts": {
+            "timescale": 24000,
+            "value": 1747506
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0017/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518"
+        },
+        {
+          "sourceFrameIndex": 1506,
+          "pts": {
+            "timescale": 24000,
+            "value": 1748507
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0018/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c"
+        },
+        {
+          "sourceFrameIndex": 1507,
+          "pts": {
+            "timescale": 24000,
+            "value": 1749508
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0019/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b"
+        }
+      ],
+      "captureManifest": {
+        "path": "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+        "bytes": 199716,
+        "sha256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+      },
+      "source": {
+        "bytes": 41784502,
+        "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+        "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5"
+      },
+      "scope": "Twelve consecutive natural source proxy frames1496…1507 for an isolated actual NativeOpticalFlow comparison. Repeated traversals introduce explicitly recorded1507→1496 index discontinuities; timings are not source-rate playback.",
+      "inputRawBytes": 298598400
+    },
+    "inputManifestPin": {
+      "path": "artifacts/native-flow-pool-benchmark-1/inputs.json",
+      "bytes": 5746,
+      "sha256": "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181"
+    },
+    "persistentEstimators": 2,
+    "matchedPairs": 4,
+    "caseOrderByPair": [
+      [
+        "fresh",
+        "pooled"
+      ],
+      [
+        "pooled",
+        "fresh"
+      ],
+      [
+        "fresh",
+        "pooled"
+      ],
+      [
+        "pooled",
+        "fresh"
+      ]
+    ],
+    "traversalsPerCase": 3,
+    "callsPerTraversal": 12,
+    "excludedWarmupCallsPerTraversal": 3,
+    "warmupPolicy": "Exclude source indices 1496 through 1498 on every traversal; retained raw data includes them.",
+    "wrapPolicy": "Repeated 1507 to 1496 traversal boundaries are artificial discontinuities, not continuous source-rate playback.",
+    "requestedBackend": "videotoolbox",
+    "actualBackends": {
+      "fresh": "videotoolbox",
+      "pooled": "videotoolbox"
+    },
+    "modelLoaded": false,
+    "benchmarkMLXCachePolicyBytes": 268435456,
+    "priorAndRestoredMLXCachePolicyBytes": [
+      16320875724,
+      16320875724
+    ],
+    "timingBoundary": "Completed NativeOpticalFlow.prepare wall; array readback, hashing, byte comparisons and memory snapshots occur outside the timer.",
+    "comparisons": "All 144 matched signatures agree: one initial no-motion pair plus 143 vector/confidence SHA256 and scalar-bit/reset comparisons. 24 cut/first-warmed controls also compare full array bytes directly."
+  },
+  "inventory": {
+    "calls": 288,
+    "comparedSignatures": 144,
+    "completedMotionResults": 286,
+    "cut1498Resets": 24,
+    "directByteControls": 24,
+    "initialNilMotions": 2,
+    "warmedCalls": 216,
+    "wrapDiscontinuities": 22
+  },
+  "statisticsDefinition": "Seconds; p95 uses nearest rank ceil(0.95*N), sums use all selected calls. Warmup excludes indices1496..1498 on every traversal.",
+  "aggregate": {
+    "pairCountWithLowerPooledWarmedMedian": 1,
+    "pairCountWithLowerPooledWarmedP95": 0,
+    "pairCountWithLowerPooledWarmedSum": 0,
+    "warmedChanges": {
+      "mean": {
+        "fresh": 0.02286983100925926,
+        "percentChange": 6.006378209529184,
+        "pooled": 0.024243479555555555,
+        "pooledMinusFresh": 0.0013736485462962945
+      },
+      "median": {
+        "fresh": 0.0222939165,
+        "percentChange": 4.368344162408633,
+        "pooled": 0.023267791500000003,
+        "pooledMinusFresh": 0.0009738750000000025
+      },
+      "p95NearestRank": {
+        "fresh": 0.027013,
+        "percentChange": 10.732947099544665,
+        "pooled": 0.029912291,
+        "pooledMinusFresh": 0.0028992910000000018
+      },
+      "sum": {
+        "fresh": 2.469941749,
+        "percentChange": 6.006378209529184,
+        "pooled": 2.618295792,
+        "pooledMinusFresh": 0.14835404299999988
+      }
+    },
+    "warmedMatchedDifferencesSeconds": {
+      "count": 108,
+      "maximum": 0.073536542,
+      "mean": 0.0013736485462962963,
+      "median": 0.000400896500000001,
+      "minimum": -0.008062,
+      "p95NearestRank": 0.007949500000000002,
+      "sum": 0.148354043
+    },
+    "warmedSeconds": {
+      "fresh": {
+        "count": 108,
+        "maximum": 0.031733125,
+        "mean": 0.02286983100925926,
+        "median": 0.0222939165,
+        "minimum": 0.018822333,
+        "p95NearestRank": 0.027013,
+        "sum": 2.469941749
+      },
+      "pooled": {
+        "count": 108,
+        "maximum": 0.099038792,
+        "mean": 0.024243479555555555,
+        "median": 0.023267791500000003,
+        "minimum": 0.018292542,
+        "p95NearestRank": 0.029912291,
+        "sum": 2.618295792
+      }
+    }
+  },
+  "pairs": [
+    {
+      "allCallsSeconds": {
+        "fresh": {
+          "count": 36,
+          "maximum": 0.052396917,
+          "mean": 0.02579172338888889,
+          "median": 0.0244211665,
+          "minimum": 0.0184805,
+          "p95NearestRank": 0.039209083,
+          "sum": 0.928502042
+        },
+        "pooled": {
+          "count": 36,
+          "maximum": 0.099038792,
+          "mean": 0.026825453777777775,
+          "median": 0.0242925,
+          "minimum": 0.003754334,
+          "p95NearestRank": 0.042724667,
+          "sum": 0.965716336
+        }
+      },
+      "order": [
+        "fresh",
+        "pooled"
+      ],
+      "pair": 0,
+      "warmedChanges": {
+        "mean": {
+          "fresh": 0.025015149703703703,
+          "percentChange": 10.451907157026174,
+          "pooled": 0.027629709925925925,
+          "pooledMinusFresh": 0.0026145602222222217
+        },
+        "median": {
+          "fresh": 0.024838333,
+          "percentChange": -0.5784083819151631,
+          "pooled": 0.024694666,
+          "pooledMinusFresh": -0.0001436670000000001
+        },
+        "p95NearestRank": {
+          "fresh": 0.029362,
+          "percentChange": 23.969899870581024,
+          "pooled": 0.036400042,
+          "pooledMinusFresh": 0.007038042000000001
+        },
+        "sum": {
+          "fresh": 0.675409042,
+          "percentChange": 10.451907157026197,
+          "pooled": 0.746002168,
+          "pooledMinusFresh": 0.070593126
+        }
+      },
+      "warmedSeconds": {
+        "fresh": {
+          "count": 27,
+          "maximum": 0.031733125,
+          "mean": 0.025015149703703703,
+          "median": 0.024838333,
+          "minimum": 0.021622167,
+          "p95NearestRank": 0.029362,
+          "sum": 0.675409042
+        },
+        "pooled": {
+          "count": 27,
+          "maximum": 0.099038792,
+          "mean": 0.027629709925925925,
+          "median": 0.024694666,
+          "minimum": 0.020418125,
+          "p95NearestRank": 0.036400042,
+          "sum": 0.746002168
+        }
+      }
+    },
+    {
+      "allCallsSeconds": {
+        "fresh": {
+          "count": 36,
+          "maximum": 0.028476958,
+          "mean": 0.02239072447222222,
+          "median": 0.022287416499999997,
+          "minimum": 0.018201209,
+          "p95NearestRank": 0.0276425,
+          "sum": 0.806066081
+        },
+        "pooled": {
+          "count": 36,
+          "maximum": 0.031221333,
+          "mean": 0.022952326416666665,
+          "median": 0.023125604,
+          "minimum": 0.018349125,
+          "p95NearestRank": 0.029359709,
+          "sum": 0.826283751
+        }
+      },
+      "order": [
+        "pooled",
+        "fresh"
+      ],
+      "pair": 1,
+      "warmedChanges": {
+        "mean": {
+          "fresh": 0.022912223703703702,
+          "percentChange": 3.2048170502680495,
+          "pooled": 0.023646518555555555,
+          "pooledMinusFresh": 0.0007342948518518529
+        },
+        "median": {
+          "fresh": 0.023356917,
+          "percentChange": 2.5096034720678118,
+          "pooled": 0.023943083,
+          "pooledMinusFresh": 0.0005861659999999991
+        },
+        "p95NearestRank": {
+          "fresh": 0.0276425,
+          "percentChange": 6.212205842452745,
+          "pooled": 0.029359709,
+          "pooledMinusFresh": 0.0017172090000000008
+        },
+        "sum": {
+          "fresh": 0.61863004,
+          "percentChange": 3.2048170502680495,
+          "pooled": 0.638456001,
+          "pooledMinusFresh": 0.019825961000000003
+        }
+      },
+      "warmedSeconds": {
+        "fresh": {
+          "count": 27,
+          "maximum": 0.028476958,
+          "mean": 0.022912223703703702,
+          "median": 0.023356917,
+          "minimum": 0.018822333,
+          "p95NearestRank": 0.0276425,
+          "sum": 0.61863004
+        },
+        "pooled": {
+          "count": 27,
+          "maximum": 0.031221333,
+          "mean": 0.023646518555555555,
+          "median": 0.023943083,
+          "minimum": 0.018765959,
+          "p95NearestRank": 0.029359709,
+          "sum": 0.638456001
+        }
+      }
+    },
+    {
+      "allCallsSeconds": {
+        "fresh": {
+          "count": 36,
+          "maximum": 0.028780833,
+          "mean": 0.02200257872222222,
+          "median": 0.0212937915,
+          "minimum": 0.019089459,
+          "p95NearestRank": 0.0259365,
+          "sum": 0.792092834
+        },
+        "pooled": {
+          "count": 36,
+          "maximum": 0.029912291,
+          "mean": 0.022164861027777778,
+          "median": 0.0218313745,
+          "minimum": 0.018292542,
+          "p95NearestRank": 0.029301625,
+          "sum": 0.797934997
+        }
+      },
+      "order": [
+        "fresh",
+        "pooled"
+      ],
+      "pair": 2,
+      "warmedChanges": {
+        "mean": {
+          "fresh": 0.02166824074074074,
+          "percentChange": 5.650750159176465,
+          "pooled": 0.02289265888888889,
+          "pooledMinusFresh": 0.001224418148148148
+        },
+        "median": {
+          "fresh": 0.021151625,
+          "percentChange": 6.7453446248219695,
+          "pooled": 0.022578375,
+          "pooledMinusFresh": 0.001426750000000001
+        },
+        "p95NearestRank": {
+          "fresh": 0.024800583,
+          "percentChange": 18.148936256861383,
+          "pooled": 0.029301625,
+          "pooledMinusFresh": 0.004501042
+        },
+        "sum": {
+          "fresh": 0.5850425,
+          "percentChange": 5.650750159176465,
+          "pooled": 0.61810179,
+          "pooledMinusFresh": 0.03305928999999996
+        }
+      },
+      "warmedSeconds": {
+        "fresh": {
+          "count": 27,
+          "maximum": 0.025613375,
+          "mean": 0.02166824074074074,
+          "median": 0.021151625,
+          "minimum": 0.019089459,
+          "p95NearestRank": 0.024800583,
+          "sum": 0.5850425
+        },
+        "pooled": {
+          "count": 27,
+          "maximum": 0.029912291,
+          "mean": 0.02289265888888889,
+          "median": 0.022578375,
+          "minimum": 0.018292542,
+          "p95NearestRank": 0.029301625,
+          "sum": 0.61810179
+        }
+      }
+    },
+    {
+      "allCallsSeconds": {
+        "fresh": {
+          "count": 36,
+          "maximum": 0.030717417,
+          "mean": 0.022300599583333334,
+          "median": 0.021597729,
+          "minimum": 0.018365709,
+          "p95NearestRank": 0.0279995,
+          "sum": 0.802821585
+        },
+        "pooled": {
+          "count": 36,
+          "maximum": 0.032202083,
+          "mean": 0.022240781194444444,
+          "median": 0.021357312500000003,
+          "minimum": 0.01845325,
+          "p95NearestRank": 0.02893925,
+          "sum": 0.800668123
+        }
+      },
+      "order": [
+        "pooled",
+        "fresh"
+      ],
+      "pair": 3,
+      "warmedChanges": {
+        "mean": {
+          "fresh": 0.021883709888888887,
+          "percentChange": 4.210076662690332,
+          "pooled": 0.022805030851851853,
+          "pooledMinusFresh": 0.0009213209629629661
+        },
+        "median": {
+          "fresh": 0.021530083,
+          "percentChange": 2.901563361367443,
+          "pooled": 0.022154792,
+          "pooledMinusFresh": 0.0006247090000000011
+        },
+        "p95NearestRank": {
+          "fresh": 0.02672775,
+          "percentChange": 8.274171974820167,
+          "pooled": 0.02893925,
+          "pooledMinusFresh": 0.002211499999999998
+        },
+        "sum": {
+          "fresh": 0.590860167,
+          "percentChange": 4.21007666269031,
+          "pooled": 0.615735833,
+          "pooledMinusFresh": 0.02487566600000002
+        }
+      },
+      "warmedSeconds": {
+        "fresh": {
+          "count": 27,
+          "maximum": 0.026734709,
+          "mean": 0.021883709888888887,
+          "median": 0.021530083,
+          "minimum": 0.019251834,
+          "p95NearestRank": 0.02672775,
+          "sum": 0.590860167
+        },
+        "pooled": {
+          "count": 27,
+          "maximum": 0.032202083,
+          "mean": 0.022805030851851853,
+          "median": 0.022154792,
+          "minimum": 0.01845325,
+          "p95NearestRank": 0.02893925,
+          "sum": 0.615735833
+        }
+      }
+    }
+  ],
+  "traversals": [
+    {
+      "freshMaximumSeconds": 0.027775291,
+      "freshMeanSeconds": 0.02501132855555556,
+      "freshMedianSeconds": 0.025787625,
+      "freshMinimumSeconds": 0.021786583,
+      "freshP95NearestRankSeconds": 0.027775291,
+      "freshSumSeconds": 0.22510195700000002,
+      "pair": 0,
+      "pooledMaximumSeconds": 0.0322735,
+      "pooledMeanSeconds": 0.026549398222222225,
+      "pooledMedianSeconds": 0.025989916,
+      "pooledMinimumSeconds": 0.020537583,
+      "pooledMinusFreshSumSeconds": 0.013842626999999996,
+      "pooledP95NearestRankSeconds": 0.0322735,
+      "pooledSumSeconds": 0.23894458400000002,
+      "traversal": 0,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.026965916,
+      "freshMeanSeconds": 0.024672315,
+      "freshMedianSeconds": 0.025132292,
+      "freshMinimumSeconds": 0.021622167,
+      "freshP95NearestRankSeconds": 0.026965916,
+      "freshSumSeconds": 0.222050835,
+      "pair": 0,
+      "pooledMaximumSeconds": 0.025963875,
+      "pooledMeanSeconds": 0.024242634222222222,
+      "pooledMedianSeconds": 0.024426,
+      "pooledMinimumSeconds": 0.021682,
+      "pooledMinusFreshSumSeconds": -0.003867126999999998,
+      "pooledP95NearestRankSeconds": 0.025963875,
+      "pooledSumSeconds": 0.218183708,
+      "traversal": 1,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.031733125,
+      "freshMeanSeconds": 0.025361805555555554,
+      "freshMedianSeconds": 0.023993833,
+      "freshMinimumSeconds": 0.021674667,
+      "freshP95NearestRankSeconds": 0.031733125,
+      "freshSumSeconds": 0.22825625,
+      "pair": 0,
+      "pooledMaximumSeconds": 0.099038792,
+      "pooledMeanSeconds": 0.03209709733333334,
+      "pooledMedianSeconds": 0.022890375,
+      "pooledMinimumSeconds": 0.020418125,
+      "pooledMinusFreshSumSeconds": 0.060617626000000036,
+      "pooledP95NearestRankSeconds": 0.099038792,
+      "pooledSumSeconds": 0.28887387600000003,
+      "traversal": 2,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.026703958,
+      "freshMeanSeconds": 0.022566060111111112,
+      "freshMedianSeconds": 0.022578458,
+      "freshMinimumSeconds": 0.018959375,
+      "freshP95NearestRankSeconds": 0.026703958,
+      "freshSumSeconds": 0.20309454100000002,
+      "pair": 1,
+      "pooledMaximumSeconds": 0.029359709,
+      "pooledMeanSeconds": 0.025434819555555557,
+      "pooledMedianSeconds": 0.025329666,
+      "pooledMinimumSeconds": 0.020585833,
+      "pooledMinusFreshSumSeconds": 0.025818834999999984,
+      "pooledP95NearestRankSeconds": 0.029359709,
+      "pooledSumSeconds": 0.228913376,
+      "traversal": 0,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.028476958,
+      "freshMeanSeconds": 0.02337912955555556,
+      "freshMedianSeconds": 0.021996375,
+      "freshMinimumSeconds": 0.019948292,
+      "freshP95NearestRankSeconds": 0.028476958,
+      "freshSumSeconds": 0.210412166,
+      "pair": 1,
+      "pooledMaximumSeconds": 0.025086,
+      "pooledMeanSeconds": 0.022829264000000002,
+      "pooledMedianSeconds": 0.023502917,
+      "pooledMinimumSeconds": 0.019261958,
+      "pooledMinusFreshSumSeconds": -0.0049487900000000085,
+      "pooledP95NearestRankSeconds": 0.025086,
+      "pooledSumSeconds": 0.205463376,
+      "traversal": 1,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.024922666,
+      "freshMeanSeconds": 0.022791481444444442,
+      "freshMedianSeconds": 0.02346775,
+      "freshMinimumSeconds": 0.018822333,
+      "freshP95NearestRankSeconds": 0.024922666,
+      "freshSumSeconds": 0.205123333,
+      "pair": 1,
+      "pooledMaximumSeconds": 0.031221333,
+      "pooledMeanSeconds": 0.02267547211111111,
+      "pooledMedianSeconds": 0.021414791,
+      "pooledMinimumSeconds": 0.018765959,
+      "pooledMinusFreshSumSeconds": -0.0010440840000000007,
+      "pooledP95NearestRankSeconds": 0.031221333,
+      "pooledSumSeconds": 0.204079249,
+      "traversal": 2,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.024800583,
+      "freshMeanSeconds": 0.021231944555555556,
+      "freshMedianSeconds": 0.020723167,
+      "freshMinimumSeconds": 0.019089459,
+      "freshP95NearestRankSeconds": 0.024800583,
+      "freshSumSeconds": 0.191087501,
+      "pair": 2,
+      "pooledMaximumSeconds": 0.024814375,
+      "pooledMeanSeconds": 0.02069704611111111,
+      "pooledMedianSeconds": 0.019936041,
+      "pooledMinimumSeconds": 0.018292542,
+      "pooledMinusFreshSumSeconds": -0.004814085999999995,
+      "pooledP95NearestRankSeconds": 0.024814375,
+      "pooledSumSeconds": 0.186273415,
+      "traversal": 0,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.025613375,
+      "freshMeanSeconds": 0.022361578666666666,
+      "freshMedianSeconds": 0.021817208,
+      "freshMinimumSeconds": 0.019804583,
+      "freshP95NearestRankSeconds": 0.025613375,
+      "freshSumSeconds": 0.201254208,
+      "pair": 2,
+      "pooledMaximumSeconds": 0.029912291,
+      "pooledMeanSeconds": 0.023663578666666667,
+      "pooledMedianSeconds": 0.022644417,
+      "pooledMinimumSeconds": 0.020930584,
+      "pooledMinusFreshSumSeconds": 0.011718000000000006,
+      "pooledP95NearestRankSeconds": 0.029912291,
+      "pooledSumSeconds": 0.212972208,
+      "traversal": 1,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.02400675,
+      "freshMeanSeconds": 0.021411199000000002,
+      "freshMedianSeconds": 0.021151625,
+      "freshMinimumSeconds": 0.019866291,
+      "freshP95NearestRankSeconds": 0.02400675,
+      "freshSumSeconds": 0.192700791,
+      "pair": 2,
+      "pooledMaximumSeconds": 0.028543791,
+      "pooledMeanSeconds": 0.024317351888888887,
+      "pooledMedianSeconds": 0.024306583,
+      "pooledMinimumSeconds": 0.020525042,
+      "pooledMinusFreshSumSeconds": 0.02615537599999998,
+      "pooledP95NearestRankSeconds": 0.028543791,
+      "pooledSumSeconds": 0.218856167,
+      "traversal": 2,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.02672775,
+      "freshMeanSeconds": 0.022806759333333333,
+      "freshMedianSeconds": 0.022005417,
+      "freshMinimumSeconds": 0.019415834,
+      "freshP95NearestRankSeconds": 0.02672775,
+      "freshSumSeconds": 0.205260834,
+      "pair": 3,
+      "pooledMaximumSeconds": 0.02618,
+      "pooledMeanSeconds": 0.02093831011111111,
+      "pooledMedianSeconds": 0.019964959,
+      "pooledMinimumSeconds": 0.01845325,
+      "pooledMinusFreshSumSeconds": -0.016816043000000003,
+      "pooledP95NearestRankSeconds": 0.02618,
+      "pooledSumSeconds": 0.188444791,
+      "traversal": 0,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.026734709,
+      "freshMeanSeconds": 0.021690912,
+      "freshMedianSeconds": 0.02091875,
+      "freshMinimumSeconds": 0.019723458,
+      "freshP95NearestRankSeconds": 0.026734709,
+      "freshSumSeconds": 0.195218208,
+      "pair": 3,
+      "pooledMaximumSeconds": 0.028854667,
+      "pooledMeanSeconds": 0.02393685211111111,
+      "pooledMedianSeconds": 0.023411375,
+      "pooledMinimumSeconds": 0.02091125,
+      "pooledMinusFreshSumSeconds": 0.020213460999999988,
+      "pooledP95NearestRankSeconds": 0.028854667,
+      "pooledSumSeconds": 0.215431669,
+      "traversal": 1,
+      "warmedCallsPerStrategy": 9
+    },
+    {
+      "freshMaximumSeconds": 0.024681584,
+      "freshMeanSeconds": 0.021153458333333333,
+      "freshMedianSeconds": 0.021091958,
+      "freshMinimumSeconds": 0.019251834,
+      "freshP95NearestRankSeconds": 0.024681584,
+      "freshSumSeconds": 0.19038112499999998,
+      "pair": 3,
+      "pooledMaximumSeconds": 0.032202083,
+      "pooledMeanSeconds": 0.023539930333333334,
+      "pooledMedianSeconds": 0.022526709,
+      "pooledMinimumSeconds": 0.019146833,
+      "pooledMinusFreshSumSeconds": 0.021478248000000005,
+      "pooledP95NearestRankSeconds": 0.032202083,
+      "pooledSumSeconds": 0.211859373,
+      "traversal": 2,
+      "warmedCallsPerStrategy": 9
+    }
+  ],
+  "allCallsCSV": {
+    "path": "docs/evidence/m3-flow-output-pool.csv",
+    "bytes": 108559,
+    "sha256": "38a0b52bf43e06eb619006bc465c5ff853ac2ee1eb4c67cf7fe9d12a4547af82",
+    "rows": 288,
+    "lineEnding": "LF",
+    "scope": "Exact cells from independent samples.csv; only CRLF normalized. Blank comparison cells were not comparison sites, not failures."
+  },
+  "resources": {
+    "alignmentLimit": "Host time is sampled before disk/ps and later report read; published count is traversal-granular and can advance during sampling. No exact host-time-to-prepare-call or per-case RSS attribution.",
+    "elapsedProcessWallSeconds": 18.96138674998656,
+    "firstObservedPublishedProgressSeconds": 4.748885167064145,
+    "freeDiskBytes": {
+      "count": 37,
+      "maximum": 12375613440,
+      "mean": 12332674075.675676,
+      "median": 12326731776,
+      "minimum": 12326313984,
+      "p95NearestRank": 12375470080,
+      "sum": 456308940800.0
+    },
+    "lastObservedPublishedSamples": 288,
+    "maximumInterSampleGapSeconds": 0.5974184169899672,
+    "mlxByStrategyBytes": {
+      "fresh": {
+        "active": {
+          "count": 144,
+          "maximum": 323551232,
+          "mean": 323378289.7777778,
+          "median": 323551232.0,
+          "minimum": 298647552,
+          "p95NearestRank": 323551232,
+          "sum": 46566473728.0
+        },
+        "cache": {
+          "count": 144,
+          "maximum": 72680592,
+          "mean": 72175865.66666667,
+          "median": 72680592.0,
+          "minimum": 0,
+          "p95NearestRank": 72680592,
+          "sum": 10393324656.0
+        },
+        "peakActive": {
+          "count": 144,
+          "maximum": 396491024,
+          "mean": 395811555.4444444,
+          "median": 396491024.0,
+          "minimum": 298647552,
+          "p95NearestRank": 396491024,
+          "sum": 56996863984.0
+        }
+      },
+      "pooled": {
+        "active": {
+          "count": 144,
+          "maximum": 323551232,
+          "mean": 323378289.7777778,
+          "median": 323551232.0,
+          "minimum": 298647552,
+          "p95NearestRank": 323551232,
+          "sum": 46566473728.0
+        },
+        "cache": {
+          "count": 144,
+          "maximum": 97584272,
+          "mean": 72853534.22222222,
+          "median": 72680592.0,
+          "minimum": 72680592,
+          "p95NearestRank": 72680592,
+          "sum": 10490908928.0
+        },
+        "peakActive": {
+          "count": 144,
+          "maximum": 396491024,
+          "mean": 396491024.0,
+          "median": 396491024.0,
+          "minimum": 396491024,
+          "p95NearestRank": 396491024,
+          "sum": 57094707456.0
+        }
+      }
+    },
+    "operationalLimits": {
+      "initialProgressSeconds": 180,
+      "minimumFreeBytes": 8589934592,
+      "processTreeRSSBytes": 4294967296,
+      "progressSeconds": 90,
+      "totalSeconds": 300
+    },
+    "rows": [
+      {
+        "elapsedSeconds": 0.002681500045582652,
+        "freeBytes": 12375613440,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 5259264
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 5259264
+      },
+      {
+        "elapsedSeconds": 0.5176772500853986,
+        "freeBytes": 12375470080,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 51396608
+          },
+          {
+            "pid": 47152,
+            "ppid": 47139,
+            "rssBytes": 15368192
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 66764800
+      },
+      {
+        "elapsedSeconds": 1.0339047501329333,
+        "freeBytes": 12375146496,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 51527680
+          },
+          {
+            "pid": 47175,
+            "ppid": 47139,
+            "rssBytes": 3538944
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 55066624
+      },
+      {
+        "elapsedSeconds": 1.6313231671229005,
+        "freeBytes": 12365086720,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 51822592
+          },
+          {
+            "pid": 47217,
+            "ppid": 47139,
+            "rssBytes": 376832
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 52199424
+      },
+      {
+        "elapsedSeconds": 2.144771832972765,
+        "freeBytes": 12363243520,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 51838976
+          },
+          {
+            "pid": 47281,
+            "ppid": 47139,
+            "rssBytes": 32768
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 51871744
+      },
+      {
+        "elapsedSeconds": 2.678556791972369,
+        "freeBytes": 12327092224,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 52723712
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 52723712
+      },
+      {
+        "elapsedSeconds": 3.200729792006314,
+        "freeBytes": 12326989824,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 64864256
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 232210432
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 297074688
+      },
+      {
+        "elapsedSeconds": 3.719719875138253,
+        "freeBytes": 12326965248,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 49954816
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 196329472
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 246284288
+      },
+      {
+        "elapsedSeconds": 4.234802667051554,
+        "freeBytes": 12326928384,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 49201152
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 144490496
+          }
+        ],
+        "publishedSamples": 0,
+        "treeRSSBytes": 193691648
+      },
+      {
+        "elapsedSeconds": 4.748885167064145,
+        "freeBytes": 12326895616,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 49201152
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 193986560
+          }
+        ],
+        "publishedSamples": 12,
+        "treeRSSBytes": 243187712
+      },
+      {
+        "elapsedSeconds": 5.264752374961972,
+        "freeBytes": 12326858752,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 49201152
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 243924992
+          }
+        ],
+        "publishedSamples": 24,
+        "treeRSSBytes": 293126144
+      },
+      {
+        "elapsedSeconds": 5.783736417070031,
+        "freeBytes": 12326830080,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 43663360
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 195772416
+          }
+        ],
+        "publishedSamples": 36,
+        "treeRSSBytes": 239435776
+      },
+      {
+        "elapsedSeconds": 6.312456417130306,
+        "freeBytes": 12326760448,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 43073536
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 237060096
+          }
+        ],
+        "publishedSamples": 36,
+        "treeRSSBytes": 280133632
+      },
+      {
+        "elapsedSeconds": 6.828864292008802,
+        "freeBytes": 12326666240,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42795008
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 234831872
+          }
+        ],
+        "publishedSamples": 48,
+        "treeRSSBytes": 277626880
+      },
+      {
+        "elapsedSeconds": 7.346560792066157,
+        "freeBytes": 12326641664,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42795008
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 266862592
+          }
+        ],
+        "publishedSamples": 60,
+        "treeRSSBytes": 309657600
+      },
+      {
+        "elapsedSeconds": 7.862515582935885,
+        "freeBytes": 12326608896,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 41746432
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 89538560
+          }
+        ],
+        "publishedSamples": 72,
+        "treeRSSBytes": 131284992
+      },
+      {
+        "elapsedSeconds": 8.376777542056516,
+        "freeBytes": 12326592512,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 41746432
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 164298752
+          }
+        ],
+        "publishedSamples": 84,
+        "treeRSSBytes": 206045184
+      },
+      {
+        "elapsedSeconds": 8.892266500042751,
+        "freeBytes": 12326563840,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 214269952
+          }
+        ],
+        "publishedSamples": 84,
+        "treeRSSBytes": 256851968
+      },
+      {
+        "elapsedSeconds": 9.407956917071715,
+        "freeBytes": 12326543360,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 264159232
+          }
+        ],
+        "publishedSamples": 96,
+        "treeRSSBytes": 306741248
+      },
+      {
+        "elapsedSeconds": 9.926053249975666,
+        "freeBytes": 12326498304,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 239697920
+          }
+        ],
+        "publishedSamples": 108,
+        "treeRSSBytes": 282279936
+      },
+      {
+        "elapsedSeconds": 10.440554375061765,
+        "freeBytes": 12326912000,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 264749056
+          }
+        ],
+        "publishedSamples": 120,
+        "treeRSSBytes": 307331072
+      },
+      {
+        "elapsedSeconds": 10.954582167090848,
+        "freeBytes": 12326858752,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 240009216
+          }
+        ],
+        "publishedSamples": 132,
+        "treeRSSBytes": 282591232
+      },
+      {
+        "elapsedSeconds": 11.468688083114102,
+        "freeBytes": 12326834176,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 140476416
+          }
+        ],
+        "publishedSamples": 144,
+        "treeRSSBytes": 183058432
+      },
+      {
+        "elapsedSeconds": 11.983058375073597,
+        "freeBytes": 12326764544,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 165478400
+          }
+        ],
+        "publishedSamples": 156,
+        "treeRSSBytes": 208060416
+      },
+      {
+        "elapsedSeconds": 12.497545625083148,
+        "freeBytes": 12326731776,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 190431232
+          }
+        ],
+        "publishedSamples": 168,
+        "treeRSSBytes": 233013248
+      },
+      {
+        "elapsedSeconds": 13.01553991693072,
+        "freeBytes": 12326694912,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 240320512
+          }
+        ],
+        "publishedSamples": 180,
+        "treeRSSBytes": 282902528
+      },
+      {
+        "elapsedSeconds": 13.535070667043328,
+        "freeBytes": 12326670336,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 265191424
+          }
+        ],
+        "publishedSamples": 180,
+        "treeRSSBytes": 307773440
+      },
+      {
+        "elapsedSeconds": 14.049112667096779,
+        "freeBytes": 12326686720,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 240386048
+          }
+        ],
+        "publishedSamples": 192,
+        "treeRSSBytes": 282968064
+      },
+      {
+        "elapsedSeconds": 14.56456158310175,
+        "freeBytes": 12326731776,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 265519104
+          }
+        ],
+        "publishedSamples": 204,
+        "treeRSSBytes": 308101120
+      },
+      {
+        "elapsedSeconds": 15.081413583131507,
+        "freeBytes": 12326678528,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 141148160
+          }
+        ],
+        "publishedSamples": 216,
+        "treeRSSBytes": 183730176
+      },
+      {
+        "elapsedSeconds": 15.595576707972214,
+        "freeBytes": 12326641664,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 191086592
+          }
+        ],
+        "publishedSamples": 228,
+        "treeRSSBytes": 233668608
+      },
+      {
+        "elapsedSeconds": 16.11166395805776,
+        "freeBytes": 12326559744,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 242171904
+          }
+        ],
+        "publishedSamples": 240,
+        "treeRSSBytes": 284753920
+      },
+      {
+        "elapsedSeconds": 16.626655207946897,
+        "freeBytes": 12326522880,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 267157504
+          }
+        ],
+        "publishedSamples": 252,
+        "treeRSSBytes": 309739520
+      },
+      {
+        "elapsedSeconds": 17.142320499988273,
+        "freeBytes": 12326502400,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 242384896
+          }
+        ],
+        "publishedSamples": 264,
+        "treeRSSBytes": 284966912
+      },
+      {
+        "elapsedSeconds": 17.6615507081151,
+        "freeBytes": 12326498304,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 242417664
+          }
+        ],
+        "publishedSamples": 264,
+        "treeRSSBytes": 284999680
+      },
+      {
+        "elapsedSeconds": 18.180883292108774,
+        "freeBytes": 12326342656,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 267452416
+          }
+        ],
+        "publishedSamples": 276,
+        "treeRSSBytes": 310034432
+      },
+      {
+        "elapsedSeconds": 18.69694979209453,
+        "freeBytes": 12326313984,
+        "processes": [
+          {
+            "pid": 47139,
+            "ppid": 47135,
+            "rssBytes": 42582016
+          },
+          {
+            "pid": 47413,
+            "ppid": 47139,
+            "rssBytes": 833945600
+          }
+        ],
+        "publishedSamples": 288,
+        "treeRSSBytes": 876527616
+      }
+    ],
+    "sampleCount": 37,
+    "treeRSSBytes": {
+      "count": 37,
+      "maximum": 876527616,
+      "mean": 243554802.16216215,
+      "median": 277626880,
+      "minimum": 5259264,
+      "p95NearestRank": 310034432,
+      "sum": 9011527680.0
+    },
+    "treeRSSBytesAfterAnyProgress": {
+      "count": 28,
+      "maximum": 876527616,
+      "mean": 285378267.4285714,
+      "median": 282746880.0,
+      "minimum": 131284992,
+      "p95NearestRank": 310034432,
+      "sum": 7990591488.0
+    }
+  },
+  "process": {
+    "command": [
+      "swift",
+      "test",
+      "--package-path",
+      "vendor/MLX-DLSS",
+      "-c",
+      "release",
+      "--skip-build",
+      "--filter",
+      "NativeFlowOutputPoolBenchmarkTests/testMatchedFullResolutionVideoToolboxPoolBenchmark"
+    ],
+    "exitCode": 0,
+    "elapsedWallSeconds": 18.96138674998656,
+    "maximumTreeRSSBytes": 876527616,
+    "minimumFreeBytes": 12326313984,
+    "frozenFilesUnchanged": true,
+    "actualSamples": 288
+  },
+  "resourceInterpretation": "Process-tree RSS includes Swift/XCTest and readback/report storage. MLX counters share one process across both estimators and are not per-strategy independent peaks. The observed peak is the final sampled row after 288 published calls. Byte-summary sum fields sum snapshots; they do not represent cumulative allocation. Watchdogs are operational limits, not acceptance thresholds.",
+  "tests": {
+    "selectedReleaseTests": 11,
+    "failures": 0,
+    "skips": 0,
+    "elapsedSeconds": 2.981,
+    "coverage": [
+      "Four retained destinations/capacity/reuse",
+      "Second-destination failure unwinds the first temporary",
+      "Lazy MLX managed ownership prevents reuse and survives pool destruction",
+      "Actual VT vectors/confidence/reset parity through reuse and retained-motion immutability",
+      "Existing pixel-buffer, motion, explicit VT, automatic backend and Vision controls"
+    ],
+    "benchmarkTestPassed": true,
+    "buildLog": {
+      "path": "artifacts/native-flow-pool-benchmark-1/check-1/build-tests.log",
+      "bytes": 5274,
+      "sha256": "ff3bf156c9db717746367a9d4b0a4a300cbe20457aa32a396a2b6f96f5af4c97"
+    },
+    "exitObservation": {
+      "path": "artifacts/native-flow-pool-benchmark-1/check-1/exit-observation.json",
+      "bytes": 174,
+      "sha256": "5835a6e0b43f17c188c97398dfdd79ef62d2462baec06f411146e64df43cf00e"
+    }
+  },
+  "cpuAllocationFeasibility": {
+    "scope": "CPU CoreVideo allocation only: no pixel fill, CoreImage resize, VT optical flow, Metal commands, MLX or model execution. No end-to-end performance or process-memory bound claim.",
+    "report": {
+      "path": "artifacts/native-flow-pool-feasibility-1/report-v2.json",
+      "bytes": 32049,
+      "sha256": "cbd37e53b12ac73b42da84f55e7accd8401fa630e6d378608e4c6a4faa684719"
+    },
+    "rawProbe": {
+      "path": "artifacts/native-flow-pool-feasibility-1/probe.json",
+      "bytes": 2453814,
+      "sha256": "b9e7ae68d0976391285d870668de05336ddfb72341fa6bf8ecb5010dd6a6368a"
+    },
+    "probeSource": {
+      "path": "artifacts/native-flow-pool-feasibility-1/main.swift",
+      "bytes": 8062,
+      "sha256": "aa0a4e75ff55236de7a9de578b8906770e94a96c023378924ca2640d39c989d4"
+    },
+    "analyzer": {
+      "path": "artifacts/native-flow-pool-feasibility-1/analyze-v2.py",
+      "bytes": 6628,
+      "sha256": "a5acfb8e3b6c13257b4cdb8e8628d11e80885183dcfc6c8ee81801211c08cae2"
+    },
+    "execution": {
+      "path": "artifacts/native-flow-pool-feasibility-1/execution.json",
+      "bytes": 6858,
+      "sha256": "1ce22689c26283eb58680b8785540d765ca3fc176d99bcf2ccc36a32c3c44e3d"
+    },
+    "summaryRevision": "Correct allocation summary metric names from Seconds to Microseconds. Raw probe seconds and original artifacts are unchanged; no measurement rerun.",
+    "measurementDesign": {
+      "cases": [
+        "all_fresh",
+        "flow_only_pool",
+        "working_and_flow_pool"
+      ],
+      "matchedRounds": 6,
+      "order": [
+        [
+          "all_fresh",
+          "flow_only_pool",
+          "working_and_flow_pool"
+        ],
+        [
+          "working_and_flow_pool",
+          "flow_only_pool",
+          "all_fresh"
+        ],
+        [
+          "flow_only_pool",
+          "all_fresh",
+          "working_and_flow_pool"
+        ],
+        [
+          "working_and_flow_pool",
+          "all_fresh",
+          "flow_only_pool"
+        ],
+        [
+          "all_fresh",
+          "working_and_flow_pool",
+          "flow_only_pool"
+        ],
+        [
+          "flow_only_pool",
+          "working_and_flow_pool",
+          "all_fresh"
+        ]
+      ],
+      "warmupPerCaseRound": 32,
+      "measuredPerCaseRound": 256,
+      "measuredIterations": 4608,
+      "warmupIterations": 576,
+      "allocationsPerIteration": 3,
+      "allocationTiming": "Swift allocator wrapper and CoreVideo call elapsed on monotonic DispatchTime; excludes IOSurface ID/geometry reads, retention release, JSON recording and any pixel fill. Pool construction is separately recorded.",
+      "retention": "One old working buffer and one current live through the flow-pair allocations; current becomes next previous, flow pair released at each iteration end. Ownership controls separately retain every hypothesized slot.",
+      "attributes": {
+        "working": {
+          "allocationThresholdHypothesis": 3,
+          "format": 1380411457,
+          "height": 540,
+          "name": "workingRGBAHalf",
+          "pixelBufferAttributes": {
+            "Height": 540,
+            "IOSurfaceProperties": {},
+            "MetalCompatibility": true,
+            "PixelFormatType": 1380411457,
+            "Width": 960
+          },
+          "width": 960
+        },
+        "flow": {
+          "allocationThresholdHypothesis": 4,
+          "format": 843264104,
+          "height": 135,
+          "name": "flowTwoComponent16Half",
+          "pixelBufferAttributes": {
+            "Height": 135,
+            "IOSurfaceProperties": {},
+            "MetalCompatibility": true,
+            "PixelFormatType": 843264104,
+            "Width": 240
+          },
+          "width": 240
+        },
+        "fresh": {
+          "IOSurfaceProperties": {},
+          "MetalCompatibility": true
+        },
+        "pool": "nil: default minimum/maximum age; no preallocation, threshold only in auxAttributes"
+      }
+    },
+    "allMeasuredSamples": {
+      "all_fresh": {
+        "workingAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 23.791100829839706,
+          "median": 24.584122002124786,
+          "mean": 25.047034644861316,
+          "p95NearestRank": 27.959002181887627,
+          "maximum": 30.66682256758213
+        },
+        "flowPairAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 42.70789213478565,
+          "median": 44.082989916205406,
+          "mean": 44.915305807080586,
+          "p95NearestRank": 49.66696724295616,
+          "maximum": 62.37509660422802
+        },
+        "allThreeAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 66.74998439848423,
+          "median": 68.83288733661175,
+          "mean": 69.9623404519419,
+          "p95NearestRank": 76.08393207192421,
+          "maximum": 88.54200132191181
+        }
+      },
+      "flow_only_pool": {
+        "workingAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 24.24977719783783,
+          "median": 28.45912240445614,
+          "mean": 28.48224827782057,
+          "p95NearestRank": 29.625138267874718,
+          "maximum": 67.83404387533665
+        },
+        "flowPairAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 5.958136171102524,
+          "median": 6.332993507385254,
+          "mean": 6.4935860185263055,
+          "p95NearestRank": 7.3749106377363205,
+          "maximum": 38.5830644518137
+        },
+        "allThreeAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 30.374852940440178,
+          "median": 34.87500362098217,
+          "mean": 34.975834296346875,
+          "p95NearestRank": 36.833109334111214,
+          "maximum": 84.33405309915543
+        }
+      },
+      "working_and_flow_pool": {
+        "workingAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 2.959044650197029,
+          "median": 3.5830307751893997,
+          "mean": 3.5829987912923875,
+          "p95NearestRank": 3.95788811147213,
+          "maximum": 8.250121027231216
+        },
+        "flowPairAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 5.417037755250931,
+          "median": 6.458954885601997,
+          "mean": 6.327024342075068,
+          "p95NearestRank": 6.95791095495224,
+          "maximum": 11.875061318278313
+        },
+        "allThreeAllocationMicroseconds": {
+          "count": 1536,
+          "minimum": 8.5409265011549,
+          "median": 10.083895176649094,
+          "mean": 9.910023133367455,
+          "p95NearestRank": 10.62522642314434,
+          "maximum": 15.167053788900375
+        }
+      }
+    },
+    "pairedRoundMedianSavings": [
+      {
+        "round": 0,
+        "flowPairMedianSavingMicroseconds": 38.8328917324543,
+        "totalMedianSavingFlowOnlyMicroseconds": 35.791657865047455,
+        "incrementalTotalMedianSavingWorkingPoolMicroseconds": 24.79099202901125
+      },
+      {
+        "round": 1,
+        "flowPairMedianSavingMicroseconds": 38.02042920142412,
+        "totalMedianSavingFlowOnlyMicroseconds": 33.93739461898804,
+        "incrementalTotalMedianSavingWorkingPoolMicroseconds": 25.042099878191948
+      },
+      {
+        "round": 2,
+        "flowPairMedianSavingMicroseconds": 40.81195220351219,
+        "totalMedianSavingFlowOnlyMicroseconds": 38.45908213406801,
+        "incrementalTotalMedianSavingWorkingPoolMicroseconds": 25.124521926045418
+      },
+      {
+        "round": 3,
+        "flowPairMedianSavingMicroseconds": 37.334044463932514,
+        "totalMedianSavingFlowOnlyMicroseconds": 33.24903082102537,
+        "incrementalTotalMedianSavingWorkingPoolMicroseconds": 24.70891922712326
+      },
+      {
+        "round": 4,
+        "flowPairMedianSavingMicroseconds": 37.125078961253166,
+        "totalMedianSavingFlowOnlyMicroseconds": 33.16695801913738,
+        "incrementalTotalMedianSavingWorkingPoolMicroseconds": 24.290988221764565
+      },
+      {
+        "round": 5,
+        "flowPairMedianSavingMicroseconds": 37.54207864403725,
+        "totalMedianSavingFlowOnlyMicroseconds": 34.16638355702162,
+        "incrementalTotalMedianSavingWorkingPoolMicroseconds": 24.124979972839355
+      }
+    ],
+    "ownershipControls": [
+      {
+        "geometry": {
+          "bytesPerRow": 7680,
+          "dataSize": 4147200,
+          "format": 1380411457,
+          "height": 540,
+          "planeCount": 0,
+          "width": 960
+        },
+        "heldSurfaceIDs": [
+          329,
+          335,
+          336
+        ],
+        "overflowStatus": -6689,
+        "reacquiredSurfaceID": 335,
+        "releasedLeaseReused": true,
+        "releasedSurfaceID": 335,
+        "retainedLeasesNotReused": true,
+        "spec": "workingRGBAHalf",
+        "threshold": 3
+      },
+      {
+        "geometry": {
+          "bytesPerRow": 960,
+          "dataSize": 129600,
+          "format": 843264104,
+          "height": 135,
+          "planeCount": 0,
+          "width": 240
+        },
+        "heldSurfaceIDs": [
+          329,
+          335,
+          336,
+          337
+        ],
+        "overflowStatus": -6689,
+        "reacquiredSurfaceID": 335,
+        "releasedLeaseReused": true,
+        "releasedSurfaceID": 335,
+        "retainedLeasesNotReused": true,
+        "spec": "flowTwoComponent16Half",
+        "threshold": 4
+      }
+    ],
+    "resources": {
+      "probeBodyWallSeconds": 0.25004029111005366,
+      "probePeakRSSBeforeJSONEncodingBytes": 14794752,
+      "externalSampledRSSMaximumBytes": 14221312,
+      "externalSampleCount": 7,
+      "wrapperWallSecondsIncludingPostRunPinsAndVersionRead": 1.181780792074278,
+      "limits": {
+        "peakRSSBytes": 268435456,
+        "wallSeconds": 60
+      },
+      "watchdogTermination": null,
+      "exitCode": 0
+    },
+    "limitations": [
+      "No pixel initialization by the probe, CoreImage render, VideoToolbox request, MLX import or GPU work occurs. Lazy surface commitment, zeroing and driver-held ownership under real processing are not measured.",
+      "IOSurface IDs can be recycled globally after deallocation: fresh allocations also repeat IDs. Unique IDs alone do not prove persistent object/backing identity. Retained simultaneous leases stay distinct; the pool release/reacquisition control is interpreted together with the allocation-threshold result.",
+      "Working threshold3 and flow threshold4 are tested hypotheses and suffice for this sequential CPU retention pattern; they are not proven minimum sizes or safe production maxima under asynchronous consumer retention.",
+      "Pools use default age policy and are reconstructed per case/round; no preallocation is hidden. The32 warmup iterations are fully retained in raw timing data.",
+      "Short allocation-only rounds share one process and local allocator/system state. Six balanced alternating orders control simple ordering effects; they are not independent end-to-end playback trials.",
+      "Runtime/RSS limits are guardrails. Internal peak RSS is sampled before JSON serialization and external RSS is sampled; IOSurface bytes and resident memory accounting do not establish a hard physical-memory bound."
+    ],
+    "relationToCandidate": "The CPU probe used default pool age-out and no pixel writes/CI/VT/MLX. The actual candidate disabled age-out. Allocation-call savings cannot be transferred to completed motion time."
+  },
+  "limitations": [
+    "Completed NativeOpticalFlow.prepare wall includes input half conversion, CI resize, VT processing, motion import, confidence and reset; no isolated allocation or GPU timing.",
+    "No model, rendering, audio, Live throughput or perceptual-quality qualification. These are repeated source traversal diagnostics.",
+    "Two persistent estimators each span all four pairs; successive pair/case samples are not independent cold processes.",
+    "First three calls per traversal are excluded by policy, not evidence of independently steady thermals or stationarity.",
+    "Array readback/hash/direct comparisons occur outside prepare timing but affect cache, resources and operating conditions.",
+    "Exact signatures verify stored vector/confidence hashes and scalar bits; only24 controls performed direct full-array byte comparison during the actual run.",
+    "Raw forward/backward VT buffers, internal allocator events and physical GPU occupancy are not captured.",
+    "CoreVideo reuse/cap controls are separate tests. Timing alone cannot establish allocations saved or recommend retention when paired benefit is inconsistent.",
+    "Host RSS and reported MLX counters describe different scopes; operational watchdogs are not memory or performance acceptance thresholds.",
+    "The retained 99.038792-ms pooled warmed outlier is included. All four paired warmed means and p95 were higher; individual traversal sums were mixed.",
+    "One short process cannot identify why pooled time increased or establish a universal result for CoreVideo pooling.",
+    "No inference of full model quality, sustained memory bounds, physical HDR, source-rate Live or M5 performance."
+  ],
+  "rawArtifacts": [
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/capture-1/report.json",
+      "bytes": 506023,
+      "sha256": "42a98364386610108be6e55058fdc448bfa5dea449da61fc38e013ebcfcd9770"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/process-report.json",
+      "bytes": 20601,
+      "sha256": "48276dff29fa8651647b2ecb4ad1425a71b7806128476650b6f8d9f543af014e"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/analysis.json",
+      "bytes": 586003,
+      "sha256": "3989718f79516d8295807ddf29a8b2a1b459660f8811d308c0f702e909017acf"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/analyze.py",
+      "bytes": 23181,
+      "sha256": "11074ce0e21e0ef1359282b53f42345a3a70ba234a19c91ff9772b01cde05aa3"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/run-watched.py",
+      "bytes": 4961,
+      "sha256": "b614a0f4ec5db552eb0c199d9ea501028e39986a7845e8a62538fa985b463e13"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/samples.csv",
+      "bytes": 108848,
+      "sha256": "9ae5ff9bab90b0f6abbca852638243f262a8106205c8479939bc61ef37ce5014"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/matched-frames.csv",
+      "bytes": 11380,
+      "sha256": "34d40efaeb1c56dd2636383a20907a8b1c560c7e5aa9856bd6f933ecd87dcd06"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/traversals.csv",
+      "bytes": 2578,
+      "sha256": "6c858c850ff61e2d460b90562a6c77b19685a55dbf95e5d9c5a83331d5710125"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/resources.csv",
+      "bytes": 2076,
+      "sha256": "67f0c99e1701c41e14058acc63163bbc1aca309d94c62b94510c6466f8b1a363"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/candidate-archive/manifest.json",
+      "bytes": 3034,
+      "sha256": "a84d84f1fba8e8f7f31dd7f5c0c0fe34fb9aab46b1a4e4f44ff6c93a3313a843"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/restoration.json",
+      "bytes": 1962,
+      "sha256": "fe68f9fe0c9fabdefaadc65a6b2f2b1b3d27b6ab954551b288886c975aaddbd7"
+    }
+  ],
+  "publicationScript": {
+    "path": "artifacts/native-flow-pool-benchmark-1/publish.py",
+    "bytes": 8606,
+    "sha256": "0cab94b473c49901543147a950be3276ff8b2028ef5b9ea87124f4b195888dcb"
+  }
+}

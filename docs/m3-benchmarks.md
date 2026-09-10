@@ -42,3 +42,37 @@ The `hvc1` sample entry is required by the evaluated AVFoundation path; FFmpeg's
 ## Native playback evidence
 
 The [mpv adapter](mpv-adapter.md) records controlled Adaptive runs, audio-clock offsets, original-first seeks and same-frame comparison. Its longer HLG 60-fps and PQ variable-rate runs each exceeded the 20-ms target briefly, without progressive median drift. The [Erika adapter](erika-adapter.md) records native drawable presentation, numerical HDR captures and overload behaviour. Their initial runs differed in display size, visibility and timing conditions and do not establish a playback-core winner. Playback qualification and physical presentation remain separate from this offscreen baseline.
+
+## Rejected VideoToolbox flow-output pool
+
+A four-buffer CoreVideo pool for the forward/backward RG16F destinations preserved the compared motion results but increased completed motion time on this M3 run. The candidate was removed; the MLX fork remains at `7af47d64b36b551ba091bedde0437c93ac92ff65`, and the production runtime was unchanged. [Evidence](evidence/m3-flow-output-pool.json), [all 288 calls](evidence/m3-flow-output-pool.csv) and the [rejected candidate patch](evidence/m3-flow-output-pool-candidate.patch) retain the result for roadmap #8.
+
+The actual `NativeOpticalFlow.prepare` comparison used twelve consecutive 1920 × 1080 SDR proxy frames, indices 1496–1507 from the [corrected full-resolution HDR reference](temporal-reference.md#regression-with-bounded-resized-model-input). Two persistent estimators explicitly selected VideoToolbox. Four alternating matched pairs each traversed the inputs three times, excluding the first three calls of every traversal: 288 total calls, 216 warmed, 108 warmed per strategy. The source-size half conversion, CI resize to 960 × 540, 240 × 135 flow extent and motion calculations were unchanged. Repeated 1507 → 1496 boundaries were recorded as artificial discontinuities.
+
+| Completed prepare wall | Fresh destinations | Pooled destinations |
+|---|---:|---:|
+| Warmed mean | 22.870 ms | 24.243 ms |
+| Warmed median | 22.294 ms | 23.268 ms |
+| Warmed p95, nearest rank | 27.013 ms | 29.912 ms |
+| Warmed sum, 108 calls | 2.469942 s | 2.618296 s |
+
+Warmed total time increased 6.01%. Pooled sums and p95 were higher in all four pairs; medians were higher in three. The 99.039-ms pooled outlier remains included. Individual traversal sums were mixed. This short shared-process measurement does not establish why pooling was slower or predict other machines or workloads.
+
+All 144 matched signatures agreed, including one initial no-motion result and 143 vector/confidence hashes with scalar bit patterns and reset state. All 24 direct full-array byte controls agreed. Eleven focused release tests passed, covering retained-buffer capacity/reuse, partial-pair failure cleanup, lazy MLX ownership through pool destruction, retained-motion immutability and existing VT/automatic/Vision behavior. The actual benchmark test passed separately. Production code was restored only after the independent frozen-source audit; applying the archived patch to the base reproduces all three candidate source files exactly.
+
+An earlier CPU-only allocation probe measured a flow-pair median of 44.083 µs with fresh allocations and 6.333 µs with pooling. Its six balanced rounds contained 4,608 measured iterations and 576 warmups across three cases. It performed no pixel writes, CI rendering, VT processing or MLX work, and used default pool age-out; the actual candidate disabled age-out. These allocation-call savings did not translate to faster completed motion. Recycled IOSurface IDs in fresh allocations also prevent interpreting unique ID counts as persistent backing-allocation counts.
+
+The actual benchmark process took 18.961 seconds and reached 876,527,616 bytes of sampled process-tree RSS; the peak was its final sampled row after all calls were published. All 37 resource samples remain in the evidence. MLX peak-active allocation reached 396,491,024 bytes in the shared process, with a 256-MiB cache policy restored to its prior value afterward. RSS, MLX counters and allocation measurements have different scopes. Array readback and hashing were outside the prepare timer but affected process resources and operating conditions. No model or player ran; no source-rate Live, full-model quality or M5 acceptance follows from this experiment.
+
+To reproduce the rejected candidate, use an experimental checkout at the recorded base and apply the patch inside `vendor/MLX-DLSS`. The evidence's `design.inputManifest` contains exact proxy paths, hashes and rational timestamps; its payloads come from the retained corrected reference and are local artifacts. Reconstruct the byte-pinned manifest with Python `json.dumps(object, indent=2) + "\n"` using the default ASCII escaping; verify SHA256 `3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181`. Build and run the opt-in test with new output paths:
+
+```sh
+source scripts/env.sh
+git -C vendor/MLX-DLSS apply ../../docs/evidence/m3-flow-output-pool-candidate.patch
+MLXDLSS_FLOW_POOL_INPUTS=/absolute/path/to/inputs.json \
+MLXDLSS_FLOW_POOL_BENCH_OUTPUT=/absolute/path/to/new-output \
+swift test --package-path vendor/MLX-DLSS -c release \
+  --filter NativeFlowOutputPoolBenchmarkTests/testMatchedFullResolutionVideoToolboxPoolBenchmark
+```
+
+The test also pins the root debug benchmark/shared library/metallib as contamination controls; those files must be present, but the executed code is the release XCTest and its bundled metallib. Preserve hashes and run under the recorded process/resource limits for a comparable capture. Do not adopt the patch without new evidence of benefit.
