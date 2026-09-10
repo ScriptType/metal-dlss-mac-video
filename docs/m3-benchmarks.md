@@ -45,7 +45,7 @@ The [mpv adapter](mpv-adapter.md) records controlled Adaptive runs, audio-clock 
 
 ## Rejected VideoToolbox flow-output pool
 
-A four-buffer CoreVideo pool for the forward/backward RG16F destinations preserved the compared motion results but increased completed motion time on this M3 run. The candidate was removed; the MLX fork remains at `7af47d64b36b551ba091bedde0437c93ac92ff65`, and the production runtime was unchanged. [Evidence](evidence/m3-flow-output-pool.json), [all 288 calls](evidence/m3-flow-output-pool.csv) and the [rejected candidate patch](evidence/m3-flow-output-pool-candidate.patch) retain the result for roadmap #8.
+A four-buffer CoreVideo pool for the forward/backward RG16F destinations preserved the compared motion results but increased completed motion time on this M3 run. The candidate was removed, restoring the measured sources to `7af47d64b36b551ba091bedde0437c93ac92ff65`; that experiment left the production runtime unchanged. [Evidence](evidence/m3-flow-output-pool.json), [all 288 calls](evidence/m3-flow-output-pool.csv) and the [rejected candidate patch](evidence/m3-flow-output-pool-candidate.patch) retain the result for roadmap #8.
 
 The actual `NativeOpticalFlow.prepare` comparison used twelve consecutive 1920 × 1080 SDR proxy frames, indices 1496–1507 from the [corrected full-resolution HDR reference](temporal-reference.md#regression-with-bounded-resized-model-input). Two persistent estimators explicitly selected VideoToolbox. Four alternating matched pairs each traversed the inputs three times, excluding the first three calls of every traversal: 288 total calls, 216 warmed, 108 warmed per strategy. The source-size half conversion, CI resize to 960 × 540, 240 × 135 flow extent and motion calculations were unchanged. Repeated 1507 → 1496 boundaries were recorded as artificial discontinuities.
 
@@ -76,3 +76,39 @@ swift test --package-path vendor/MLX-DLSS -c release \
 ```
 
 The test also pins the root debug benchmark/shared library/metallib as contamination controls; those files must be present, but the executed code is the release XCTest and its bundled metallib. Preserve hashes and run under the recorded process/resource limits for a comparable capture. Do not adopt the patch without new evidence of benefit.
+
+## Runtime HDR effect controls
+
+The display codec now passes transfer and colour strength as two immutable Float32 inputs to the Metal resolve kernel. Changing either control no longer creates a distinct shader template specialization. Each lazy resolve owns its parameter array, and zero strength still returns the original object directly. White point, primaries, display-referred mode and maximum luminance ratio retain their existing specialization. [Evidence](evidence/m3-runtime-hdr-controls.json) and [all 192 calls](evidence/m3-runtime-hdr-controls.csv) record the M3 comparison.
+
+Two persistent codecs processed the same synthetic 1920 × 1080 HDR inputs with 32 distinct positive control pairs. Four groups each ran eight settings once, then repeated them twice, alternating which implementation ran first. The timer includes native output construction and completed MLX evaluation; readback, hashing and comparison occur afterward. The frozen baseline reverses exactly to the codec source at MLX `7af47d64b36b551ba091bedde0437c93ac92ff65` after removing its test import and restoring four names.
+
+| Completed resolve wall | Template controls | Runtime controls |
+|---|---:|---:|
+| Setting first-use mean, 32 calls | 58.187 ms | 9.685 ms |
+| Setting first-use median | 55.498 ms | 9.222 ms |
+| Setting first-use p95, nearest rank | 73.012 ms | 16.797 ms |
+| Warmed mean, 64 calls | 8.722 ms | 8.304 ms |
+| Warmed median | 8.286 ms | 7.674 ms |
+| Warmed p95, nearest rank | 16.490 ms | 13.638 ms |
+
+The main benefit is setting first-use in this process. Its initial candidate sample remains included; prior focused tests mean driver/disk caches cannot be described as cold. Warmed timings are much closer and subgroup results vary. Baseline code lives in the test module while production code lives in DLSSMLX, so these wall measurements do not isolate compiler or GPU execution costs. Readbacks and resource sampling also affect conditions outside the timer.
+
+All 96 paired full-frame outputs match byte for byte, and every repeat matches its setting's first output. Sixteen additional small numerical controls pass both exact old/new parity and their CPU-reference bounds; eight verify exact zero-strength object bypass. Nine focused codec/native-HDR tests pass, including independent lazy parameter ownership, SDR/PQ/HLG imports and three real model frames. The original four portable codec tests retain their tolerances.
+
+An initial new endpoint test failed a proposed 0.0005 CPU-reference bound at 0.00054931640625. A diagnostic replay found the same error in the old GPU implementation, with all sixteen old/new outputs bit-identical. The final endpoint test checks exact frozen-GPU parity on those unchanged inputs. The failed run, diagnostic output and executable hashes remain in the evidence; no tolerance was loosened to accept a changed result.
+
+The benchmark process completed in 15.252 seconds with peak sampled process-tree RSS of 578,174,976 bytes and at least 14,708,879,360 free disk bytes. All frozen files and input frames remained unchanged. The benchmark used a 256-MiB MLX cache policy, then restored the prior policy. These are bounded observations of this short run.
+
+The rebuilt integration passes the complete root check, including 40 Swift tests, and all 23 bundled-app controls/lifecycle checks. Two separate natural HDR controls reproduce source frames 1498 and 1528 at 1920 × 1080 with 512 × 288 neural processing. All eight new original/proxy/identity/enhanced views are finite and match both the prior fresh controls and their continuous-reference cut frames byte for byte. These sixteen comparisons preserve exact source timing, model and settings; two fresh frames do not establish continuous temporal quality. The published MLX change is [2fc9bf6](https://github.com/ScriptType/MLX-DLSS/commit/2fc9bf6dbf8b43f2db6683a7bd3afa3b554a4920).
+
+To reproduce in this parent checkout, use a fresh release test process and a new output directory whose parent exists:
+
+```sh
+source scripts/env.sh
+MLXDLSS_RUNTIME_HDR_CONTROLS_OUTPUT=/absolute/path/to/new-output \
+swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
+  --filter RuntimeHDRControlsBenchmarkTests
+```
+
+The test is opt-in and uses no model. Preserve the source, executed XCTest and metallib hashes with the report. The application still replaces its filter when effect settings change; this measurement does not establish complete slider latency, playback throughput, source-rate Live, temporal quality or M5 performance. Those acceptance gates remain open.
