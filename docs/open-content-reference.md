@@ -13,7 +13,15 @@ The advertised P3/PQ MP4 previews do not provide a sufficient encoded-colour con
 
 Both are marked ineligible for HDR qualification. Their filenames do not resolve the missing YCbCr interpretation, and the downloader does not add colour tags.
 
-The temporal fixture instead uses 48 original RGB HALF EXR files from Cosmos Laundromat, frames 10000–10047. Each file has a pinned SHA256 and size. The EXR headers report 2048×858, square pixels and `framesPerSecond=2997/125`; they omit chromaticities and transfer metadata. The publisher identifies the grade as P3/PQ. The derivative explicitly selects D65; this remains an interpretation assumption, not a calibrated reference.
+The temporal fixture instead uses 48 original RGB HALF EXR files from Cosmos Laundromat, frames 10000–10047. Each file has a pinned SHA256 and size. The EXR headers report 2048×858, square pixels and `framesPerSecond=2997/125`; they omit chromaticities and transfer metadata. The initial derivative records an explicit D65 assumption. The publisher metadata match below now supplies source-specific support for that white point, while the original derivative and capture hashes remain unchanged.
+
+## Publisher metadata match
+
+Netflix's [asset README](https://s3.amazonaws.com/download.opencontent.netflix.com/TechblogAssets/README.txt), linked from its [production article](https://netflixtechblog.com/engineers-making-movies-aka-open-source-test-content-f21363ea3781), identifies the Cosmos Video Display Master as output-referred RGB with P3-D65 primaries, PQ transfer and full-range half-float EXR storage, mastered on a 4,000-cd/m² reference display. This documentation points to a separate VDM directory rather than the older download paths used by the fixture.
+
+The [metadata verification](evidence/cosmos-publisher-metadata.json) matches all 48 pinned legacy files against that VDM directory's publisher checksum list: each corresponding frame index has the same size and MD5, and each local SHA256 still matches the source catalog. The evidence retains the README and checksum-list URLs, bytes and SHA256 values. This is a match to publisher checksum metadata, not an independent download of the second image sequence or display calibration.
+
+The README calls the frame rate 24 fps; the EXRs contain the exact fraction 2997/125, or 23.976 fps. The derivative preserves the embedded rate and duration 125/2997 rather than silently changing timing. The documentation does not explain this discrepancy or specify how negative and above-one PQ values should be interpreted. D65 identification therefore does not validate the selected out-of-domain PQ extension. Existing manifests retain their original assumption labels for reproducibility; this follow-up evidence does not rewrite them.
 
 ## Prepare the float sequence
 

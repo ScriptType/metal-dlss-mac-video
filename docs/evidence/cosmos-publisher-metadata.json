@@ -1,0 +1,501 @@
+{
+  "conclusions": [
+    "All48 legacy source EXRs match the size and MD5 of the corresponding frame-index entries in the publisher checksum list for the explicitly documented P3-D65 VDM",
+    "This supplies source-specific publisher support for D65; historical derived/capture manifests retain their earlier assumption labels and original hashes",
+    "The README does not describe negative or above-one PQ codes or authorize the selected signed/analytic extension",
+    "A4000nit mastering display does not establish calibrated luminance for the diagnostic extended-domain derivative"
+  ],
+  "frameTiming": {
+    "derivativeDuration": {
+      "timescale": 2997,
+      "value": 125
+    },
+    "differenceFrom24FPS": 0.02400000000000091,
+    "discrepancyResolved": false,
+    "embeddedEXRExactFPS": {
+      "timescale": 125,
+      "value": 2997
+    },
+    "embeddedFPSDecimal": 23.976,
+    "policy": "Keep the recorded exact embedded2997/125 timing; do not silently replace it with the README nominal24 or preview24000/1001",
+    "publisherNominalFPS": 24
+  },
+  "limitations": [
+    "Publisher list usesMD5; this is a match to published checksum metadata, not an independent bytewise download of the second location",
+    "Per-file localSHA256 pins are retained; no image was redownloaded for this lookup",
+    "White-point identification does not validate the out-of-domain PQ extension, downsampled quality, display calibration or playback timing"
+  ],
+  "matchedFrames": 48,
+  "matches": [
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10000.exr",
+      "localAndPublisherMD5": "5bb99204d401d2551426c8b789ac4597",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10000.exr",
+      "pinnedSHA256": "7cf82605d003206aac3f035a0321773f10a006c83ef59a297b617d45d0c7b82b",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010000.exr",
+      "sourceFrameIndex": 10000
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10001.exr",
+      "localAndPublisherMD5": "88ff32f1ea17fff9248a3a19b04de3e2",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10001.exr",
+      "pinnedSHA256": "c16b5af9c6334966985f7612fc89df90d2a5eab0ab6e427efde51bf973dbc32b",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010001.exr",
+      "sourceFrameIndex": 10001
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10002.exr",
+      "localAndPublisherMD5": "9c7b3dfda0596d6f982a2d770ed4a8d3",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10002.exr",
+      "pinnedSHA256": "e4124fba48582874394b00b544fb7eb801e90cc0c7929d9db240fae77e9de4e3",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010002.exr",
+      "sourceFrameIndex": 10002
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10003.exr",
+      "localAndPublisherMD5": "3c96816153a9f51402140ebdc53b57eb",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10003.exr",
+      "pinnedSHA256": "789871556e70cfaded604e561346bb4f1cd3ea4b00dbead6408c254f6627df12",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010003.exr",
+      "sourceFrameIndex": 10003
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10004.exr",
+      "localAndPublisherMD5": "bd7ae9753b8bcb09418da106f1200e1e",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10004.exr",
+      "pinnedSHA256": "e9d81e430499bd0f3828e24b480d0e439a47bbf2690d6c63b743bbd99ffbc7e1",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010004.exr",
+      "sourceFrameIndex": 10004
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10005.exr",
+      "localAndPublisherMD5": "2aecdaf797276b81cd57fa90588ef674",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10005.exr",
+      "pinnedSHA256": "7d20a8e93a2ce334a3acd26118c45bded16df5f186b5a3900101453af1fce4d9",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010005.exr",
+      "sourceFrameIndex": 10005
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10006.exr",
+      "localAndPublisherMD5": "4a1f7984093c7fbc121df2edb44afd8a",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10006.exr",
+      "pinnedSHA256": "f7a27bef06797ce6921deb86f9bedc8afcba2c6c030404f4f68cfce5dc86e013",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010006.exr",
+      "sourceFrameIndex": 10006
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10007.exr",
+      "localAndPublisherMD5": "4ed65c84469b8e0b8b270fecbc075192",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10007.exr",
+      "pinnedSHA256": "9c6e1734f798e514b9378a12f53bc0f83657fae6b75a74077097e06cf815deca",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010007.exr",
+      "sourceFrameIndex": 10007
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10008.exr",
+      "localAndPublisherMD5": "f4cc61f2c41238a006f877f59d722acd",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10008.exr",
+      "pinnedSHA256": "637d32ff8cf65cd4c6a695578b78ae6f9cef8f2e326aa37166fdde743fe44b71",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010008.exr",
+      "sourceFrameIndex": 10008
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10009.exr",
+      "localAndPublisherMD5": "96fcad68afa4455a7106b37004054c77",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10009.exr",
+      "pinnedSHA256": "1e00dc09c2dd25980df56b8bebd1c579264a52778896119218795852a263a245",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010009.exr",
+      "sourceFrameIndex": 10009
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10010.exr",
+      "localAndPublisherMD5": "a642e4cf7dff4a3d45e792abf2c6c6e0",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10010.exr",
+      "pinnedSHA256": "ef02aa68b99f9a5c418ea4826d41e9dedbcacd340bde52efe7bcc48c79c25c0f",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010010.exr",
+      "sourceFrameIndex": 10010
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10011.exr",
+      "localAndPublisherMD5": "f557e594ee5babb30f0ea54ffa7c42a7",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10011.exr",
+      "pinnedSHA256": "cac3706ce978beece815b5317aa940336a1295e22743f3919137a7a758d36d96",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010011.exr",
+      "sourceFrameIndex": 10011
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10012.exr",
+      "localAndPublisherMD5": "04253e7547626da80d8531c5232601a5",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10012.exr",
+      "pinnedSHA256": "71fd7b3615f66cdcc37d7e068fed3f462893fda18c6a014c393e235bcde23dc6",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010012.exr",
+      "sourceFrameIndex": 10012
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10013.exr",
+      "localAndPublisherMD5": "e589083391389c3c054d5450f7e77f7f",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10013.exr",
+      "pinnedSHA256": "fc551c37fc932f0e26c99d7416dd656694410257060098f67d01ac57a4438c26",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010013.exr",
+      "sourceFrameIndex": 10013
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10014.exr",
+      "localAndPublisherMD5": "28cd038bc1b6bf21b81ffd3b4fc2ecd5",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10014.exr",
+      "pinnedSHA256": "9107ef57c7deaf60c32cdc546ede92006913e985201830ed7a3f5a2d402f1245",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010014.exr",
+      "sourceFrameIndex": 10014
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10015.exr",
+      "localAndPublisherMD5": "e009d52bbccf23248d0be979daec76af",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10015.exr",
+      "pinnedSHA256": "949a6dc9383a66bc42e805a66c249a9ad47a62ef33889222fc142973f1567e91",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010015.exr",
+      "sourceFrameIndex": 10015
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10016.exr",
+      "localAndPublisherMD5": "e491d261c4781b02591f0c230e9e9d5c",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10016.exr",
+      "pinnedSHA256": "cdc10955e0bd988d543358fe55763d70d4ecfd8c7ab7b774079cb26978dfc47e",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010016.exr",
+      "sourceFrameIndex": 10016
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10017.exr",
+      "localAndPublisherMD5": "abba30995608f39ad335ec00e595c8cd",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10017.exr",
+      "pinnedSHA256": "799b839ad79dd3730f4d145f29d1c6eb081f3f7cfd2616433b24446842adb1e2",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010017.exr",
+      "sourceFrameIndex": 10017
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10018.exr",
+      "localAndPublisherMD5": "fa5551fd04ba9c95d0491d151b80c949",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10018.exr",
+      "pinnedSHA256": "a9008faa4717ca73457df3c8d339d856943b588e7f8f2b8af4bd92b8b578f712",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010018.exr",
+      "sourceFrameIndex": 10018
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10019.exr",
+      "localAndPublisherMD5": "cd849c2b8e37dde02f39df7808236057",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10019.exr",
+      "pinnedSHA256": "16170d03f8ffa90cd49fc039bab5bc5886e9d2412169d6bbee77918731f44c31",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010019.exr",
+      "sourceFrameIndex": 10019
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10020.exr",
+      "localAndPublisherMD5": "ace1d1dd8a18ae4c6f74fe86b5502b80",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10020.exr",
+      "pinnedSHA256": "5864361684320b25e93ab0314c73ca831ea2adb3ada2b3a3b304b4593dfb8c87",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010020.exr",
+      "sourceFrameIndex": 10020
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10021.exr",
+      "localAndPublisherMD5": "44b110d1f680f581619c3541b0b11775",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10021.exr",
+      "pinnedSHA256": "78981fb6a9fd4b082c83e46d955edf92e8ccad164b6a7cabfc3bba523647a7bb",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010021.exr",
+      "sourceFrameIndex": 10021
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10022.exr",
+      "localAndPublisherMD5": "4122e23254ddeaef54c7df2aecf079fc",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10022.exr",
+      "pinnedSHA256": "b4da7b81ae98e27ac7054b9457ac0e692692d0257056077d19b272e8a24f268a",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010022.exr",
+      "sourceFrameIndex": 10022
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10023.exr",
+      "localAndPublisherMD5": "3e924be11d8811f68ef2a2c134848a6b",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10023.exr",
+      "pinnedSHA256": "7768e278271463fc71fff673022ed0456e5ffa4cf139930bde981e8f2d104703",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010023.exr",
+      "sourceFrameIndex": 10023
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10024.exr",
+      "localAndPublisherMD5": "6865bf4fa4cf299df727148b862344b2",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10024.exr",
+      "pinnedSHA256": "09e9b54ae1803c90d94bd9bf5bafe2fa41fd78f7b17968adb1ec2007bbf30e65",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010024.exr",
+      "sourceFrameIndex": 10024
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10025.exr",
+      "localAndPublisherMD5": "cc19560debb30eff24b11b34ded2b01a",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10025.exr",
+      "pinnedSHA256": "b36e220ce208b53e709c269e54f611dfa4474fcd067eb0bede620a825e49276f",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010025.exr",
+      "sourceFrameIndex": 10025
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10026.exr",
+      "localAndPublisherMD5": "d3b10d51e067dcb42e6006417198a60e",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10026.exr",
+      "pinnedSHA256": "c215bc6935c62df13fc59cc7729a86e22b61cd12e8d92a905f4e0d1640d64d5f",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010026.exr",
+      "sourceFrameIndex": 10026
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10027.exr",
+      "localAndPublisherMD5": "08055ca9ba0db88fe386cad8efb89b3c",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10027.exr",
+      "pinnedSHA256": "6b26090ea227dd77c2271a056c751b26f4a9297af7d04fa8402d71a9907210e6",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010027.exr",
+      "sourceFrameIndex": 10027
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10028.exr",
+      "localAndPublisherMD5": "61ec7f459e7000664b4468dabb8d28f7",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10028.exr",
+      "pinnedSHA256": "d32473b2307cb0d5fcf2da4b71eb1c14a87459d9b6c62bf102389dff2ec49cb2",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010028.exr",
+      "sourceFrameIndex": 10028
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10029.exr",
+      "localAndPublisherMD5": "5c35d0d344311b0e966a214b02434eb7",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10029.exr",
+      "pinnedSHA256": "12d2a862f904b18accff8c4d493d0bfc7d2a3ff46a900cff5d3b5f4951e56e7e",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010029.exr",
+      "sourceFrameIndex": 10029
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10030.exr",
+      "localAndPublisherMD5": "d8b5fe1f2c58fc15ed0680a6d5714972",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10030.exr",
+      "pinnedSHA256": "c9cb72b6821ba930d6de56eed0bb4b0a233299caefb4421a39c8e2d622454b61",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010030.exr",
+      "sourceFrameIndex": 10030
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10031.exr",
+      "localAndPublisherMD5": "2f7fe3c2b1ccc2f9bd7fc83c920f2976",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10031.exr",
+      "pinnedSHA256": "4c6de139c364d791e183d05b0f9cfef55fee346a9605e50ca80d7570693d197e",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010031.exr",
+      "sourceFrameIndex": 10031
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10032.exr",
+      "localAndPublisherMD5": "afe9c368dbfd40464ce0145ef319241f",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10032.exr",
+      "pinnedSHA256": "2d667fd14beefd784be4aa82edf222e14eb605c9230a39c837dcd3b1c8af804b",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010032.exr",
+      "sourceFrameIndex": 10032
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10033.exr",
+      "localAndPublisherMD5": "549675e0489b0779a16efb9ccabdb3e9",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10033.exr",
+      "pinnedSHA256": "80516150dc23b8585b561222a71ab69a473ecf6b8750b0f8efa07a601d43d98f",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010033.exr",
+      "sourceFrameIndex": 10033
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10034.exr",
+      "localAndPublisherMD5": "4285ec92f593fbffdbf1bad194881f9d",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10034.exr",
+      "pinnedSHA256": "70089b70239677e562b179209b9eff8532c6c1018c574b6beeebcce2a6ab579b",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010034.exr",
+      "sourceFrameIndex": 10034
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10035.exr",
+      "localAndPublisherMD5": "865c3c169ecb354d0c155efecc21fa7e",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10035.exr",
+      "pinnedSHA256": "fe3f0cbec27fb4b681ae55e7916604c61bd078e5d0f5417eb6f62f26408ed1bc",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010035.exr",
+      "sourceFrameIndex": 10035
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10036.exr",
+      "localAndPublisherMD5": "2576f3a71261d640597e026d0f125205",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10036.exr",
+      "pinnedSHA256": "d9c35b215d91d410f5902bc5195aab971eb379211a4fa3453c06d054d5b63a63",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010036.exr",
+      "sourceFrameIndex": 10036
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10037.exr",
+      "localAndPublisherMD5": "4222ab2bde8852e894d86245a56b66f0",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10037.exr",
+      "pinnedSHA256": "828539f43b667ff2dd2eaa48de02ae94d308c4ea311a9e16f3804b92ab872a02",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010037.exr",
+      "sourceFrameIndex": 10037
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10038.exr",
+      "localAndPublisherMD5": "84e61044782fc9d1b35e5a31ce193635",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10038.exr",
+      "pinnedSHA256": "89bda901c4face48bc8a4662e5f0e71c136d3ceb5b6598f00406a22c60fd8230",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010038.exr",
+      "sourceFrameIndex": 10038
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10039.exr",
+      "localAndPublisherMD5": "8e31bd7442f058dd6b8157473abe6c80",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10039.exr",
+      "pinnedSHA256": "1684424e40b71cedcff8cfc1bde26cc5effa9f2120fa30aaab39545d5f1cd989",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010039.exr",
+      "sourceFrameIndex": 10039
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10040.exr",
+      "localAndPublisherMD5": "0b1baa471f8046021934ab80e444b101",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10040.exr",
+      "pinnedSHA256": "cdb34fc6a0371581500cd5e5d9b9488d0192b43748c6f1d1345f501ad8981a65",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010040.exr",
+      "sourceFrameIndex": 10040
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10041.exr",
+      "localAndPublisherMD5": "b2440ce1c69ee8df9e4c3cb8c06d2990",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10041.exr",
+      "pinnedSHA256": "8b73365e337e3e67ff64963c20874b127e7c3b90acd2aed0fe53ffc57ca763a5",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010041.exr",
+      "sourceFrameIndex": 10041
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10042.exr",
+      "localAndPublisherMD5": "9fd261675c03cfa9186b59b32c5d1a9b",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10042.exr",
+      "pinnedSHA256": "b83e3475a198ca4339b824028146e9b9bdfe945b0cbe4b9974dd20fc1263b0a2",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010042.exr",
+      "sourceFrameIndex": 10042
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10043.exr",
+      "localAndPublisherMD5": "31dc4cd27a09485f6540acc6d2b9ebff",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10043.exr",
+      "pinnedSHA256": "504fd0ad2125f489dcdddc4b93f373222c57fb8c82ec3db06e26308ad5e608b8",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010043.exr",
+      "sourceFrameIndex": 10043
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10044.exr",
+      "localAndPublisherMD5": "a72b06231418a0e7df3b2ddb7359c410",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10044.exr",
+      "pinnedSHA256": "3aab92748175982e2cc9057f4d7b7ebbfb16c15d0498d764c6255cc9e4f73641",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010044.exr",
+      "sourceFrameIndex": 10044
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10045.exr",
+      "localAndPublisherMD5": "aab3bf4e77dfbd90e604b91dff7d0ead",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10045.exr",
+      "pinnedSHA256": "68ef8b6a5b925bcdb303e762512c1827907713f63ad3f99251ba27fb3e5211e3",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010045.exr",
+      "sourceFrameIndex": 10045
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10046.exr",
+      "localAndPublisherMD5": "cf7f75c4b5a906906581a376e32bc423",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10046.exr",
+      "pinnedSHA256": "e898f6056f2b24f2e7d39a1bf1db65c12af58c376f012a9441850e0584c2941b",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010046.exr",
+      "sourceFrameIndex": 10046
+    },
+    {
+      "bytes": 10567680,
+      "legacyURL": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10047.exr",
+      "localAndPublisherMD5": "71afda43ca250042984ac1690efbd9a3",
+      "localFile": "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10047.exr",
+      "pinnedSHA256": "5134df56e1a73b0c3928a471dd911ca0b5b93e7fccb7da6c61780a27d2f45c95",
+      "publisherFile": "cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858_dovi_4000nit_0010047.exr",
+      "sourceFrameIndex": 10047
+    }
+  ],
+  "metadata": {
+    "checksums": {
+      "bytes": 2310384,
+      "path": "artifacts/cosmos-publisher-metadata/checksum.txt",
+      "sha256": "25fcfa660b8aadb40f4c118cc0667d7c1a4c0851b212370a54255820d248c6b2",
+      "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/TechblogAssets/CosmosLaundromat/cosmos_laundromat_vdm_hdr_p3d65_pq_20160525_01_2048x858/vdm/hdr/p3d65_pq/20160525_01/2048x858/checksum.txt"
+    },
+    "readme": {
+      "bytes": 7883,
+      "documentDate": "2018-05-17",
+      "path": "artifacts/cosmos-publisher-metadata/README.txt",
+      "sha256": "b997f0019e436499c35045bdcdc3df3ddf4a14a24a5a6695a1830c48aff3c9e6",
+      "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/TechblogAssets/README.txt"
+    }
+  },
+  "passed": true,
+  "preservedHistoricalArtifacts": {
+    "captureManifest": "artifacts/cosmos-reference-capture/manifest.json",
+    "captureManifestSHA256": "58c671427edaac34d16ee14b91e0a9362cad59b8d8af37f30a844a02e40f54c3",
+    "inputManifest": "artifacts/cosmos-reference-input-box/manifest.json",
+    "inputManifestSHA256": "30b621693df68abf31f44df64b9d08fc6075fac75e2f0fad37caabfbe9c394fd"
+  },
+  "publisherBlog": "https://netflixtechblog.com/engineers-making-movies-aka-open-source-test-content-f21363ea3781",
+  "publisherDescription": {
+    "asset": "Cosmos Laundromat Video Display Master",
+    "channels": "RGB",
+    "codingRange": "full",
+    "colourPrimariesAndWhite": "P3-D65",
+    "nominalFrameRate": 24,
+    "referenceDisplayMaximumNits": 4000,
+    "referenceDomain": "output-referred",
+    "storage": "16-bit floating-point EXR",
+    "transfer": "PQ"
+  },
+  "recordedUTC": "2026-09-10T02:02:51.106718+00:00",
+  "schemaVersion": 1,
+  "scope": "Primary publisher metadata and checksum cross-reference; no new image download, pixel processing or calibrated display claim",
+  "sourceCatalogSHA256": "db5f35d1341c112f2eb7f8882caa80bfdb67c6c3f182cf95ea43d0c7224479de"
+}
