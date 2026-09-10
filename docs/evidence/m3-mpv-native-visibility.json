@@ -1,0 +1,262 @@
+{
+  "checks": {
+    "disabledEmitsNoRecords": true,
+    "embeddedMinimizeAndRestore": true,
+    "embeddedOcclusionTransitions": true,
+    "embeddedPeriodicWhileMinimized": true,
+    "embeddedStartupAndShutdown": true,
+    "nativeDrawableDimensions": true,
+    "nativeStartupAndShutdown": true,
+    "nativeWindow": true,
+    "samplingGapsBelow1_5Seconds": true
+  },
+  "device": "Apple M3",
+  "diagnostics": {
+    "enabledByDefault": false,
+    "environment": "HDRPLAYER_MPV_VISIBILITY=1",
+    "maximumRecords": 4096,
+    "periodicIntervalSeconds": 0.25,
+    "prefix": "HDRPLAYER_MPV_WINDOW_STATE ",
+    "visibilityDefinition": "Actual NSWindow.isVisible and occlusionState.visible, independently reported; force_render does not alter either."
+  },
+  "embedded": {
+    "embedded": [
+      true
+    ],
+    "events": {
+      "app-inactive": 1,
+      "minimize": 1,
+      "occlusion": 3,
+      "periodic": 17,
+      "resigned-key": 1,
+      "resigned-main": 1,
+      "restore": 1,
+      "shutdown": 1,
+      "startup": 1
+    },
+    "maximumGapSeconds": 0.8510467499727383,
+    "observedWindowStates": [
+      {
+        "appActive": false,
+        "isMiniaturized": true,
+        "isVisible": false,
+        "occlusionVisible": false
+      },
+      {
+        "appActive": true,
+        "isMiniaturized": true,
+        "isVisible": false,
+        "occlusionVisible": false
+      },
+      {
+        "appActive": true,
+        "isMiniaturized": true,
+        "isVisible": false,
+        "occlusionVisible": true
+      },
+      {
+        "appActive": false,
+        "isMiniaturized": false,
+        "isVisible": true,
+        "occlusionVisible": false
+      },
+      {
+        "appActive": false,
+        "isMiniaturized": false,
+        "isVisible": true,
+        "occlusionVisible": true
+      },
+      {
+        "appActive": true,
+        "isMiniaturized": false,
+        "isVisible": true,
+        "occlusionVisible": true
+      }
+    ],
+    "recordCount": 27,
+    "sequentialRecords": true,
+    "windowNumbers": [
+      35198
+    ]
+  },
+  "exporterRegression": {
+    "allocationFailureInjection": false,
+    "checkCount": 47,
+    "checks": {
+      "actual-audio-clock": true,
+      "audio-clock-advances": true,
+      "clock-host-epoch": true,
+      "clock-valid": true,
+      "close-invalidates": true,
+      "compare-exact-pts": true,
+      "compare-no-inference": true,
+      "created": true,
+      "export-open": true,
+      "export-reopen": true,
+      "initialized": true,
+      "invalid-capacity-rejected": true,
+      "lease-cap": true,
+      "lease-survives-client-destroy": true,
+      "minimized-selection-advances": true,
+      "neural-float": true,
+      "option-ao": true,
+      "option-config": true,
+      "option-gpu-api": true,
+      "option-gpu-context": true,
+      "option-hwdec": true,
+      "option-keep-open": true,
+      "option-msg-level": true,
+      "option-mute": true,
+      "option-osc": true,
+      "option-osd-level": true,
+      "option-pause": true,
+      "option-secondary-sid": true,
+      "option-sid": true,
+      "option-target-colorspace-hint": true,
+      "option-vf": true,
+      "option-vo": true,
+      "option-wid": true,
+      "original-invalidates": true,
+      "producer-bt2020-tag": true,
+      "producer-linear-tag": true,
+      "reopen-preserves-global-cap": true,
+      "second-exporter-rejected": true,
+      "second-lease": true,
+      "seek-correct-pts": true,
+      "seek-invalidates": true,
+      "source-path": true,
+      "subtitle-change-invalidates": true,
+      "subtitle-disable-revises": true,
+      "subtitles-explicitly-unsupported": true,
+      "two-before-reopen": true,
+      "unchanged-no-lease": true
+    },
+    "events": [
+      {
+        "hostErrorSeconds": 2.337503246963024e-05,
+        "mediaSeconds": 2.7755575615628914e-17,
+        "phase": "clock-anchor",
+        "rate": 0,
+        "sampleSpanSeconds": 2.125e-06
+      },
+      {
+        "clockSource": 1,
+        "epoch": 27,
+        "generation": 2,
+        "phase": "paused-seek",
+        "pts": 700000,
+        "revision": 27,
+        "sourceOffset": 0,
+        "timescale": 1000000
+      },
+      {
+        "audioClockSamples": 493,
+        "maxLeases": 1,
+        "maxPending": 2,
+        "mediaAdvanceSeconds": 0.8023365013333366,
+        "newSelectedFrames": 24,
+        "phase": "minimized-playback",
+        "progressingClockSamples": 139
+      }
+    ],
+    "exitCode": 0,
+    "guardReview": "A missing VO selection reference is rejected as stale before READY and before av_buffer_ref(selection). The normal-path lifecycle is rerun; allocator fault injection was not performed.",
+    "passed": true,
+    "report": "artifacts/mpv-hdr-export-probe-visibility.json"
+  },
+  "nativeComparisonEligible": false,
+  "nativeComparisonIneligibilityReason": "Native CLI one-second diagnostic sample remained occluded despite isVisible/appActive; it is not a valid matched presentation measurement.",
+  "nativeDisabled": {
+    "embedded": [],
+    "events": {},
+    "maximumGapSeconds": null,
+    "observedWindowStates": [],
+    "recordCount": 0,
+    "sequentialRecords": true,
+    "windowNumbers": []
+  },
+  "nativeEnabled": {
+    "embedded": [
+      false
+    ],
+    "events": {
+      "app-active": 1,
+      "became-main": 1,
+      "periodic": 4,
+      "shutdown": 1,
+      "startup": 1
+    },
+    "maximumGapSeconds": 0.250587375019677,
+    "observedWindowStates": [
+      {
+        "appActive": false,
+        "isMiniaturized": false,
+        "isVisible": true,
+        "occlusionVisible": false
+      },
+      {
+        "appActive": true,
+        "isMiniaturized": false,
+        "isVisible": true,
+        "occlusionVisible": false
+      }
+    ],
+    "recordCount": 8,
+    "sequentialRecords": true,
+    "windowNumbers": [
+      35213
+    ]
+  },
+  "osVersion": "26.5",
+  "passed": true,
+  "priorEvidencePreserved": "docs/evidence/m3-pip-exporter.json remains bound to its original f52b9899c20e201ed8e45dcc8f103fe0f2430e522d49dbc795bd9132653e566e library.",
+  "provenance": {
+    "files": {
+      ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+      ".build/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+      "artifacts/mpv-build/libmpv.2.dylib": "ff002bc12bc95df9dce98ccd002798bc1bcfd96f9ee24e06b54e0bccc3d34a27",
+      "artifacts/mpv-hdr-export-probe-visibility.json": "263c3bddf9a99f260ca26fedf8a81866d5907df4f0ac994ddee98aca8654c9f4",
+      "artifacts/mpv-hdr-export-probe-visibility.log": "ec3579cd0e8feafaaed41d9de1c148760069e145b239b4e20a58a4f4a69dd06b",
+      "artifacts/mpv-host/HDRExportProbe-next": "4f7c3102bc0278e5e7f40272c931330117148d016c1aef4fc305bb605045ffa0",
+      "artifacts/mpv-visibility-build.log": "c562abcd69fc09948f68da5df4cf3a7752b5a1a82eaf40031cc2a20de0a459b8",
+      "artifacts/mpv-window-visibility-disabled.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "artifacts/mpv-window-visibility-enabled.log": "3a2bfbd93535f4dcc0abfae6f03beff9ea5d293948630c6447cead6c9d45a1e2",
+      "assets/test-clips/playback/pq-30-30s.mkv": "c9ea81d5b6cf5bd8f6a43556eae17b86b966fe1f684beb3c0087ed6915aeaa40",
+      "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+    },
+    "mpvBaseRevision": "c51dc1ac894992e306564a91f54f8caaec2a48fe",
+    "rootRevision": "26cd601788d7d2cc0da9eb6751387be65261b6eb",
+    "sourceFiles": {
+      "vendor/mpv/TOOLS/hdr-export-probe.swift": "152bea85177f1b76ac8bb24c755cba12833c3a640dea48382fca2eb8fbf1d6fb",
+      "vendor/mpv/include/mpv/hdr_frame.h": "1fece507a7845faf3b0137351f964258025c65d4aeb00841d287a2c76a29f9c5",
+      "vendor/mpv/meson.build": "609284164823a6a66863b1cc74d5b75187b0bc7200e473560b92d743a616f5d0",
+      "vendor/mpv/player/client.c": "d75a6d334f650f2aec6082b60b528009dd62470c3a07b35774b24811b6a685e4",
+      "vendor/mpv/player/hdr_frame.inc": "9c54fb384326defc06bd2522ddec62ced273b0a15a7088b0f0e8849d5d635fbe",
+      "vendor/mpv/video/filter/vf_metal_hdr.m": "747d0bec34e1e90877b3e9628cea17ed5e774cbf47f6ffc9a862758ed482450c",
+      "vendor/mpv/video/mp_image.c": "6ec1ac8882b54e8a45d854f24cd1c2a4cd64e4bf3ad7d9f9afbc29cc7f96b018",
+      "vendor/mpv/video/mp_image.h": "d34519d2018fcc490d8837e787a2ca25172b536d767966df84f19de179fe8e33",
+      "vendor/mpv/video/out/mac_common.swift": "1c7138327520975a2af16e41fb002db4cea47d246607695023ab30761922928a",
+      "vendor/mpv/video/out/vo.c": "f0c98e1fc495fe1aa42d1badae7ec79e8d3ae6c1cf2e8dfcf11f412f2a05f620",
+      "vendor/mpv/video/out/vo.h": "a5b247c23b748f052344929da106b355c3bc28bf0223a7d7a147772b9b407bf1",
+      "vendor/mpv/video/out/vo_gpu_next.c": "7651020e47467ce26287cf0bf0da720cac86d8b5e06fcccfb3ad9e5c4b6581f4"
+    },
+    "sourceTreeClean": false
+  },
+  "schemaVersion": 1,
+  "scope": "Opt-in native NSWindow visibility diagnostics and selected-frame exporter allocation-guard regression. No rendering/clock behavior changes or physical presentation qualification.",
+  "validation": {
+    "abi": "HDRPLAYER_MPV_VISIBILITY=1 artifacts/mpv-host/HDRExportProbe-next \"$PROJECT_ROOT/assets/test-clips/playback/pq-30-30s.mkv\" \"$PROJECT_ROOT/models/neural-rendering/NeuralRendering.dlssmodel\" \"$PROJECT_ROOT/artifacts/mpv-hdr-export-probe-visibility.json\"",
+    "build": "source scripts/env.sh; meson compile -C artifacts/mpv-build -j2",
+    "cpuTest": "source scripts/env.sh; meson test -C artifacts/mpv-build image-generation --no-rebuild --print-errorlogs",
+    "cpuTestsPassed": 1,
+    "disabled": "Same native command without HDRPLAYER_MPV_VISIBILITY=1",
+    "exitCodes": {
+      "abi": 0,
+      "build": 0,
+      "cpuTest": 0,
+      "nativeDisabled": 0,
+      "nativeEnabled": 0
+    },
+    "native": "HDRPLAYER_MPV_VISIBILITY=1 artifacts/mpv-build/mpv --no-config --vo=gpu-next --gpu-api=vulkan --gpu-context=macvk --hwdec=videotoolbox --mute=yes --length=1 --force-window=yes --msg-level=all=warn \"$PROJECT_ROOT/assets/test-clips/playback/pq-30-30s.mkv\""
+  }
+}
