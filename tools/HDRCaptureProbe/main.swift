@@ -107,7 +107,8 @@ func verifyProcess(_ options: Options) throws -> NSRunningApplication {
         "com.apple.PIPAgent": "PIPAgent"
     ]
     let project = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-    let allowedCLI = ["artifacts/mpv-build/mpv", "artifacts/erika-target/debug/macos_native_demo", ".build/debug/HDRPlayer"]
+    let allowedCLI = ["artifacts/mpv-build/mpv", "artifacts/erika-target/debug/macos_native_demo", ".build/debug/HDRPlayer",
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe"]
         .map { canonical(project.appendingPathComponent($0)) }
     let actualBundle = bundleName(application.bundleIdentifier)
     guard actualBundle == options.bundle else { throw CaptureError("Target bundle mismatch: expected \(options.bundle), observed \(actualBundle)") }

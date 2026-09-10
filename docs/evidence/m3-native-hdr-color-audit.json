@@ -1,0 +1,2093 @@
+{
+  "schemaVersion": 1,
+  "scope": "Native mpv compositor diagnosis using same retained linear BT.2020 buffer at exact20s; no physical HDR accuracy, PiP equivalence or broad display qualification",
+  "observedDate": "2026-09-10",
+  "platform": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5\nBuildVersion:\t\t25F71",
+  "sourceContract": "RGBA16F linear BT.2020 full-range RGB with independent opaque alpha; unity=203 source reference nits",
+  "cases": [
+    {
+      "directory": "artifacts/native-color-target-1",
+      "kind": "nominal-target-peak",
+      "wrapperReportSHA256": "f6417c35b4e8a802879d222f3ad344d02fca0f3cd622b2b892f798ecb780ba00",
+      "sessionReportSHA256": "2ca4baee35c4bebc36100b5202ab0329b62caea20afcec4909a0ef9daeb3d5bd",
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "exitCode": 0,
+      "binariesUnchanged": true,
+      "retainedIdentityStable": true,
+      "rawExportStable": true,
+      "submissionCountStable": true,
+      "phases": [
+        {
+          "name": "auto",
+          "hostSeconds": 1020420.3660442502,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24490088782533,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 17,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xa5cd61770> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 25985,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35853
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 1,
+            "w": 1746
+          },
+          "requestedTargetPeak": "auto",
+          "diagnosticAPICalls": [],
+          "phaseReport": {
+            "path": "artifacts/native-color-target-1/auto/phase.json",
+            "sha256": "e8ffa9b3b62223562c8c522f8a51f025fb67500cd9a457a8b63a4a7802abf2e8"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-target-1/auto/sck-hdr/report.json",
+            "reportSHA256": "bf05bfdb421f7a354e1669e5884cdc8b04ec828c1b65346bb09c2eb7cb696e44",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "327d7328168bf871efd023cc7251d6ccf5e1f417addc1740b700f36af6603b75",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020420.6848815836,
+              "completedMachTicks": 24490096437162,
+              "cpuReadbackCompletedHostSeconds": 1020420.6897640419,
+              "cpuReadbackStartedHostSeconds": 1020420.6860094169,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020420.5301257502,
+              "requestedMachTicks": 24490092723017,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020420656254541
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020420656254541
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 1,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.053122982900807414,
+              0.045407491219680546,
+              0.055442787426835866,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              0.1490478515625,
+              0.09564208984375,
+              0.1531982421875,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-target-1/auto/mpv-window.png",
+            "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        },
+        {
+          "name": "peak1000",
+          "hostSeconds": 1020422.4387126669,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24490138528133,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 17,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xa5cd61770> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 25985,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35853
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 4.926108,
+            "w": 1746
+          },
+          "requestedTargetPeak": "1000",
+          "diagnosticAPICalls": [],
+          "phaseReport": {
+            "path": "artifacts/native-color-target-1/peak1000/phase.json",
+            "sha256": "251c81e9f22e86f2a8cf2158f175f17d44dc0cdae42cade68bc561b895271841"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-target-1/peak1000/sck-hdr/report.json",
+            "reportSHA256": "7aed2f0d8e166bb230f526b0f485b3cb66dbec315c571341f1149e29a76c6783",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "4ed33082ffeac49f16cedbeeb3c293351ceec2123d1fd3a50597696e91603ac0",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020422.7019330836,
+              "completedMachTicks": 24490144846425,
+              "cpuReadbackCompletedHostSeconds": 1020422.7057178753,
+              "cpuReadbackStartedHostSeconds": 1020422.7026111669,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020422.5717000419,
+              "requestedMachTicks": 24490141720799,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020422678933375
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020422678933375
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 1,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.0950152417882334,
+              0.08374591138942787,
+              0.0988138319888791,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              0.2822265625,
+              0.199951171875,
+              0.2705078125,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-target-1/peak1000/mpv-window.png",
+            "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        },
+        {
+          "name": "auto-repeat",
+          "hostSeconds": 1020424.2709133752,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24490182500579,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 17,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xa5cd61770> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 25985,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35853
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 1,
+            "w": 1746
+          },
+          "requestedTargetPeak": "auto",
+          "diagnosticAPICalls": [],
+          "phaseReport": {
+            "path": "artifacts/native-color-target-1/auto-repeat/phase.json",
+            "sha256": "03222252e4e87d06fb727bf3cb7bd12f2f36c76a7e090091b7bf59adcdcb6d35"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-target-1/auto-repeat/sck-hdr/report.json",
+            "reportSHA256": "00fc4fc3e7f5eed55bbf454b355a269653817de7dddec2a0862a03ae83c2f5c6",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "327d7328168bf871efd023cc7251d6ccf5e1f417addc1740b700f36af6603b75",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020424.5700255836,
+              "completedMachTicks": 24490189680617,
+              "cpuReadbackCompletedHostSeconds": 1020424.5741040836,
+              "cpuReadbackStartedHostSeconds": 1020424.5706371668,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020424.4444981669,
+              "requestedMachTicks": 24490186667951,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020424549004000
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020424549004000
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 1,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.053122982900807414,
+              0.045407491219680546,
+              0.055442787426835866,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              0.1490478515625,
+              0.09564208984375,
+              0.1531982421875,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-target-1/auto-repeat/mpv-window.png",
+            "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        }
+      ],
+      "ABDifferentComponents": 5465406,
+      "ARepeatDifferentComponents": 0,
+      "ARepeatByteIdentical": true,
+      "relativeICCComparison": {
+        "comparedPixels": 1816560,
+        "excludedPixels": 0,
+        "roiFirst": "190,66,1740,1044",
+        "roiSecond": "190,66,1740,1044",
+        "meanAbsoluteEncodedRGBDifference": [
+          0.04189225888742598,
+          0.038802737281361015,
+          0.04337104456204323
+        ],
+        "meanAbsoluteRelativeXYZD50Difference": [
+          0.006955009466578481,
+          0.0067567556180953775,
+          0.00702047523482499
+        ],
+        "maximumAbsoluteRelativeXYZD50Difference": [
+          0.027363699810898836,
+          0.02353470941202184,
+          0.03165458352091677
+        ],
+        "scope": "Caller-aligned ROI comparison in actual ICC PCS D50, relative units; no inferred frame/geometry equivalence, HDR extrapolation or physical qualification"
+      },
+      "diagnosticHostBinary": {
+        "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "5dae02ec50c25bd97810c13337a9b84f83e258da81cca40593dbd6baa631b4dc",
+          "afterSHA256": "5dae02ec50c25bd97810c13337a9b84f83e258da81cca40593dbd6baa631b4dc"
+        }
+      }
+    },
+    {
+      "directory": "artifacts/native-color-metadata-1",
+      "kind": "clear-restore-original-metadata",
+      "wrapperReportSHA256": "32b6a3fea7d70c1b1bd52b9c346c882b94bdeabce488b33d768a4ba834ab0d36",
+      "sessionReportSHA256": "5abd9dda943c93279f6069535552ab302652dc14b22839c71d3d90a410759cf0",
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "exitCode": 0,
+      "binariesUnchanged": true,
+      "retainedIdentityStable": true,
+      "rawExportStable": true,
+      "submissionCountStable": true,
+      "phases": [
+        {
+          "name": "metadata-original",
+          "hostSeconds": 1020510.6270451669,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24492255048467,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x99f1297f0> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 26583,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35874
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 4.926108,
+            "w": 1746
+          },
+          "requestedTargetPeak": "1000",
+          "diagnosticAPICalls": [],
+          "phaseReport": {
+            "path": "artifacts/native-color-metadata-1/metadata-original/phase.json",
+            "sha256": "2d4cb004f458a7a8fe2b23c9b579c8fe98392152a7e73d6711d60ca72e14a211"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-metadata-1/metadata-original/sck-hdr/report.json",
+            "reportSHA256": "b0ed62e3d814e4f6ffe31241c3187c6db813247f1038e5136a230709d453ed92",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "4ed33082ffeac49f16cedbeeb3c293351ceec2123d1fd3a50597696e91603ac0",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020510.8934035419,
+              "completedMachTicks": 24492261441688,
+              "cpuReadbackCompletedHostSeconds": 1020510.8970435419,
+              "cpuReadbackStartedHostSeconds": 1020510.8940988336,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020510.7579150836,
+              "requestedMachTicks": 24492258189960,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020510871971458
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020510871971458
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 1,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.0950152417882334,
+              0.08374591138942787,
+              0.0988138319888791,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              0.2822265625,
+              0.199951171875,
+              0.2705078125,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-metadata-1/metadata-original/mpv-window.png",
+            "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        },
+        {
+          "name": "metadata-cleared",
+          "hostSeconds": 1020512.8391541252,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24492308139160,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "none",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 26583,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35874
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 4.926108,
+            "w": 1746
+          },
+          "requestedTargetPeak": "1000",
+          "diagnosticAPICalls": [],
+          "phaseReport": {
+            "path": "artifacts/native-color-metadata-1/metadata-cleared/phase.json",
+            "sha256": "b19a9427245b07eece5d99570fd08ca89b2508b4fbc2476ef7f98d7f3e2de243"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-metadata-1/metadata-cleared/sck-hdr/report.json",
+            "reportSHA256": "cbd6615353ebb3166a260ba6bbc341f7496e4e7a8f4d106e0a5f8e46dff7ec10",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "b4481abfff03777f4281671e1712842f49c2cef1fdf11e77f8a3f5fa6970b0f3",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020513.1264544586,
+              "completedMachTicks": 24492315034910,
+              "cpuReadbackCompletedHostSeconds": 1020513.1308379585,
+              "cpuReadbackStartedHostSeconds": 1020513.1272805003,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020512.9830337085,
+              "requestedMachTicks": 24492311592807,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020513098660333
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020513098660333
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 1,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.7687044818553938,
+              0.7120206914259063,
+              0.7396748102676728,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-metadata-1/metadata-cleared/mpv-window.png",
+            "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        },
+        {
+          "name": "metadata-restored",
+          "hostSeconds": 1020515.0882322919,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24492362117063,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x99f1297f0> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 26583,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35874
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 4.926108,
+            "w": 1746
+          },
+          "requestedTargetPeak": "1000",
+          "diagnosticAPICalls": [],
+          "phaseReport": {
+            "path": "artifacts/native-color-metadata-1/metadata-restored/phase.json",
+            "sha256": "d7fd43cc15a8b8bd27aa9b0ff1ed98f77631ab1de5ce557fb3750771525d0097"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-metadata-1/metadata-restored/sck-hdr/report.json",
+            "reportSHA256": "7c0567abcb2eb7e139ea7efd1746e60fc6a7f5cea6344b388fa3aef0c60cd4c8",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "b4481abfff03777f4281671e1712842f49c2cef1fdf11e77f8a3f5fa6970b0f3",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020515.3407165002,
+              "completedMachTicks": 24492368177199,
+              "cpuReadbackCompletedHostSeconds": 1020515.3443682085,
+              "cpuReadbackStartedHostSeconds": 1020515.3413664586,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020515.2157833752,
+              "requestedMachTicks": 24492365178800,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020515320392833
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020515320392833
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 1,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.7687044818553938,
+              0.7120206914259063,
+              0.7396748102676728,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-metadata-1/metadata-restored/mpv-window.png",
+            "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        }
+      ],
+      "ABDifferentComponents": 5475694,
+      "ARepeatDifferentComponents": 5475694,
+      "ARepeatByteIdentical": false,
+      "relativeICCComparison": {
+        "comparedPixels": 1816560,
+        "excludedPixels": 0,
+        "roiFirst": "190,66,1740,1044",
+        "roiSecond": "190,66,1740,1044",
+        "meanAbsoluteEncodedRGBDifference": [
+          0.6736892414251762,
+          0.6282747800364784,
+          0.6408609782787937
+        ],
+        "meanAbsoluteRelativeXYZD50Difference": [
+          0.6051823425584384,
+          0.6062112279446147,
+          0.4927384250126765
+        ],
+        "maximumAbsoluteRelativeXYZD50Difference": [
+          0.9557248928253944,
+          0.9918230337926826,
+          0.8201741565108538
+        ],
+        "scope": "Caller-aligned ROI comparison in actual ICC PCS D50, relative units; no inferred frame/geometry equivalence, HDR extrapolation or physical qualification"
+      },
+      "diagnosticHostBinary": {
+        "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "207d7ecbdffb9ead868ee40435b278283acbf1ce89213ef149a5aebf2a96c418",
+          "afterSHA256": "207d7ecbdffb9ead868ee40435b278283acbf1ce89213ef149a5aebf2a96c418"
+        }
+      }
+    },
+    {
+      "directory": "artifacts/native-color-scale-1",
+      "kind": "fresh-optical-scale",
+      "wrapperReportSHA256": "0cdcc477311388ec63cbba53fbe544c1e6ae27360290f2578c9bc4729e4f3fd0",
+      "sessionReportSHA256": "f31f2d0accd156d7636a1c80ad831977f67bf1f1fe91a0afd702ebcd2fa7ee66",
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "exitCode": 0,
+      "binariesUnchanged": true,
+      "retainedIdentityStable": true,
+      "rawExportStable": true,
+      "submissionCountStable": true,
+      "phases": [
+        {
+          "name": "scale1",
+          "hostSeconds": 1020615.9356545003,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24494782453943,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x9a6cf6e20> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 27165,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35892
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 4.926108,
+            "w": 1746
+          },
+          "requestedTargetPeak": "1000",
+          "diagnosticAPICalls": [
+            {
+              "api": "CAMetalLayer.edrMetadata = CAEDRMetadata.hdr10(minLuminance:maxLuminance:opticalOutputScale:)",
+              "hostSeconds": 1020615.4204108752,
+              "maxLuminance": 1018.656982421875,
+              "minLuminance": 0,
+              "opticalOutputScale": 1
+            },
+            {
+              "api": "mpv_command",
+              "arguments": [
+                "set",
+                "video-pan-x",
+                "0.0001"
+              ],
+              "hostSeconds": 1020615.4208506669
+            },
+            {
+              "api": "mpv_command",
+              "arguments": [
+                "set",
+                "video-pan-x",
+                "0"
+              ],
+              "hostSeconds": 1020615.6761897085
+            }
+          ],
+          "phaseReport": {
+            "path": "artifacts/native-color-scale-1/scale1/phase.json",
+            "sha256": "2e2743e38eb3c99a5b28c52ab5ec5a68ff9f10f482dea85aa74035ca9292265d"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-scale-1/scale1/sck-hdr/report.json",
+            "reportSHA256": "ad90c62d91b28e0514be16fb77541ac5a3a871d337afbcf74f209ecd175d508d",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "eec9905c19f961ac3669775f607239c4fa21ab6b39cd0496507b1d500d6e4529",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020616.2320307503,
+              "completedMachTicks": 24494789568741,
+              "cpuReadbackCompletedHostSeconds": 1020616.2389487502,
+              "cpuReadbackStartedHostSeconds": 1020616.2351058752,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020616.0949920836,
+              "requestedMachTicks": 24494786279808,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020616203767250
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020616203767250
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 16,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.16912433429289228,
+              0.14985119281674217,
+              0.17410058952330199,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              0.44677734375,
+              0.31884765625,
+              0.43310546875,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-scale-1/scale1/mpv-window.png",
+            "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        },
+        {
+          "name": "scale203",
+          "hostSeconds": 1020618.3082531252,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24494839396961,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x9a6cf6f00> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 27165,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35892
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 4.926108,
+            "w": 1746
+          },
+          "requestedTargetPeak": "1000",
+          "diagnosticAPICalls": [
+            {
+              "api": "CAMetalLayer.edrMetadata = CAEDRMetadata.hdr10(minLuminance:maxLuminance:opticalOutputScale:)",
+              "hostSeconds": 1020617.7919662502,
+              "maxLuminance": 1018.656982421875,
+              "minLuminance": 0,
+              "opticalOutputScale": 203
+            },
+            {
+              "api": "mpv_command",
+              "arguments": [
+                "set",
+                "video-pan-x",
+                "0.0001"
+              ],
+              "hostSeconds": 1020617.7922630003
+            },
+            {
+              "api": "mpv_command",
+              "arguments": [
+                "set",
+                "video-pan-x",
+                "0"
+              ],
+              "hostSeconds": 1020618.0512583752
+            }
+          ],
+          "phaseReport": {
+            "path": "artifacts/native-color-scale-1/scale203/phase.json",
+            "sha256": "e772e4c190c12214c3e31f806e808c643425cb362ce85088f2196e55c23bfe65"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-scale-1/scale203/sck-hdr/report.json",
+            "reportSHA256": "b4904ed365f8c711fb218bf9e469aca51080372c6a2059abab673c596c734984",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "410e54fe287d914ac4c9e0c898f9390e510472db294b05a7753efc32deb1f01b",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020618.5809302086,
+              "completedMachTicks": 24494845942330,
+              "cpuReadbackCompletedHostSeconds": 1020618.5854311669,
+              "cpuReadbackStartedHostSeconds": 1020618.5815376252,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020618.4586498336,
+              "requestedMachTicks": 24494843007593,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020618562956458
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020618562956458
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 16,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              1.4736835372297297,
+              1.3622440497563475,
+              1.5500328684544036,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              3.40625,
+              2.96484375,
+              3.560546875,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 3239387,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-scale-1/scale203/mpv-window.png",
+            "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        },
+        {
+          "name": "scale1-repeat",
+          "hostSeconds": 1020620.6359727086,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24494895261759,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "submittedFrames": 2,
+          "submittedFramesAfter": 2,
+          "rawExport": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "pixelFormat": 1380411457,
+            "file": "exported.rgba16f",
+            "byteCount": 491520,
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "rowPadding": "zeroed; component bytes unchanged"
+          },
+          "layerAndWindow": {
+            "appActive": true,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "metalLayer": {
+              "colorspace": {
+                "icc": {
+                  "bytes": 580,
+                  "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+                },
+                "model": 1,
+                "name": "kCGColorSpaceExtendedLinearITUR_2020"
+              },
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "contentsScale": 2,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x9a6cf6f80> display min nits: 0.000000, max nits: 1018.656982",
+              "pixelFormat": 115,
+              "wantsExtendedDynamicRangeContent": true
+            },
+            "miniaturized": false,
+            "occlusionVisible": true,
+            "pid": 27165,
+            "screen": {
+              "currentHeadroom": 16,
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "visible": true,
+            "windowID": 35892
+          },
+          "videoOutParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "crop-h": 192,
+            "crop-w": 320,
+            "crop-x": 0,
+            "crop-y": 0,
+            "gamma": "linear",
+            "h": 192,
+            "hw-pixelformat": "rgbaf16",
+            "max-cll": 1018.656982,
+            "max-fall": 0,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "pixelformat": "videotoolbox",
+            "primaries": "bt.2020",
+            "sig-peak": 5.018015,
+            "w": 320
+          },
+          "videoTargetParams": {
+            "alpha": "straight",
+            "colorlevels": "full",
+            "colormatrix": "rgb",
+            "gamma": "linear",
+            "h": 1048,
+            "max-cll": 0,
+            "max-fall": 0,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "pixelformat": "rgba16hf",
+            "primaries": "bt.2020",
+            "sig-peak": 4.926108,
+            "w": 1746
+          },
+          "requestedTargetPeak": "1000",
+          "diagnosticAPICalls": [
+            {
+              "api": "CAMetalLayer.edrMetadata = CAEDRMetadata.hdr10(minLuminance:maxLuminance:opticalOutputScale:)",
+              "hostSeconds": 1020620.1210603336,
+              "maxLuminance": 1018.656982421875,
+              "minLuminance": 0,
+              "opticalOutputScale": 1
+            },
+            {
+              "api": "mpv_command",
+              "arguments": [
+                "set",
+                "video-pan-x",
+                "0.0001"
+              ],
+              "hostSeconds": 1020620.1214653752
+            },
+            {
+              "api": "mpv_command",
+              "arguments": [
+                "set",
+                "video-pan-x",
+                "0"
+              ],
+              "hostSeconds": 1020620.3758973336
+            }
+          ],
+          "phaseReport": {
+            "path": "artifacts/native-color-scale-1/scale1-repeat/phase.json",
+            "sha256": "de66509b37e76f66f21a7dbd4c7f31872c01d1e4632ac7058ec45ee6964e1b9c"
+          },
+          "compositorCapture": {
+            "reportPath": "artifacts/native-color-scale-1/scale1-repeat/sck-hdr/report.json",
+            "reportSHA256": "1e6f430305f0a63351d961de7fb45e409f49e000e36b69a69cd469b8f45c3c73",
+            "storage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "eec9905c19f961ac3669775f607239c4fa21ab6b39cd0496507b1d500d6e4529",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1020620.9156809585,
+              "completedMachTicks": 24494901976347,
+              "cpuReadbackCompletedHostSeconds": 1020620.9199135836,
+              "cpuReadbackStartedHostSeconds": 1020620.9164081252,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1020620.7938132919,
+              "requestedMachTicks": 24494899051518,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020620895796958
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1020620895796958
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "actualICC": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            },
+            "headroom": 16,
+            "referenceWhiteNits": null,
+            "opaqueVideoROI": [
+              190,
+              66,
+              1740,
+              1044
+            ],
+            "encodedROIMeanRGBA": [
+              0.16912433429289228,
+              0.14985119281674217,
+              0.17410058952330199,
+              1.0
+            ],
+            "encodedROIMaxRGBA": [
+              0.44677734375,
+              0.31884765625,
+              0.43310546875,
+              1.0
+            ],
+            "roiRGBComponentsAboveOne": 0,
+            "roiNonfiniteComponents": 0
+          },
+          "separateMPVScreenshot": {
+            "path": "artifacts/native-color-scale-1/scale1-repeat/mpv-window.png",
+            "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77",
+            "qualification": "Separate UNORM render target with LINEAR source max_luma cleared; not raw native swapchain pixels"
+          }
+        }
+      ],
+      "ABDifferentComponents": 5489409,
+      "ARepeatDifferentComponents": 0,
+      "ARepeatByteIdentical": true,
+      "relativeICCComparison": {
+        "comparedPixels": 62801,
+        "excludedPixels": 1753759,
+        "roiFirst": "190,66,1740,1044",
+        "roiSecond": "190,66,1740,1044",
+        "meanAbsoluteEncodedRGBDifference": [
+          0.627712413092764,
+          0.5508503686018642,
+          0.3752417785267441
+        ],
+        "meanAbsoluteRelativeXYZD50Difference": [
+          0.40670963297952956,
+          0.4167614017036368,
+          0.15022744250490286
+        ],
+        "maximumAbsoluteRelativeXYZD50Difference": [
+          0.9382636908799377,
+          0.9751994768928786,
+          0.8097655675504215
+        ],
+        "scope": "Caller-aligned ROI comparison in actual ICC PCS D50, relative units; no inferred frame/geometry equivalence, HDR extrapolation or physical qualification"
+      },
+      "diagnosticHostBinary": {
+        "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "65add714b4f97f6055cd2724f08562735faecc53be1a60519430608a2eba7f4b",
+          "afterSHA256": "65add714b4f97f6055cd2724f08562735faecc53be1a60519430608a2eba7f4b"
+        }
+      }
+    }
+  ],
+  "conclusions": {
+    "automaticTargetRangeLossObserved": true,
+    "retainedPQEraMetadataOnLinearLayerObserved": true,
+    "clearingOriginalMetadataChangesCompositorCapture": true,
+    "originalObjectRestoreReversedCapture": false,
+    "freshPublicOpticalScaleABAReversedCapture": true,
+    "freshScale203ProducesCapturedValuesAboveOne": true,
+    "productionFixImplemented": false,
+    "physicalDisplayQualification": false,
+    "interpretation": "Nominal target range and Core Animation optical units independently affect native output. Fresh public opticalOutputScale1-to203-to1 at fixed target1000 reversibly changes compositor output on byte-identical source pixels. This corroborates the source-supported stale scale1 versus unity203 mismatch; it does not establish panel nits."
+  },
+  "sourceAudit": [
+    {
+      "path": "vendor/mpv/video/filter/vf_metal_hdr.m",
+      "lines": [
+        217,
+        687,
+        690
+      ],
+      "finding": "Pack divides absolute source nits by203; published LINEAR BT2020 metadata carries actual luminance peak."
+    },
+    {
+      "path": "vendor/libplacebo/src/include/libplacebo/colorspace.h",
+      "lines": [
+        299,
+        401
+      ],
+      "finding": "PL_HDR_NORM unity is203 nits, matching import contract."
+    },
+    {
+      "path": "vendor/mpv/video/out/vulkan/context_mac.m",
+      "lines": [
+        89,
+        94
+      ],
+      "finding": "No preferred_csp, preferred_ref_luma or set_color callback in measured binary."
+    },
+    {
+      "path": "vendor/mpv/video/out/vo_gpu_next.c",
+      "lines": [
+        895,
+        907,
+        1476,
+        1559,
+        1589
+      ],
+      "finding": "macvk auto reference white is0; LINEAR source gets LINEAR hint, but no external target parameters restore its range."
+    },
+    {
+      "path": "vendor/libplacebo/src/vulkan/swapchain.c",
+      "lines": [
+        117,
+        328,
+        351,
+        370,
+        919
+      ],
+      "finding": "Linear format maps without HDR metadata; transfer-only HDR gate returns before copying hinted peak to returned target color."
+    },
+    {
+      "path": "vendor/libplacebo/src/colorspace.c",
+      "lines": [
+        324,
+        329,
+        340,
+        835
+      ],
+      "finding": "Absent LINEAR target peak infers nominal1=203 nits."
+    },
+    {
+      "url": "https://github.com/KhronosGroup/MoltenVK/blob/v1.4.2/MoltenVK/MoltenVK/GPUObjects/MVKSwapchain.mm#L343-L350",
+      "finding": "HDR metadata constructor uses opticalOutputScale1; constructor runs for preceding PQ swapchain."
+    },
+    {
+      "url": "https://github.com/KhronosGroup/MoltenVK/blob/v1.4.2/MoltenVK/MoltenVK/GPUObjects/MVKSwapchain.mm#L503-L505",
+      "finding": "BT2020_LINEAR assigns extendedLinearITUR2020 and EDRtrue; it neither rescales components nor clears prior EDRMetadata."
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/QuartzCore.framework/Headers/CAEDRMetadata.h",
+      "lines": [
+        42,
+        52,
+        68,
+        78
+      ],
+      "finding": "Public documented float relationship C=opticalOutputScale*y; normalized formats instead assume10000."
+    },
+    {
+      "path": "vendor/mpv/video/out/vo_gpu_next.c",
+      "lines": [
+        1959,
+        1962,
+        1995,
+        2036
+      ],
+      "finding": "mpv screenshot renders separately toUNORM and clearsLINEAR source max_luma, so screenshot output is not a direct native-swapchain readback."
+    }
+  ],
+  "verification": {
+    "captureCPUChecks": 7,
+    "probeCompilePassed": true,
+    "scriptsCompilePassed": true,
+    "allPlayersExited": true,
+    "payloadHashesVerifiedAgainstCapturedReports": 18,
+    "payloadAndPhaseReportChecksumsRecorded": 36
+  },
+  "provenance": {
+    "rootRevisionAtAggregation": "50311d8b33f5bc8f102cc1e20f33318fe17c25bf",
+    "mpvSourceRevision": "904d1e05dfa9be551acd95fe562722c0e3b26e33",
+    "libplaceboSourceRevision": "3330a515d62139259c26239014f286e233bd3a5c",
+    "finalDiagnosticSourceHashes": {
+      "tools/HDRNativeColorProbe/main.swift": "c0f12c7dc6b1bceb383f3734a94cb31a9e4d09b3fe88a7ff39337a691934c758",
+      "scripts/build-hdr-native-color-probe.sh": "f20da84e44d887d34088bd3951028d79771fd82c8cb33bb026d6d6bd68712eb3",
+      "scripts/test-hdr-native-color.py": "a1c32af9ecfdf22ef83ae4c2fa19a3b8782893edc721dbc99def4a37be8e23b9",
+      "tools/HDRCaptureProbe/main.swift": "fde33a9707918d1c9f4661700adafc6da07e9b0ef3ecbdda1f8ea8a2fd6d82bd",
+      "apps/macos/Sources/PiPBufferSnapshot.swift": "0b57aa739b8d1a7e53e5be137e9dcff95345d63e32ff0e369ac4d0a16850e5a1"
+    },
+    "sourceScope": "Uncommitted standalone diagnostics only. Final source corresponds to fresh-scale build; earlier host binaries precede the later control additions and are identified by their own wrapper hashes. App/core/shared remain unchanged within and across all three controls. Existing PiPBufferSnapshot used only for raw metadata/pixel serialization; no AVKit renderer or PiP controller instantiated.",
+    "fixedBinariesAcrossAllCases": {
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/hdr-capture-probe/hdr-capture-probe": {
+        "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+        "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer": {
+        "beforeSHA256": "8014bb8d015cf09be7239dc9f26436613833150bffebaaaf250bdb6aab0a122e",
+        "afterSHA256": "8014bb8d015cf09be7239dc9f26436613833150bffebaaaf250bdb6aab0a122e"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv": {
+        "beforeSHA256": "8a96f24962ebbbb41acea2c7c25d1c5c56387bde1fb464f7069103c1a639f902",
+        "afterSHA256": "8a96f24962ebbbb41acea2c7c25d1c5c56387bde1fb464f7069103c1a639f902"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib": {
+        "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+        "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/local/lib/libplacebo.371.dylib": {
+        "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+        "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+      },
+      "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+        "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+        "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+      }
+    }
+  }
+}
