@@ -1,0 +1,591 @@
+{
+  "schemaVersion": 1,
+  "recordedUTC": "2026-09-10T03:26:41.337454+00:00",
+  "scope": "One 30-second natural HDR10+ Adaptive clock/seek/transport regression on Apple M3; public source with AAC, full 1080p neural output; no physical A/V or calibrated image qualification",
+  "command": "python3 scripts/test-mpv-policy.py artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4 --model models/neural-rendering/NeuralRendering.dlssmodel --seconds 30 --width 160 --height 96 --file-seek-target 1742501/24000 --require-visible --report artifacts/mpv-policy-apple-hdr10plus-natural-2/report.json",
+  "capture": {
+    "report": "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.json",
+    "functionalPassed": true,
+    "synchronisation20msTargetMet": true,
+    "exitCode": 0,
+    "gpuRunCount": 1
+  },
+  "source": {
+    "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+    "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "bytes": 41784502,
+    "publisher": "Apple",
+    "catalog": "config/apple-hdr-samples.json",
+    "catalogSHA256": "ef2a08ac2a400fb47a04ed4e7b687a6f1e1b6751ca2b71e4fea9c519c3f22812",
+    "sourceAudit": "docs/evidence/apple-natural-hdr-source.json",
+    "priorTargetInspection": "docs/evidence/m3-apple-hdr10plus-playback.json",
+    "redistribution": "Public developer example; no open-content redistribution licence asserted. Media remains outside Git.",
+    "width": 1920,
+    "height": 1080,
+    "sourceRate": "24000/1001",
+    "videoInventoryFrames": 2360,
+    "audio": "Existing AAC stereo rendition from the same pinned source"
+  },
+  "configuration": {
+    "sourceWidth": 1920,
+    "sourceHeight": 1080,
+    "processingWidth": 160,
+    "processingHeight": 96,
+    "displayWidth": 960,
+    "displayHeight": 496,
+    "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "settingsJSON": "{\"strength\": 1, \"colourStrength\": 1, \"referenceWhiteNits\": 203, \"maximumLuminanceRatio\": 2, \"policy\": \"adaptive\"}",
+    "powerConfiguration": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=22741091)\t60%; charging; 0:59 remaining present: true",
+    "device": "Apple M3",
+    "osVersion": "Version 26.5 (Build 25F71)",
+    "physicalMemoryBytes": 17179869184,
+    "observedVideoOutput": "1920x1080 videotoolbox[rgbaf16] rgb/bt.2020/linear/full/display; fullcrop in retained native log",
+    "audioOutput": "CoreAudio, muted"
+  },
+  "timelineMapping": {
+    "nativeDemuxerStartSeconds": 9.956,
+    "rebaseStartTime": true,
+    "packetOffset": {
+      "value": -2489,
+      "timescale": 250
+    },
+    "decoderToPlayerSeconds": 0,
+    "heldFirstFilePTS": {
+      "value": 241001,
+      "timescale": 24000
+    },
+    "heldFirstDecoderPTS": {
+      "value": 2057,
+      "timescale": 24000
+    },
+    "heldFirstPlayerSeconds": 0.085708,
+    "nativeVersion": "mpv v0.41.0-1051-ga9466025d",
+    "nativeDurationSeconds": 98.517375,
+    "clockValidation": "restart_complete bracket; three held paused decoder/time-pos pairs over at least100ms; zero decoder-to-player offset validated within1us, not estimated"
+  },
+  "seek": {
+    "expectedFileFrameIndex": 1500,
+    "requestedFileTarget": {
+      "value": 1742501,
+      "timescale": 24000
+    },
+    "seekTarget": {
+      "value": 1503557,
+      "timescale": 24000
+    },
+    "expectedFilePTS": {
+      "value": 1742501,
+      "timescale": 24000
+    },
+    "expectedSeekPTS": {
+      "value": 1503557,
+      "timescale": 24000
+    },
+    "expectedPlayerSeconds": 62.648208333333336,
+    "settledSeekPlayerSeconds": 62.648208,
+    "seekSecondsToOriginalPreview": 0.07787154102697968,
+    "seekSecondsToEnhancedPair": 1.0918449580203742,
+    "exactOriginalPreviewObserved": true,
+    "retainedComparisons": 6,
+    "comparisonIdentityAndNoResubmissionPassed": true
+  },
+  "playback": {
+    "wallSeconds": 30.026450749952346,
+    "rawClockSamples": 927,
+    "distinctExactFileFrames": 194,
+    "firstFileFrameIndex": 1500,
+    "lastFileFrameIndex": 1693,
+    "firstFilePTS": {
+      "value": 1742501,
+      "timescale": 24000
+    },
+    "lastFilePTS": {
+      "value": 967847,
+      "timescale": 12000
+    },
+    "exactSourceProgress": {
+      "value": 193193,
+      "timescale": 24000
+    },
+    "sourceProgressSeconds": 8.049708333333333,
+    "consecutiveSampledSourceFrames": true,
+    "allCompletedFramesRecoverInventory": true,
+    "allSamplesUnpausedAndNotSeeking": true,
+    "displayedContentKinds": [
+      "enhanced"
+    ],
+    "maximumPendingFrames": 2,
+    "staleGenerationObservations": 0,
+    "dropCounterDeltas": {
+      "frame-drop-count": 0,
+      "decoder-frame-drop-count": 0,
+      "vo-delayed-frame-count": 0
+    },
+    "adaptiveBufferEpisodes": 193,
+    "adaptiveBufferedSeconds": 22.397531999999998
+  },
+  "clock": {
+    "avOffsetDefinition": "raw mpv avsync: audioPTS - videoPTS + audioDelay + audioOffset; cached at video queue updates, opposite the shared engine video-minus-audio sign",
+    "steadySampleCount": 866,
+    "steadyMaximumAbsoluteAVOffsetSeconds": 0.0,
+    "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+    "steadyMedianAVOffsetSeconds": -0.0,
+    "steadyFirstQuarterMedianAVOffsetSeconds": -0.0,
+    "steadyLastQuarterMedianAVOffsetSeconds": -0.0,
+    "steadyMedianAVDriftSeconds": 0.0,
+    "synchronisation20msTargetMet": true
+  },
+  "completedWork": {
+    "completedTotal": 195,
+    "retainedSamples": 195,
+    "warmedSamples": 191,
+    "completedThroughputFPS": 6.505046977086379,
+    "maximumQueueSlots": 2,
+    "peakRetainedBytes": 146635328,
+    "peakSampledResidentBytes": 608370688,
+    "maximumAllocatorBytes": {
+      "runtime_mlx_cache_policy": 268435456,
+      "mlx_cache": 288542364,
+      "mlx_active": 402175784,
+      "mlx_peak_active": 700325396,
+      "resident_model_payload": 291576650
+    },
+    "cpuReadbacks": 191,
+    "gpuCopies": 191,
+    "completedWorkSeconds": {
+      "p99": 0.20241222915938123,
+      "minimum": 0.10900866670999676,
+      "p95": 0.18778595834737644,
+      "maximum": 0.2126505416817963,
+      "count": 191,
+      "p50": 0.15567074995487928
+    },
+    "endToEndSeconds": {
+      "p99": 0.3885390124865806,
+      "minimum": 0.21935370832215995,
+      "p95": 0.3659980416414328,
+      "maximum": 0.4126474166987464,
+      "count": 191,
+      "p50": 0.3071538333315402
+    }
+  },
+  "visibility": {
+    "completedWork": {
+      "eligible": true,
+      "startHostSeconds": 1024814.5030438752,
+      "endHostSeconds": 1024844.1237816669,
+      "durationSeconds": 29.620737791643478,
+      "nativeObservationCount": 119,
+      "maximumAllowedObservationGapSeconds": 1.5,
+      "maximumObservationGapSeconds": 0.25186091661453247,
+      "observedVisibleSeconds": 29.620737791643478,
+      "observedInactiveSeconds": 0.0,
+      "ineligibleObservations": [],
+      "reasons": [],
+      "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+    },
+    "playbackClock": {
+      "eligible": true,
+      "startHostSeconds": 1024814.223450583,
+      "endHostSeconds": 1024844.249901333,
+      "durationSeconds": 30.026450749952346,
+      "nativeObservationCount": 122,
+      "maximumAllowedObservationGapSeconds": 1.5,
+      "maximumObservationGapSeconds": 0.25186091661453247,
+      "observedVisibleSeconds": 30.026450749952346,
+      "observedInactiveSeconds": 0.0,
+      "ineligibleObservations": [],
+      "reasons": [],
+      "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+    },
+    "eligible": true
+  },
+  "live": {
+    "qualified": false,
+    "requestRejected": true,
+    "scope": "unexercised: Live request rejected before warmed qualification; Adaptive deadline buffering measured directly"
+  },
+  "provenance": {
+    "root": {
+      "commit": "4bf9c1d2c40b6a4520a874681a78c6bbf78d2c78",
+      "dirty": true,
+      "status": [
+        " M scripts/test-mpv-policy.py",
+        "?? scripts/test_mpv_policy_timing.py"
+      ],
+      "trackedDiffSHA256": "3ea6564ce14236846b13d1c78cc90e4d27944d0ba1a4d22ed915dac2a274a3d8",
+      "untrackedSHA256": {
+        "scripts/test_mpv_policy_timing.py": "52659d46ea94657edf3935b5d28b7e017a70715d887c94f83774e2cf67e5aee1"
+      }
+    },
+    "mpv": {
+      "commit": "a9466025dcf459f82f591f42dc12a517a50e7efa",
+      "dirty": false,
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {}
+    },
+    "MLX-DLSS": {
+      "commit": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+      "dirty": false,
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {}
+    },
+    "binaries": {
+      "artifacts/mpv-build/mpv": {
+        "sha256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef",
+        "bytes": 5597584,
+        "modifiedNanoseconds": 1789009224875794645
+      },
+      "artifacts/mpv-build/libmpv.2.dylib": {
+        "sha256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf",
+        "bytes": 5597136,
+        "modifiedNanoseconds": 1789009224864720901
+      },
+      ".build/debug/libFrameEngineShared.dylib": {
+        "sha256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "bytes": 50139368,
+        "modifiedNanoseconds": 1789001404872626604
+      },
+      ".build/debug/mlx.metallib": {
+        "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+        "bytes": 107392404,
+        "modifiedNanoseconds": 1789009638624645215
+      }
+    },
+    "scriptSHA256": "ea99ad2ffcd4237e05fe198c8fbd148251209ab3debcae7bb3bd779260481397",
+    "diagnosticSources": {
+      "scripts/test-mpv-policy.py": "ea99ad2ffcd4237e05fe198c8fbd148251209ab3debcae7bb3bd779260481397",
+      "scripts/adapter_visibility.py": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
+    },
+    "coreSourceSHA256": {
+      "demux/demux_lavf.c": "85062faec38b4b1b506ed1400f01bec8588e31b4cb93f7410acd618c9604c686",
+      "demux/lavf_timing.h": "8d8298739252e62babc273ec68f72e7dc71055f33fb8142e8d5a489d0a071cca",
+      "player/video.c": "4e838b8250cf96bac8fb235a3cb1776c513380aa2caaaf81f38f1d7083f0829a",
+      "player/command.c": "542ea23f481648a991a0dca7f0929f7d389100e7b19d007a3d2941ab09fbfb77",
+      "video/filter/vf_metal_hdr.m": "747d0bec34e1e90877b3e9628cea17ed5e774cbf47f6ffc9a862758ed482450c",
+      "audio/out/buffer.c": "436368b478776b9ca86804f631758342b209dddfb9eb0e047f8061074104b53d",
+      "audio/out/ao_coreaudio.c": "895d72d5608c4674e31232c932cb6975348cefc13c85bae811425720f9779da4",
+      "video/out/vo.c": "f0c98e1fc495fe1aa42d1badae7ec79e8d3ae6c1cf2e8dfcf11f412f2a05f620",
+      "video/out/mac_common.swift": "03dcbbc362bf3750b4210a97f948c639f27522b0301d11ee7221ee26161840dd",
+      "video/out/mac/common.swift": "25eb3a9d25ace5182902ba2e410f99dce9d9570f23044f6fbff81720bc30a9e4",
+      "video/out/mac/metal_layer.swift": "3f85199e87f5a09895854149667f4a13f1dd5708d71aaab234544b14219af0d3",
+      "video/out/vulkan/context_mac.m": "d27c20adc80a2ea5bc52b7359a53edb28a839a1c76a5500196ca6a2e2038ec4c"
+    },
+    "recordedUTC": "2026-09-10T03:23:42.192945+00:00"
+  },
+  "artifactSHA256": {
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/cpu-tests.log": {
+      "bytes": 110,
+      "sha256": "a403b031ca53505b1068c5c1262f30475f8ef294ae83636c47835f0a12e632af"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.configuration.json": {
+      "bytes": 3995,
+      "sha256": "b0ae5e92a12d8433e899d55ed0073bc16b093176672abcf3e579ad1a6454a6e1"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.engine.json": {
+      "bytes": 153470,
+      "sha256": "acd74abd76d760b2a309298178fcdd111a0d6309bf27989b2324eb54efd3680a"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.json": {
+      "bytes": 1485081,
+      "sha256": "507362abd3d5020938b6c58a87ec6b5da489a26189a138f931a92de72ad824e1"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.log": {
+      "bytes": 302971,
+      "sha256": "d3a2217e76e69d59003b68a293396ad03ba9b9951a45d8bcfd65fc18d3b3297d"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.native.log": {
+      "bytes": 76051,
+      "sha256": "dd5c1de48b8203fcf46a3294b358f082d49753219fc4b0dc8c0be7e592a5e430"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.source-timing.json": {
+      "bytes": 142514,
+      "sha256": "7ff1caad4aece902e1b2cd3bc697aa2fe7f3d835514fb1fedfdfdcd23c22225e"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.visibility.json": {
+      "bytes": 1221,
+      "sha256": "97f815a293911e5264a6f9876a2b7dba70b6bcc976d2a153374516c49920b968"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/runner.log": {
+      "bytes": 10097,
+      "sha256": "c46ec088a86353e7d2c6efe9536458dc00cbefc0ad55f26b2d8b14fd2c50404b"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-1/runner.log": {
+      "bytes": 1361,
+      "sha256": "a8b56213f814a4a00c45a8e6b81316d09a4ea69eece0213f549342f3a499ea17"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-1/prelaunch-failure.json": {
+      "bytes": 606,
+      "sha256": "6d39eace9d66a08b0ed7e7dfce4d9f3ce182545db85b07bfdd15669c7f3a0fc2"
+    },
+    "artifacts/mlx-cache-policy-audit.json": {
+      "bytes": 8151,
+      "sha256": "41e0594d04e98d9cbee55e41e25576c1192fd410f647087633439bdafbed1312"
+    },
+    "artifacts/mpv-policy-apple-hdr10plus-natural-2/path-hardening-cpu-tests.log": {
+      "bytes": 112,
+      "sha256": "fc924f6e1fea3cec579bda3420051891bdf01c960fe5ca7e49fdfc8005bd9c0c"
+    }
+  },
+  "assemblySourceSHA256": {
+    "scripts/test-mpv-policy.py": "004c4d59e244ff0a0c104a7cc520ea1842eb468e4a0184064eb21b0eac547429",
+    "scripts/test_mpv_policy_timing.py": "e85cd375e6772f3bf91db0f2ab3ba94678c23aaf5ef13a8ea15a1d81e36778e9",
+    "scripts/adapter_visibility.py": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
+  },
+  "sourceScope": "The raw capture retains its original policy-script SHA ea99ad2ffcd4237e05fe198c8fbd148251209ab3debcae7bb3bd779260481397, root dirty patch hash, 12 core source hashes and unchanged measured binary hashes. The final assembly source hashes differ only for later CPU-tested harness path hardening and its tests: normalize the report once with absolute() before native launch so caller and child use the same destination, and reject dangling report/sidecar symlinks without resolving them. No capture, runtime source or binary was changed, and no GPU repeat was performed. The captured 11-test result remains historical; the final 13-test CPU suite passed. Final CPU log: artifacts/mpv-policy-apple-hdr10plus-natural-2/path-hardening-cpu-tests.log; SHA256 fc924f6e1fea3cec579bda3420051891bdf01c960fe5ca7e49fdfc8005bd9c0c.",
+  "cpuTests": {
+    "command": "python3 scripts/test_mpv_policy_timing.py",
+    "passed": 11,
+    "failed": 0,
+    "log": "artifacts/mpv-policy-apple-hdr10plus-natural-2/cpu-tests.log",
+    "scope": "Timestamp mapping, unchanged zero-origin seeks, startup rejection, exact natural target, evidence refusal, both visibility intervals, actual subprocess reaping and provenance source existence. No synthetic media or physical timing claim."
+  },
+  "prelaunchFailure": {
+    "directory": "artifacts/mpv-policy-apple-hdr10plus-natural-1",
+    "gpuPlaybackStarted": false,
+    "cause": "An obsolete diagnostic video/out/mac/moltenvk.swift source-list entry failed provenance collection. Corrected to current files before the sole GPU run. The source-list existence check now runs before inventory extraction.",
+    "retainedSourceSHA256AtFailure": "bd2d9ea930c73403b3fa5e084a144a33ef9e143fb83ef3457879510b94df628f",
+    "historicalSourceScope": "The failure record contains its then-current script SHA. That historical value is not a claim that the corrected current script has the same hash. Original runner log remains unchanged."
+  },
+  "limitations": [
+    "The 0-ms raw avsync result is a cached queue-time scheduling offset and may be zero by construction after mpv video deadline compensation; no physical audio/scanout timing is measured.",
+    "Thirty wall seconds with 8.050 seconds of source progress does not qualify long-duration drift or source-rate Live; effective neural throughput remains below 23.976 FPS.",
+    "No SCK, physical display, calibrated HDR10+ dynamic mapping or temporal-quality inspection was performed in this run.",
+    "This M3 AC-power natural-source run is not a matched M5 or earlier battery-powered adapter comparison.",
+    "Initial black frames were used only to establish timing. The measured interval starts at the independently inspected nonblack frame 1500; no extra decoder or inference path is used during playback."
+  ],
+  "cachePolicyAudit": {
+    "scope": "Read-only CPU audit of the pinned MLX allocator and completed-frame measurements. No build, GPU run, policy/runtime change or allocation trace.",
+    "finding": "The MLX reusable-buffer cache limit is a documented next-allocation reclamation policy. Whole-buffer free can overshoot it. This report does not establish an engine policy-enforcement defect.",
+    "pinnedDependencies": {
+      "mlxSwift": {
+        "revision": "0bb916c67f4b9e5c682cbe02a42c701c93ab5021",
+        "version": "0.31.6"
+      },
+      "mlxCore": {
+        "revision": "ce45c52505c8158ea48d2a54e8caae05efd86bfe"
+      }
+    },
+    "sourceFiles": [
+      {
+        "path": ".build/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/metal/allocator.cpp",
+        "sha256": "2e7ea0bccec1c2e2b962b579f838b8d088b7197f1c7c2cda98535c9b53070dd0",
+        "bytes": 7933,
+        "lines": {
+          "setCacheLimit": [
+            78,
+            81
+          ],
+          "alignAllocation": [
+            120,
+            122
+          ],
+          "trimOnAllocation": [
+            168,
+            173
+          ],
+          "freeAdmission": [
+            184,
+            200
+          ]
+        }
+      },
+      {
+        "path": ".build/checkouts/mlx-swift/Source/Cmlx/mlx/mlx/backend/common/buffer_cache.h",
+        "sha256": "a4b4ea74476ad681a9a5db2063ae3939108a60b0df2014b590338bd1cccf0205",
+        "bytes": 3738,
+        "lines": {
+          "reuseSubtractsActualSize": [
+            30,
+            45
+          ],
+          "recycleAddsActualSize": [
+            48,
+            55
+          ],
+          "releaseAtLeastExcess": [
+            58,
+            83
+          ]
+        }
+      },
+      {
+        "path": ".build/checkouts/mlx-swift/Source/MLX/Memory.swift",
+        "sha256": "cb6976cc37aa3e8a0fa1be8269fea2869ecdf5951e469556f67e21604b1701f8",
+        "bytes": 12919,
+        "lines": {
+          "documentedNextAllocationReclaim": [
+            181,
+            192
+          ],
+          "snapshotReadsSeparateCounters": [
+            223,
+            224
+          ],
+          "limitDocumentationAndSetter": [
+            227,
+            274
+          ]
+        }
+      },
+      {
+        "path": "packages/FrameEngine/Sources/HDRRuntimeResources.swift",
+        "sha256": "1ae32b22739568365cd186bff46db833ed6c21b05d52e6c44c1034aff2630372",
+        "bytes": 6013,
+        "lines": {
+          "defaultAndPolicy": [
+            4,
+            14
+          ],
+          "configureBeforeImport": [
+            46,
+            55
+          ]
+        }
+      },
+      {
+        "path": "packages/FrameEngine/Sources/HDRPipelineProcessor.swift",
+        "sha256": "c18693838298772d2fd7a0b96b9cefa877542fbab68b2867cba53849deb5a29f",
+        "bytes": 10055,
+        "lines": {
+          "snapshotAfterCompletedPack": [
+            96,
+            120
+          ],
+          "configureBeforeImport": [
+            49,
+            50
+          ]
+        }
+      },
+      {
+        "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXRuntimeDiagnostics.swift",
+        "sha256": "f1eacd50f79355b72457f26299ec76b1ed66b6b2663d4cfd6ec3011b1f249c21",
+        "bytes": 1098,
+        "lines": {
+          "cacheLimitSetter": [
+            32,
+            36
+          ]
+        }
+      },
+      {
+        "path": "packages/FrameEngine/Sources/FrameMeasurements.swift",
+        "sha256": "aa0386d74f2f102c0d621c242eb8a31f57c5aff60d921b75b457383f23bbee4c",
+        "bytes": 14024,
+        "lines": {
+          "excludeWarmup": [
+            169,
+            173
+          ],
+          "warmedAllocatorMaxima": [
+            183,
+            185
+          ]
+        }
+      }
+    ],
+    "measurements": {
+      "rawEngine": {
+        "path": "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.engine.json",
+        "sha256": "acd74abd76d760b2a309298178fcdd111a0d6309bf27989b2324eb54efd3680a",
+        "bytes": 153470
+      },
+      "rawPolicyRun": {
+        "path": "artifacts/mpv-policy-apple-hdr10plus-natural-2/report.json",
+        "sha256": "507362abd3d5020938b6c58a87ec6b5da489a26189a138f931a92de72ad824e1",
+        "bytes": 1485081
+      },
+      "configuredPolicyBytes": 268435456,
+      "reportedMaximumAllocatorBytes": {
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_cache": 288542364,
+        "mlx_active": 402175784,
+        "mlx_peak_active": 700325396,
+        "resident_model_payload": 291576650
+      },
+      "warmed": {
+        "sampleCount": 191,
+        "samplesAbovePolicy": 191,
+        "minimumBytes": 268438694,
+        "medianBytes": 277056654,
+        "maximumBytes": 288542364,
+        "maximumExcessBytes": 20106908,
+        "maximumExcessMiB": 19.17544174194336,
+        "peakFrameID": 28,
+        "peakFramePTS": {
+          "value": 1529583,
+          "timescale": 24000
+        }
+      },
+      "allIncludingWarmup": {
+        "sampleCount": 195,
+        "samplesAbovePolicy": 195,
+        "minimumBytes": 268438694,
+        "medianBytes": 277056654,
+        "maximumBytes": 290621348,
+        "maximumExcessBytes": 22185892,
+        "maximumExcessMiB": 21.15811538696289,
+        "peakFrameID": 0,
+        "peakFramePTS": {
+          "value": 2057,
+          "timescale": 24000
+        }
+      },
+      "reclaimCompatibleAdjacentSamples": [
+        {
+          "frameID": 28,
+          "ptsValue": 1529583,
+          "ptsTimescale": 24000,
+          "completedHostSeconds": 1024818.7319678753,
+          "warmup": false,
+          "allocatorBytes": {
+            "runtime_mlx_cache_policy": 268435456,
+            "mlx_cache": 288542364,
+            "mlx_active": 402175784,
+            "mlx_peak_active": 700325396,
+            "resident_model_payload": 291576650
+          }
+        },
+        {
+          "frameID": 29,
+          "ptsValue": 1530584,
+          "ptsTimescale": 24000,
+          "completedHostSeconds": 1024818.8623805835,
+          "warmup": false,
+          "allocatorBytes": {
+            "runtime_mlx_cache_policy": 268435456,
+            "mlx_cache": 268521136,
+            "mlx_active": 402175784,
+            "mlx_peak_active": 700325396,
+            "resident_model_payload": 291576650
+          }
+        }
+      ],
+      "sampleTransitionMeaning": "Cache falls by 20,021,228 bytes between these completed-frame samples while policy remains fixed. This is consistent with trim/recycle behavior, not an observation of the exact allocator operation or tensor identity.",
+      "hostVMPageBytes": 16384
+    },
+    "mechanism": [
+      "set_cache_limit stores the requested max_pool_size under the allocator mutex; it does not synchronously trim existing cache.",
+      "free checks current cache size < policy before adding the entire freed Metal buffer. It does not check current cache + buffer length. When the cache was below a fixed limit, one admitted buffer can cross it; further frees while already over the limit are released.",
+      "The next successful nonzero malloc, including cache reuse, releases enough old cached buffers to remove remaining excess before it returns. Subsequent buffer frees can overshoot again before a completed-frame snapshot.",
+      "Cache accounting uses actual Metal buffer lengths. Large allocations are page-aligned, and cache reuse can select a slightly larger buffer, but page rounding alone does not explain a 20 MB excess. The permitted whole-buffer admission is the relevant mechanism.",
+      "Frame measurements sample MLX cache after completed output packing and reduce only non-warmup frames for maximumAllocatorBytes. Active/cache/peak-active are separately read counters, not an atomic process-residency snapshot."
+    ],
+    "limits": [
+      "The observed end-of-frame samples are all above the policy; source code permits trim followed by another overshoot before each sample. No below-limit intermediate point was sampled.",
+      "No allocation/free trace or last-admitted buffer identity was recorded, so the exact overshoot is not attributed to a specific tensor.",
+      "256 MiB is not a strict instantaneous free-cache ceiling, transient inference bound or process-RSS cap. Existing model/frame admission limits and measured RSS/allocator values describe separate resource layers.",
+      "Peak sampled warmed cache 288,542,364B excludes the startup 290,621,348B sample. Neither is a guaranteed transient maximum."
+    ]
+  },
+  "finalCPUValidation": {
+    "command": "python3 -m unittest discover -s scripts -p test_mpv_policy_timing.py",
+    "passed": 13,
+    "failed": 0,
+    "log": "artifacts/mpv-policy-apple-hdr10plus-natural-2/path-hardening-cpu-tests.log",
+    "scope": "Final CPU-only harness includes caller-directory and dangling-symlink artifact retention checks. Original 11-test capture validation above remains historical."
+  }
+}

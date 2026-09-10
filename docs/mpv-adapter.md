@@ -227,3 +227,24 @@ This behavior is an explicit CoreAudio driver opt-in. Unknown/non-running estima
 All four runs passed exact preview/comparison, stayed at two pending frames, reported no decoder/VO drops or stale generations, exited cleanly and retained identical binary hashes throughout each capture. Eleven mpv unit checks and the native player DOM/teardown scenario also passed. The first three captures used the broader prototype; the final run verifies the guarded CoreAudio implementation. Earlier failures remain above.
 
 Zero here is a scheduling result: mpv adds the future video deadline offset to the sampled audio-minus-video value. A frame queued early can therefore report zero by construction. These observations establish the reported scheduling target, not independent physical A/V accuracy. Source-rate neural Live playback, additional audio devices and physical presentation remain unqualified.
+
+### Natural HDR10+ Adaptive timing
+
+The policy harness keeps original file timestamps, rebased decoder timestamps and player coordinates separate. It validates the native packet offset against the exact first file frame, then brackets three paused decoder/player observations with completed-seek state over at least 100 ms. `--seek-target` remains a player-time request, defaulting to 0.73 seconds. `--file-seek-target` selects in the original file inventory. Both use mpv's existing 5-ms accurate-seek tolerance. Reports and sidecars must be new; `--require-visible` validates native observations over both warmed processing and playback-clock intervals.
+
+[Natural M3 Adaptive evidence](evidence/m3-natural-hdr-adaptive.json) covers one 30.026-second run of the [pinned Apple HDR10+ source with AAC](apple-hdr-playback.md), starting at the previously inspected nonblack frame 1500. File PTS `1742501/24000` maps through the observed packet offset `-238944/24000` to decoder/player PTS `1503557/24000`; the separately validated decoder-to-player offset is zero. Real neural processing at 160×96 retains 1920×1080 linear float output, displayed through a 960×496 drawable. The M3 was on AC power with CoreAudio muted.
+
+The run retained 195 completions, including 191 warmed samples at 6.51 FPS. The 927 clock observations covered 194 consecutive exact source frames and 8.050 seconds of source progress. Admission stayed at two pending frames, with no observed stale generations or decoder/VO drops. The exact source preview arrived in 77.9 ms, its enhanced pair in 1.092 seconds, and six paused comparisons preserved identity without another inference submission. Native visibility covered both full intervals, with no hidden/inactive observations and a maximum 252-ms observation gap.
+
+MLX's configured free-cache limit was 268,435,456 bytes. The observed cache maximum was 288,542,364 bytes among warmed samples and 290,621,348 bytes including startup. The pinned allocator can recycle a whole buffer while the current cache is below the limit, then reclaim excess on the next allocation. The policy is therefore a soft limit; these snapshots do not establish a strict 256-MiB maximum or a process-memory ceiling.
+
+All 866 steady scheduled A/V offsets were zero, meeting the existing 20-ms scheduling target; first/last-quarter median drift was also zero. Adaptive recorded 193 shared-buffer episodes totaling 22.398 seconds. Functional capture and the scheduling target are separate results. This bounded natural-content regression does not qualify source-rate Live, long-duration or physical A/V accuracy, HDR10+ display mapping, temporal image quality, or M5 performance. The first invocation failed before launching mpv because of an obsolete diagnostic provenance filename; its log is retained separately.
+
+```sh
+python3 scripts/test_mpv_policy_timing.py
+python3 scripts/test-mpv-policy.py \
+  artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4 \
+  --model models/neural-rendering/NeuralRendering.dlssmodel \
+  --width 160 --height 96 --seconds 30 --file-seek-target 1742501/24000 \
+  --require-visible --report artifacts/mpv-policy-apple-hdr10plus-new/report.json
+```

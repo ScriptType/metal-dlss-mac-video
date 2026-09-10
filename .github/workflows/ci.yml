@@ -41,5 +41,6 @@ jobs:
           python3 -m unittest discover -s scripts -p test_apple_hdr_samples.py
           python3 -m unittest discover -s scripts -p test_apple_hdr_playback.py
           python3 -m unittest discover -s scripts -p test_mpv_prepared_timing.py
+          python3 -m unittest discover -s scripts -p test_mpv_policy_timing.py
           python3 scripts/audit-public-tree.py
           git diff --check
