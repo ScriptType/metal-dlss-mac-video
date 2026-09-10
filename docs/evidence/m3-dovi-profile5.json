@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-09-10",
+  "hardware": "Apple M3",
+  "scope": "Pinned FATE Profile 5 metadata/native-routing/missing-metadata rejection plus preserved Profile 8.4 regression. No production behavior change or color qualification.",
+  "source": {
+    "filename": "dovi-p5.mp4",
+    "url": "https://fate-suite.ffmpeg.org/mov/dovi-p5.mp4",
+    "sha256": "11fe599fd77e31e26fbf855bae1cd9931df9f261a0a7b1dce9fad9b236677c4b",
+    "bytes": 4182,
+    "profile": 5,
+    "compatibility": 0,
+    "seekSeconds": 0.125,
+    "blankTestVideo": true,
+    "provenance": "https://ffmpeg.org/pipermail/ffmpeg-devel/2021-December/289651.html",
+    "localPath": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/dolbyvision/dovi-p5.mp4",
+    "tracked": false,
+    "explicitPerFileRedistributionLicenseFound": false,
+    "licenseInterpretation": "Public contributor-provided FATE regression input; no FFmpeg source-code license is inferred for media."
+  },
+  "sourceAudit": {
+    "stream": {
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "color_range": "pc",
+      "r_frame_rate": "24/1",
+      "time_base": "1/12288",
+      "duration_ts": 5120,
+      "duration": "0.416667",
+      "nb_frames": "10"
+    },
+    "softwareDecodedFrames": 10,
+    "framesWithParsedMetadata": 10,
+    "distinctDecodedFrameHashes": [
+      "3a72de3d12f11bd8c56df6fb12fba803"
+    ],
+    "limitation": "All ten decoded frames are constant blank test video without audio; these results do not qualify varied color, motion, audio sync or display accuracy."
+  },
+  "runDecodedMetadata": {
+    "configuration": {
+      "side_data_type": "DOVI configuration record",
+      "dv_version_major": 1,
+      "dv_version_minor": 0,
+      "dv_profile": 5,
+      "dv_level": 4,
+      "rpu_present_flag": 1,
+      "el_present_flag": 0,
+      "bl_present_flag": 1,
+      "dv_bl_signal_compatibility_id": 0,
+      "dv_md_compression": "none"
+    },
+    "decodedFramesWithParsedRPU": 2,
+    "duration": "0.416667",
+    "timeBase": "1/12288",
+    "seekSeconds": 0.125
+  },
+  "profile5": {
+    "passed": true,
+    "native": {
+      "passed": true,
+      "state": {
+        "native-color-path": "native-dolby-vision",
+        "source-dolby-vision": true,
+        "displayed-dolby-vision-metadata": true,
+        "displayed-source-pts": 1536,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 12288,
+        "generation": 3,
+        "submitted-frames": 0,
+        "completed-frames": 0,
+        "pending-frames": 0,
+        "policy": "bypass",
+        "buffering": false
+      },
+      "seekSeconds": 0.125,
+      "exitCode": 0,
+      "log": "artifacts/dovi-profile5-native-final/native-dovi.log",
+      "selectedVideo": {
+        "codec": "hevc",
+        "codec-profile": "Main 10",
+        "demux-w": 1920,
+        "demux-h": 1080,
+        "dolby-vision-profile": 5,
+        "dolby-vision-level": 4,
+        "dolby-vision-compatibility-id": 0
+      }
+    },
+    "baseLayer": {
+      "available": false,
+      "reason": "Profile 5 declares no compatible PQ or HLG base; missing metadata must reject"
+    },
+    "missingMetadataGuard": {
+      "passed": true,
+      "syntheticNegativeSignalingOnly": false,
+      "actualPinnedProfile5Input": true,
+      "metadataMappingDisabled": true,
+      "noVideoOutput": true,
+      "noFilterAutoRemoval": true,
+      "zeroNeuralSubmissions": true,
+      "exitCode": 2
+    },
+    "app": {
+      "passed": true,
+      "exitCode": 0,
+      "checks": [
+        "decoded Dolby Vision metadata reaches the native surface",
+        "pinned Profile 5 stream retains compatibility ID 0",
+        "neural quality, effect and Prepared controls are disabled",
+        "direct enhancement request cannot admit a Dolby Vision frame",
+        "Dolby Vision pauses through native controls",
+        "Dolby Vision seeks while retaining native metadata",
+        "native metadata path has no playback error; no colour qualification inferred"
+      ],
+      "nativeCoreDestroyed": true,
+      "report": "artifacts/dovi-profile5-native-final/dom.json"
+    },
+    "binariesUnchanged": true
+  },
+  "profile84DefaultRegression": {
+    "passed": true,
+    "native": {
+      "passed": true,
+      "state": {
+        "native-color-path": "native-dolby-vision",
+        "source-dolby-vision": true,
+        "displayed-dolby-vision-metadata": true,
+        "displayed-source-pts": 840,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 1200,
+        "generation": 3,
+        "submitted-frames": 0,
+        "completed-frames": 0,
+        "pending-frames": 0,
+        "policy": "bypass",
+        "buffering": false
+      },
+      "seekSeconds": 0.7,
+      "exitCode": 0,
+      "log": "artifacts/dovi-profile84-regression-final/native-dovi.log",
+      "selectedVideo": {
+        "codec": "hevc",
+        "codec-profile": "Main 10",
+        "demux-w": 1920,
+        "demux-h": 1080,
+        "dolby-vision-profile": 8,
+        "dolby-vision-level": 4,
+        "dolby-vision-compatibility-id": 4
+      }
+    },
+    "baseLayer": {
+      "passed": true,
+      "state": {
+        "native-color-path": "hlg-base-layer",
+        "source-dolby-vision": true,
+        "displayed-dolby-vision-metadata": false,
+        "displayed-source-pts": 840,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 1200,
+        "generation": 3,
+        "submitted-frames": 0,
+        "completed-frames": 0,
+        "pending-frames": 0,
+        "policy": "bypass",
+        "buffering": false
+      },
+      "seekSeconds": 0.7,
+      "exitCode": 0,
+      "log": "artifacts/dovi-profile84-regression-final/hlg-base.log",
+      "selectedVideo": {
+        "codec": "hevc",
+        "codec-profile": "Main 10",
+        "demux-w": 1920,
+        "demux-h": 1080,
+        "dolby-vision-profile": 8,
+        "dolby-vision-level": 4,
+        "dolby-vision-compatibility-id": 4
+      }
+    },
+    "missingMetadataGuard": {
+      "passed": true,
+      "syntheticNegativeSignalingOnly": true,
+      "actualPinnedProfile5Input": false,
+      "metadataMappingDisabled": true,
+      "noVideoOutput": true,
+      "noFilterAutoRemoval": true,
+      "zeroNeuralSubmissions": true,
+      "exitCode": 0
+    },
+    "app": {
+      "passed": true,
+      "exitCode": 0,
+      "checks": [
+        "decoded Dolby Vision metadata reaches the native surface",
+        "pinned Profile 8.4 stream retains compatibility ID 4",
+        "neural quality, effect and Prepared controls are disabled",
+        "direct enhancement request cannot admit a Dolby Vision frame",
+        "Dolby Vision pauses through native controls",
+        "Dolby Vision seeks while retaining native metadata",
+        "native metadata path has no playback error; no colour qualification inferred"
+      ],
+      "nativeCoreDestroyed": true,
+      "report": "artifacts/dovi-profile84-regression-final/dom.json"
+    },
+    "binariesUnchanged": true
+  },
+  "binaryProvenance": {
+    "mpv": {
+      "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv",
+      "beforeSHA256": "8a96f24962ebbbb41acea2c7c25d1c5c56387bde1fb464f7069103c1a639f902",
+      "afterSHA256": "8a96f24962ebbbb41acea2c7c25d1c5c56387bde1fb464f7069103c1a639f902"
+    },
+    "FrameEngineShared": {
+      "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+      "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+      "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+    },
+    "HDRPlayer": {
+      "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+      "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+      "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+    },
+    "libmpv": {
+      "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+      "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+      "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a"
+    }
+  },
+  "sameBinarySetAcrossBothRuns": true,
+  "cpuGuards": {
+    "passed": true,
+    "checks": [
+      "Pinned 8.4 source and decoded metadata accepted",
+      "Pinned 5 source and decoded metadata accepted",
+      "P5 cannot use P8.4 profile expectations",
+      "Missing Dolby Vision RPU Data rejected",
+      "Missing Dolby Vision Metadata rejected",
+      "Incorrect P5 full-range interpretation rejected",
+      "Past-end old 0.7-second seek rejected for P5",
+      "Same-size altered fixture rejected by SHA"
+    ],
+    "scope": "CPU fixture identity and decoded-metadata guards; no native playback or GPU"
+  },
+  "build": {
+    "command": "source scripts/env.sh; swift build --product HDRPlayer --jobs 2",
+    "passed": true,
+    "log": "/tmp/player-dovi-profile5-build.log",
+    "environmentNote": "Initial invocation without scripts/env.sh selected Swift 6.2.3 and failed before compilation; repository Xcode environment built successfully."
+  },
+  "sourceSHA256": {
+    "apps/macos/Sources/PlayerSmokeCheck.swift": "10f2b0d35a148faa27f80ecbf8ff6f96a7476d1621d7408376afac475fbca2ce",
+    "scripts/dovi_fixtures.py": "c469cc089facf0961efc342125ff66ee49c0159387e1816b617fb12e39c6cc39",
+    "scripts/fetch-dovi-fixture.py": "a056f7b7d250a31c0fc3d8df9fc2bb359b31515fc10a8534991d3ab122d9197f",
+    "scripts/test-dovi-passthrough.py": "4c45a16abcec22fd371fba93a89b0d35499750adf4a4904ca6718227f0fb8b57"
+  },
+  "artifactSHA256": {
+    "artifacts/dovi-profile5-native-final/decoded-metadata.json": {
+      "bytes": 11678,
+      "sha256": "70c9e084b562ee9c3bd485264e6f2f1b9effa3678ed079d7620101f67484e585"
+    },
+    "artifacts/dovi-profile5-native-final/dom.json": {
+      "bytes": 18126,
+      "sha256": "980f7f4281ebcad74a41712a83734b68ccfe7b9f316dcd4767f1fbd5cb466168"
+    },
+    "artifacts/dovi-profile5-native-final/lifecycle.jsonl": {
+      "bytes": 9396,
+      "sha256": "a1af328705b7fd1854ac5684c4265077d916da41e4e7e4e02eb556334555b5fc"
+    },
+    "artifacts/dovi-profile5-native-final/missing-metadata.log": {
+      "bytes": 413,
+      "sha256": "c79d85b9ef670a4c1d044d4eb88f894969f0dd78ba393cebfa930e0ac548f200"
+    },
+    "artifacts/dovi-profile5-native-final/native-dovi.log": {
+      "bytes": 71993,
+      "sha256": "27b2a451e83ab89b86cb85c7489967f5c65fb9bfec1f75ea482dcc69d705c26e"
+    },
+    "artifacts/dovi-profile5-native-final/player.log": {
+      "bytes": 27,
+      "sha256": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84"
+    },
+    "artifacts/dovi-profile5-native-final/report.json": {
+      "bytes": 6444,
+      "sha256": "1f1c04e1b20a4d56d2b5b9dbcb03219d21abdd379cc3ad970de60ef115f76727"
+    },
+    "artifacts/dovi-profile84-regression-final/decoded-metadata.json": {
+      "bytes": 19228,
+      "sha256": "12f681e943d95dbcf4d4aef0fc34d5b4eafc3db818df3847c6d6adad5fffc3af"
+    },
+    "artifacts/dovi-profile84-regression-final/dom.json": {
+      "bytes": 18918,
+      "sha256": "8b4e61012dc20d9e7547b74ada1b4733615d276e0e0cbb8407c1befd9478d11c"
+    },
+    "artifacts/dovi-profile84-regression-final/hlg-base.log": {
+      "bytes": 84410,
+      "sha256": "07c3db532523c836285de1be8d10fae93e51c42469884b88b8eb2f69259c1623"
+    },
+    "artifacts/dovi-profile84-regression-final/lifecycle.jsonl": {
+      "bytes": 12068,
+      "sha256": "bbb27e2a189f265b6ca63b65dd4ea3ec1f22ee0fba024ea1ec0ab3ca33f0a0c6"
+    },
+    "artifacts/dovi-profile84-regression-final/missing-metadata.log": {
+      "bytes": 501,
+      "sha256": "ce8e5870d7f3865a9729163a23ba228575d6c8937890b33a11ff27e5ce3e0455"
+    },
+    "artifacts/dovi-profile84-regression-final/native-dovi.log": {
+      "bytes": 127193,
+      "sha256": "e5d4f2cffae8d2b7a0ea3683d433b2602a42a5066cce2b001187268dde393889"
+    },
+    "artifacts/dovi-profile84-regression-final/player.log": {
+      "bytes": 27,
+      "sha256": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84"
+    },
+    "artifacts/dovi-profile84-regression-final/report.json": {
+      "bytes": 11076,
+      "sha256": "90fd77c20b1b8b4f4f21e4709bddcf3e7e2961062a35b2be84c69715d5ccf5df"
+    },
+    "artifacts/dovi-profile5-audit/ffprobe-full.json": {
+      "sha256": "ae9cb2333ac757ae5884edd4c7713c8c5cb1138625ed340ec37dc65d333e67aa"
+    },
+    "artifacts/dovi-profile5-audit/decoded.framemd5": {
+      "sha256": "ca6c1e24293f11a3c5be07359241a4d1e08125a3be95a786adf07e0c336e4944"
+    },
+    "artifacts/dovi-profile5-audit/cpu-guards.json": {
+      "sha256": "c3b7e7b04e8a0e031226fc201d5df4ac1a59f9dbbcf54726ac3329bdeb2fda1a"
+    },
+    "/tmp/player-dovi-profile5-build.log": {
+      "sha256": "016f105d364d633e75b045ab4ae14d321fd3b73b2eda161f537b8a9861f8a520"
+    }
+  },
+  "retainedIntermediateReports": [
+    {
+      "path": "artifacts/dovi-profile84-regression-1/report.json",
+      "interpretation": "Earlier position-only CLI wait returned before the new displayed native frame. Final harness also waits on actual decoder-native source PTS."
+    },
+    {
+      "path": "artifacts/dovi-profile84-regression-2/report.json",
+      "interpretation": "Overstrict harness expected exit 2 after synthetic video rejection; retained P8.4 audio legitimately ended with exit 0. Final check preserves this case while requiring actual video-only P5 exit 2."
+    }
+  ],
+  "qualification": {
+    "profile5NativeMetadataRouting": true,
+    "profile5OrdinaryBaseFallback": false,
+    "neuralEnhancement": false,
+    "colorAccuracy": false,
+    "representativeProfile5Playback": false,
+    "physicalDisplayValidation": false,
+    "roadmap18Complete": false
+  }
+}

@@ -6,7 +6,7 @@ Dolby Vision neural enhancement is unavailable. Original frames and their metada
 | --- | --- | --- |
 | Profile 8, compatibility ID 4 (8.4) | Parsed per-frame Dolby Vision metadata uses libplacebo reshaping | Native playback and explicit HLG-base fallback passed on the real FATE vector on M3. Base fallback requires declared compatibility and matching decoded BT.2020 YUV/HLG tags. Color accuracy remains unqualified. |
 | Profile 8, compatibility ID 1 (8.1) | Parsed metadata uses libplacebo reshaping | Allow the declared HDR10 base only when decoded BT.2020 YUV and PQ tags agree. No representative local playback result yet. |
-| Profile 5 | Requires parsed Dolby Vision metadata and the native reshape path | No ordinary PQ/HLG base fallback. Playback is unqualified without a representative vector. |
+| Profile 5 | Requires parsed Dolby Vision metadata and the native reshape path | Native routing, exact short seek and missing-metadata rejection passed on the constant FATE vector on M3. No ordinary PQ/HLG base fallback; representative content and color accuracy remain unqualified. |
 | Profile 7 | Native metadata path retains the enhancement layer for mpv/libplacebo pairing/composition | MEL/FEL completeness and timing remain unqualified. No automatic base-layer fallback is declared here. |
 | Other Profile 8 compatibility IDs, or no container profile with parsed frame metadata | Preserve the parsed native metadata path | Unqualified. No compatible-base fallback is inferred. |
 | Other declared profiles, or missing required metadata with no supported compatible base | Reject with an explicit interpretation error | Do not guess a transfer function or advertise support. |
@@ -25,17 +25,27 @@ The passthrough preserves the complete native image, exact decoder timing, geome
 
 Profile 8.4 can include ambient-viewing metadata. Apple describes this metadata's role in adaptation; retaining it is necessary, and does not prove that a particular native renderer implements Apple's ambient strategy. [Apple TN3145](https://developer.apple.com/documentation/technotes/tn3145-hdr-video-metadata).
 
-## Reproduce the bounded check
+## Reproduce the bounded checks
 
 ```sh
+source scripts/env.sh
+swift build --product HDRPlayer --jobs 2
 python3 scripts/fetch-dovi-fixture.py
-HDRPLAYER_UI_SMOKE_KIND=dolby-vision HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-dv84.json \
-  .build/debug/HDRPlayer assets/test-clips/dolbyvision/dv84.mov
-python3 scripts/test-dovi-passthrough.py
+python3 scripts/test-dovi-passthrough.py --app --report artifacts/dovi-profile84/report.json
+python3 scripts/fetch-dovi-fixture.py --profile 5
+python3 scripts/test-dovi-passthrough.py --profile 5 --app --report artifacts/dovi-profile5/report.json
 ```
 
-The 3,621,742-byte sample is FFmpeg's public `hevc-dv-rpu` regression vector. Its SHA-256 is `aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721`. The fetch script verifies that hash and leaves the binary untracked for local testing. It is a 1920×1080, rotated, approximately 3.33-second Profile 8.4 MOV with parsed frame RPU and ambient metadata. [FFmpeg FATE test](https://ffmpeg.org/pipermail/ffmpeg-devel/2021-November/287700.html), [public sample index](https://fate-suite.ffmpeg.org/hevc/).
+Profile 8.4 remains the default. `--source` accepts another local path only when its size and SHA-256 match the selected pinned fixture. The CLI checks decoded RPU metadata, selected stream profile/compatibility, zero neural work, native seek and profile-specific fallback behavior. `--app` adds the shipped DOM controls and orderly native teardown checks. Direct app diagnostics use `HDRPLAYER_UI_SMOKE_KIND=dolby-vision`, `HDRPLAYER_UI_SMOKE_REPORT=/absolute/report.json` and optional `HDRPLAYER_DV_PROFILE=5` (default `8.4`). Reports retain decoded metadata, native logs, before/after binary hashes and failures.
 
-The DOM check passed seven assertions on M3: actual native-frame metadata, stream profile/compatibility, disabled enhancement controls, rejection of a direct enhancement command, pause, exact seek and no playback error. The selected native surface was PQ EDR (Metal format 94), and neural submissions remained zero. The separate CLI check passed native playback with enhancement requested, explicit HLG-base playback, and deliberately inconsistent signaling with disabled metadata mapping. That last case is a synthetic negative guard test, not Profile 5 playback coverage: it requires no filter auto-removal and no video output. Its report and logs are written to `artifacts/dovi-passthrough/`.
+The Profile 8.4 sample is FFmpeg's public `hevc-dv-rpu` regression vector: 3,621,742 bytes, SHA-256 `aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721`. It is a rotated 1920×1080 MOV lasting approximately 3.33 seconds, with parsed frame RPU and ambient metadata. [FFmpeg FATE test](https://ffmpeg.org/pipermail/ffmpeg-devel/2021-November/287700.html), [public sample index](https://fate-suite.ffmpeg.org/hevc/).
 
-These checks do not establish calibrated color accuracy, Dolby certification, display metadata passthrough or Profile 5/7/8.1 support. Those claims require separate representative assets and output comparisons; roadmap #18 remains open.
+The Profile 5 sample is FFmpeg FATE's `mov/dovi-p5.mp4`: 4,182 bytes, SHA-256 `11fe599fd77e31e26fbf855bae1cd9931df9f261a0a7b1dce9fad9b236677c4b`. It has ten constant 1920×1080 full-range frames at 24 fps, no audio, Profile 5/level 4, compatibility ID 0, a base layer and RPU but no enhancement layer. Its contributor identifies it as blank x265 video with Dolby configuration added before remuxing. It exercises metadata interpretation and rejection, not varied-color or motion rendering. The approximately 0.417-second duration requires the in-range 0.125-second seek rather than the Profile 8.4 target of 0.7 seconds. [Contributor provenance](https://ffmpeg.org/pipermail/ffmpeg-devel/2021-December/289651.html), [public sample index](https://fate-suite.ffmpeg.org/mov/).
+
+Both downloads remain untracked. The fetcher verifies size and hash before installing each fixture and writes a source manifest. No explicit per-file redistribution license was found in the inspected FATE index or contribution; FFmpeg's source-code licenses are not treated as media licenses.
+
+On M3, both profiles passed seven app assertions: actual native-frame metadata, pinned profile/compatibility, disabled enhancement controls, rejection of a direct enhancement command, pause, displayed-frame seek and no playback error. Native submissions remained zero and the native core was destroyed before process exit. Profile 5 selected source PTS `1536/12288 = 0.125` seconds. Profile 8.4 native and explicit HLG-base cases both selected `840/1200 = 0.7` seconds. [Profile 5 and default-regression evidence](evidence/m3-dovi-profile5.json).
+
+Disabling metadata mapping on the actual Profile 5 input rejected video with no neural submission, video output or filter auto-removal; the video-only process exited with input-error status 2. The Profile 8.4 negative test deliberately changes only container signaling to declare no compatible base while retaining its HLG/RPU payload, then disables metadata mapping. This is a synthetic rejection check, separate from actual Profile 5 playback. Its video is rejected, while its retained audio can finish with process status 0.
+
+These checks do not establish calibrated color accuracy, Dolby certification, display metadata passthrough, representative Profile 5 playback, or Profile 7/8.1 qualification. Those claims require separate assets and output comparisons; roadmap #18 remains open.

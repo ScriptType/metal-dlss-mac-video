@@ -1,4 +1,5 @@
 import AppKit
+import CryptoKit
 import QuartzCore
 import WebKit
 
@@ -329,17 +330,31 @@ final class PlayerSmokeCheck {
         checks.append("Prepared PiP keeps bounded consumer leases and producer capacity")
     }
     private func runDolbyVision() async throws {
+        let requested = ProcessInfo.processInfo.environment["HDRPLAYER_DV_PROFILE"] ?? "8.4"
+        guard requested == "8.4" || requested == "5" else { throw Failure(message: "Unsupported diagnostic Dolby fixture profile") }
+        let profile = requested == "5" ? 5 : 8, compatibility = requested == "5" ? 0 : 4
+        let seekSeconds = requested == "5" ? 0.125 : 0.7
+        let expectedBytes = requested == "5" ? 4182 : 3621742
+        let expectedSHA = requested == "5" ? "11fe599fd77e31e26fbf855bae1cd9931df9f261a0a7b1dce9fad9b236677c4b" :
+            "aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721"
         func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
-        try await wait("real Dolby Vision frame reaches the native surface", seconds: 20) {
+        try await wait("decoded Dolby Vision metadata reaches the native surface", seconds: 20) {
             !self.video.subviews.isEmpty && !self.webView.isLoading &&
             native()["source-dolby-vision"] as? Bool == true &&
             native()["displayed-dolby-vision-metadata"] as? Bool == true
         }
-        let track = (state()["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
-        guard track?["dolby-vision-profile"] as? Int == 8 && track?["dolby-vision-compatibility-id"] as? Int == 4 else {
-            throw Failure(message: "Expected the real Profile 8.4 regression fixture")
+        guard let path = state()["source"] as? String,
+              let bytes = try FileManager.default.attributesOfItem(atPath: path)[.size] as? NSNumber,
+              bytes.intValue == expectedBytes else { throw Failure(message: "Diagnostic Dolby source does not match the pinned fixture size") }
+        let payload = try Data(contentsOf: URL(fileURLWithPath: path))
+        guard SHA256.hash(data: payload).map({ String(format: "%02x", $0) }).joined() == expectedSHA else {
+            throw Failure(message: "Diagnostic Dolby source does not match the pinned SHA-256")
         }
-        checks.append("selected stream retains Profile 8 and HLG compatibility ID 4")
+        let track = (state()["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
+        guard track?["dolby-vision-profile"] as? Int == profile && track?["dolby-vision-compatibility-id"] as? Int == compatibility else {
+            throw Failure(message: "Selected native stream does not match the pinned Dolby profile/compatibility")
+        }
+        checks.append("pinned Profile \(requested) stream retains compatibility ID \(compatibility)")
         let disabled = try await script("return ['enhancement','strength','colorStrength','quality','mode'].every(id=>document.getElementById(id).disabled)")
         guard disabled == "true", (state()["capabilities"] as? [String: Any])?["prepared"] as? Bool == false else {
             throw Failure(message: "Unqualified Dolby Vision enhancement controls are available")
@@ -348,16 +363,26 @@ final class PlayerSmokeCheck {
         _ = try await script("window.webkit.messageHandlers.player.postMessage({command:'enhancement',value:true});return true")
         try await Task.sleep(for: .milliseconds(300))
         guard (state()["processing"] as? [String: Any])?["enabled"] as? Bool == false,
-              native()["submitted-frames"] as? Int == 0 else { throw Failure(message: "Dolby Vision entered neural processing") }
+              native()["submitted-frames"] as? Int == 0, native()["policy"] as? String == "bypass",
+              native()["buffering"] as? Bool == false, native()["native-color-path"] as? String == "native-dolby-vision" else {
+            throw Failure(message: "Dolby Vision entered neural processing or left its native metadata path")
+        }
         checks.append("direct enhancement request cannot admit a Dolby Vision frame")
         if state()["paused"] as? Bool != true { try await click("play") }
         try await wait("Dolby Vision pauses through native controls") { self.state()["paused"] as? Bool == true }
-        try await change("timeline", value: "0.7")
+        guard seekSeconds > 0 && seekSeconds < number("duration") else { throw Failure(message: "Dolby fixture seek lies outside its actual duration") }
+        try await change("timeline", value: String(seekSeconds))
         try await wait("Dolby Vision seeks while retaining native metadata") {
-            abs(self.number("position") - 0.7) < 0.08 && native()["displayed-dolby-vision-metadata"] as? Bool == true
+            let pts = (native()["displayed-source-pts"] as? NSNumber)?.doubleValue ?? -1
+            let numerator = (native()["displayed-timebase-num"] as? NSNumber)?.doubleValue ?? 0
+            let denominator = (native()["displayed-timebase-den"] as? NSNumber)?.doubleValue ?? 0
+            let sourceAtTarget = denominator > 0 && abs(pts * numerator / denominator - seekSeconds) < (profile == 5 ? 1e-9 : 0.045)
+            return abs(self.number("position") - seekSeconds) < 0.045 && sourceAtTarget &&
+                native()["displayed-dolby-vision-metadata"] as? Bool == true &&
+                native()["native-color-path"] as? String == "native-dolby-vision" && native()["submitted-frames"] as? Int == 0
         }
         guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Dolby Vision playback error") }
-        checks.append("native fallback has no playback error")
+        checks.append("native metadata path has no playback error; no colour qualification inferred")
     }
     private func runPreferences(write: Bool) async throws {
         try await wait("empty player and controls initialized", seconds: 20) { self.state()["initialized"] as? Bool == true && !self.webView.isLoading }

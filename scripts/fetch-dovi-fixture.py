@@ -1,34 +1,37 @@
 #!/usr/bin/env python3
-"""Fetch the small public FFmpeg FATE P8.4 regression sample for local tests."""
-import hashlib
+"""Fetch a pinned public FFmpeg FATE Dolby fixture; P8.4 remains the default."""
+import argparse
 import json
 from pathlib import Path
 import subprocess
 import tempfile
-
-ROOT = Path(__file__).resolve().parents[1]
-URL = "https://fate-suite.ffmpeg.org/hevc/dv84.mov"
-SHA256 = "aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721"
-DESTINATION = ROOT / "assets/test-clips/dolbyvision/dv84.mov"
+from dovi_fixtures import FIXTURES, source_path, verify_source
 
 
 def main():
-    DESTINATION.parent.mkdir(parents=True, exist_ok=True)
-    if not DESTINATION.exists() or hashlib.sha256(DESTINATION.read_bytes()).hexdigest() != SHA256:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--profile", choices=FIXTURES, default="8.4")
+    args = parser.parse_args()
+    fixture = FIXTURES[args.profile]
+    destination = source_path(fixture)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        verify_source(destination, fixture)
+    except (OSError, ValueError):
         with tempfile.TemporaryDirectory(prefix="dovi-fixture-") as temporary:
-            downloaded = Path(temporary) / "dv84.mov"
+            downloaded = Path(temporary) / fixture["filename"]
             subprocess.run(["curl", "--fail", "--location", "--max-time", "60", "--max-filesize", "8388608",
-                            URL, "-o", str(downloaded)], check=True)
-            payload = downloaded.read_bytes()
-            if hashlib.sha256(payload).hexdigest() != SHA256:
-                raise RuntimeError("FFmpeg FATE sample hash changed; inspect provenance before use")
-            DESTINATION.write_bytes(payload)
-    manifest = {"source": URL, "sha256": SHA256, "bytes": DESTINATION.stat().st_size,
+                            fixture["url"], "-o", str(downloaded)], check=True)
+            verify_source(downloaded, fixture)
+            destination.write_bytes(downloaded.read_bytes())
+    manifest = {"source": fixture["url"], "sha256": fixture["sha256"], "bytes": destination.stat().st_size,
                 "purpose": "Local regression testing; binary remains untracked",
-                "testReference": "https://ffmpeg.org/pipermail/ffmpeg-devel/2021-November/287700.html",
-                "profile": 8, "baseLayerCompatibilityID": 4}
-    DESTINATION.with_suffix(".json").write_text(json.dumps(manifest, indent=2) + "\n")
-    print(DESTINATION)
+                "testReference": fixture["provenance"], "blankTestVideo": fixture["blankTestVideo"],
+                "profile": fixture["profile"], "baseLayerCompatibilityID": fixture["compatibility"],
+                "license": "No explicit per-file redistribution license found; public contributor-provided FATE regression input. No FFmpeg code license is inferred for the media.",
+                "colorQualification": False}
+    destination.with_suffix(".json").write_text(json.dumps(manifest, indent=2) + "\n")
+    print(destination)
 
 
 if __name__ == "__main__":
