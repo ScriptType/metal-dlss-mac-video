@@ -169,7 +169,7 @@ All 112 outputs match their full-byte references. All fourteen mask/reference pa
 
 The process completes in 10.168 seconds, with 21 resource samples, peak sampled process-tree RSS of 1,136,099,328 bytes and at least 12,732,391,424 free disk bytes. Before/after power readings both show battery power at 97%; the earlier flow-stage attribution ran on AC. All frozen pins remain unchanged, and the temporary 256-MiB MLX cache policy is restored. Different power, materialization, allocation and scheduling conditions prevent treating these isolated times as a fraction of, or subtraction from, the earlier bundled assessment measurement.
 
-A separable Boolean erosion is the next candidate: it must preserve original centre confidence bits, prove a completed-work benefit in a paired comparison, and then pass full-motion/prepare parity and timing checks. This measurement retains no optimization and closes no playback, temporal, physical-display or M5 acceptance gate.
+The [separable Boolean candidate](#separable-confidence-erosion-candidate) preserves the compared centre confidence bits and improves isolated/full-assessment timing, but its full prepare benefit gate is not met. This measurement retains no optimization and closes no playback, temporal, physical-display or M5 acceptance gate.
 
 To reproduce with the same input manifest described above, use a new output directory:
 
@@ -185,7 +185,7 @@ Preserve the executed XCTest, metallib, source and input pins, and record the po
 
 ## Separable confidence-erosion candidate
 
-A test-only two-pass Boolean erosion improves the measured natural-mask and complete motion-assessment workloads on M3. [Evidence](evidence/m3-separable-motion-erosion.json) and [all 312 timed calls](evidence/m3-separable-motion-erosion.csv) preserve the two runs separately. Production still uses the original kernel; full `NativeOpticalFlow.prepare` benefit and integration acceptance remain pending.
+A test-only two-pass Boolean erosion improves the measured natural-mask and complete motion-assessment workloads on M3. [Evidence](evidence/m3-separable-motion-erosion.json) and [all 312 timed calls](evidence/m3-separable-motion-erosion.csv) preserve the two runs separately. Production still uses the original kernel: the [full prepare comparison](#separable-erosion-through-full-flow-preparation) does not establish a repeatable benefit.
 
 The candidate computes seven clamped horizontal `input > 0` predicates into a UInt8 mask, then seven vertical predicates. Valid pixels preserve the original Float32 centre bits; invalid pixels become positive zero. This adds one dispatch and a 2,073,600-byte logical intermediate at 1920 × 1080. Both passes remain lazy until the existing evaluation, with no intermediate wait.
 
@@ -222,3 +222,35 @@ swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
 ```
 
 Preserve hashes, power observations and operational bounds. Preflight means neither run establishes cold compilation. Full prepare, player throughput, temporal quality, physical display and M5 acceptance remain separate gates.
+
+## Separable erosion through full flow preparation
+
+The separable candidate does not establish a repeatable benefit through complete `NativeOpticalFlow.prepare`, so it remains test-only. [Evidence](evidence/m3-separable-flow-prepare.json) and [all 288 calls](evidence/m3-separable-flow-prepare.csv) retain the actual VideoToolbox comparison and its mixed timing results.
+
+One production estimator and one candidate estimator persist across four paired cases. Each arm processes the twelve original source indices through three traversals per case; block order alternates between cases. The candidate wrapper reverses exactly to production except for type/import names and its use of the previously tested separable motion assessment. Packing, Core Image resize, fresh VideoToolbox allocation/processing, scene-cut policy, session ownership and completion waits remain unchanged. The timer encloses the complete `prepare` call; output readback and comparisons follow it.
+
+| Warmed population | Original mean | Candidate mean | Change in summed time |
+|---|---:|---:|---:|
+| All 108 pairs | 28.665 ms | 28.485 ms | −0.63% |
+| Case 0, original first | 24.653 ms | 26.012 ms | +5.51% |
+| Case 1, candidate first | 29.834 ms | 26.983 ms | −9.55% |
+| Case 2, original first | 29.462 ms | 31.193 ms | +5.88% |
+| Case 3, candidate first | 30.710 ms | 29.752 ms | −3.12% |
+
+The candidate is faster in 57/108 warmed pairs. Warmed median increases from 28.647 to 28.999 ms, and p95 from 36.508 to 36.572 ms. Both cases with the candidate second are slower; both with it first are faster. This observed order pattern does not identify its cause. The 0.63% aggregate reduction, mixed case totals and slightly worse median/p95 do not justify production adoption. Earlier isolated and restored-flow gains do not substitute for this result.
+
+All 144 paired full-array hashes, scalar bits and reset decisions match, including 143 motion pairs and one initial no-motion pair. All 24 selected direct byte comparisons pass. There are two initial nil calls, 22 index-wrap calls, 22 wrap resets and 24 scene-cut resets. Reset-derived expectations for private random-access hints are inferred from the unchanged source and public history; they are not new internal measurements. The first three calls of every traversal are excluded only from warmed summaries, leaving 216 warmed calls. All startup, cut, wrap and outlier timings remain in the record.
+
+The three existing optical-flow release tests pass. The process finishes in 21.164 seconds with peak sampled RSS of 836,714,496 bytes, at least 12,597,321,728 free disk bytes, unchanged frozen pins and restored cache policy. Power readings show battery at 86% before and 85% afterward. Exact tested sources and executable are archived. No model or player runs, and no sustained throughput, temporal-quality, physical-display or M5 gate closes.
+
+With the retained source manifest and recorded source revision, reproduce into a fresh output directory:
+
+```sh
+source scripts/env.sh
+MLXDLSS_SEPARABLE_FLOW_INPUTS=/absolute/path/to/inputs.json \
+MLXDLSS_SEPARABLE_FLOW_OUTPUT=/absolute/path/to/new-output \
+swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
+  --filter NativeSeparableFlowComparisonTests/testMatchedNativePrepare
+```
+
+The probe checks its original input/source hashes and actual executed runtime. Preserve the operating conditions, resource bounds and all observations when interpreting a repeat.
