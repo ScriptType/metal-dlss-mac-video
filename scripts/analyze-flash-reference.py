@@ -22,11 +22,32 @@ ARMS = ("control", "flash")
 RESIDUALS = ("controlEnhancedMinusOriginal", "flashEnhancedMinusOriginal", "pairedResidualDifference")
 METRICS = ("signedMeanNits", "meanAbsoluteNits", "rmsNits", "maximumAbsoluteNits")
 PHASES = ("prefix", "event", "returnedInput")
+CANONICAL_CAPTURE_SETTINGS = {"colourStrength": 1, "maximumLuminanceRatio": 2,
+    "mlxCacheBytes": 268435456, "modelInputRange": "bounded-sRGB-after-resample",
+    "motionRequested": "automatic", "precision": "float16", "processingHeight": 288,
+    "processingWidth": 512, "referenceWhiteNits": 203, "sceneCutThreshold": 0.3,
+    "strength": 1, "temporal": True}
+CANONICAL_RECIPE_SETTINGS = {key: value for key, value in CANONICAL_CAPTURE_SETTINGS.items()
+                             if key not in ("mlxCacheBytes", "modelInputRange")}
 
 
 def require(condition, message):
     if not condition:
         raise ValueError(message)
+
+
+def canonical_settings_match(observed, expected):
+    """Match JSON primitive kinds, allowing equivalent integer/float numbers."""
+    if type(observed) is not dict or observed.keys() != expected.keys():
+        return False
+    for key, value in expected.items():
+        actual = observed[key]
+        if type(value) in (int, float):
+            if type(actual) not in (int, float) or actual != value:
+                return False
+        elif type(actual) is not type(value) or actual != value:
+            return False
+    return True
 
 
 def encoded(value):
@@ -137,6 +158,8 @@ def analyze(input_pair, control_manifest, flash_manifest, output_dir):
             directory = source_paths[arm].parent; provenance = source["provenance"]
             require(provenance["arm"] == arm, "Source arm provenance differs")
             recipes[arm] = recipe = read(use(directory, provenance["recipe"]))
+            require(canonical_settings_match(recipe["intendedCaptureSettings"], CANONICAL_RECIPE_SETTINGS),
+                    "Recipe settings differ from canonical temporal capture contract")
             truths[arm] = truth = read(use(directory, provenance["eventGroundTruth"]))
             environment = read(use(directory, provenance["environment"]))
             for entry in [provenance["generator"], provenance["sceneGenerator"], *environment["sourceFiles"].values()]:
@@ -187,8 +210,9 @@ def analyze(input_pair, control_manifest, flash_manifest, output_dir):
             remember(copied)
             require(copied.read_bytes() == source_paths[arm].read_bytes() and capture["inputManifestSHA256"] == pins[str(source_paths[arm])]["sha256"] and
                     capture["sourceIdentity"] == "sha256:" + capture["inputManifestSHA256"], "Exact source copy/identity differs")
-            require(capture["rawPayloadBytes"] == width * height * 48 * 48 and capture["settings"]["modelInputRange"] == "bounded-sRGB-after-resample" and
-                    all(capture["settings"][key] == value for key, value in recipes[arm]["intendedCaptureSettings"].items()), "Capture settings/payload inventory differs")
+            require(capture["rawPayloadBytes"] == width * height * 48 * 48 and
+                    canonical_settings_match(capture["settings"], CANONICAL_CAPTURE_SETTINGS),
+                    "Capture settings/payload inventory differ from canonical temporal capture contract")
             runtime, model = capture["runtime"], capture["model"]
             require(valid_sha(runtime["binarySHA256"]) and isinstance(runtime["sourceSHA256"], dict) and runtime["sourceSHA256"] and
                     all(valid_sha(x) for x in runtime["sourceSHA256"].values()), "Missing runtime binary/source hash identities")
