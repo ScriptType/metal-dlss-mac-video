@@ -1,0 +1,1902 @@
+{
+  "schemaVersion": 1,
+  "scope": "Public single-window ScreenCaptureKit compositor diagnostics on M3; no physical HDR/A/V qualification or native/PiP visual-equivalence pass",
+  "screenCapturePreflight": true,
+  "permissionRequested": false,
+  "desktopOrUnrelatedWindowCaptured": false,
+  "qualified": false,
+  "sessions": [
+    {
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "binariesUnchanged": true,
+      "exitCode": 0,
+      "setupAndTeardownPassed": true,
+      "directory": "artifacts/sck-hdr-compositor-1",
+      "sessionSHA256": "b571e106c3b958b4e72192111227cc2a410505b4b09912f449a281aa14c22495",
+      "captures": [
+        {
+          "configuration": {
+            "preset": "HDRScreenshotCanonicalDisplay",
+            "dynamicRange": 2
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 15047,
+            "windowID": 35688,
+            "windowLayer": 0
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "ea9e37c085f2a151165f69173ecc1c029569984ab144c19575b3d72c97cf7b79",
+          "timing": {
+            "requestedMachTicks": 24451674301972,
+            "completedMachTicks": 24451677676676,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018819877303208
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "d7fe523a2292d934447cfce90addc6c2273ccd8b202f7db3e2e35d3ed8b1dfa5"
+          },
+          "name": "native-canonical",
+          "reportSHA256": "51eca9dad37c2901548afe8a54f193b984861e2cc2ddf9153fe2bb4e27321691",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              -0.00048828125,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 8,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 530,
+              "y": 752,
+              "rgba": [
+                0.0160980224609375,
+                0.06304931640625,
+                0.006313323974609375,
+                1.0
+              ]
+            },
+            {
+              "x": 1060,
+              "y": 752,
+              "rgba": [
+                0.020477294921875,
+                0.015716552734375,
+                0.0679931640625,
+                1.0
+              ]
+            },
+            {
+              "x": 1590,
+              "y": 752,
+              "rgba": [
+                0.0267181396484375,
+                0.038330078125,
+                0.06390380859375,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 15047,
+            "windowID": 35688,
+            "windowLayer": 0
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "ea9e37c085f2a151165f69173ecc1c029569984ab144c19575b3d72c97cf7b79",
+          "timing": {
+            "requestedMachTicks": 24451661371128,
+            "completedMachTicks": 24451670423693,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018819544776166
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "1234f4f1cb41a24cbf904ed156ad7dedec84891dbd88e9832dcd80b282f07feb"
+          },
+          "name": "native-local",
+          "reportSHA256": "aeac7344c09bd2469fd00507c82bcc377331c070757b163055c32c8be549ee05",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              -0.00048828125,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 8,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 530,
+              "y": 752,
+              "rgba": [
+                0.0234527587890625,
+                0.08331298828125,
+                0.0091705322265625,
+                1.0
+              ]
+            },
+            {
+              "x": 1060,
+              "y": 752,
+              "rgba": [
+                0.029541015625,
+                0.0227508544921875,
+                0.08819580078125,
+                1.0
+              ]
+            },
+            {
+              "x": 1590,
+              "y": 752,
+              "rgba": [
+                0.039093017578125,
+                0.0543212890625,
+                0.0841064453125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotCanonicalDisplay",
+            "dynamicRange": 2
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 15120,
+            "windowID": 35706,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "ea9e37c085f2a151165f69173ecc1c029569984ab144c19575b3d72c97cf7b79",
+          "timing": {
+            "requestedMachTicks": 24451687445980,
+            "completedMachTicks": 24451690512707,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018820417444375
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "name": "pip-canonical",
+          "reportSHA256": "40e2635009c46623a31e1298b5aeaa44cc71c4b10bb98ddd69453fb0aecfaac2",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 222,
+              "y": 245,
+              "rgba": [
+                0.11767578125,
+                0.11767578125,
+                0.11767578125,
+                1.0
+              ]
+            },
+            {
+              "x": 444,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.4189453125,
+                0.310546875,
+                1.0
+              ]
+            },
+            {
+              "x": 666,
+              "y": 245,
+              "rgba": [
+                0.74658203125,
+                0.72021484375,
+                0.52392578125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 15120,
+            "windowID": 35706,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "ea9e37c085f2a151165f69173ecc1c029569984ab144c19575b3d72c97cf7b79",
+          "timing": {
+            "requestedMachTicks": 24451681454039,
+            "completedMachTicks": 24451684405794,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018820162973000
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "name": "pip-local",
+          "reportSHA256": "428493014fa87fc5d37b28008319db252bdd70d809f7adce61aa64ece9dc42e6",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 222,
+              "y": 245,
+              "rgba": [
+                0.11767578125,
+                0.11767578125,
+                0.11767578125,
+                1.0
+              ]
+            },
+            {
+              "x": 444,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.4189453125,
+                0.310546875,
+                1.0
+              ]
+            },
+            {
+              "x": 666,
+              "y": 245,
+              "rgba": [
+                0.74658203125,
+                0.72021484375,
+                0.52392578125,
+                1.0
+              ]
+            }
+          ]
+        }
+      ],
+      "rejectedRequests": [
+        {
+          "name": "native-windows",
+          "error": "hdr-capture: Target bundle mismatch: expected io.github.scripttype.hdr-player, observed unbundled",
+          "logSHA256": "06b29370ec67071b1bdf4062d9f49877d653530298e970d9812342b3b50f5831",
+          "pixelCapturePerformed": false
+        }
+      ],
+      "binaryManifestSHA256": "c435aed067828a8b20b386e026dd0fdbcdc8d84025c20631cbac0a094d738723",
+      "pausedIdentity": {
+        "sourcePTS": {
+          "timescale": 1000000,
+          "value": 20000000
+        },
+        "generation": 3,
+        "revision": 14,
+        "contentKind": 2,
+        "clockRate": 0
+      },
+      "allPausedIdentitiesUnchanged": true
+    },
+    {
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "binariesUnchanged": true,
+      "exitCode": 0,
+      "setupAndTeardownPassed": true,
+      "directory": "artifacts/sck-hdr-compositor-geometry-1",
+      "sessionSHA256": "007676fdb9cc41c0cd951bd2074dedc8c361634f1e4d943326285ca4b8aa2a18",
+      "captures": [
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1,
+            "sdrControl": false,
+            "displayBound": false,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 16169,
+            "windowID": 35712,
+            "windowLayer": 0
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455158419811,
+            "completedMachTicks": 24455161885436,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018965056559250
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "2f4af158d2794f735109f5a26ace35ebfe1e7a5f6a332bfcefc89dfbcb9694d4"
+          },
+          "name": "native-hdr",
+          "reportSHA256": "ee8c7c62083d183d8ab48466de95c3443e96c1b37be0ba1b1720b12eaab503f0",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              -0.00048828125,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 8,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 530,
+              "y": 752,
+              "rgba": [
+                0.0234527587890625,
+                0.08331298828125,
+                0.0091705322265625,
+                1.0
+              ]
+            },
+            {
+              "x": 1060,
+              "y": 752,
+              "rgba": [
+                0.029541015625,
+                0.0227508544921875,
+                0.08819580078125,
+                1.0
+              ]
+            },
+            {
+              "x": 1590,
+              "y": 752,
+              "rgba": [
+                0.039093017578125,
+                0.0543212890625,
+                0.0841064453125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1,
+            "sdrControl": false,
+            "displayBound": true,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 16169,
+            "windowID": 35712,
+            "windowLayer": 0
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455178430040,
+            "completedMachTicks": 24455183167008,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018965871530666
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "5ac525ca957968ca4292a4bc00aed7ae49b3e00b32d28eae3deed9d6edc7704f"
+          },
+          "name": "native-hdr-display",
+          "reportSHA256": "24bc10aaf48cc5fe48b1f5302e3fa63abeae08d7a270f653801bdf714dd34b0a",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              -0.00048828125,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 8,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 530,
+              "y": 752,
+              "rgba": [
+                0.0234527587890625,
+                0.08331298828125,
+                0.0091705322265625,
+                1.0
+              ]
+            },
+            {
+              "x": 1060,
+              "y": 752,
+              "rgba": [
+                0.029541015625,
+                0.0227508544921875,
+                0.08819580078125,
+                1.0
+              ]
+            },
+            {
+              "x": 1590,
+              "y": 752,
+              "rgba": [
+                0.039093017578125,
+                0.0543212890625,
+                0.0841064453125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1,
+            "sdrControl": false,
+            "displayBound": false,
+            "scalesToFit": true,
+            "sourceRectPoints": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 16169,
+            "windowID": 35712,
+            "windowLayer": 0
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455165405691,
+            "completedMachTicks": 24455168381901,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018965328779083
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "2f4af158d2794f735109f5a26ace35ebfe1e7a5f6a332bfcefc89dfbcb9694d4"
+          },
+          "name": "native-hdr-scale-to-fit",
+          "reportSHA256": "c3084c276bd344433214931a4b5eb9db327e4a719bcc0043703efa8ec23f5bb6",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              -0.00048828125,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 8,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 530,
+              "y": 752,
+              "rgba": [
+                0.0234527587890625,
+                0.08331298828125,
+                0.0091705322265625,
+                1.0
+              ]
+            },
+            {
+              "x": 1060,
+              "y": 752,
+              "rgba": [
+                0.029541015625,
+                0.0227508544921875,
+                0.08819580078125,
+                1.0
+              ]
+            },
+            {
+              "x": 1590,
+              "y": 752,
+              "rgba": [
+                0.039093017578125,
+                0.0543212890625,
+                0.0841064453125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 0,
+            "sdrControl": true,
+            "displayBound": false,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 16169,
+            "windowID": 35712,
+            "windowLayer": 0
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455172229418,
+            "completedMachTicks": 24455175108572,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018965608935375
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.bgra8",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 8576,
+            "bytes": 12898304,
+            "sha256": "9495282b0b217ce2909c298fd894c726e2345563570f072097cbd9da2e694d16"
+          },
+          "name": "native-sdr",
+          "reportSHA256": "0cda788cb8cd692e685df9a4ea1fac001877989b47e1934c3e10dd724bead341",
+          "actualICCProfileSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 530,
+              "y": 752,
+              "rgba": [
+                0.00784313725490196,
+                0.08235294117647059,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "x": 1060,
+              "y": 752,
+              "rgba": [
+                0.03137254901960784,
+                0.023529411764705882,
+                0.09411764705882353,
+                1.0
+              ]
+            },
+            {
+              "x": 1590,
+              "y": 752,
+              "rgba": [
+                0.03529411764705882,
+                0.054901960784313725,
+                0.08627450980392157,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 0,
+            "sdrControl": true,
+            "displayBound": true,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 16169,
+            "windowID": 35712,
+            "windowLayer": 0
+          },
+          "surfaceContentHeadroom": 16,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455186825127,
+            "completedMachTicks": 24455189588442,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018966210437625
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.bgra8",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 8576,
+            "bytes": 12898304,
+            "sha256": "54762ac982b32c7c4520601729e44cc0c5fd8690cf017d54526ca1bcb78d19d3"
+          },
+          "name": "native-sdr-display",
+          "reportSHA256": "bda56148bdada60d1d593608a1340f9b03d789db3aa211deb389c21812adc886",
+          "actualICCProfileSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 530,
+              "y": 752,
+              "rgba": [
+                0.0,
+                0.08235294117647059,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "x": 1060,
+              "y": 752,
+              "rgba": [
+                0.023529411764705882,
+                0.01568627450980392,
+                0.09019607843137255,
+                1.0
+              ]
+            },
+            {
+              "x": 1590,
+              "y": 752,
+              "rgba": [
+                0.027450980392156862,
+                0.050980392156862744,
+                0.08235294117647059,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1,
+            "sdrControl": false,
+            "displayBound": false,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 16193,
+            "windowID": 35730,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455194250526,
+            "completedMachTicks": 24455197166189,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018966527815791
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "name": "pip-hdr",
+          "reportSHA256": "35206b6a2f73f5aeab403ab2e28ced49fd8f15de0d40adcf365440e036f9b359",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 222,
+              "y": 245,
+              "rgba": [
+                0.11767578125,
+                0.11767578125,
+                0.11767578125,
+                1.0
+              ]
+            },
+            {
+              "x": 444,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.4189453125,
+                0.310546875,
+                1.0
+              ]
+            },
+            {
+              "x": 666,
+              "y": 245,
+              "rgba": [
+                0.74658203125,
+                0.72021484375,
+                0.52392578125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1,
+            "sdrControl": false,
+            "displayBound": false,
+            "scalesToFit": true,
+            "sourceRectPoints": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 16193,
+            "windowID": 35730,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455200166147,
+            "completedMachTicks": 24455203065653,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018966773931333
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "name": "pip-hdr-scale-to-fit",
+          "reportSHA256": "50bf4f7e98b8ca4a1ca3caefecaecbfae74963f6b7bb1886dcaec0d6418d7ad6",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 222,
+              "y": 245,
+              "rgba": [
+                0.11767578125,
+                0.11767578125,
+                0.11767578125,
+                1.0
+              ]
+            },
+            {
+              "x": 444,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.4189453125,
+                0.310546875,
+                1.0
+              ]
+            },
+            {
+              "x": 666,
+              "y": 245,
+              "rgba": [
+                0.74658203125,
+                0.72021484375,
+                0.52392578125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 0,
+            "sdrControl": true,
+            "displayBound": false,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 16193,
+            "windowID": 35730,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "1bb291ee2f980dd48876fd3dfac4e0d184e61af904fce1ebd588e04d417510f5",
+          "timing": {
+            "requestedMachTicks": 24455206449002,
+            "completedMachTicks": 24455209322259,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1018967034921916
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.bgra8",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 3584,
+            "bytes": 1756160,
+            "sha256": "3b250250910fc1f501d721494cf3c8dea689405f7ad8e375a6f5c3808b28f049"
+          },
+          "name": "pip-sdr",
+          "reportSHA256": "b7ead762b0d027eb7392c43a8c79562cea8e4c1fa57564c2343471ed51217399",
+          "actualICCProfileSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.6392156862745098,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372630,
+            "nonopaquePixels": 62490
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 222,
+              "y": 245,
+              "rgba": [
+                0.11764705882352941,
+                0.11764705882352941,
+                0.11764705882352941,
+                1.0
+              ]
+            },
+            {
+              "x": 444,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.10588235294117647,
+                0.09019607843137255,
+                1.0
+              ]
+            },
+            {
+              "x": 666,
+              "y": 245,
+              "rgba": [
+                0.7529411764705882,
+                0.7215686274509804,
+                0.4980392156862745,
+                1.0
+              ]
+            }
+          ]
+        }
+      ],
+      "rejectedRequests": [
+        {
+          "name": "pip-hdr-display",
+          "error": "hdr-capture: Display-bound control requires one display containing the whole target",
+          "logSHA256": "21c1eda937315fb6fbac0afcc3c0488f262e0aa073a66416f4833e0f4e97d98f",
+          "pixelCapturePerformed": false
+        },
+        {
+          "name": "pip-sdr-display",
+          "error": "hdr-capture: Display-bound control requires one display containing the whole target",
+          "logSHA256": "21c1eda937315fb6fbac0afcc3c0488f262e0aa073a66416f4833e0f4e97d98f",
+          "pixelCapturePerformed": false
+        }
+      ],
+      "binaryManifestSHA256": "c435aed067828a8b20b386e026dd0fdbcdc8d84025c20631cbac0a094d738723",
+      "pausedIdentity": {
+        "sourcePTS": {
+          "timescale": 1000000,
+          "value": 20000000
+        },
+        "generation": 3,
+        "revision": 13,
+        "contentKind": 2,
+        "clockRate": 0
+      },
+      "allPausedIdentitiesUnchanged": true
+    },
+    {
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "binariesUnchanged": true,
+      "exitCode": 0,
+      "setupAndTeardownPassed": true,
+      "directory": "artifacts/sck-hdr-compositor-visible-intersection-1",
+      "sessionSHA256": "072706ccfa6fc928ad0558046ffcd4b040b69818572dd7987b26a79fac6012ce",
+      "captures": [
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1,
+            "sdrControl": false,
+            "displayBound": true,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 245,
+              "width": 440,
+              "x": 1360,
+              "y": 56
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "windowClippedToDisplay": true
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 16805,
+            "windowID": 35753,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "8f37245152e5963f030e3340a648c0572f2fbc04b53d362b43ae1527a0bbda91",
+          "timing": {
+            "requestedMachTicks": 24457863920394,
+            "completedMachTicks": 24457867108445,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1019077761558875
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 880,
+            "height": 490,
+            "bytesPerRow": 7040,
+            "bytes": 3449600,
+            "sha256": "afcdeb378b0734b83c2a59e5b58cb235ae1cc3bb80570d414b09aaf6a48c5c08"
+          },
+          "name": "hdr-display",
+          "reportSHA256": "384d22c3be793f5e1c98dde45ee4176b0a11ee238eb1aff92425dc55030a952d",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 58576
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 220,
+              "y": 245,
+              "rgba": [
+                0.11767578125,
+                0.11767578125,
+                0.11767578125,
+                1.0
+              ]
+            },
+            {
+              "x": 440,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.41357421875,
+                0.304931640625,
+                1.0
+              ]
+            },
+            {
+              "x": 660,
+              "y": 245,
+              "rgba": [
+                0.7236328125,
+                0.6982421875,
+                0.490478515625,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 1,
+            "sdrControl": false,
+            "displayBound": false,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "windowClippedToDisplay": false
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 16805,
+            "windowID": 35753,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "toolSHA256": "8f37245152e5963f030e3340a648c0572f2fbc04b53d362b43ae1527a0bbda91",
+          "timing": {
+            "requestedMachTicks": 24457857679380,
+            "completedMachTicks": 24457860775110,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1019077509441041
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "name": "hdr-independent",
+          "reportSHA256": "a9043d213f14e2a250f3a00c255db9da07ec157e4f9257dcd22881ddd3ec3cfc",
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 222,
+              "y": 245,
+              "rgba": [
+                0.11767578125,
+                0.11767578125,
+                0.11767578125,
+                1.0
+              ]
+            },
+            {
+              "x": 444,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.4189453125,
+                0.310546875,
+                1.0
+              ]
+            },
+            {
+              "x": 666,
+              "y": 245,
+              "rgba": [
+                0.74658203125,
+                0.72021484375,
+                0.52392578125,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "configuration": {
+            "preset": "HDRScreenshotLocalDisplay",
+            "dynamicRange": 0,
+            "sdrControl": true,
+            "displayBound": true,
+            "scalesToFit": false,
+            "sourceRectPoints": {
+              "height": 245,
+              "width": 440,
+              "x": 1360,
+              "y": 56
+            },
+            "destinationRectPixels": {
+              "height": 0,
+              "width": 0,
+              "x": 0,
+              "y": 0
+            },
+            "windowClippedToDisplay": true
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 16805,
+            "windowID": 35753,
+            "windowLayer": 19
+          },
+          "surfaceContentHeadroom": 16,
+          "referenceWhiteNits": null,
+          "toolSHA256": "8f37245152e5963f030e3340a648c0572f2fbc04b53d362b43ae1527a0bbda91",
+          "timing": {
+            "requestedMachTicks": 24457870250741,
+            "completedMachTicks": 24457873125657,
+            "machTimebaseNumerator": 125,
+            "machTimebaseDenominator": 3,
+            "samplePTS": {
+              "epoch": 0,
+              "flags": 1,
+              "timescale": 1000000000,
+              "value": 1019078025113000
+            }
+          },
+          "pixelStorage": {
+            "file": "pixels.bgra8",
+            "width": 880,
+            "height": 490,
+            "bytesPerRow": 3584,
+            "bytes": 1756160,
+            "sha256": "a01548ce4c6e840cc0ecfc92036830e746740513c3287c1c99ab71de0b50d11d"
+          },
+          "name": "sdr-display",
+          "reportSHA256": "a61f72be358e75cd612c10603326f1bc4fbb2e319f5406890a69846610a9e338",
+          "actualICCProfileSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "pixelStatistics": {
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.6823529411764706,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372630,
+            "nonopaquePixels": 58570
+          },
+          "alphaModeAttachmentPresent": false,
+          "sampleAttachmentsPresent": false,
+          "encodedRawPositionSamples": [
+            {
+              "x": 220,
+              "y": 245,
+              "rgba": [
+                0.11372549019607843,
+                0.11372549019607843,
+                0.11372549019607843,
+                1.0
+              ]
+            },
+            {
+              "x": 440,
+              "y": 245,
+              "rgba": [
+                1.0,
+                0.3607843137254902,
+                0.25098039215686274,
+                1.0
+              ]
+            },
+            {
+              "x": 660,
+              "y": 245,
+              "rgba": [
+                0.7294117647058823,
+                0.6980392156862745,
+                0.4627450980392157,
+                1.0
+              ]
+            }
+          ]
+        }
+      ],
+      "rejectedRequests": [],
+      "binaryManifestSHA256": "c435aed067828a8b20b386e026dd0fdbcdc8d84025c20631cbac0a094d738723",
+      "pausedIdentity": {
+        "sourcePTS": {
+          "timescale": 1000000,
+          "value": 20000000
+        },
+        "generation": 3,
+        "revision": 15,
+        "contentKind": 2,
+        "clockRate": 0
+      },
+      "allPausedIdentitiesUnchanged": true
+    }
+  ],
+  "comparison": {
+    "schemaVersion": 1,
+    "capture": "artifacts/sck-hdr-compositor-visible-intersection-1/hdr-independent",
+    "iccSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+    "statistics": {
+      "width": 888,
+      "height": 490,
+      "nonfiniteComponents": 0,
+      "finiteComponentMinRGBA": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "finiteComponentMaxRGBA": [
+        1.0,
+        1.0,
+        0.71630859375,
+        1.0
+      ],
+      "rgbComponentsBelowZero": 0,
+      "rgbComponentsAboveOne": 0,
+      "opaquePixels": 372624,
+      "nonopaquePixels": 62496,
+      "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+    },
+    "supportedICCSubset": {
+      "matrixToRelativeXYZD50": [
+        [
+          0.5151214599609375,
+          0.2919769287109375,
+          0.1571044921875
+        ],
+        [
+          0.2411956787109375,
+          0.6922454833984375,
+          0.0665740966796875
+        ],
+        [
+          -0.0010528564453125,
+          0.0418853759765625,
+          0.7840728759765625
+        ]
+      ],
+      "type3CurvesGammaABCThreshold": [
+        [
+          2.399993896484375,
+          0.9478607177734375,
+          0.0521392822265625,
+          0.077392578125,
+          0.0404510498046875
+        ],
+        [
+          2.399993896484375,
+          0.9478607177734375,
+          0.0521392822265625,
+          0.077392578125,
+          0.0404510498046875
+        ],
+        [
+          2.399993896484375,
+          0.9478607177734375,
+          0.0521392822265625,
+          0.077392578125,
+          0.0404510498046875
+        ]
+      ],
+      "inputDomain": "Opaque finite encoded RGB in [0,1] only; extended values are not extrapolated"
+    },
+    "comparison": {
+      "comparedPixels": 372624,
+      "excludedPixels": 58576,
+      "roiFirst": "0,0,880,490",
+      "roiSecond": "0,0,880,490",
+      "meanAbsoluteEncodedRGBDifference": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "meanAbsoluteRelativeXYZD50Difference": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximumAbsoluteRelativeXYZD50Difference": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scope": "Caller-aligned ROI comparison in actual ICC PCS D50, relative units; no inferred frame/geometry equivalence, HDR extrapolation or physical qualification"
+    }
+  },
+  "findings": [
+    "All 15 pixel captures succeeded; one wrong-bundle enumeration and two strict whole-display geometry requests were rejected before capture.",
+    "Same exact paused 20s sourcePTS/generation/revision/contentKind2/rate0 held before and after every capture.",
+    "Native full fixture is dark while PiP contains an enlarged red/green subregion. SDR and HDR controls reproduce this geometry discrepancy; no product cause assigned.",
+    "PiP independent and target-only display captures are identical over 372624 opaque pixels in the shared 880x490 ROI; 58576 nonopaque pixels excluded.",
+    "All HDR buffers carry the same DisplayP3 ICC, surface headroom1 and no RGB above1; later captures report NSScreen current/potential EDR16.",
+    "Source-frame identity comes from independently sampled application state, not screenshot samplePTS.",
+    "No alpha mode or absolute reference-white-nits value supplied; no HDR preservation, physical brightness, wide-gamut accuracy, geometry equivalence or scanout qualification."
+  ],
+  "provenance": {
+    "capturedHelperBuilds": "Uncommitted development helper; each capture records its exact executable SHA256. Geometry controls evolved between sessions.",
+    "finalHelperChangeAfterCapture": "Added a file-size precheck before reading optional caller reference JSON; CPU rebuilt, no capture behavior change.",
+    "repositoryHEADAtAggregation": "901ec86aedf3cdfa331226d2b8fb6299fc42298b",
+    "sourceFiles": {
+      "tools/HDRCaptureProbe/main.swift": "bd7b21f61074a5666ab93e528f914b638de0c8e474c77d65f9f46a6429b75305",
+      "scripts/build-hdr-capture-probe.sh": "96a549a9635b9ad205d3259f049fd5a4ef761886de7eb43383a73fc5e8e478dc",
+      "scripts/analyze-hdr-capture.py": "2a95c961dcb78d1d9894a12e2173dac14451770345cae8893fe0b97cd7bd51c2",
+      "scripts/test_hdr_capture.py": "e9c7e7511bd5903435e4168b45fbdda34aa9525168b8e56dcb21cb0a051f7605"
+    }
+  },
+  "binaryManifests": {
+    "c435aed067828a8b20b386e026dd0fdbcdc8d84025c20631cbac0a094d738723": {
+      "HDRPlayer": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+        "beforeSHA256": "2d28322efc2cab43473e4010985384ef0af173ebecd9a4f8ad0cbd45f59e4ef0",
+        "afterSHA256": "2d28322efc2cab43473e4010985384ef0af173ebecd9a4f8ad0cbd45f59e4ef0"
+      },
+      "libmpv": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+        "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+        "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a"
+      },
+      "FrameEngineShared": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      },
+      "AXHelper": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/pip-accessibility/SystemPiPAccessibility",
+        "beforeSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b",
+        "afterSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b"
+      }
+    }
+  },
+  "observedScreens": [
+    {
+      "backingScaleFactor": 2,
+      "framePoints": {
+        "height": 1169,
+        "width": 1800,
+        "x": 0,
+        "y": 0
+      },
+      "maximumExtendedDynamicRangeColorComponentValue": 16,
+      "maximumPotentialExtendedDynamicRangeColorComponentValue": 16,
+      "maximumReferenceExtendedDynamicRangeColorComponentValue": 0
+    }
+  ]
+}
