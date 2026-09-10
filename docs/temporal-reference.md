@@ -110,6 +110,25 @@ The [M3 input validation](evidence/m3-occlusion-reference-input.json) accepted a
 
 Preparation and exact source correspondence do not establish neural motion estimation, absence of ghosting, accepted temporal quality or native playback. Those require a subsequent capture and review. The natural animation and live-action references below retain their separate content and provenance.
 
+## Paired global-flash input
+
+`scripts/generate-flash-reference.py` prepares two 48-frame inputs at exact 30 fps: a static control and a matching single-frame global flash. Both reuse frame 0 of the pinned occlusion scene, including its coloured detail, dark gradients and HDR highlights. Supported scales are 1, 2 and 4 to preserve exact dyadic arithmetic. Default `--scale 4` produces 640 × 360; `--scale 1` provides 160 × 90 CPU controls. The scene and camera stay still throughout both arms.
+
+```sh
+uv run --frozen python scripts/generate-flash-reference.py \
+  --output artifacts/global-flash-input
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/global-flash-input/control/manifest.json
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/global-flash-input/flash/manifest.json
+```
+
+Only frame 24 in the flash arm differs: every source RGB component is multiplied by exactly 1.5 in Float32, without clipping. Frame 25 returns to the same original bytes as the control. All other paired frames have identical source bytes, ordinals, PTS and durations. Each arm retains 48 uniquely named RGB files and its own source/runtime/recipe pins. Separate `event-groundtruth.json` files identify the input event; they are not reset or discontinuity instructions. A complete `pair.json` is published only after both persisted inputs pass checks. Existing directories and dangling symlinks are refused; failed preparation remains available for inspection.
+
+At the default size, paired RGB inputs occupy 265,420,800 bytes. Two later four-view captures require 1,061,683,200 bytes more. Including a 2 GiB free-space reserve and 12 MiB metadata allowance across preparation and both captures requires 3,487,170,560 free bytes before starting the whole sequence. Preparation itself checks only its input payload and 4 MiB metadata requirement; a capture runner must enforce its own remaining-space and execution limits.
+
+For a later matched neural observation, use a separate fresh persistent processor per arm and supply all 48 frames with the same pinned model/runtime and 512 × 288 processing, Float16 precision, strength/colour strength 1, ratio 2, white 203 nits and automatic motion. Keep normal noise/history evolution and automatic reset decisions. Compare outputs at the same frame ordinal in the control and flash captures, retaining both reset inventories and all pre-event, event and recovery frames. Comparing a post-flash output only with a different earlier noise/history position would confound the experiment. This fixture prepares the explicit flash corpus case; it does not establish neural recovery, an ideal enhanced target, perceived flicker, a defect or source-rate performance.
+
 ## Motion-aligned occlusion analysis
 
 The controlled source has exact integer motion. After capturing its complete 48 frames, compare neural residuals at the corresponding material coordinates:
