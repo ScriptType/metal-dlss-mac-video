@@ -76,4 +76,4 @@ The Erika example accepts `ERIKA_ADAPTER_DISPLAY_WIDTH/HEIGHT` as physical video
 
 ## Remaining decision evidence
 
-Before final selection, qualify Erika's synchronized overload policy and run the same retained engine configuration on M5. Qualify source-rate Live, tracks/subtitles/chapters/frame stepping, natural temporal content, HDR mapping and window/display transitions. Direct Metal libplacebo and a custom playback core remain conditional; the current development capture does not activate either replacement.
+Final selection requires matched M5 measurements with the same retained engine configuration and an explicit assessment of source-rate Live, tracks/subtitles/chapters/frame stepping, natural temporal content, HDR mapping and window/display transitions. An unresolved Erika integration failure is valid candidate-comparison evidence under issue #11; repairing it is not a prerequisite to continuing application work against provisional mpv. Direct Metal libplacebo and a custom playback core remain conditional; the current development capture does not activate either replacement.
