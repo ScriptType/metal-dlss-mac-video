@@ -112,3 +112,40 @@ swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
 ```
 
 The test is opt-in and uses no model. Preserve the source, executed XCTest and metallib hashes with the report. The application still replaces its filter when effect settings change; this measurement does not establish complete slider latency, playback throughput, source-rate Live, temporal quality or M5 performance. Those acceptance gates remain open.
+
+## Optical-flow stage attribution
+
+Completed operation timings put VideoToolbox processing and MLX motion assessment ahead of input packing/resizing in this M3 workload. The production optical-flow algorithm is unchanged. A test-only copy adds clocks around its existing calls; removing the marked blocks and reversing two type names reproduces the production `NativeOpticalFlow.swift` bytes exactly. [Evidence](evidence/m3-flow-stage-attribution.json) and [all 288 calls](evidence/m3-flow-stage-attribution.csv) retain the measurements and comparisons.
+
+The input is the same twelve 1920 × 1080 natural SDR proxy frames, 1496–1507, used for the rejected output-pool experiment. Two persistent estimators explicitly select VideoToolbox. Four alternating matched pairs each traverse the frames three times, retaining all calls and excluding each traversal's first three from warmed summaries: 108 warmed calls per arm. Repeated 1507 → 1496 boundaries remain explicit discontinuities.
+
+| Warmed attributed operation | Mean | p95, nearest rank | Share of summed prepare wall |
+|---|---:|---:|---:|
+| Source-size half packing | 1.603 ms | 2.098 ms | 5.25% |
+| Core Image resize | 1.337 ms | 1.804 ms | 4.38% |
+| VideoToolbox session call | 14.779 ms | 19.011 ms | 48.39% |
+| MLX motion assessment | 12.676 ms | 19.663 ms | 41.50% |
+| Unattributed remainder | 0.146 ms | 0.232 ms | 0.48% |
+| Complete prepare | 30.541 ms | 37.465 ms | 100% |
+
+These are completed operation wall times, including scheduling, allocation and CPU work. The writer awaits its Metal completion handler; its separately reported GPU-command mean is 0.619 ms, nested within packing wall and excluded from the sum. Apple's [Core Image documentation from WWDC17, pages 89–91](https://devstreaming-cdn.apple.com/videos/wwdc/2017/510lf4jlju5s1/510/510_advances_in_core_image_filters_metal_vision_and_more.pdf?dl=1) states that the legacy CVPixelBuffer render API used here completes before returning. The VT interval includes destination allocation, parameter construction and callback resumption. Motion assessment includes flow import, confidence calculation, erosion, graph evaluation and scalar readback; it does not isolate erosion or any other kernel. Stage shares use summed times over the same 108 calls. Individual stage percentiles need not sum to the total percentile.
+
+The production arm's warmed mean/median/p95 are 31.336/30.389/41.195 ms; the attributed arm's are 30.541/30.643/37.465 ms. Paired totals vary across groups. This difference is not an optimization result or an isolated measurement of clock overhead. The wrappers compile in different modules, and the attributed arm alone reads working pixels between calls. Hashing, retained comparison data, repeated traversals and resource sampling also influence operating conditions. The earlier 22.870-ms production mean came from a different harness/run; unchanged flow source does not support attributing the difference to the HDR control change.
+
+All 144 paired signatures match, including one initial no-motion pair and 143 vector/confidence/scalar/reset results. All 24 direct motion-byte controls and twelve independent working-pixel controls match. The 144 attributed working-buffer hashes are stable for each source frame. Twelve tightly packed 960 × 540 RGBA16F references retain the actual logical pixel bytes; row padding is excluded, and all file writes occur after the 288 timed calls. The independent controls invoke the existing writer and resize primitives afterward; they do not expose the production estimator's private buffers. Three existing focused VT/automatic/Vision tests pass.
+
+The measured process completes in 22.927 seconds with peak sampled process-tree RSS of 672,382,976 bytes and at least 14,105,321,472 free disk bytes. Sources, runtime and inputs remain unchanged, and the temporary 256-MiB MLX cache policy is restored to its prior value. These short-run observations do not establish sustained playback or a general memory ceiling.
+
+Packing and resizing together account for 2.941 ms in the measured warmed mean. The next bounded investigation is motion assessment, with individual operation timing required before assigning its cost to erosion. Replacing the existing colour-managed resize or sharing command buffers remains an unmeasured candidate. No source-rate Live, temporal-quality, physical-display or M5 gate is closed by this attribution.
+
+To reproduce, obtain the retained proxy inputs and reconstruct the exact input manifest described in the output-pool section, then run one fresh release test process with a new output directory:
+
+```sh
+source scripts/env.sh
+MLXDLSS_FLOW_STAGE_INPUTS=/absolute/path/to/inputs.json \
+MLXDLSS_FLOW_STAGE_ATTRIBUTION_OUTPUT=/absolute/path/to/new-output \
+swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
+  --filter NativeFlowStageAttributionTests
+```
+
+The test pins the actual executed XCTest, metallib, source and inputs. Existing root debug binaries are required as contamination controls. Preserve the raw reports, recorded operational bounds and hashes when interpreting a repeat.
