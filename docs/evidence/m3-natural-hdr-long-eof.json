@@ -1,0 +1,499 @@
+{
+  "schemaVersion": 2,
+  "recordedUTC": "2026-09-10T07:44:58.637833+00:00",
+  "passed": true,
+  "scope": "Independent exact-completion and software-clock analysis; no physical A/V or Live acceptance.",
+  "artifacts": {
+    "artifacts/natural-adaptive-long-eof-1/report.json": {
+      "bytes": 22421518,
+      "sha256": "ce5aea0e86f72a2857a5d3b9bed16facf8fffedccece909e2e68860b1152429e"
+    },
+    "artifacts/natural-adaptive-long-eof-1/report.engine.json": {
+      "bytes": 1773391,
+      "sha256": "3755bb5057c21e8e7cd97b5ef4fd036a88b78037358950b840f112d45c6e6b7e"
+    },
+    "artifacts/natural-adaptive-long-eof-1/report.configuration.json": {
+      "bytes": 4290,
+      "sha256": "3fc605bc05c48c514cec86e839891de6f0c91cdc42c050efff923de609742571"
+    },
+    "artifacts/natural-adaptive-long-eof-1/report.source-timing.json": {
+      "bytes": 142514,
+      "sha256": "7ff1caad4aece902e1b2cd3bc697aa2fe7f3d835514fb1fedfdfdcd23c22225e"
+    },
+    "artifacts/natural-adaptive-long-eof-1/report.visibility.json": {
+      "bytes": 1217,
+      "sha256": "f5da385d25dc05954297b7ca1ec3bc5133f94bd2e77c35f7c0ad886dcce30c3e"
+    },
+    "artifacts/natural-adaptive-long-eof-1/report.log": {
+      "bytes": 1402003,
+      "sha256": "959af807658a29e442794329dc3a4601dbd07c82cfe42a65a60d7169319e9bda"
+    },
+    "artifacts/natural-adaptive-long-eof-1/report.native.log": {
+      "bytes": 879654,
+      "sha256": "f466e45a2dadbde4ba9da6c4cf2d0a5ffc1e3296dfe32a6bdfd70065839f970d"
+    },
+    "artifacts/natural-adaptive-long-eof-1/runner.log": {
+      "bytes": 404860,
+      "sha256": "1cb1c9185ed665415bb3c012f4662b432e1a4d32b1354569128adc1a95ec1ddc"
+    },
+    "artifacts/natural-adaptive-long-eof-1/analyze.py": {
+      "bytes": 19882,
+      "sha256": "43e23ac2fd74d69a9858e7cfa9bb119f50ed53ace9d6094c65893c2763663797"
+    },
+    "artifacts/natural-adaptive-long-eof-1/candidate.json": {
+      "bytes": 16269,
+      "sha256": "bc4a7770edd3caf2cef91ac1d48601f10c3db38341e33aada6098758aeb50caf"
+    },
+    "scripts/test-mpv-policy.py": {
+      "bytes": 38153,
+      "sha256": "61a3716fbe7910086f49fefd693af5dd0d5e088b18947751775048eba3a80217"
+    },
+    "scripts/adapter_visibility.py": {
+      "bytes": 5587,
+      "sha256": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
+    },
+    "artifacts/natural-adaptive-long-eof-1/resume-audit.py": {
+      "bytes": 1206,
+      "sha256": "062778d6cb56f21c0c664f36927fe0155e43cc4eacf8ed8f12bba986ebb201ec"
+    },
+    "artifacts/natural-adaptive-long-eof-1/resume-audit.json": {
+      "bytes": 1885,
+      "sha256": "5319e89689df75c4bad1538e029e7719eadf5314e0b9d604ffbbe9addfec953e"
+    },
+    "artifacts/async-eof-root-validation-1/ci.json": {
+      "bytes": 183,
+      "sha256": "533ecd9af339c14b6e36a2b3b506751f948561ea430d53efe1f03cf8f6c0e798"
+    }
+  },
+  "errors": [],
+  "rootRevision": "d4c46a282654a2f43cae8eac46d1561a5451d647",
+  "mpvRevision": "f9213292afed1caa77827e66fe9c9216ee5ec513",
+  "actualPlaybackWallSeconds": 388.7020189999603,
+  "requestedMaximumWallSeconds": 600.0,
+  "nativeArguments": [
+    "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv",
+    "--no-config",
+    "--vo=gpu-next",
+    "--gpu-api=vulkan",
+    "--gpu-context=macvk",
+    "--target-colorspace-hint=yes",
+    "--hwdec=videotoolbox",
+    "--ao=coreaudio",
+    "--mute=yes",
+    "--pause=yes",
+    "--keep-open=yes",
+    "--osc=no",
+    "--geometry=960x496",
+    "--keepaspect-window=no",
+    "--input-default-bindings=no",
+    "--input-builtin-bindings=no",
+    "--input-vo-keyboard=no",
+    "--input-terminal=no",
+    "--input-ipc-server=/var/folders/7p/r5sshgrj7nq60lm7dfwkksnm0000gp/T/mpv-policy-ltg_xk26/ipc",
+    "--vf=@enhance:metal-hdr=policy=adaptive:processing-width=160:processing-height=96:strength=1:colour-strength=1:reference-white=203:maximum-luminance-ratio=2:model=%116%/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel:measurement-config=%130%/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/natural-adaptive-long-eof-1/report.configuration.json:engine-report=%123%/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/natural-adaptive-long-eof-1/report.engine.json",
+    "--log-file=/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/natural-adaptive-long-eof-1/report.log",
+    "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4"
+  ],
+  "configuration": {
+    "adapter": "mpv-metal-hdr-policy",
+    "source": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "sourceWidth": 1920,
+    "sourceHeight": 1080,
+    "processingWidth": 160,
+    "processingHeight": 96,
+    "displayWidth": 960,
+    "displayHeight": 496,
+    "sourceFPS": 23.976023976023978,
+    "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "warmupFrames": 3,
+    "settingsJSON": "{\"strength\": 1, \"colourStrength\": 1, \"referenceWhiteNits\": 203, \"maximumLuminanceRatio\": 2, \"policy\": \"adaptive\"}",
+    "displayConfiguration": "gpu-next/macvk; requested drawable960x496 verified against OSD dimensions or native Vulkan swapchain log; physical calibration and brightness unreported",
+    "powerConfiguration": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=22741091)\t100%; charged; 0:00 remaining present: true"
+  },
+  "source": {
+    "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "inventoryFrames": 2360,
+    "firstFileFrameIndex": 16,
+    "lastFileFrameIndex": 2359,
+    "firstFilePTS": {
+      "value": 257017,
+      "timescale": 24000
+    },
+    "lastFilePTS": {
+      "value": 65059,
+      "timescale": 600
+    },
+    "exactSelectedSourceProgress": {
+      "value": 781781,
+      "timescale": 8000
+    },
+    "exactSelectedSourceProgressSeconds": 97.722625,
+    "timelineMapping": {
+      "nativeDemuxerStartSeconds": 9.956,
+      "rebaseStartTime": true,
+      "packetOffset": {
+        "value": -2489,
+        "timescale": 250
+      },
+      "decoderToPlayerSeconds": 0,
+      "heldFirstFilePTS": {
+        "value": 241001,
+        "timescale": 24000
+      },
+      "heldFirstDecoderPTS": {
+        "value": 2057,
+        "timescale": 24000
+      },
+      "heldFirstPlayerSeconds": 0.085708,
+      "nativeVersion": "mpv v0.41.0-1053-gf9213292a",
+      "nativeDurationSeconds": 98.517375,
+      "clockValidation": "restart_complete bracket; three held paused decoder/time-pos pairs over at least100ms; zero decoder-to-player offset validated within1us, not estimated"
+    }
+  },
+  "completionCoverage": {
+    "continuousFinalGenerationFrames": 2344,
+    "exactOrderedInventoryMatch": true,
+    "uniqueIPCObservedFileFrames": 2344,
+    "IPCObservationGaps": [],
+    "maximumIPCSampleGapSeconds": 0.04818124999292195,
+    "IPCSamples": 11926,
+    "allFramePresentationVerified": false,
+    "nativeAudioAndVideoEOF": true,
+    "pendingAtEOF": 0,
+    "finalEOFObservationUserPaused": true,
+    "engineSummary": {
+      "completedTotal": 2345,
+      "warmedSamples": 2341,
+      "completedThroughputFPS": 6.030448043357699,
+      "retainedSamples": 2345
+    }
+  },
+  "clocks": {
+    "atomicScheduledClock": {
+      "diagnosticsAvailable": true,
+      "validSamples": 11863,
+      "inactiveSamples": 2,
+      "invalidActiveSamples": 0,
+      "unavailableSamples": 0,
+      "malformedSamples": 0,
+      "activeTailSamples": 25,
+      "audioStatusCounts": {
+        "playing": 11838,
+        "eof": 27
+      },
+      "maximumAbsoluteSeconds": 0.003125,
+      "target20msMet": true,
+      "firstQuarterMedianSeconds": -0.0,
+      "lastQuarterMedianSeconds": -0.0,
+      "medianDriftSeconds": 0.0
+    },
+    "cachedTupleCoverage": {
+      "distinctCachedTuples": 2332,
+      "distinctTailCachedTuples": 5,
+      "firstTailObservation": {
+        "elapsedSeconds": 387.83918708295096,
+        "audioStatus": "eof",
+        "currentAudioPTSSeconds": 98.289042,
+        "scheduledAudioPTSSeconds": 98.251708,
+        "scheduledVideoPTSSeconds": 98.267125,
+        "scheduledAVSyncSeconds": -0.0
+      },
+      "lastTailObservation": {
+        "elapsedSeconds": 388.60763416602276,
+        "audioStatus": "eof",
+        "currentAudioPTSSeconds": 98.454375,
+        "scheduledAudioPTSSeconds": 98.417042,
+        "scheduledVideoPTSSeconds": 98.433958,
+        "scheduledAVSyncSeconds": -0.0
+      },
+      "scope": "Repeated IPC samples of cached scheduling tuples; distinct tuples are not physical presentation or acoustic samples."
+    },
+    "pauseGuard": {
+      "passed": true,
+      "maximumPauseTransitionSeconds": 0.000116708,
+      "pauseTransitionLimitSeconds": 0.05,
+      "pauseAudioClockResidualRangeSeconds": [
+        -1.887499999901328e-05,
+        2.3349999980037776e-06
+      ],
+      "maximumAbsolutePauseAudioClockResidualSeconds": 1.887499999901328e-05,
+      "pauseAudioClockResidualLimitSeconds": 0.02,
+      "nativeAudioEOF": true,
+      "nativeVideoEOF": true
+    },
+    "pauseTransitionCount": 2342,
+    "rawLegacyPostTwoSecondSamples": 11866,
+    "rawLegacyMaximumAbsoluteSeconds": 0.003125,
+    "legacyRawPropertyTarget": true,
+    "adaptiveBufferEpisodes": 2342,
+    "adaptiveBufferedSeconds": 294.434321,
+    "playbackCounterDeltas": {
+      "frame-drop-count": 0,
+      "decoder-frame-drop-count": 0,
+      "vo-delayed-frame-count": 0
+    },
+    "staleGenerationObservations": 0,
+    "resumeEstimateObservations": {
+      "scope": "Reported audio estimate at enhancement resume boundaries; separate from the pause guard and cached scheduled offsets, not physical sample continuity",
+      "count": 2343,
+      "maximumAbsoluteAudioEstimateChangeSeconds": 0.01586328999999953,
+      "largestChange": {
+        "logLine": 2689,
+        "videoPTS": 4.131416667,
+        "nextPTS": 4.173125,
+        "audioBeforePTS": 4.155708333,
+        "audioAfterPTS": 4.139845043,
+        "transitionSeconds": 5.7375e-05,
+        "audioEstimateChangeSeconds": -0.01586328999999953
+      },
+      "lateResumeRows": [
+        {
+          "logLine": 11638,
+          "videoPTS": 98.267125,
+          "nextPTS": 98.308833333,
+          "audioBeforePTS": 98.289041667,
+          "audioAfterPTS": 98.289041667,
+          "transitionSeconds": 3.475e-05,
+          "audioEstimateChangeSeconds": 0.0
+        },
+        {
+          "logLine": 11641,
+          "videoPTS": 98.308833333,
+          "nextPTS": 98.350541667,
+          "audioBeforePTS": 98.331708333,
+          "audioAfterPTS": 98.315845877,
+          "transitionSeconds": 6.225e-05,
+          "audioEstimateChangeSeconds": -0.015862455999993585
+        },
+        {
+          "logLine": 11644,
+          "videoPTS": 98.350541667,
+          "nextPTS": 98.39225,
+          "audioBeforePTS": 98.390375,
+          "audioAfterPTS": 98.390375,
+          "transitionSeconds": 6.7708e-05,
+          "audioEstimateChangeSeconds": 0.0
+        },
+        {
+          "logLine": 11648,
+          "videoPTS": 98.39225,
+          "nextPTS": 98.433958333,
+          "audioBeforePTS": 98.417041667,
+          "audioAfterPTS": 98.417041667,
+          "transitionSeconds": 6.2416e-05,
+          "audioEstimateChangeSeconds": 0.0
+        },
+        {
+          "logLine": 11651,
+          "videoPTS": 98.433958333,
+          "nextPTS": 98.475666667,
+          "audioBeforePTS": 98.454375,
+          "audioAfterPTS": 98.454375,
+          "transitionSeconds": 3.2125e-05,
+          "audioEstimateChangeSeconds": 0.0
+        }
+      ],
+      "logSHA256": "959af807658a29e442794329dc3a4601dbd07c82cfe42a65a60d7169319e9bda"
+    }
+  },
+  "seekAndComparison": {
+    "fileFrameIndex": 16,
+    "originalPreviewSeconds": 0.07014858303591609,
+    "enhancedPairSeconds": 0.9975373750785366,
+    "retainedComparisons": 6,
+    "identityAndSubmissionUnchanged": true
+  },
+  "visibility": {
+    "completedWork": {
+      "eligible": true,
+      "startHostSeconds": 1040092.6275824585,
+      "endHostSeconds": 1040480.9257105836,
+      "durationSeconds": 388.29812812502496,
+      "nativeObservationCount": 1554,
+      "maximumAllowedObservationGapSeconds": 1.5,
+      "maximumObservationGapSeconds": 0.2519894166616723,
+      "observedVisibleSeconds": 388.29812812502496,
+      "observedInactiveSeconds": 0.0,
+      "ineligibleObservations": [],
+      "reasons": [],
+      "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+    },
+    "playbackClock": {
+      "eligible": true,
+      "startHostSeconds": 1040092.32325625,
+      "endHostSeconds": 1040481.02527525,
+      "durationSeconds": 388.7020189999603,
+      "nativeObservationCount": 1556,
+      "maximumAllowedObservationGapSeconds": 1.5,
+      "maximumObservationGapSeconds": 0.2519894166616723,
+      "observedVisibleSeconds": 388.7020189999603,
+      "observedInactiveSeconds": 0.0,
+      "ineligibleObservations": [],
+      "reasons": [],
+      "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+    },
+    "eligible": true
+  },
+  "memory": {
+    "peakSampledResidentBytes": 648822784,
+    "peakRetainedBytes": 146635328,
+    "maximumQueueSlots": 2,
+    "maximumSampledPending": 2,
+    "maximumAllocatorBytes": {
+      "resident_model_payload": 291576650,
+      "mlx_active": 402175784,
+      "runtime_mlx_cache_policy": 268435456,
+      "mlx_peak_active": 709582484,
+      "mlx_cache": 293309534
+    },
+    "warmedResidentBytes": {
+      "samples": 2341,
+      "minimum": 504102912,
+      "maximum": 648822784,
+      "quarterMedians": [
+        588087296,
+        526761984,
+        525910016,
+        505872384.0
+      ]
+    },
+    "warmedRetainedBytes": {
+      "samples": 2341,
+      "minimum": 73317664,
+      "maximum": 146635328,
+      "quarterMedians": [
+        146635328,
+        146635328,
+        146635328,
+        146635328.0
+      ]
+    },
+    "warmedAllocatorBytes": {
+      "resident_model_payload": {
+        "samples": 2341,
+        "minimum": 291576650,
+        "maximum": 291576650,
+        "quarterMedians": [
+          291576650,
+          291576650,
+          291576650,
+          291576650.0
+        ]
+      },
+      "mlx_active": {
+        "samples": 2341,
+        "minimum": 402159400,
+        "maximum": 402175784,
+        "quarterMedians": [
+          402159400,
+          402159400,
+          402159400,
+          402159400.0
+        ]
+      },
+      "runtime_mlx_cache_policy": {
+        "samples": 2341,
+        "minimum": 268435456,
+        "maximum": 268435456,
+        "quarterMedians": [
+          268435456,
+          268435456,
+          268435456,
+          268435456.0
+        ]
+      },
+      "mlx_peak_active": {
+        "samples": 2341,
+        "minimum": 709582484,
+        "maximum": 709582484,
+        "quarterMedians": [
+          709582484,
+          709582484,
+          709582484,
+          709582484.0
+        ]
+      },
+      "mlx_cache": {
+        "samples": 2341,
+        "minimum": 268439206,
+        "maximum": 293309534,
+        "quarterMedians": [
+          277006986,
+          276991164,
+          276843686,
+          277015740.0
+        ]
+      }
+    },
+    "nativeSessionPeakSlotsIncludingLifecycle": 3,
+    "nativeSessionPeakRetainedBytesIncludingLifecycle": 219952992
+  },
+  "unchanged": {
+    "binaries": true,
+    "source": true,
+    "model": true,
+    "coreSources": true,
+    "diagnosticSources": true
+  },
+  "coreSources": {
+    "demux/demux_lavf.c": "85062faec38b4b1b506ed1400f01bec8588e31b4cb93f7410acd618c9604c686",
+    "demux/lavf_timing.h": "8d8298739252e62babc273ec68f72e7dc71055f33fb8142e8d5a489d0a071cca",
+    "player/video.c": "57faed6fc6baeae559e2a46608e29609d9a03806e3575d7b059f4c991d47f563",
+    "player/command.c": "ed6d8037429ac473107007710990155b5d4d6758e415461803443d99bc27934d",
+    "player/audio.c": "7c7755e1d279f4cadbb0ea6e5944947322153c941b3dbea0dbff1b34c27cf96d",
+    "player/playloop.c": "fad6819b5ce03b59dc4ffa4cc6abeadcfd017e194ed349f0447c9c3ce3165b3b",
+    "player/core.h": "cb723fb0145c84e5ca5fdf1bc5fdc4bc868e5533e76da129950af181511bd2d1",
+    "player/hdr_audio_clock.h": "c55310fd66600874262dafa498d64591306b09bb68a2f73d5d877d033c8ec126",
+    "video/filter/vf_metal_hdr.m": "cf176874aa84c5650224a61a4d6c9073f6e4ec3db800fa8fd19722e08e636a30",
+    "video/filter/metal_hdr_live_policy.h": "35b6fe475fcf225ca98d46f4b08a2591a0357a0338d3918afe80d1c98208564d",
+    "audio/out/buffer.c": "436368b478776b9ca86804f631758342b209dddfb9eb0e047f8061074104b53d",
+    "audio/out/ao_coreaudio.c": "895d72d5608c4674e31232c932cb6975348cefc13c85bae811425720f9779da4",
+    "video/out/vo.c": "f0c98e1fc495fe1aa42d1badae7ec79e8d3ae6c1cf2e8dfcf11f412f2a05f620",
+    "video/out/mac_common.swift": "03dcbbc362bf3750b4210a97f948c639f27522b0301d11ee7221ee26161840dd",
+    "video/out/mac/common.swift": "25eb3a9d25ace5182902ba2e410f99dce9d9570f23044f6fbff81720bc30a9e4",
+    "video/out/mac/metal_layer.swift": "3f85199e87f5a09895854149667f4a13f1dd5708d71aaab234544b14219af0d3",
+    "video/out/vulkan/context_mac.m": "d27c20adc80a2ea5bc52b7359a53edb28a839a1c76a5500196ca6a2e2038ec4c"
+  },
+  "binaries": {
+    "artifacts/mpv-build/mpv": {
+      "sha256": "9f76730ed6d201bd262ff00e79d7bb4896af440aa0e75d381a334c26c77ae778",
+      "bytes": 5598448,
+      "modifiedNanoseconds": 1789025203476868653
+    },
+    "artifacts/mpv-build/libmpv.2.dylib": {
+      "sha256": "9f3ab2ad5e3cc142d3f62da3137697b828efe3ddf7178b810be42671d1ed5bdd",
+      "bytes": 5598000,
+      "modifiedNanoseconds": 1789025203463158037
+    },
+    ".build/debug/libFrameEngineShared.dylib": {
+      "sha256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+      "bytes": 50139368,
+      "modifiedNanoseconds": 1789001404872626604
+    },
+    ".build/debug/mlx.metallib": {
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+      "bytes": 107392404,
+      "modifiedNanoseconds": 1789025580790921775
+    }
+  },
+  "limitations": [
+    "160x96 processing is below the320x192 Live eligibility minimum. Buffered Adaptive throughput is not source-rate Live; no automatic Live recovery was exercised.",
+    "Continuous playback covers source frames16 through2359 only; the first16 frames are outside this interval.",
+    "Every frame must complete with exact PTS. Missing IPC observations remain explicit; zero drop counters do not prove physical presentation of every frame.",
+    "Atomic tuples describe cached scheduled audio-minus-video plus native scheduling offsets. Repeated samples and zero residuals do not independently prove acoustic/display synchronization or scanout.",
+    "The first2 wall seconds, user-paused and seeking samples are excluded from steady clock qualification. Their raw records remain retained; all logged enhancement pause transitions are checked.",
+    "AO-playing bounds the observable software queue clock. A final hardware audio tail may outlive that flag; physical final-device-sample synchronization is unqualified.",
+    "MLX cache policy is soft. Sampled process/allocator/retained-byte metrics are not hard instantaneous allocation limits.",
+    "This single natural HDR10+ source and finite interval do not establish hour-scale playback, other audio outputs, physical HDR quality, accepted temporal quality or M5 performance."
+  ],
+  "relatedEvidence": {
+    "baselineWithFailedEOFTiming": "m3-natural-hdr-long-adaptive.json",
+    "fixAndFocusedControls": "m3-enhancement-audio-eof.json"
+  },
+  "fixRevisionCI": {
+    "conclusion": "success",
+    "headSha": "d4c46a282654a2f43cae8eac46d1561a5451d647",
+    "status": "completed",
+    "url": "https://github.com/ScriptType/metal-dlss-mac-video/actions/runs/34450918206"
+  }
+}

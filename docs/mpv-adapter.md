@@ -298,3 +298,23 @@ python3 scripts/test-mpv-policy.py \
 ```
 
 Repeat in a new report directory with `--gapless-audio=no` for the explicit draining control. Omit the file seek and use `--seconds 600` for the full remaining-clip regression.
+
+### Continuous playback with valid EOF clocks
+
+The [fixed full-clip repeat](evidence/m3-natural-hdr-long-eof.json), captured from clean root `d4c46a2` and mpv `f9213292a`, completes all 2,344 source frames 16–2359 in exact order. IPC observes every selected source frame. The 97.722625-second source span takes 388.702 wall seconds at 6.03 warmed FPS, with 294.434 seconds of shared buffering. Both streams reach EOF, pending work drains to zero and the process exits cleanly. Six paused original/enhanced comparisons retain exact identity without additional submissions.
+
+All 11,863 valid steady scheduling samples stay within 3.125 ms, with zero first/last-quarter median drift. They include 25 active logical-EOF samples spanning five distinct cached scheduling tuples. Two inactive observations remain explicitly unavailable; no active steady sample has missing, invalid or malformed diagnostics. All 2,342 logged enhancement pause transitions pass: the maximum duration is 116.708 microseconds, and maximum absolute audio-clock change minus elapsed time is 18.875 microseconds. This satisfies the reported 20-ms scheduled-clock target through the software-observable queued tail and replaces the failed baseline's timing acceptance.
+
+Native visibility covers the full interval. No decoder/VO drops or stale generations are reported. Sampled admission peaks at two frames; the native session, including lifecycle operations, peaks at three slots and 219,952,992 retained bytes. RSS peaks at 648,822,784 bytes with decreasing quarter medians. Warmed MLX active memory stays approximately 402.16 MB; cache medians remain approximately 277 MB, with a 293,309,534-byte maximum under its soft cache policy.
+
+Resume-boundary logs separately show audio-estimate adjustments up to 15.863 ms, including a 15.862-ms backward adjustment during the EOF tail. These are distinct from the pause guard and cached scheduling offsets. Cached offsets and sampled frame identity do not establish physical acoustic/display synchronization or scanout; the AO-playing boundary does not establish when the final hardware sample finishes. Source-rate Live, additional audio devices, hour-scale stability, physical HDR and temporal visual quality remain unqualified. The earlier failed full run and focused baseline are retained unchanged.
+
+### M3 Live qualification at the minimum eligible size
+
+The [320×192 native trial](evidence/m3-minimum-live-window.json) fills the production qualification window using the unchanged Apple HDR10+ source at 24000/1001 fps. After 63 real completions, including three excluded cold frames and 60 warmed samples, native p95 is 341.478 ms against a 33.367-ms deadline budget. An explicit Live request is rejected and playback remains Adaptive. This measures the production decision at an eligible processing size; no source-rate or timing override is used.
+
+Native qualification measures filter admission through completed output normalization, including queued work. Its p95 differs from the engine's 171.921-ms completed-work p95, which excludes queue waiting. The engine completes 71 frames, including 68 warmed samples, at 7.23 FPS. Over 10.158 wall seconds, selected source time advances 2.878 seconds and buffers for 7.269 seconds. Admission peaks at two frames, reported drops remain zero, 142 valid steady scheduling samples have zero maximum offset, and shutdown is clean.
+
+Both the 60-warmed-frame interval and the whole unpaused playback interval pass native visibility with a maximum 251-ms observation gap. The original report falsely rejected these intervals because terminal status prefixes hid complete JSON records; a separate CPU audit recovers every raw native record. The three cold startup frames retain their visibility failure, and an earlier startup-only FPS-precision failure is also preserved. Neither raw report is rewritten. Source, model and runtime pins remain unchanged.
+
+Live remains unqualified for this measured M3 configuration. The result does not establish that every possible M3 optimization is infeasible, or predict M5 performance. Physical presentation and temporal visual quality remain separate acceptance work.
