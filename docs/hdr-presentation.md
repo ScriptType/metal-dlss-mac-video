@@ -2,6 +2,8 @@
 
 `HDRMetalView` is the native development surface. `NativeHDRPlayback` feeds it decoded SDR, PQ and HLG originals; this controller is a video-only harness. Selected-core audio, seeks, track controls and neural playback remain separate integration work.
 
+The embedded mpv player uses a different native output path. Its [linear HDR colour audit](native-hdr-color-audit.md) identifies target-range loss and mismatched Metal-layer optical units. The development surface policy below does not establish correctness of that player path.
+
 ## Buffer and colour policy
 
 The original bypass boundary is an evaluated `MLXHDRFrame.original`: linear BT.2020 RGB in absolute cd/m². `MLXPixelBufferWriter(halfOutput: true)` packs that image into RGBA16F without RGB clipping. `HDRSurfaceFrame` binds its CoreVideo Metal texture directly, retains the original and packed owners through presentation completion, and carries rational time/duration, source/frame/generation identity and geometry. No sRGB proxy is involved in bypass.
