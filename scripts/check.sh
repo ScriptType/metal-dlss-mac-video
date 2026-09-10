@@ -5,7 +5,10 @@ cd "$PROJECT_ROOT"
 for script in scripts/*.sh; do bash -n "$script"; done
 python3 -m compileall -q scripts
 python3 -m unittest discover -s scripts -p test_adapter_visibility.py
+python3 -m unittest discover -s scripts -p test_dovi_fixtures.py
 python3 -m unittest discover -s scripts -p test_apple_hdr_samples.py
+python3 -m unittest discover -s scripts -p test_apple_hdr_playback.py
+python3 -m unittest discover -s scripts -p test_mpv_prepared_timing.py
 bash scripts/test-player-lifecycle.sh
 npm --prefix apps/controls run check
 npm --prefix apps/controls run build

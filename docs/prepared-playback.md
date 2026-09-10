@@ -65,6 +65,8 @@ Each reader's open/next/close callbacks run serially on a dedicated utility queu
 
 The [selected-core mpv/FFmpeg provider](mpv-adapter.md#prepared-playback) opens an independent instance of the actual playback demuxer and a separate VideoToolbox decoder. It preserves native Matroska's explicit/missing duration distinction and the playback core's timestamp rebasing. Real neural MP4, Matroska and variable-rate Matroska tests verify preparation, exact hits, original misses and restart reuse. Variable-rate cancellation/resume also verifies that incomplete work remains unpublished. No full-file temporary remux or rawvideo timing guesses are used.
 
+For a source with a nonzero container origin, original-file inventory PTS and decoder/cache PTS can differ. mpv applies the selected core's packet offset before decoding; the independent provider copies that exact offset and binds it in the cache identity together with its native revision. Cache ranges use the resulting decoder timeline. The exporter separately describes decoder-to-player mapping. The [Apple nonzero-start regression](apple-hdr-playback.md#prepared-nonzero-start-regression) verifies both coordinates, exact duration digests and zero-work reopening with six full-resolution float cache frames. Its six opening source frames are black, so this test establishes timing/cache integration rather than natural-scene reconstruction quality.
+
 ## Shutdown and evidence
 
 Cancel preparation, close every playback session, asynchronously poll both `fe_session_is_idle` and `fe_prepared_is_idle`, release output leases, and destroy the session/context before process or library teardown. Ordinary destruction is nonblocking and retained asynchronous work keeps its context alive.

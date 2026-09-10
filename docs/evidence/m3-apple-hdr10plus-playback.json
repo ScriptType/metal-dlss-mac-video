@@ -1,0 +1,895 @@
+{
+  "schemaVersion": 1,
+  "scope": "Apple HDR10+ native metadata, one real neural frame, retained comparison and original-only last-frame coverage on Apple M3; metadata-only",
+  "source": {
+    "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+    "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "bytes": 41784502
+  },
+  "sourceCatalog": {
+    "path": "config/apple-hdr-samples.json",
+    "sha256": "ef2a08ac2a400fb47a04ed4e7b687a6f1e1b6751ca2b71e4fea9c519c3f22812"
+  },
+  "commands": {
+    "build": "bash scripts/build-hdr-source-transition-probe.sh",
+    "capture": "python3 scripts/test-apple-hdr-playback.py --metadata-only --output artifacts/apple-hdr10plus-native-metadata",
+    "cpuTests": "python3 -m unittest discover -s scripts -p 'test_apple_hdr_playback.py' -v"
+  },
+  "result": {
+    "nativeHostPassed": true,
+    "nativeHostCheckCount": 13,
+    "nativeHostExitCode": 0,
+    "originalWrapperPassed": false,
+    "originalWrapperError": "Completed CVPixelBuffer attachment contract differs",
+    "cpuRevalidationPassed": true,
+    "cpuRegressionTests": 14,
+    "binariesUnchangedDuringCapture": true,
+    "sckCaptureAttempted": false
+  },
+  "implementation": {
+    "revisionsAtCapture": {
+      "root": "4f84ae31b3447308e52dc424f8ad0f02bdf51fc7",
+      "mpv": "ae579755614cd8a0edf7c6f9d94c0095c7d26216",
+      "libplacebo": "3330a515d62139259c26239014f286e233bd3a5c"
+    },
+    "binaries": {
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/hdr-source-transition-probe/HDRSourceTransitionProbe": {
+        "beforeSHA256": "4138f3aac87b43684fc17dedd2c1f0c5f5a00f4ed28a5b95832f3472c8ac00db",
+        "afterSHA256": "4138f3aac87b43684fc17dedd2c1f0c5f5a00f4ed28a5b95832f3472c8ac00db"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib": {
+        "beforeSHA256": "e29bb9cbe0346a10b88a1c997880bc756afc2c7cb3a6ecd5bdda401b0e126b3b",
+        "afterSHA256": "e29bb9cbe0346a10b88a1c997880bc756afc2c7cb3a6ecd5bdda401b0e126b3b"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/local/lib/libplacebo.371.dylib": {
+        "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+        "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+      },
+      "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+        "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+        "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors": {
+        "beforeSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+        "afterSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/mlx.metallib": {
+        "beforeSHA256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+        "afterSHA256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      }
+    },
+    "sourceHashesAtCapture": {
+      "scripts/test-apple-hdr-playback.py": "ef5f42e779cb7b2039137597b4fb9f8d0c1ad081f91dfe8f2c3dad5129d78ec3",
+      "tools/HDRSourceTransitionProbe/main.swift": "b7cc1886ce0b99d3170907b3c748c9cb18bff8696d061e39ebe100d181c3eee5",
+      "apps/macos/Sources/PiPBufferSnapshot.swift": "0b57aa739b8d1a7e53e5be137e9dcff95345d63e32ff0e369ac4d0a16850e5a1",
+      "vendor/mpv/video/out/vulkan/context_mac.m": "d27c20adc80a2ea5bc52b7359a53edb28a839a1c76a5500196ca6a2e2038ec4c",
+      "vendor/mpv/video/out/mac_common.swift": "03dcbbc362bf3750b4210a97f948c639f27522b0301d11ee7221ee26161840dd"
+    },
+    "timingSourceArchive": {
+      "vendor/mpv/demux/lavf_timing.h": {
+        "sha256": "154b92eac895248c87d091c3e5a9f2213038d2ed8e35ff2eadf4a77b3e9145aa",
+        "retained": "artifacts/apple-hdr10plus-native-metadata-timing-source/lavf_timing.h"
+      },
+      "vendor/mpv/demux/demux_lavf.c": {
+        "sha256": "85062faec38b4b1b506ed1400f01bec8588e31b4cb93f7410acd618c9604c686",
+        "retained": "artifacts/apple-hdr10plus-native-metadata-timing-source/demux_lavf.c"
+      },
+      "vendor/mpv/video/filter/metal_hdr_decoder.m": {
+        "sha256": "e432521228619b00413955268bf4d9c62491417d7a511e5c16b8885248674bfc",
+        "retained": "artifacts/apple-hdr10plus-native-metadata-timing-source/metal_hdr_decoder.m"
+      }
+    }
+  },
+  "processing": {
+    "hardware": "Apple M3",
+    "width": 160,
+    "height": 96,
+    "sourceWidth": 1920,
+    "sourceHeight": 1080,
+    "strength": 1,
+    "colourStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "referenceWhiteNits": 203,
+    "completedNeuralFrames": 1,
+    "scope": "Single cold selected-frame integration; no sustainable throughput or Live qualification"
+  },
+  "timelineMapping": {
+    "demuxPacketOffset": {
+      "timescale": 24000,
+      "value": -238944
+    },
+    "ffprobeFormatStartSeconds": 9.956,
+    "heldInitialIdentity": {
+      "buffering": 0,
+      "clockSource": 2,
+      "clockValid": 1,
+      "contentKind": 0,
+      "decoderDuration": {
+        "timescale": 0,
+        "value": 0
+      },
+      "decoderPTS": {
+        "timescale": 24000,
+        "value": 2057
+      },
+      "decoderToPlayerSeconds": 0,
+      "exporterTimingSemantics": "ABI source_pts is decoder-native after demux packet offset; source_to_player is decoder-to-player",
+      "generation": 1,
+      "hostTicks": 24556221900540,
+      "mediaSeconds": 0.08570833333333333,
+      "originalFilePTS": {
+        "timescale": 24000,
+        "value": 241001
+      },
+      "outstandingLeases": 0,
+      "pendingFrames": 0,
+      "playerPTSSeconds": 0.08570833333333333,
+      "producerPoolCapacity": 6,
+      "rate": 0,
+      "reason": 2,
+      "revision": 4,
+      "streamEpoch": 4,
+      "supported": 0,
+      "userPaused": 1
+    },
+    "nativeDemuxerStartSeconds": 9.956,
+    "nativeRebaseStartTime": true,
+    "observedDecoderToPlayerSeconds": 0,
+    "scope": "File inventory + exact demux packet offset = decoder-native PTS; exporter separately maps decoder PTS to player PTS",
+    "timePosAtObservation": 0.085708
+  },
+  "selectedPhases": [
+    {
+      "name": "original-pq",
+      "identity": {
+        "buffering": 0,
+        "clockSource": 1,
+        "clockValid": 1,
+        "contentKind": 0,
+        "decoderDuration": {
+          "timescale": 0,
+          "value": 0
+        },
+        "decoderPTS": {
+          "timescale": 24000,
+          "value": 1503557
+        },
+        "decoderToPlayerSeconds": -7.105427357601002e-15,
+        "exporterTimingSemantics": "ABI source_pts is decoder-native after demux packet offset; source_to_player is decoder-to-player",
+        "generation": 2,
+        "hostTicks": 24556228338561,
+        "mediaSeconds": 62.648208333333294,
+        "originalFilePTS": {
+          "timescale": 24000,
+          "value": 1742501
+        },
+        "outstandingLeases": 0,
+        "pendingFrames": 0,
+        "playerPTSSeconds": 62.64820833333333,
+        "producerPoolCapacity": 6,
+        "rate": 0,
+        "reason": 2,
+        "revision": 5,
+        "streamEpoch": 5,
+        "supported": 0,
+        "userPaused": 1
+      },
+      "videoOutParams": {
+        "alpha": "none",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "average-bpp": 24,
+        "avg-pq-y": 0.418389,
+        "chroma-location": "uhd",
+        "colorlevels": "limited",
+        "colormatrix": "bt.2020-ncl",
+        "crop-h": 1080,
+        "crop-w": 1920,
+        "crop-x": 0,
+        "crop-y": 0,
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "pq",
+        "h": 1080,
+        "hw-pixelformat": "p010",
+        "light": "display",
+        "max-cll": 1375,
+        "max-fall": 188,
+        "max-luma": 1000,
+        "max-pq-y": 0.655929,
+        "min-luma": 0.005,
+        "par": 1,
+        "pixelformat": "videotoolbox",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "scene-avg": 52,
+        "scene-max-b": 522.5,
+        "scene-max-g": 472.899994,
+        "scene-max-r": 541.700012,
+        "sig-peak": 4.926108,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "videoTargetParams": {
+        "alpha": "straight",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "chroma-location": "unknown",
+        "colorlevels": "full",
+        "colormatrix": "rgb",
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "pq",
+        "h": 1080,
+        "light": "auto",
+        "max-cll": 1375,
+        "max-fall": 188,
+        "max-luma": 1000,
+        "min-luma": 0.005,
+        "par": "nan",
+        "pixelformat": "bgr10a2",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "sig-peak": 4.926108,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "submittedFrames": 0,
+      "completedFrames": 0
+    },
+    {
+      "name": "enhanced",
+      "identity": {
+        "buffering": 1,
+        "clockSource": 1,
+        "clockValid": 1,
+        "contentKind": 2,
+        "decoderDuration": {
+          "timescale": 24000,
+          "value": 1001
+        },
+        "decoderPTS": {
+          "timescale": 24000,
+          "value": 1503557
+        },
+        "decoderToPlayerSeconds": -7.105427357601002e-15,
+        "exporterTimingSemantics": "ABI source_pts is decoder-native after demux packet offset; source_to_player is decoder-to-player",
+        "generation": 4,
+        "hostTicks": 24556424428160,
+        "mediaSeconds": 62.648208333333294,
+        "originalFilePTS": {
+          "timescale": 24000,
+          "value": 1742501
+        },
+        "outstandingLeases": 2,
+        "pendingFrames": 0,
+        "playerPTSSeconds": 62.64820833333333,
+        "producerPoolCapacity": 6,
+        "rate": 0,
+        "reason": 0,
+        "revision": 15,
+        "streamEpoch": 15,
+        "supported": 1,
+        "userPaused": 1
+      },
+      "videoOutParams": {
+        "alpha": "straight",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "average-bpp": 64,
+        "chroma-location": "mpeg1/jpeg",
+        "colorlevels": "full",
+        "colormatrix": "rgb",
+        "crop-h": 1080,
+        "crop-w": 1920,
+        "crop-x": 0,
+        "crop-y": 0,
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "linear",
+        "h": 1080,
+        "hw-pixelformat": "rgbaf16",
+        "light": "display",
+        "max-cll": 342.446075,
+        "max-fall": 0,
+        "max-luma": 342.446075,
+        "min-luma": 1e-06,
+        "par": 1,
+        "pixelformat": "videotoolbox",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "sig-peak": 1.686926,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "videoTargetParams": {
+        "alpha": "straight",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "chroma-location": "unknown",
+        "colorlevels": "full",
+        "colormatrix": "rgb",
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "linear",
+        "h": 1080,
+        "light": "auto",
+        "max-cll": 342.446075,
+        "max-fall": 0,
+        "max-luma": 342.446075,
+        "min-luma": 1e-06,
+        "par": "nan",
+        "pixelformat": "rgba16hf",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "sig-peak": 1.686926,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "submittedFrames": 1,
+      "completedFrames": 1
+    },
+    {
+      "name": "retained-original",
+      "identity": {
+        "buffering": 1,
+        "clockSource": 1,
+        "clockValid": 1,
+        "contentKind": 1,
+        "decoderDuration": {
+          "timescale": 0,
+          "value": 0
+        },
+        "decoderPTS": {
+          "timescale": 24000,
+          "value": 1503557
+        },
+        "decoderToPlayerSeconds": -7.105427357601002e-15,
+        "exporterTimingSemantics": "ABI source_pts is decoder-native after demux packet offset; source_to_player is decoder-to-player",
+        "generation": 4,
+        "hostTicks": 24556431683112,
+        "mediaSeconds": 62.648208333333294,
+        "originalFilePTS": {
+          "timescale": 24000,
+          "value": 1742501
+        },
+        "outstandingLeases": 1,
+        "pendingFrames": 0,
+        "playerPTSSeconds": 62.64820833333333,
+        "producerPoolCapacity": 6,
+        "rate": 0,
+        "reason": 2,
+        "revision": 17,
+        "streamEpoch": 16,
+        "supported": 0,
+        "userPaused": 1
+      },
+      "videoOutParams": {
+        "alpha": "none",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "average-bpp": 24,
+        "avg-pq-y": 0.418389,
+        "chroma-location": "uhd",
+        "colorlevels": "limited",
+        "colormatrix": "bt.2020-ncl",
+        "crop-h": 1080,
+        "crop-w": 1920,
+        "crop-x": 0,
+        "crop-y": 0,
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "pq",
+        "h": 1080,
+        "hw-pixelformat": "p010",
+        "light": "display",
+        "max-cll": 1375,
+        "max-fall": 188,
+        "max-luma": 1000,
+        "max-pq-y": 0.655929,
+        "min-luma": 0.005,
+        "par": 1,
+        "pixelformat": "videotoolbox",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "scene-avg": 52,
+        "scene-max-b": 522.5,
+        "scene-max-g": 472.899994,
+        "scene-max-r": 541.700012,
+        "sig-peak": 4.926108,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "videoTargetParams": {
+        "alpha": "straight",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "chroma-location": "unknown",
+        "colorlevels": "full",
+        "colormatrix": "rgb",
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "pq",
+        "h": 1080,
+        "light": "auto",
+        "max-cll": 1375,
+        "max-fall": 188,
+        "max-luma": 1000,
+        "min-luma": 0.005,
+        "par": "nan",
+        "pixelformat": "bgr10a2",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "sig-peak": 4.926108,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "submittedFrames": 1,
+      "completedFrames": 1
+    },
+    {
+      "name": "retained-enhanced",
+      "identity": {
+        "buffering": 1,
+        "clockSource": 1,
+        "clockValid": 1,
+        "contentKind": 2,
+        "decoderDuration": {
+          "timescale": 24000,
+          "value": 1001
+        },
+        "decoderPTS": {
+          "timescale": 24000,
+          "value": 1503557
+        },
+        "decoderToPlayerSeconds": -7.105427357601002e-15,
+        "exporterTimingSemantics": "ABI source_pts is decoder-native after demux packet offset; source_to_player is decoder-to-player",
+        "generation": 4,
+        "hostTicks": 24556438165023,
+        "mediaSeconds": 62.648208333333294,
+        "originalFilePTS": {
+          "timescale": 24000,
+          "value": 1742501
+        },
+        "outstandingLeases": 2,
+        "pendingFrames": 0,
+        "playerPTSSeconds": 62.64820833333333,
+        "producerPoolCapacity": 6,
+        "rate": 0,
+        "reason": 0,
+        "revision": 19,
+        "streamEpoch": 17,
+        "supported": 1,
+        "userPaused": 1
+      },
+      "videoOutParams": {
+        "alpha": "straight",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "average-bpp": 64,
+        "chroma-location": "mpeg1/jpeg",
+        "colorlevels": "full",
+        "colormatrix": "rgb",
+        "crop-h": 1080,
+        "crop-w": 1920,
+        "crop-x": 0,
+        "crop-y": 0,
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "linear",
+        "h": 1080,
+        "hw-pixelformat": "rgbaf16",
+        "light": "display",
+        "max-cll": 342.446075,
+        "max-fall": 0,
+        "max-luma": 342.446075,
+        "min-luma": 1e-06,
+        "par": 1,
+        "pixelformat": "videotoolbox",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "sig-peak": 1.686926,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "videoTargetParams": {
+        "alpha": "straight",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "chroma-location": "unknown",
+        "colorlevels": "full",
+        "colormatrix": "rgb",
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "linear",
+        "h": 1080,
+        "light": "auto",
+        "max-cll": 342.446075,
+        "max-fall": 0,
+        "max-luma": 342.446075,
+        "min-luma": 1e-06,
+        "par": "nan",
+        "pixelformat": "rgba16hf",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "sig-peak": 1.686926,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "submittedFrames": 1,
+      "completedFrames": 1
+    },
+    {
+      "name": "last-original-pq",
+      "identity": {
+        "buffering": 0,
+        "clockSource": 1,
+        "clockValid": 1,
+        "contentKind": 0,
+        "decoderDuration": {
+          "timescale": 0,
+          "value": 0
+        },
+        "decoderPTS": {
+          "timescale": 24000,
+          "value": 2363416
+        },
+        "decoderToPlayerSeconds": 0,
+        "exporterTimingSemantics": "ABI source_pts is decoder-native after demux packet offset; source_to_player is decoder-to-player",
+        "generation": 6,
+        "hostTicks": 24556450777460,
+        "mediaSeconds": 98.47566666666623,
+        "originalFilePTS": {
+          "timescale": 24000,
+          "value": 2602360
+        },
+        "outstandingLeases": 0,
+        "pendingFrames": 0,
+        "playerPTSSeconds": 98.47566666666667,
+        "producerPoolCapacity": 6,
+        "rate": 0,
+        "reason": 2,
+        "revision": 21,
+        "streamEpoch": 19,
+        "supported": 0,
+        "userPaused": 1
+      },
+      "videoOutParams": {
+        "alpha": "none",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "average-bpp": 24,
+        "avg-pq-y": 0.14178,
+        "chroma-location": "uhd",
+        "colorlevels": "limited",
+        "colormatrix": "bt.2020-ncl",
+        "crop-h": 1080,
+        "crop-w": 1920,
+        "crop-x": 0,
+        "crop-y": 0,
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "pq",
+        "h": 1080,
+        "hw-pixelformat": "p010",
+        "light": "display",
+        "max-cll": 1375,
+        "max-fall": 188,
+        "max-luma": 1000,
+        "max-pq-y": 0.618044,
+        "min-luma": 0.005,
+        "par": 1,
+        "pixelformat": "videotoolbox",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "scene-avg": 1.2,
+        "scene-max-b": 408.899994,
+        "scene-max-g": 356.600006,
+        "scene-max-r": 343.799988,
+        "sig-peak": 4.926108,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "videoTargetParams": {
+        "alpha": "straight",
+        "aspect": 1.777778,
+        "aspect-name": "16:9",
+        "chroma-location": "unknown",
+        "colorlevels": "full",
+        "colormatrix": "rgb",
+        "dh": 1080,
+        "dw": 1920,
+        "gamma": "pq",
+        "h": 1080,
+        "light": "auto",
+        "max-cll": 1375,
+        "max-fall": 188,
+        "max-luma": 1000,
+        "min-luma": 0.005,
+        "par": "nan",
+        "pixelformat": "bgr10a2",
+        "primaries": "bt.2020",
+        "rotate": 0,
+        "sar": 1.777778,
+        "sar-name": "16:9",
+        "sig-peak": 4.926108,
+        "stereo-in": "mono",
+        "w": 1920
+      },
+      "submittedFrames": 1,
+      "completedFrames": 1
+    }
+  ],
+  "lastFrameRangeCheck": {
+    "declaredDurationSeconds": 98.517375,
+    "declaredPlayerEndSeconds": 98.517375,
+    "declaredPlayerOriginSeconds": 0,
+    "inferenceAfter": {
+      "buffer-count": 1,
+      "buffer-seconds": 8.98562,
+      "buffering": false,
+      "colour-strength": 1,
+      "compare-ready": false,
+      "comparison": "enhanced",
+      "completed-frames": 1,
+      "completed-p95-seconds": 0,
+      "displayed-dolby-vision-metadata": false,
+      "displayed-source-pts": 2363416,
+      "displayed-timebase-den": 24000,
+      "displayed-timebase-num": 1,
+      "enhancement-unavailable-reason": "",
+      "generation": 6,
+      "hardware": "Apple M3",
+      "live-qualified": false,
+      "model": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel",
+      "native-color-path": "standard",
+      "pending-frames": 0,
+      "policy": "bypass",
+      "prepared-supported": true,
+      "preview-pending": false,
+      "processing-height": 96,
+      "processing-width": 160,
+      "source-dolby-vision": false,
+      "source-fps": 23.976024,
+      "source-height": 1080,
+      "source-width": 1920,
+      "strength": 1,
+      "submitted-frames": 1,
+      "warmed-samples": 0
+    },
+    "inferenceBefore": {
+      "buffer-count": 1,
+      "buffer-seconds": 8.985269,
+      "buffering": true,
+      "colour-strength": 1,
+      "compare-ready": true,
+      "comparison": "enhanced",
+      "completed-frames": 1,
+      "completed-p95-seconds": 0,
+      "displayed-content-kind": "enhanced",
+      "displayed-dolby-vision-metadata": false,
+      "displayed-generation": 4,
+      "displayed-source-pts": 1503557,
+      "displayed-timebase-den": 24000,
+      "displayed-timebase-num": 1,
+      "enhancement-unavailable-reason": "",
+      "generation": 4,
+      "hardware": "Apple M3",
+      "live-qualified": false,
+      "model": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel",
+      "native-color-path": "standard",
+      "pending-frames": 0,
+      "policy": "adaptive",
+      "prepared-supported": true,
+      "preview-pending": false,
+      "processing-height": 96,
+      "processing-width": 160,
+      "source-dolby-vision": false,
+      "source-fps": 23.976024,
+      "source-height": 1080,
+      "source-width": 1920,
+      "strength": 1,
+      "submitted-frames": 1,
+      "warmed-samples": 0
+    },
+    "lastFileDuration": {
+      "timescale": 24000,
+      "value": 1001
+    },
+    "lastFilePTS": {
+      "timescale": 24000,
+      "value": 2602360
+    },
+    "lastFramePlayerEndSeconds": 98.517375
+  },
+  "leaseDrainSnapshot": {
+    "hostTicks": 24556450969725,
+    "outstandingLeases": 0,
+    "status": 3,
+    "unexpectedLeaseReturned": false
+  },
+  "maximumObservedLeases": 2,
+  "coreDestroyed": true,
+  "normalizedFloat": {
+    "enhanced": {
+      "path": "artifacts/apple-hdr10plus-native-metadata/enhanced/exported.rgba16f",
+      "sha256": "caf14f806accaa97affd81cc5cae8846ff2f9f5cbb5856cec835a40a827c9e35",
+      "bytes": 16588800
+    },
+    "retainedEnhanced": {
+      "path": "artifacts/apple-hdr10plus-native-metadata/retained-enhanced/exported.rgba16f",
+      "sha256": "caf14f806accaa97affd81cc5cae8846ff2f9f5cbb5856cec835a40a827c9e35",
+      "bytes": 16588800
+    },
+    "componentStatisticsNits": {
+      "units": "cd/m2",
+      "conversion": "RGB components \u00d7203; alpha excluded",
+      "minimum": 0.0,
+      "maximum": 407.189453125,
+      "meanComponent": 45.6191883976615,
+      "negativeComponents": 0,
+      "above10000Components": 0,
+      "nonfiniteComponents": 0
+    },
+    "scope": "Engine-normalized linear BT.2020 RGB times203; maximum RGB component is distinct from luminance max-luma metadata"
+  },
+  "nativeLayer": {
+    "videoTargetParams": {
+      "alpha": "straight",
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "chroma-location": "unknown",
+      "colorlevels": "full",
+      "colormatrix": "rgb",
+      "dh": 1080,
+      "dw": 1920,
+      "gamma": "linear",
+      "h": 1080,
+      "light": "auto",
+      "max-cll": 342.446075,
+      "max-fall": 0,
+      "max-luma": 342.446075,
+      "min-luma": 1e-06,
+      "par": "nan",
+      "pixelformat": "rgba16hf",
+      "primaries": "bt.2020",
+      "rotate": 0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "sig-peak": 1.686926,
+      "stereo-in": "mono",
+      "w": 1920
+    },
+    "actualLayer": {
+      "bounds": [
+        0,
+        0,
+        960,
+        540
+      ],
+      "colorspace": {
+        "icc": {
+          "base64": "AAACRGFwcGwEAAAAbW50clJHQiBYWVogB+MAAQABAAAAAAAAYWNzcEFQUEwAAAAAQVBQTAAAAAAAAAAAAAAAAAAAAAAAAPbWAAEAAAAA0y1hcHBsuCkJF4q76TcmR6tvXGjXsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALZGVzYwAAAQgAAABSY3BydAAAAVwAAABQd3RwdAAAAawAAAAUclhZWgAAAcAAAAAUZ1hZWgAAAdQAAAAUYlhZWgAAAegAAAAUclRSQwAAAfwAAAAQY2hhZAAAAgwAAAAsY2ljcAAAAjgAAAAMYlRSQwAAAfwAAAAQZ1RSQwAAAfwAAAAQbWx1YwAAAAAAAAABAAAADGVuVVMAAAA2AAAAHABSAGUAYwAuACAASQBUAFUALQBSACAAQgBUAC4AMgAwADIAMAAtADEAIABMAGkAbgBlAGEAcgAAbWx1YwAAAAAAAAABAAAADGVuVVMAAAA0AAAAHABDAG8AcAB5AHIAaQBnAGgAdAAgAEEAcABwAGwAZQAgAEkAbgBjAC4ALAAgADIAMAAxADlYWVogAAAAAAAA9tYAAQAAAADTLVhZWiAAAAAAAACsaQAAR2////+BWFlaIAAAAAAAACppAACs4wAAB61YWVogAAAAAAAAIAMAAAutAADL/nBhcmEAAAAAAAAAAAABAABzZjMyAAAAAAABDEIAAAXe///zJgAAB5MAAP2Q///7ov///aMAAAPcAADAbmNpY3AAAAAACQgAAQ==",
+          "bytes": 580,
+          "sha256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+        },
+        "model": 1,
+        "name": "kCGColorSpaceExtendedLinearITUR_2020"
+      },
+      "contentsRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "contentsScale": 2,
+      "drawableSize": [
+        1920,
+        1080
+      ],
+      "edrMetadata": "CAEDRMetadata <0x96998dac0> display min nits: 0.000000, max nits: 342.445984",
+      "frame": [
+        0,
+        0,
+        960,
+        540
+      ],
+      "pixelFormat": 115,
+      "wantsExtendedDynamicRangeContent": true
+    },
+    "sourceTargetPeakChecks": [
+      {
+        "sourcePeakNits": 342.446075,
+        "targetPeakNits": 342.446075,
+        "absoluteDifferenceNits": 0.0
+      },
+      {
+        "sourcePeakNits": 342.446075,
+        "targetPeakNits": 342.446075,
+        "absoluteDifferenceNits": 0.0
+      }
+    ],
+    "opticalScale": {
+      "configuredNitsPerFloatUnit": 203,
+      "basis": "Reviewed macvk source assignment; no public optical-scale getter or reliable value in CAEDRMetadata description"
+    }
+  },
+  "visibility": {
+    "visibilitySamples": 1,
+    "geometryStable": true,
+    "visibilityMaintained": false,
+    "sckAcceptance": "not-requested"
+  },
+  "artifacts": {
+    "nativeSession": {
+      "path": "artifacts/apple-hdr10plus-native-metadata/session.json",
+      "sha256": "a30e08c23f01035534da922cd4692dd9c74f4c92685e1c19d2f0dcd93f87cf93",
+      "bytes": 126590
+    },
+    "originalWrapper": {
+      "path": "artifacts/apple-hdr10plus-native-metadata-wrapper.json",
+      "sha256": "253e7a6759acae9403c1c4313b0757dd841392274799b34d80ccb8bd75c16830",
+      "bytes": 9440
+    },
+    "cpuRevalidation": {
+      "path": "artifacts/apple-hdr10plus-native-metadata-cpu-revalidation.json",
+      "sha256": "d3b76abec8bb2ef20efa2265abd8a06ccf38ea2356bb0463dc0735cb706f615a",
+      "bytes": 5176
+    },
+    "exactInputConfiguration": {
+      "path": "artifacts/apple-hdr10plus-native-metadata-inputs/configuration.json",
+      "sha256": "1cd6708248b018787f234dbf65ae404b95bed3799c168c55cc4c326e5ace1f95",
+      "bytes": 1693
+    },
+    "sourceFrameProbe": {
+      "path": "artifacts/apple-hdr10plus-native-metadata-inputs/frames.json",
+      "sha256": "6329a0b842531a2f6aefd7b5a2481dce1f720b9c00718052c6394b600600df38",
+      "bytes": 8362244
+    },
+    "sourcePacketProbe": {
+      "path": "artifacts/apple-hdr10plus-native-metadata-inputs/packets.json",
+      "sha256": "7e649b93294f9411d5ae198bfac6d25336dded8e8c5eab7600ecf5ff9b9bf58b",
+      "bytes": 3304167
+    },
+    "buildLog": {
+      "path": "artifacts/apple-hdr10plus-native-metadata/build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "originalWrapperLog": {
+      "path": "artifacts/apple-hdr10plus-native-metadata/wrapper-failed.log",
+      "sha256": "b831e95333f93dbc13b7bdf734d77cc1e75aae8c84d0817e58f52a0477442a52",
+      "bytes": 128
+    }
+  },
+  "limits": [
+    "Raw native session and failed wrapper were not rewritten; only an independent CPU validation corrected CVImageBuffer key names.",
+    "Selected original HDR10+ scene fields are observed and absent on reconstructed RGB; this does not prove dynamic HDR10+ display tone-mapping accuracy.",
+    "Configured opticalOutputScale203 is established by reviewed source assignment, not a public metadata getter.",
+    "No SCK capture was attempted; the source window was later off the active Space and no compositor acceptance is claimed.",
+    "No calibrated brightness, colour-error, physical A/V synchronization or sustained playback claim.",
+    "The later duration precision-only refinement is outside this capture; archived timing sources and binary hashes preserve the exact measured candidate."
+  ]
+}

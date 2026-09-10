@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 1,
+  "scope": "Apple M3 Prepared exact nonzero-start mapping, six neural opening frames, cache identity and process reuse; no playback throughput or reconstruction-quality qualification",
+  "command": "python3 scripts/test-mpv-prepared.py --source artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4 --model models/neural-rendering/NeuralRendering.dlssmodel --report artifacts/apple-hdr10plus-prepared.json",
+  "result": {
+    "passed": true,
+    "originProcessExitedCleanly": true,
+    "preparedProcessesExitedCleanly": 2,
+    "sourceGuardProcessesCompleted": 2,
+    "cpuRegressionTests": 11,
+    "binariesUnchanged": true,
+    "sourceUnchanged": true
+  },
+  "source": {
+    "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+    "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "frameCount": 2360,
+    "ffprobeFormat": {
+      "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+      "start_time": "9.956000",
+      "tags": {
+        "major_brand": "isom",
+        "minor_version": "512",
+        "compatible_brands": "isomiso2mp41",
+        "encoder": "Lavf63.1.101"
+      }
+    }
+  },
+  "processing": {
+    "hardware": "Apple M3",
+    "width": 32,
+    "height": 24,
+    "strength": 1,
+    "model": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel",
+    "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "outputWidth": 1920,
+    "outputHeight": 1080,
+    "storage": "RGBA Float32 little endian linear BT.2020 absolute nits, straight alpha",
+    "payloadBytes": 199065600,
+    "capacityBytes": 268435456
+  },
+  "implementation": {
+    "revisions": {
+      "root": "4f84ae31b3447308e52dc424f8ad0f02bdf51fc7",
+      "mpv": "a9466025dcf459f82f591f42dc12a517a50e7efa",
+      "libplacebo": "3330a515d62139259c26239014f286e233bd3a5c"
+    },
+    "workingState": {
+      "root": " M .github/workflows/ci.yml\n M apps/macos/Sources/MPVPlaybackController.swift\n M apps/macos/Sources/PlayerSmokeCheck.swift\n M docs/dolby-vision.md\n M scripts/check.sh\n M scripts/dovi_fixtures.py\n M scripts/fetch-dovi-fixture.py\n M scripts/test-dovi-passthrough.py\n M scripts/test-mpv-prepared.py\n M tools/HDRCaptureProbe/main.swift\n M vendor/mpv\n?? docs/apple-hdr-playback.md\n?? docs/demux-timing.md\n?? docs/evidence/m3-apple-hdr10plus-playback.json\n?? docs/evidence/m3-demux-header-timing.json\n?? docs/evidence/m3-dovi-apple-profile5.json\n?? scripts/build-hdr-source-transition-probe.sh\n?? scripts/test-apple-hdr-playback.py\n?? scripts/test_apple_hdr_playback.py\n?? scripts/test_dovi_fixtures.py\n?? scripts/test_mpv_prepared_timing.py\n?? tools/HDRSourceTransitionProbe/\n",
+      "mpv": "",
+      "libplacebo": ""
+    },
+    "binaryHashes": {
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv": {
+        "beforeSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef",
+        "afterSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib": {
+        "beforeSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf",
+        "afterSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/local/lib/libplacebo.371.dylib": {
+        "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+        "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+      },
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/mlx.metallib": {
+        "beforeSHA256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+        "afterSHA256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      }
+    },
+    "sourceHashes": {
+      "scripts/test-mpv-prepared.py": "9bf26b76d997b57997ab5629899cb49c810e97801996a57db55476998c1fb76c",
+      "vendor/mpv/demux/lavf_timing.h": "8d8298739252e62babc273ec68f72e7dc71055f33fb8142e8d5a489d0a071cca",
+      "vendor/mpv/demux/demux_lavf.c": "85062faec38b4b1b506ed1400f01bec8588e31b4cb93f7410acd618c9604c686",
+      "vendor/mpv/video/filter/metal_hdr_decoder.m": "e432521228619b00413955268bf4d9c62491417d7a511e5c16b8885248674bfc",
+      "vendor/mpv/video/filter/vf_metal_hdr.m": "747d0bec34e1e90877b3e9628cea17ed5e774cbf47f6ffc9a862758ed482450c",
+      "vendor/mpv/player/playloop.c": "44aa9964ed0dcff4d3c30439e9a224165e8c99e34d72ff35a95c59db1e824eb8"
+    }
+  },
+  "timing": {
+    "nativeDemuxerStartSeconds": 9.956,
+    "rebaseStartTime": true,
+    "packetOffset": {
+      "value": -2489,
+      "timescale": 250
+    },
+    "decoderToPlayerSeconds": 0.0,
+    "heldFirstFilePTS": {
+      "value": 241001,
+      "timescale": 24000
+    },
+    "heldFirstDecoderPTS": {
+      "value": 2057,
+      "timescale": 24000
+    },
+    "heldFirstPlayerSeconds": 0.085708,
+    "nativeVersion": "mpv v0.41.0-1051-ga9466025d",
+    "clockValidation": "restart_complete bracket; three held paused decoder/time-pos pairs over at least100ms; zero decoder-to-player offset validated within1us, not estimated",
+    "observations": [
+      {
+        "elapsedSeconds": 0.07255345908924937,
+        "seekingBefore": false,
+        "seekingAfter": false,
+        "paused": true,
+        "unchangedSelectedPTS": true,
+        "playerSeconds": 0.085708,
+        "decoderPTS": {
+          "value": 2057,
+          "timescale": 24000
+        }
+      },
+      {
+        "elapsedSeconds": 0.1299228750867769,
+        "seekingBefore": false,
+        "seekingAfter": false,
+        "paused": true,
+        "unchangedSelectedPTS": true,
+        "playerSeconds": 0.085708,
+        "decoderPTS": {
+          "value": 2057,
+          "timescale": 24000
+        }
+      },
+      {
+        "elapsedSeconds": 0.1871429590974003,
+        "seekingBefore": false,
+        "seekingAfter": false,
+        "paused": true,
+        "unchangedSelectedPTS": true,
+        "playerSeconds": 0.085708,
+        "decoderPTS": {
+          "value": 2057,
+          "timescale": 24000
+        }
+      }
+    ]
+  },
+  "range": {
+    "start": {
+      "value": 2057,
+      "timescale": 24000
+    },
+    "end": {
+      "value": 8063,
+      "timescale": 24000
+    },
+    "segmentFrames": 3,
+    "prerollFrames": 1
+  },
+  "phases": [
+    {
+      "processedFrames": 6,
+      "reusedSegments": 0,
+      "jobState": "complete",
+      "heldClockObservations": [
+        {
+          "elapsedSeconds": 0.006819249945692718,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        },
+        {
+          "elapsedSeconds": 0.06220566690899432,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        },
+        {
+          "elapsedSeconds": 0.12034720892552286,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        }
+      ],
+      "hit": {
+        "filePTS": {
+          "value": 61001,
+          "timescale": 6000
+        },
+        "decoderPTS": {
+          "value": 5060,
+          "timescale": 24000
+        },
+        "contentKind": "prepared-enhanced",
+        "generation": 2,
+        "cacheHits": 1
+      },
+      "miss": {
+        "filePTS": {
+          "value": 21001,
+          "timescale": 2000
+        },
+        "decoderPTS": {
+          "value": 13068,
+          "timescale": 24000
+        },
+        "contentKind": "original",
+        "generation": 3,
+        "cacheMisses": 2
+      }
+    },
+    {
+      "processedFrames": 0,
+      "reusedSegments": 2,
+      "jobState": "complete",
+      "heldClockObservations": [
+        {
+          "elapsedSeconds": 0.0037088750395923853,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        },
+        {
+          "elapsedSeconds": 0.06337466707918793,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        },
+        {
+          "elapsedSeconds": 0.12550904206000268,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        }
+      ],
+      "hit": {
+        "filePTS": {
+          "value": 61001,
+          "timescale": 6000
+        },
+        "decoderPTS": {
+          "value": 5060,
+          "timescale": 24000
+        },
+        "contentKind": "prepared-enhanced",
+        "generation": 2,
+        "cacheHits": 1
+      },
+      "miss": {
+        "filePTS": {
+          "value": 21001,
+          "timescale": 2000
+        },
+        "decoderPTS": {
+          "value": 13068,
+          "timescale": 24000
+        },
+        "contentKind": "original",
+        "generation": 3,
+        "cacheMisses": 2
+      }
+    }
+  ],
+  "cache": {
+    "logicalBytes": 199070297,
+    "capacityBytes": 268435456,
+    "segments": [
+      {
+        "key": "d77e391ac7a6ce7d8c367790dba80f5fd3aab6c3d340e182abd9d4f224b3479e",
+        "providerIdentifier": "mpv-independent-demux-vt-v1;mpv v0.41.0-1051-ga9466025d;libavcodec=4129125;demux=lavf;offset=-9.9559999999999995;white=203;hlg=1000;exact-decoder-pts-duration-native-fallback",
+        "timingInventorySHA256": "56e2d7d70a15e79caa92db4737c281157b21c69805c5fc931d1f33f13958bc2b",
+        "manifest": "artifacts/apple-hdr10plus-prepared.cache-manifests/phase0-d77e391ac7a6ce7d8c367790dba80f5fd3aab6c3d340e182abd9d4f224b3479e.json",
+        "manifestSHA256": "6c2d92feb0718cf1bc714a1f38750cb8987f92325e3ad21356b01b4b7b67d2ca",
+        "payloadSHA256": [
+          "6b625b71d0da2800443118eb0ad171780c0d59cb772ae04ddb0a92073940f31e",
+          "6b625b71d0da2800443118eb0ad171780c0d59cb772ae04ddb0a92073940f31e",
+          "6b625b71d0da2800443118eb0ad171780c0d59cb772ae04ddb0a92073940f31e"
+        ],
+        "filePTS": [
+          {
+            "value": 241001,
+            "timescale": 24000
+          },
+          {
+            "value": 121001,
+            "timescale": 12000
+          },
+          {
+            "value": 81001,
+            "timescale": 8000
+          }
+        ],
+        "decoderPTS": [
+          {
+            "timescale": 24000,
+            "value": 2057
+          },
+          {
+            "timescale": 12000,
+            "value": 1529
+          },
+          {
+            "timescale": 8000,
+            "value": 1353
+          }
+        ],
+        "pixelPayloadsVerified": true
+      },
+      {
+        "key": "57eda7316f2d512105306c9ca4f09324c8ec750f9be9ea65234848ddec4fbeea",
+        "providerIdentifier": "mpv-independent-demux-vt-v1;mpv v0.41.0-1051-ga9466025d;libavcodec=4129125;demux=lavf;offset=-9.9559999999999995;white=203;hlg=1000;exact-decoder-pts-duration-native-fallback",
+        "timingInventorySHA256": "cd37a041f12ab05a9805c9b14ee9525af7189fd366645c03b66fb93f2d1c29b2",
+        "manifest": "artifacts/apple-hdr10plus-prepared.cache-manifests/phase0-57eda7316f2d512105306c9ca4f09324c8ec750f9be9ea65234848ddec4fbeea.json",
+        "manifestSHA256": "fd3dfbcf4be155c6e811bccddea2ef6813db5f44bfe10355391a92e50872a354",
+        "payloadSHA256": [
+          "6b625b71d0da2800443118eb0ad171780c0d59cb772ae04ddb0a92073940f31e",
+          "6b625b71d0da2800443118eb0ad171780c0d59cb772ae04ddb0a92073940f31e",
+          "6b625b71d0da2800443118eb0ad171780c0d59cb772ae04ddb0a92073940f31e"
+        ],
+        "filePTS": [
+          {
+            "value": 61001,
+            "timescale": 6000
+          },
+          {
+            "value": 49001,
+            "timescale": 4800
+          },
+          {
+            "value": 41001,
+            "timescale": 4000
+          }
+        ],
+        "decoderPTS": [
+          {
+            "timescale": 1200,
+            "value": 253
+          },
+          {
+            "timescale": 24000,
+            "value": 6061
+          },
+          {
+            "timescale": 4000,
+            "value": 1177
+          }
+        ],
+        "pixelPayloadsVerified": true
+      }
+    ]
+  },
+  "guards": {
+    "wrongSourceRejected": true,
+    "nonFirstVideoRejected": true,
+    "wrongSourceDiagnostic": "[metal-hdr] Prepared source differs from the file opened by playback\n[user_filter_wrapper] Creating filter 'metal-hdr' failed.",
+    "nonFirstVideoDiagnostic": "[metal-hdr] Prepared requires the opened local source and its first video stream\n[user_filter_wrapper] Creating filter 'metal-hdr' failed.\nNo video or audio streams selected."
+  },
+  "artifacts": {
+    "report": {
+      "path": "artifacts/apple-hdr10plus-prepared.json",
+      "sha256": "7f189df80fcc6ac2859548fb85bf58c1e02056398d6311321b9c7a87c4c6e2bb",
+      "bytes": 47527
+    },
+    "runLog": {
+      "path": "artifacts/apple-hdr10plus-prepared.run.log",
+      "sha256": "d362114bf3369cec0b0e10157b2c68bcddbd3e832454a7a1c5cc9cbc0b5ef3ed",
+      "bytes": 64
+    },
+    "sourceTimingProbe": {
+      "path": "artifacts/apple-hdr10plus-prepared.source-timing.json",
+      "sha256": "1435443204bf22775af805941be52e0d9d29ee497c902a5bb0a9c98e397d59f9",
+      "bytes": 7676757
+    },
+    "openingPixelAudit": {
+      "path": "artifacts/apple-hdr10plus-prepared-opening-pixels.json",
+      "sha256": "c9606d2e9e18e81bf781bf796341fabb9e2515dd9c4d9c25bef3b6b3d347f45e",
+      "bytes": 2566
+    },
+    "phaseLogs": [
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.origin.log",
+        "sha256": "42ea45b03e90395faac9c0f585642b4eae0c99b46896a8a3152b969dae3a9628",
+        "bytes": 107560
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.origin.stderr.log",
+        "sha256": "4ae2393d911dec512c97f0cac01500736ba2f1fa9061c457993de26db8a51dd0",
+        "bytes": 610
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.phase0.log",
+        "sha256": "d24e8c0674d38ca1860f97798f4e0086bb2eb325a3dc14c781d999f36887b786",
+        "bytes": 141819
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.phase0.stderr.log",
+        "sha256": "cec80b1e274c14d016e8c88bbf627c940a5a8f07c98788651072e3ce6b528112",
+        "bytes": 855
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.phase1.log",
+        "sha256": "1f269b828173d6dd9ef6f28dba1d67a4435519c46d0b3aa0b6c23cba1c237a22",
+        "bytes": 140588
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.phase1.stderr.log",
+        "sha256": "cec80b1e274c14d016e8c88bbf627c940a5a8f07c98788651072e3ce6b528112",
+        "bytes": 855
+      }
+    ],
+    "committedManifests": [
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.cache-manifests/phase0-d77e391ac7a6ce7d8c367790dba80f5fd3aab6c3d340e182abd9d4f224b3479e.json",
+        "sha256": "6c2d92feb0718cf1bc714a1f38750cb8987f92325e3ad21356b01b4b7b67d2ca",
+        "bytes": 2350
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.cache-manifests/phase0-57eda7316f2d512105306c9ca4f09324c8ec750f9be9ea65234848ddec4fbeea.json",
+        "sha256": "fd3dfbcf4be155c6e811bccddea2ef6813db5f44bfe10355391a92e50872a354",
+        "bytes": 2347
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.cache-manifests/phase1-d77e391ac7a6ce7d8c367790dba80f5fd3aab6c3d340e182abd9d4f224b3479e.json",
+        "sha256": "6c2d92feb0718cf1bc714a1f38750cb8987f92325e3ad21356b01b4b7b67d2ca",
+        "bytes": 2350
+      },
+      {
+        "path": "artifacts/apple-hdr10plus-prepared.cache-manifests/phase1-57eda7316f2d512105306c9ca4f09324c8ec750f9be9ea65234848ddec4fbeea.json",
+        "sha256": "fd3dfbcf4be155c6e811bccddea2ef6813db5f44bfe10355391a92e50872a354",
+        "bytes": 2347
+      }
+    ]
+  },
+  "limits": [
+    "The six original source frames are all exact limited-range black: Y64/Cb512/Cr512. Their RGBA(0,0,0,1) Float32 hash equals all six cached payload hashes. This exercises real neural configuration/timing/cache wiring, not reconstruction quality on varied image content.",
+    "Original-file PTS, native decoder/cache PTS after demux rebasing, and player seconds are distinct. A zero decoder-to-player offset is validated against the strict adapter timeline contract after restart completion; it is not estimated from an unsettled startup time-pos.",
+    "All six cached payloads were checked against full committed identity, exact timing digest, byte count and SHA in each process phase. Raw manifests remain retained; temporary cache pixel files were removed after both validation phases.",
+    "No cache hit exists outside the requested six-frame range. An exact later miss displayed Original and did not represent cached enhancement.",
+    "Paused observations with ao=null do not qualify continuous playback, physical A/V synchronization, compositor visibility, HDR10+ display mapping, Live performance or calibrated colour."
+  ]
+}

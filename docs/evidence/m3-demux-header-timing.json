@@ -759,9 +759,7 @@
       "failure": "AssertionError: Representative native frames did not progress"
     }
   ],
-  "pendingGates": [
-    "Final published-revision nonzero-origin real NR Prepared hit/miss/reuse gate; provider contract above is source-audited, not this pending runtime acceptance."
-  ],
+  "pendingGates": [],
   "primarySource": "https://github.com/FFmpeg/FFmpeg/blob/n9.0.1/libavformat/demux.c",
   "retainedDiagnosticIterations": {
     "initialPacketComparisons": {
@@ -916,5 +914,127 @@
       }
     },
     "retainedFailure": "artifacts/dovi-apple-profile5-default-refined/report.json failed a short app progression observation; cause remains unresolved. Its native targets/screenshots/near-end checks passed. No production change or lowered threshold in the repeat."
+  },
+  "finalPrepared": {
+    "path": "docs/evidence/m3-apple-prepared-nonzero-start.json",
+    "sha256": "020b065af72348669a51d887cb17fe8d1ac2834e44f5240b9496de1eddd26665",
+    "bytes": 18299,
+    "passed": true,
+    "rawReport": {
+      "path": "artifacts/apple-hdr10plus-prepared.json",
+      "sha256": "7f189df80fcc6ac2859548fb85bf58c1e02056398d6311321b9c7a87c4c6e2bb",
+      "bytes": 47527
+    },
+    "mpvRevision": "a9466025dcf459f82f591f42dc12a517a50e7efa",
+    "binariesUnchanged": true,
+    "sourceUnchanged": true,
+    "processCompletion": {
+      "originProcessExitedCleanly": true,
+      "preparedProcessesExitedCleanly": 2,
+      "sourceGuardProcessesCompleted": 2
+    },
+    "timing": {
+      "nativeDemuxerStartSeconds": 9.956,
+      "rebaseStartTime": true,
+      "packetOffset": {
+        "value": -2489,
+        "timescale": 250
+      },
+      "decoderToPlayerSeconds": 0.0,
+      "heldFirstFilePTS": {
+        "value": 241001,
+        "timescale": 24000
+      },
+      "heldFirstDecoderPTS": {
+        "value": 2057,
+        "timescale": 24000
+      },
+      "heldFirstPlayerSeconds": 0.085708,
+      "nativeVersion": "mpv v0.41.0-1051-ga9466025d",
+      "clockValidation": "restart_complete bracket; three held paused decoder/time-pos pairs over at least100ms; zero decoder-to-player offset validated within1us, not estimated",
+      "observations": [
+        {
+          "elapsedSeconds": 0.07255345908924937,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        },
+        {
+          "elapsedSeconds": 0.1299228750867769,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        },
+        {
+          "elapsedSeconds": 0.1871429590974003,
+          "seekingBefore": false,
+          "seekingAfter": false,
+          "paused": true,
+          "unchangedSelectedPTS": true,
+          "playerSeconds": 0.085708,
+          "decoderPTS": {
+            "value": 2057,
+            "timescale": 24000
+          }
+        }
+      ]
+    },
+    "processing": {
+      "width": 32,
+      "height": 24,
+      "outputWidth": 1920,
+      "outputHeight": 1080,
+      "strength": 1,
+      "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+    },
+    "firstPhase": {
+      "processedFrames": 6,
+      "reusedSegments": 0
+    },
+    "reopenPhase": {
+      "processedFrames": 0,
+      "reusedSegments": 2
+    },
+    "hitDecoderPTS": {
+      "value": 5060,
+      "timescale": 24000
+    },
+    "hitKind": "prepared-enhanced",
+    "missDecoderPTS": {
+      "value": 13068,
+      "timescale": 24000
+    },
+    "missKind": "original",
+    "logicalBytes": 199070297,
+    "capacityBytes": 268435456,
+    "independentCPUReview": {
+      "passed": true,
+      "retainedPathHashesVerifiedAcrossPreparedAndNativeRecords": 29,
+      "additionalPreparedSourceHashesVerified": 6,
+      "archivedManifestsIdentityAndTimingDigestsRecomputed": 4,
+      "fileToDecoderFramesCheckedPerPhase": 6,
+      "settledHeldMappingWindowsChecked": 3,
+      "phasesMatchManifestAndPayloadHashRecords": true,
+      "blackRGBA32FExpectedHashIndependentlyComputed": "6b625b71d0da2800443118eb0ad171780c0d59cb772ae04ddb0a92073940f31e",
+      "retainedNativeRGBA16FPayloadsHashed": 2,
+      "retainedNativeRGBStatisticsIndependentlyRecomputed": true
+    },
+    "limits": [
+      "All six opening source frames are black; real neural configuration/timing/cache wiring only, no varied-content reconstruction-quality evidence.",
+      "Live harness verified cache payload byte counts/hashes in both phases, then removed temporary pixel storage. Later independent review replays archived manifests and their digests; removed cache payloads cannot be reread.",
+      "Paused ao=null source timing observations do not qualify sustained playback, physical A/V synchronization or compositor/color output."
+    ]
   }
 }

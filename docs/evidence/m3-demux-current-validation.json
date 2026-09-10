@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-09-10",
+  "hardware": {
+    "chip": "Apple M3",
+    "memoryGiB": 16,
+    "os": "26.5"
+  },
+  "scope": "Full root and mpv checks, rebuilt development bundle, ordinary and relocated app controls with automatic runtime discovery; no physical colour/cadence qualification",
+  "revisions": {
+    "root": "9214d184547d3cecaba643bd504c5c14867ff18b",
+    "mpv": "a9466025dcf459f82f591f42dc12a517a50e7efa",
+    "libplacebo": "3330a515d62139259c26239014f286e233bd3a5c",
+    "MLX-DLSS": "f2ce1772b98a0b862385fd71a1c45e137cdd4580"
+  },
+  "checks": {
+    "mpv": {
+      "command": "meson test -C artifacts/mpv-build --no-rebuild --print-errorlogs",
+      "passed": 38,
+      "failed": 0
+    },
+    "root": {
+      "command": "bash scripts/check.sh",
+      "exitCode": 0,
+      "swiftTests": 39,
+      "weightExtractionPythonTests": 25,
+      "actualCConsumerGPU": true,
+      "CPUFixtureChecks": {
+        "visibility": 6,
+        "dolbyFixtures": 11,
+        "appleSourceAcquisition": 9,
+        "appleHDRPlayback": 14,
+        "preparedTiming": 11
+      },
+      "controlsAndSDRPQHLGProbes": true
+    },
+    "bundleBuild": {
+      "command": "bash scripts/build-harness.sh",
+      "exitCode": 0,
+      "nativeLibraries": 46,
+      "bundledModel": true
+    }
+  },
+  "normal": {
+    "passed": true,
+    "domChecksPassed": 23,
+    "exactTimestampSnapshots": 56,
+    "binaries": {
+      "HDRPlayer": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/MacOS/HDRPlayer",
+        "beforeSHA256": "8b9b5b9f930ff3915f8c48ee825fefd8a6b8a47392f056c149a074936a50b514",
+        "afterSHA256": "8b9b5b9f930ff3915f8c48ee825fefd8a6b8a47392f056c149a074936a50b514"
+      },
+      "libmpv": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/Frameworks/libmpv.2.dylib",
+        "beforeSHA256": "125a5c89773954b291349a5f65ed77fbed5331d53bbcdae793f6766b3cf7e288",
+        "afterSHA256": "125a5c89773954b291349a5f65ed77fbed5331d53bbcdae793f6766b3cf7e288"
+      },
+      "FrameEngineShared": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/Frameworks/libFrameEngineShared.dylib",
+        "beforeSHA256": "6f4622f8aea8ee6f4c69fc1822a5c8c621638d45dc5c653c7efa86ffd4c6f203",
+        "afterSHA256": "6f4622f8aea8ee6f4c69fc1822a5c8c621638d45dc5c653c7efa86ffd4c6f203"
+      }
+    },
+    "coreLibrary": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/Frameworks/libmpv.2.dylib",
+    "model": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/Resources/Models/NeuralRendering.dlssmodel",
+    "pipCapability": false,
+    "pipStatePresent": false,
+    "signaturePassedAfterPlayback": true
+  },
+  "relocated": {
+    "passed": true,
+    "domChecksPassed": 23,
+    "exitCode": 0,
+    "binaries": {
+      "HDRPlayer": {
+        "path": "/private/tmp/hdrplayer-demux-current-4tj5yapl/HDR Player.app/Contents/MacOS/HDRPlayer",
+        "beforeSHA256": "8b9b5b9f930ff3915f8c48ee825fefd8a6b8a47392f056c149a074936a50b514",
+        "afterSHA256": "8b9b5b9f930ff3915f8c48ee825fefd8a6b8a47392f056c149a074936a50b514"
+      },
+      "libmpv": {
+        "path": "/private/tmp/hdrplayer-demux-current-4tj5yapl/HDR Player.app/Contents/Frameworks/libmpv.2.dylib",
+        "beforeSHA256": "125a5c89773954b291349a5f65ed77fbed5331d53bbcdae793f6766b3cf7e288",
+        "afterSHA256": "125a5c89773954b291349a5f65ed77fbed5331d53bbcdae793f6766b3cf7e288"
+      },
+      "FrameEngineShared": {
+        "path": "/private/tmp/hdrplayer-demux-current-4tj5yapl/HDR Player.app/Contents/Frameworks/libFrameEngineShared.dylib",
+        "beforeSHA256": "6f4622f8aea8ee6f4c69fc1822a5c8c621638d45dc5c653c7efa86ffd4c6f203",
+        "afterSHA256": "6f4622f8aea8ee6f4c69fc1822a5c8c621638d45dc5c653c7efa86ffd4c6f203"
+      }
+    },
+    "coreLibrary": "/private/tmp/hdrplayer-demux-current-4tj5yapl/HDR Player.app/Contents/Frameworks/libmpv.2.dylib",
+    "model": "/private/tmp/hdrplayer-demux-current-4tj5yapl/HDR Player.app/Contents/Resources/Models/NeuralRendering.dlssmodel",
+    "pipCapability": false,
+    "pipStatePresent": false,
+    "nativeCoreDestroyed": true,
+    "externalNonSystemImages": [],
+    "signaturePassed": true,
+    "temporaryBundleRemoved": true,
+    "unsetOverrides": [
+      "HDRPLAYER_ENABLE_PIP",
+      "HDRPLAYER_PIP_REPORT",
+      "HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES",
+      "HDRPLAYER_CACHE_DIRECTORY",
+      "METAL_DLSS_MPV_LIBRARY",
+      "MLXDLSS_NEURAL_RENDERING_PACKAGE",
+      "VK_DRIVER_FILES",
+      "VK_ICD_FILENAMES",
+      "DYLD_LIBRARY_PATH",
+      "DYLD_FRAMEWORK_PATH",
+      "DYLD_INSERT_LIBRARIES"
+    ]
+  },
+  "relocatedLoader": {
+    "mainProcessImageCount": 1174,
+    "mpvInstances": 1,
+    "sharedEngineInstances": 1,
+    "diagnosticHarnessInstances": 0,
+    "outsideBundleNonSystemImages": 0
+  },
+  "sourceHashes": {
+    "scripts/check.sh": "763349bcf0ab91f09e237deb70664c40e89d0ced372a978d5c616fa5356384df",
+    "scripts/test_mpv_prepared_timing.py": "e2ff64153d5f6544329f081c3bf39201b1c02d2f4385d27759632c517d9335ee",
+    "scripts/test_apple_hdr_playback.py": "7fba1cabc87c5ca789a1001b55b9a6dc4fd572f4777e4507acb5095fbc78d3b6",
+    "scripts/test_dovi_fixtures.py": "ba5451a11d64ead95c651669757ab9f393b992302a8c5be75b0a0e2be7bc0893",
+    "scripts/build-harness.sh": "395ebe6a6be08e11facc30f66b2ef6bc03082b4116e60386bf6fcce2212576dc",
+    "scripts/bundle-player-runtime.py": "1bc03130a98fc344973145133c1ad9e2cdfef68d2dcc95449597566676c45fdd",
+    "apps/macos/Sources/MPVPlaybackController.swift": "7215a3a1ecc452b3e2cf293668ad760c813f1881bfa54c96afab6d0f7cf44228",
+    "apps/macos/Sources/PlayerSmokeCheck.swift": "f13bbd11483b7604b7a6cdd011c0d3632c7b2b38a0d91aa9dcc39b3bc8e77bd3",
+    "vendor/mpv/demux/lavf_timing.h": "8d8298739252e62babc273ec68f72e7dc71055f33fb8142e8d5a489d0a071cca",
+    "vendor/mpv/video/out/vulkan/context_mac.m": "d27c20adc80a2ea5bc52b7359a53edb28a839a1c76a5500196ca6a2e2038ec4c",
+    "vendor/mpv/video/out/mac_common.swift": "03dcbbc362bf3750b4210a97f948c639f27522b0301d11ee7221ee26161840dd"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/mpv-demux-current-check.log",
+      "bytes": 3600,
+      "sha256": "f0dc75990a96a9e7e54edbfcda0d9daab53f7af39fb95e4ff941790f3e17235c"
+    },
+    {
+      "path": "artifacts/root-demux-current-check.log",
+      "bytes": 11873,
+      "sha256": "5ad1703b78b3f03722bb096342ba88e94c41b436afda0e87b85015e0bc9daf9f"
+    },
+    {
+      "path": "artifacts/bundle-demux-current-build.log",
+      "bytes": 2699,
+      "sha256": "d916d0a83f9a6af65b7c3f6e3017ca30fc998925c1562fee8bad42d449a1369a"
+    },
+    {
+      "path": "artifacts/player-demux-current-bundle-wrapper.log",
+      "bytes": 1620,
+      "sha256": "3c9c5b09d0920960defc7a97c122611006b4eb123052ebd4af8ee4dd55394743"
+    },
+    {
+      "path": "artifacts/run-demux-relocated-check.py",
+      "bytes": 4640,
+      "sha256": "604bef0320faf2b560a5564140c24034b679b0817f853adbe1f65508d309d137"
+    },
+    {
+      "path": "artifacts/player-demux-current-bundle/report.json",
+      "bytes": 1620,
+      "sha256": "3c9c5b09d0920960defc7a97c122611006b4eb123052ebd4af8ee4dd55394743"
+    },
+    {
+      "path": "artifacts/player-demux-current-bundle/signature.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/player-demux-current-bundle/player.log",
+      "bytes": 27,
+      "sha256": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84"
+    },
+    {
+      "path": "artifacts/player-demux-current-bundle/NativeRuntime.json",
+      "bytes": 10526,
+      "sha256": "f14c308c3f04efdcf78d594426f25151b4ef57526a02339db233b95a1bda2c81"
+    },
+    {
+      "path": "artifacts/player-demux-current-bundle/dom.json",
+      "bytes": 107601,
+      "sha256": "8f5baaf860d553a093e583fd49e684902d2ab37ccf9522420aee0badd240970b"
+    },
+    {
+      "path": "artifacts/player-demux-current-bundle/lifecycle.jsonl",
+      "bytes": 54708,
+      "sha256": "2f565417b172539886c1426fa83f5bff662ecec7ae1d492006979fea56eef8c1"
+    },
+    {
+      "path": "artifacts/player-demux-current-relocated/report.json",
+      "bytes": 102130,
+      "sha256": "4b35e875bd2396f9a1d2e184827fca00e4c1f708bf35e6a51cf57b830bf8a6dc"
+    },
+    {
+      "path": "artifacts/player-demux-current-relocated/signature.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/player-demux-current-relocated/player.log",
+      "bytes": 160013,
+      "sha256": "ab4620d6786a97d6910322e6c09be3e354d470a8362012551d85417fc4602993"
+    },
+    {
+      "path": "artifacts/player-demux-current-relocated/NativeRuntime.json",
+      "bytes": 10526,
+      "sha256": "f14c308c3f04efdcf78d594426f25151b4ef57526a02339db233b95a1bda2c81"
+    },
+    {
+      "path": "artifacts/player-demux-current-relocated/dom.json",
+      "bytes": 106148,
+      "sha256": "55e7f13c7dee1d917f6acea32d4fe118b2c6b05d822205cf0a4f4daea65838d4"
+    },
+    {
+      "path": "artifacts/player-demux-current-relocated/lifecycle.jsonl",
+      "bytes": 52892,
+      "sha256": "a10651030530a701a039a1a014b5b8ee81b03cda75d616d834cd95c012bf4f1f"
+    }
+  ],
+  "limits": [
+    "Development ad-hoc signatures; no notarized distribution claim.",
+    "Relocated temporary bundle removed after successful validation; its manifest, before/after hashes and main-process loader inventory are retained.",
+    "Current native origin/colour fixes retain their separate exact fixture and metadata evidence.",
+    "Functional controls, loader isolation and scheduled media state do not establish physical display colour or presentation cadence."
+  ]
+}
