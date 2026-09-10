@@ -90,20 +90,13 @@ Candidate 3 is Erika commit [`b68885a`](https://github.com/ScriptType/Erika/comm
 
 The transport change passed 75 focused CPU tests, two native-demo schedule parser tests, and the native build. Regressions cover activation ownership, pause and seek intent, quantized PCM consumption, temporary audio gaps, delayed feedback across internal pauses, and ordered catch-up without restarting audio. Native captures use the same shared engine (`9f0c58fa…`), PQ/30-fps source, weights, 160×96 processing and 960×496 drawable. Exact source patches, executables, logs and reports remain in `artifacts/erika-overload-hold-1/`.
 
-Reproduce the focused CPU and parser checks after the build setup above:
+Reproduce the focused CPU checks, schedule parser checks and native-demo build after preparing Erika's native dependencies:
 
 ```sh
-source scripts/env.sh
-cargo test --locked --manifest-path vendor/Erika/Cargo.toml --jobs 2 \
-  -p erika --features shared-hdr --lib -- --test-threads=1 \
-  enhancement_ playback::tests::playback_fixture_ playback::tests::buffering_ \
-  playback::tests::audio_only_mode playback::tests::playback_clock_ \
-  core::tests::frame_output_ core::tests::pause_publishes_ core::tests::failed_pause_ \
-  core::tests::buffering_ core::tests::stale_worker_generation_ core::tests::newer_command_ \
-  presenter::tests::video_frame_backpressure_ core::tests::audio_observation_ core::tests::audio_capture_
-cargo test --locked --manifest-path vendor/Erika/Cargo.toml --jobs 2 \
-  -p macos_native_demo --features shared-hdr adapter_schedule -- --test-threads=1
+bash scripts/test-erika-transport.sh
 ```
+
+The script compiles the actual `shared-hdr` feature and uses software decoding and buffered PCM in the selected tests. It does not load the shared MLX engine, perform inference or open a native window. The separate Erika CI job uses Erika's native dependency build and runs the same script; passing this job does not qualify visible playback or the pending native lifecycle checks.
 
 | Capture | Completed / warmed | Admission refusals | Maximum absolute activation/audio offset | Native visibility |
 |---|---:|---:|---:|---|
