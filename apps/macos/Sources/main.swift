@@ -24,7 +24,7 @@ func runDiagnosticHarnessIfRequested() -> Never? {
 }
 
 @MainActor
-final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKScriptMessageHandler, WKNavigationDelegate {
+final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuItemValidation, WKScriptMessageHandler, WKNavigationDelegate {
     private var window: NSWindow!
     private var video: NSView!
     private var controls: WKWebView!
@@ -37,6 +37,10 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
     private var smoke: PlayerSmokeCheck?
     private var lifecycle: PlayerLifecycleDiagnostics?
     private var pictureInPicture: PlayerPictureInPicture?
+    private var floatingVideo: FloatingVideoController?
+    private var floatingVideoMenuItem: NSMenuItem?
+    private var mainFullscreenTransitioning = false
+    private let floatingVideoDiagnosticEnabled = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_VIDEO"] == "1"
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         makeMenus()
@@ -54,19 +58,34 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         video.setAccessibilityElement(true)
         video.setAccessibilityLabel("Native HDR video")
         video.setAccessibilityRole(.image)
+        // Only the diagnostic route needs a permanent slot around the retained
+        // mpv host. Its layout can remain in place while that host is floating.
+        let videoArea = floatingVideoDiagnosticEnabled ? NSView() : video!
+        var videoHomeConstraints: [NSLayoutConstraint] = []
+        if floatingVideoDiagnosticEnabled {
+            video.translatesAutoresizingMaskIntoConstraints = false
+            videoArea.addSubview(video)
+            videoHomeConstraints = [
+                video.topAnchor.constraint(equalTo: videoArea.topAnchor),
+                video.leadingAnchor.constraint(equalTo: videoArea.leadingAnchor),
+                video.trailingAnchor.constraint(equalTo: videoArea.trailingAnchor),
+                video.bottomAnchor.constraint(equalTo: videoArea.bottomAnchor)
+            ]
+            NSLayoutConstraint.activate(videoHomeConstraints)
+        }
         let configuration = WKWebViewConfiguration()
         configuration.preferences.tabFocusesLinks = true
         configuration.userContentController.add(self, name: "player")
         controls = WKWebView(frame: .zero, configuration: configuration)
         controls.navigationDelegate = self
         controls.setAccessibilityLabel("Playback controls")
-        for view in [video!, controls!] {
+        for view in [videoArea, controls!] {
             view.translatesAutoresizingMaskIntoConstraints = false
             content.addSubview(view)
         }
         NSLayoutConstraint.activate([
-            video.topAnchor.constraint(equalTo: content.topAnchor), video.leadingAnchor.constraint(equalTo: content.leadingAnchor),
-            video.trailingAnchor.constraint(equalTo: content.trailingAnchor), video.bottomAnchor.constraint(equalTo: controls.topAnchor),
+            videoArea.topAnchor.constraint(equalTo: content.topAnchor), videoArea.leadingAnchor.constraint(equalTo: content.leadingAnchor),
+            videoArea.trailingAnchor.constraint(equalTo: content.trailingAnchor), videoArea.bottomAnchor.constraint(equalTo: controls.topAnchor),
             controls.leadingAnchor.constraint(equalTo: content.leadingAnchor), controls.trailingAnchor.constraint(equalTo: content.trailingAnchor),
             controls.bottomAnchor.constraint(equalTo: content.bottomAnchor), controls.heightAnchor.constraint(equalToConstant: 196)
         ])
@@ -77,6 +96,18 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
             controls.loadFileURL(html, allowingReadAccessTo: html.deletingLastPathComponent())
         }
         player = MPVPlaybackController(hostView: video)
+        if floatingVideoDiagnosticEnabled {
+            floatingVideo = FloatingVideoController(host: video, mainSlot: videoArea,
+                homeConstraints: videoHomeConstraints, mainWindow: window,
+                command: { [weak self] name, value in self?.player.command(name, value: value) })
+            floatingVideo?.onChange = { [weak self] in
+                guard let self, !self.terminating else { return }
+                self.publish(self.player.state)
+            }
+            floatingVideo?.onEvent = { [weak self] name, details in
+                self?.lifecycle?.record(name, extra: details)
+            }
+        }
         if player.pictureInPictureDiagnosticEnabled {
             pictureInPicture = PlayerPictureInPicture(host: video, diagnosticEnabled: true,
                 command: { [weak self] name, value in self?.player.command(name, value: value) },
@@ -93,6 +124,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         player.onState = { [weak self] state in self?.publish(state) }
         player.onStopped = { [weak self] in
             guard let self, self.terminating else { return }
+            self.floatingVideo?.finishTermination()
             let complete: @MainActor @Sendable () -> Void = { [weak self] in
                 self?.terminated = true
                 NSApp.terminate(nil)
@@ -150,9 +182,22 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         let view = submenu("View")
         let fullscreen = view.addItem(withTitle: "Toggle Full Screen", action: #selector(toggleFullscreen), keyEquivalent: "f")
         fullscreen.target = self; fullscreen.keyEquivalentModifierMask = [.command, .control]
+        if floatingVideoDiagnosticEnabled {
+            view.addItem(.separator())
+            let floating = view.addItem(withTitle: "Floating Video (Diagnostic)", action: #selector(toggleFloatingVideo), keyEquivalent: "")
+            floating.target = self
+            floatingVideoMenuItem = floating
+        }
         NSApp.mainMenu = menu
     }
+    private func restoreMainWindowForInteraction() {
+        floatingVideo?.restore(activateMain: true)
+        window.deminiaturize(nil)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
     @objc private func openVideo() {
+        restoreMainWindowForInteraction()
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.movie, .video, .audio]
         panel.allowsMultipleSelection = false
@@ -160,13 +205,28 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
             if response == .OK, let url = panel.url { self?.player.load(url) }
         }
     }
-    @objc private func closeWindow() { window.performClose(nil) }
-    @objc private func openSettings() { controls.evaluateJavaScript("document.getElementById('settings').showModal()") }
+    @objc private func closeWindow() { (NSApp.keyWindow ?? window).performClose(nil) }
+    @objc private func openSettings() {
+        restoreMainWindowForInteraction()
+        controls.evaluateJavaScript("document.getElementById('settings').showModal()")
+    }
     @objc private func togglePlay() { player.command("togglePause", value: nil) }
     @objc private func nextFrame() { player.command("frameStep", value: 1) }
     @objc private func previousFrame() { player.command("frameStep", value: -1) }
     @objc private func toggleMute() { player.command("mute", value: !(latestState["muted"] as? Bool ?? false)) }
-    @objc private func toggleFullscreen() { window.toggleFullScreen(nil) }
+    @objc private func toggleFullscreen() {
+        guard !mainFullscreenTransitioning else { return }
+        restoreMainWindowForInteraction()
+        window.toggleFullScreen(nil)
+    }
+    @objc private func toggleFloatingVideo() { floatingVideo?.toggle() }
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        guard !terminating else { return false }
+        if menuItem.action == #selector(toggleFloatingVideo) {
+            return floatingVideo?.isActive == true || floatingVideo?.state["canEnter"] as? Bool == true
+        }
+        return true
+    }
     @objc private func willSleep() {
         lifecycle?.record("will-sleep.before-pause")
         player.sleep()
@@ -178,8 +238,10 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         lifecycle?.record("did-wake.restore-enqueued")
     }
     private func handleKey(_ event: NSEvent) -> NSEvent? {
-        guard event.window === window, !event.modifierFlags.contains(.command), !event.modifierFlags.contains(.control), !event.modifierFlags.contains(.option) else { return event }
-        if let responder = window.firstResponder as? NSView, responder.isDescendant(of: controls) { return event }
+        guard event.window === window || (floatingVideo?.isActive == true && event.window === floatingVideo?.window),
+              !event.modifierFlags.contains(.command), !event.modifierFlags.contains(.control), !event.modifierFlags.contains(.option) else { return event }
+        if let responder = event.window?.firstResponder as? NSView,
+           responder.isDescendant(of: controls) || responder is NSControl || responder is NSTextView { return event }
         switch event.keyCode {
         case 49: togglePlay()
         case 123, 124:
@@ -187,7 +249,8 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
             let delta: Double = event.modifierFlags.contains(.shift) ? 60 : 5
             player.command("seek", value: max(0, current + (event.keyCode == 123 ? -delta : delta)))
         case 53:
-            if window.styleMask.contains(.fullScreen) { toggleFullscreen() } else { return event }
+            if floatingVideo?.isActive == true { floatingVideo?.restore(activateMain: true) }
+            else if window.styleMask.contains(.fullScreen) { toggleFullscreen() } else { return event }
         default:
             switch event.charactersIgnoringModifiers?.lowercased() {
             case "f": toggleFullscreen()
@@ -203,6 +266,14 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         latestState = state
         window.title = (state["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "HDR Player"
         var displayed = state
+        if let floatingVideo {
+            var input = state
+            input["mainFullscreenTransitioning"] = mainFullscreenTransitioning
+            floatingVideo.updatePlaybackState(input)
+            displayed["floatingVideo"] = floatingVideo.state
+            floatingVideoMenuItem?.state = floatingVideo.isActive ? .on : .off
+            floatingVideoMenuItem?.toolTip = floatingVideo.state["reason"] as? String
+        }
         pictureInPicture?.updatePlaybackState(state)
         if let pictureInPicture {
             displayed["pip"] = pictureInPicture.state
@@ -212,8 +283,8 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         }
         if let layer = video.subviews.first?.layer as? CAMetalLayer {
             displayed["display"] = ["edr": layer.wantsExtendedDynamicRangeContent,
-                "headroom": window.screen?.maximumExtendedDynamicRangeColorComponentValue ?? 1,
-                "screen": window.screen?.localizedName ?? "Unknown",
+                "headroom": video.window?.screen?.maximumExtendedDynamicRangeColorComponentValue ?? 1,
+                "screen": video.window?.screen?.localizedName ?? "Unknown",
                 "colorSpace": layer.colorspace?.name as String? ?? "Unknown"]
         }
         latestState = displayed
@@ -231,6 +302,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
             let wanted = body["value"] as? Bool ?? !window.styleMask.contains(.fullScreen)
             if wanted != window.styleMask.contains(.fullScreen) { toggleFullscreen() }
         case "pip": pictureInPicture?.toggle()
+        case "floatingVideo": floatingVideo?.toggle()
         default: player.command(command, value: body["value"])
         }
     }
@@ -239,22 +311,78 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
                  decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void) {
         decisionHandler(navigationAction.request.url?.isFileURL == true ? .allow : .cancel)
     }
-    func windowDidEnterFullScreen(_ notification: Notification) { player.fullscreenChanged(true); lifecycle?.record("window-fullscreen-enter") }
-    func windowDidExitFullScreen(_ notification: Notification) { player.fullscreenChanged(false); lifecycle?.record("window-fullscreen-exit") }
+    func windowWillEnterFullScreen(_ notification: Notification) {
+        guard notification.object as? NSWindow === window else { return }
+        mainFullscreenTransitioning = true
+        floatingVideo?.restore(activateMain: false)
+        publish(player.state)
+    }
+    func windowWillExitFullScreen(_ notification: Notification) {
+        guard notification.object as? NSWindow === window else { return }
+        mainFullscreenTransitioning = true
+        publish(player.state)
+    }
+    func windowDidEnterFullScreen(_ notification: Notification) {
+        guard notification.object as? NSWindow === window else { return }
+        mainFullscreenTransitioning = false
+        player.fullscreenChanged(true); lifecycle?.record("window-fullscreen-enter")
+        publish(player.state)
+    }
+    func windowDidExitFullScreen(_ notification: Notification) {
+        guard notification.object as? NSWindow === window else { return }
+        mainFullscreenTransitioning = false
+        player.fullscreenChanged(false); lifecycle?.record("window-fullscreen-exit")
+        publish(player.state)
+    }
+    func windowDidFailToEnterFullScreen(_ window: NSWindow) {
+        guard window === self.window else { return }
+        mainFullscreenTransitioning = false
+        publish(player.state)
+    }
+    func windowDidFailToExitFullScreen(_ window: NSWindow) {
+        guard window === self.window else { return }
+        mainFullscreenTransitioning = false
+        publish(player.state)
+    }
     func windowDidResize(_ notification: Notification) { pictureInPicture?.layout(); lifecycle?.record("window-resized") }
     func windowDidChangeScreen(_ notification: Notification) { lifecycle?.record("window-screen-changed") }
     func windowDidBecomeKey(_ notification: Notification) { lifecycle?.record("window-focused") }
     func windowDidResignKey(_ notification: Notification) { lifecycle?.record("window-unfocused") }
     func application(_ application: NSApplication, open urls: [URL]) {
-        guard let url = urls.first else { return }
-        if let player { player.load(url) } else { pendingOpenURL = url }
+        guard !terminating, let url = urls.first else { return }
+        if let player {
+            restoreMainWindowForInteraction()
+            player.load(url)
+        } else { pendingOpenURL = url }
     }
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        guard !terminating, window != nil else { return false }
+        if floatingVideo?.isActive == true {
+            floatingVideo?.window?.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+        } else {
+            restoreMainWindowForInteraction()
+        }
+        return false
+    }
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        if sender === window, floatingVideo?.isActive == true, !terminating {
+            window.orderOut(nil)
+            lifecycle?.record("main-window-hidden-while-floating")
+            return false
+        }
+        return true
+    }
+    func windowWillClose(_ notification: Notification) {
+        if notification.object as? NSWindow === window, !terminating { NSApp.terminate(nil) }
+    }
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { floatingVideo?.isActive != true }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if terminated { return .terminateNow }
         if terminating { return .terminateCancel }
         terminating = true
         lifecycle?.record("termination-requested", extra: ["nativeChildViews": video?.subviews.count ?? 0])
+        floatingVideo?.prepareForTermination()
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
         NSWorkspace.shared.notificationCenter.removeObserver(self)
         controls?.configuration.userContentController.removeScriptMessageHandler(forName: "player")
@@ -269,6 +397,11 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
 }
 
 if let never = runDiagnosticHarnessIfRequested() { switch never {} }
+if ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_VIDEO"] == "1",
+   ProcessInfo.processInfo.environment["HDRPLAYER_ENABLE_PIP"] == "1" {
+    fputs("Select only one diagnostic presentation route: HDRPLAYER_FLOATING_VIDEO or HDRPLAYER_ENABLE_PIP.\n", stderr)
+    exit(2)
+}
 let app = NSApplication.shared
 let delegate = PlayerDelegate()
 app.delegate = delegate

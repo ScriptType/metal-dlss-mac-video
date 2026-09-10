@@ -47,6 +47,234 @@ final class PlayerSmokeCheck {
     private func selected(_ type: String, id: Int) -> Bool {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
+    private func runFloatingVideo() async throws {
+        func floating() -> [String: Any] { state()["floatingVideo"] as? [String: Any] ?? [:] }
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func integer(_ values: [String: Any], _ key: String) -> Int64 { (values[key] as? NSNumber)?.int64Value ?? -1 }
+        let identityKeys = ["displayed-source-pts", "displayed-timebase-num", "displayed-timebase-den",
+            "displayed-generation", "generation", "submitted-frames", "completed-frames"]
+        func identity() -> [String: Int64]? {
+            let value = native()
+            guard identityKeys.allSatisfy({ value[$0] is NSNumber }),
+                  integer(value, "displayed-timebase-num") > 0, integer(value, "displayed-timebase-den") > 0,
+                  integer(value, "displayed-generation") > 0, integer(value, "completed-frames") > 0 else { return nil }
+            return Dictionary(uniqueKeysWithValues: identityKeys.map { ($0, integer(value, $0)) })
+        }
+        func record(_ label: String) {
+            snapshots.append(["check": label, "hostSeconds": ProcessInfo.processInfo.systemUptime, "state": state()])
+        }
+        func settle(_ label: String) async throws -> [String: Int64] {
+            var previous: [String: Int64]?, consecutive = 0
+            try await wait(label, seconds: 25) {
+                let current = identity()
+                let ready = self.state()["paused"] as? Bool == true && native()["compare-ready"] as? Bool == true &&
+                    integer(native(), "pending-frames") == 0 && current != nil
+                consecutive = ready && current == previous ? consecutive + 1 : 0
+                previous = current
+                return ready && consecutive >= 3
+            }
+            guard let result = identity() else { throw Failure(message: "Missing exact native identity after " + label) }
+            return result
+        }
+        func exactSeconds(_ seconds: Int64) -> Bool {
+            let value = native(), pts = integer(value, "displayed-source-pts")
+            let num = integer(value, "displayed-timebase-num"), den = integer(value, "displayed-timebase-den")
+            guard pts >= 0, num > 0, den > 0 else { return false }
+            let lhs = pts.multipliedReportingOverflow(by: num), rhs = seconds.multipliedReportingOverflow(by: den)
+            return !lhs.overflow && !rhs.overflow && lhs.partialValue == rhs.partialValue
+        }
+        func menuEntry(_ menu: NSMenu) -> (NSMenu, Int)? {
+            for (index, item) in menu.items.enumerated() {
+                if item.title == "Floating Video (Diagnostic)" { return (menu, index) }
+                if let child = item.submenu, let found = menuEntry(child) { return found }
+            }
+            return nil
+        }
+        func button(_ identifier: String, in view: NSView) -> NSButton? {
+            if let candidate = view as? NSButton,
+               candidate.identifier?.rawValue == "HDRPlayer.floatingVideo." + identifier { return candidate }
+            for child in view.subviews { if let found = button(identifier, in: child) { return found } }
+            return nil
+        }
+        func press(_ identifier: String, in panel: NSPanel) throws {
+            guard let content = panel.contentView, let control = button(identifier, in: content),
+                  control.isEnabled, !control.isHidden, control.target != nil, control.action != nil else {
+                throw Failure(message: "Native floating button unavailable: " + identifier)
+            }
+            record("native-button-" + identifier + "-requested")
+            control.performClick(nil)
+        }
+        try await wait("floating prototype and sixty-second fixture loaded", seconds: 20) {
+            floating()["implementation"] as? String == "appkit-floating-video-prototype" &&
+                floating()["diagnosticOnly"] as? Bool == true && self.number("duration") >= 59 &&
+                self.number("duration") <= 61 && !self.webView.isLoading && !self.video.subviews.isEmpty
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("native core paused before floating setup") { self.state()["paused"] as? Bool == true }
+        if state()["muted"] as? Bool != true { try await click("mute") }
+        try await change("sub", value: "no")
+        try await change("quality", value: "160x96")
+        try await change("timeline", value: "20")
+        if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true { try await click("enhancement") }
+        try await wait("160x96 Adaptive enhancement reaches exact twenty-second frame", seconds: 25) {
+            let processing = self.state()["processing"] as? [String: Any] ?? [:]
+            return processing["enabled"] as? Bool == true && processing["mode"] as? String == "adaptive" &&
+                integer(processing, "width") == 160 && integer(processing, "height") == 96 && exactSeconds(20)
+        }
+        let initial = try await settle("initial paused rational PTS and inference counts settle")
+        let children = video.subviews, layers = video.subviews.compactMap { $0.layer }
+        guard let metal = layers.first as? CAMetalLayer, children.count == layers.count,
+              let home = video.superview, video.window === window,
+              let source = state()["source"] as? String, !source.isEmpty,
+              let core = state()["coreLibrary"] as? String, !core.isEmpty,
+              let configuration = state()["configurationID"] as? NSNumber else {
+            throw Failure(message: "Missing native view, Metal layer or core configuration identity")
+        }
+        func checkObjects(_ label: String) throws {
+            guard video.subviews.count == children.count, zip(video.subviews, children).allSatisfy({ $0.0 === $0.1 }),
+                  zip(children, layers).allSatisfy({ $0.0.layer === $0.1 }),
+                  state()["source"] as? String == source, state()["coreLibrary"] as? String == core,
+                  (state()["configurationID"] as? NSNumber)?.uint64Value == configuration.uint64Value,
+                  metal.pixelFormat == .rgba16Float, metal.wantsExtendedDynamicRangeContent,
+                  state()["error"] == nil else { throw Failure(message: "Native ownership/configuration/EDR changed at " + label) }
+        }
+        func preserved(_ expected: [String: Int64], _ label: String) async throws {
+            let actual = try await settle(label)
+            guard actual == expected else { throw Failure(message: "Paused PTS, generation or inference counts changed at " + label) }
+            try checkObjects(label)
+            checks.append(label + " preserves actual host child/layer, rational PTS, generations and inference counts")
+        }
+        func enter(_ label: String) async throws -> NSPanel {
+            guard let main = NSApp.mainMenu, let (menu, index) = menuEntry(main) else {
+                throw Failure(message: "Floating diagnostic native menu item missing")
+            }
+            menu.update()
+            guard menu.items[index].isEnabled, floating()["canEnter"] as? Bool == true else {
+                throw Failure(message: "Floating diagnostic native menu entry disabled")
+            }
+            record(label + "-menu-requested")
+            menu.performActionForItem(at: index)
+            try await wait(label + " reparents the same host into an observable native panel") {
+                guard let panel = self.video.window as? NSPanel else { return false }
+                return panel.identifier?.rawValue == "HDRPlayer.floatingVideo" && panel.isVisible && !panel.isMiniaturized &&
+                    panel.isOnActiveSpace && panel.occlusionState.contains(.visible) &&
+                    floating()["active"] as? Bool == true && floating()["phase"] as? String == "floating" &&
+                    integer(floating(), "homeConstraintsActive") == 0 && integer(floating(), "floatingConstraintsActive") == 4 &&
+                    floating()["childIdentitiesMatchEntry"] as? Bool == true && floating()["childLayerIdentitiesMatchEntry"] as? Bool == true
+            }
+            guard let panel = video.window as? NSPanel else { throw Failure(message: "Floating panel disappeared") }
+            try checkObjects(label)
+            return panel
+        }
+        func returned(_ panel: NSPanel, _ label: String, minimized: Bool) async throws {
+            try await wait(label) {
+                self.video.superview === home && self.video.window === self.window && !panel.isVisible && panel.contentView == nil &&
+                    floating()["active"] as? Bool == false && floating()["phase"] as? String == "home" &&
+                    integer(floating(), "homeConstraintsActive") == 4 && integer(floating(), "floatingConstraintsActive") == 0 &&
+                    self.window.isMiniaturized == minimized && (minimized || self.window.isVisible)
+            }
+            try checkObjects(label)
+        }
+        func progress(_ label: String, from start: [String: Int64], panel: NSPanel, minimized: Bool) async throws {
+            var seen = Set<Int64>()
+            try await wait(label, seconds: 20) {
+                let value = native(), pts = integer(value, "displayed-source-pts")
+                let eligible = integer(value, "displayed-generation") == start["displayed-generation"] &&
+                    integer(value, "generation") == start["generation"] &&
+                    integer(value, "displayed-timebase-num") == start["displayed-timebase-num"] &&
+                    integer(value, "displayed-timebase-den") == start["displayed-timebase-den"] &&
+                    self.state()["paused"] as? Bool == false && self.window.isMiniaturized == minimized &&
+                    self.video.window === panel && panel.isVisible && panel.isOnActiveSpace && panel.occlusionState.contains(.visible) &&
+                    floating()["active"] as? Bool == true && self.state()["source"] as? String == source &&
+                    self.state()["coreLibrary"] as? String == core &&
+                    (self.state()["configurationID"] as? NSNumber)?.uint64Value == configuration.uint64Value &&
+                    self.video.subviews.count == children.count && zip(self.video.subviews, children).allSatisfy({ $0.0 === $0.1 }) &&
+                    zip(children, layers).allSatisfy({ $0.0.layer === $0.1 })
+                if eligible, pts > (start["displayed-source-pts"] ?? Int64.max), seen.insert(pts).inserted {
+                    record(label + "-exact-PTS")
+                }
+                return eligible && seen.count >= 3 && integer(value, "completed-frames") >= (start["completed-frames"] ?? Int64.max) + 3
+            }
+            try checkObjects(label)
+        }
+        let firstPanel = try await enter("initial floating entry")
+        try await preserved(initial, "paused floating entry")
+        for size in [NSSize(width: 800, height: 500), NSSize(width: 640, height: 416)] {
+            let before = metal.drawableSize
+            firstPanel.setContentSize(size)
+            firstPanel.contentView?.layoutSubtreeIfNeeded()
+            try await wait("paused native panel resize to \(Int(size.width))x\(Int(size.height))") {
+                let bounds = self.video.bounds
+                return abs(bounds.width - size.width) < 1 && bounds.height > 0 &&
+                    children.allSatisfy { abs($0.bounds.width - bounds.width) < 1 && abs($0.bounds.height - bounds.height) < 1 } &&
+                    metal.drawableSize != before && metal.drawableSize.width > 0 && metal.drawableSize.height > 0
+            }
+            snapshots.append(["check": "resized native Metal drawable", "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                "drawableWidth": metal.drawableSize.width, "drawableHeight": metal.drawableSize.height,
+                "contentsScale": metal.contentsScale, "state": state()])
+            try await preserved(initial, "paused resize \(Int(size.width))x\(Int(size.height))")
+        }
+        try press("return", in: firstPanel)
+        try await returned(firstPanel, "native Return restores main host and constraints", minimized: false)
+        try await preserved(initial, "paused native Return")
+
+        let transportPanel = try await enter("floating transport entry")
+        var previousSeek = initial
+        for (control, seconds) in [("seekForward", Int64(25)), ("seekBackward", Int64(20))] {
+            try press(control, in: transportPanel)
+            try await wait("native \(control) reaches exact \(seconds)-second source frame", seconds: 25) {
+                exactSeconds(seconds) && integer(native(), "displayed-generation") > (previousSeek["displayed-generation"] ?? Int64.max) &&
+                    self.state()["paused"] as? Bool == true
+            }
+            previousSeek = try await settle("native \(control) completes one paused replacement")
+            try checkObjects(control)
+        }
+        guard previousSeek["displayed-source-pts"] == initial["displayed-source-pts"],
+              previousSeek["displayed-timebase-num"] == initial["displayed-timebase-num"],
+              previousSeek["displayed-timebase-den"] == initial["displayed-timebase-den"] else {
+            throw Failure(message: "Native ±5-second seek did not return to the original exact rational timestamp")
+        }
+        checks.append("native ±5-second controls preserve the source timeline and return to the exact initial frame")
+        try press("playPause", in: transportPanel)
+        try await progress("native Play advances exact frames through the same core", from: previousSeek, panel: transportPanel, minimized: false)
+        guard let beforeMinimize = identity() else { throw Failure(message: "Missing progressing native identity") }
+        window.miniaturize(nil)
+        try await progress("floating playback progresses while main is minimized", from: beforeMinimize, panel: transportPanel, minimized: true)
+        try press("playPause", in: transportPanel)
+        let held = try await settle("native floating Pause settles exact source identity")
+        try press("return", in: transportPanel)
+        try await returned(transportPanel, "explicit Return deminiaturizes and shows main", minimized: false)
+        guard (floating()["lastRestore"] as? [String: Any])?["activateMain"] as? Bool == true else {
+            throw Failure(message: "Return did not record explicit main activation")
+        }
+        try await preserved(held, "paused minimize and explicit Return")
+
+        let closePanel = try await enter("main close control entry")
+        window.performClose(nil)
+        try await wait("closing main hides it while floating host remains attached") {
+            !self.window.isVisible && !self.window.isMiniaturized && self.video.window === closePanel && closePanel.isVisible &&
+                floating()["active"] as? Bool == true
+        }
+        try await preserved(held, "paused main close")
+        try press("return", in: closePanel)
+        try await returned(closePanel, "Return unhides main after close", minimized: false)
+        try await preserved(held, "paused main close and Return")
+
+        let nonactivatingPanel = try await enter("nonactivating panel close entry")
+        window.miniaturize(nil)
+        try await wait("main minimized before panel close") { self.window.isMiniaturized }
+        nonactivatingPanel.performClose(nil)
+        try await returned(nonactivatingPanel, "panel close restores host without deminiaturizing main", minimized: true)
+        guard (floating()["lastRestore"] as? [String: Any])?["activateMain"] as? Bool == false else {
+            throw Failure(message: "Panel close unexpectedly requested main activation")
+        }
+        try await preserved(held, "paused nonactivating panel close")
+        window.deminiaturize(nil); window.makeKeyAndOrderFront(nil)
+        try await wait("explicit harness restoration makes main observable") { self.window.isVisible && !self.window.isMiniaturized }
+        _ = try await enter("floating entry before asynchronous quit")
+        try await preserved(held, "paused active floating host before asynchronous quit")
+        checks.append("quit is requested after this report; external lifecycle log and process exit must verify worker destruction and panel release")
+    }
     private func runPictureInPicture() async throws {
         func pip() -> [String: Any] { state()["pip"] as? [String: Any] ?? [:] }
         func pipNumber(_ key: String) -> Int { (pip()[key] as? NSNumber)?.intValue ?? Int.max }
@@ -635,7 +863,9 @@ final class PlayerSmokeCheck {
     private func run() async {
         var failure: String?
         do {
-            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-system" {
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "floating-video" {
+                try await runFloatingVideo()
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-system" {
                 try await runSystemPictureInPicture()
             } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-prepared" {
                 try await runPreparedPictureInPicture()
@@ -732,6 +962,14 @@ final class PlayerSmokeCheck {
             "finalState": state(), "scope": "Functional DOM/native playback integration; not realtime or display qualification",
             "nativeLayer": ["format": layer?.pixelFormat.rawValue ?? 0, "edr": layer?.wantsExtendedDynamicRangeContent ?? false,
                 "colorSpace": layer?.colorspace?.name as String? ?? "unknown"]]
+        if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "floating-video" {
+            report["scope"] = "Actual AppKit windows and programmatic native menu/button/window actions with exact native frame identity; not physical input delivery, compositor presentation, HDR scanout or realtime qualification. Async quit is checked separately from this pre-termination report."
+            report["scenario"] = "floating-video"
+            report["physicalInputDeliveryQualified"] = false
+            report["presentationQualified"] = false
+            report["physicalHDRQualified"] = false
+            report["asynchronousTerminationVerifiedByThisReport"] = false
+        }
         if let failure { report["failure"] = failure }
         do {
             try FileManager.default.createDirectory(at: reportURL.deletingLastPathComponent(), withIntermediateDirectories: true)
