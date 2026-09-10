@@ -1,0 +1,1419 @@
+{
+  "schemaVersion": 1,
+  "scope": "Complete 56-frame full-source regression after the native HDR resized-input range correction. All paired original/proxy/identity bytes and fresh cut results pass. Measured wall variation persists and its maximum adjacent change increases; temporal quality, physical HDR and source-rate Live remain unqualified.",
+  "integrityAcceptancePassed": true,
+  "temporalQualityAcceptance": null,
+  "physicalHDRAcceptance": null,
+  "sourceRateLiveAcceptance": null,
+  "implementationEvidence": "docs/evidence/m3-native-hdr-model-input.json",
+  "implementationCI": {
+    "conclusion": "success",
+    "status": "completed",
+    "url": "https://github.com/ScriptType/metal-dlss-mac-video/actions/runs/34461535810"
+  },
+  "baselineEvidence": "docs/evidence/m3-apple-temporal-full.json",
+  "runtime": {
+    "arguments": [
+      ".build/debug/hdr-benchmark",
+      "--reference-sequence",
+      "artifacts/apple-temporal-full-input-1/manifest.json",
+      "--output",
+      "artifacts/apple-temporal-bounded-input-capture-1",
+      "--model",
+      "models/neural-rendering/NeuralRendering.dlssmodel",
+      "--width",
+      "320",
+      "--height",
+      "192",
+      "--strength",
+      "1",
+      "--colour-strength",
+      "1",
+      "--maximum-luminance-ratio",
+      "2",
+      "--reference-white",
+      "203",
+      "--motion",
+      "automatic",
+      "--maximum-output-bytes",
+      "6442450944"
+    ],
+    "binary": ".build/arm64-apple-macosx/debug/hdr-benchmark",
+    "binarySHA256": "00ca2f074258bb84921f41524f2a679e62b06f5550b5680073163b9be608bce0",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mlxDLSSRevision": "7af47d64b36b551ba091bedde0437c93ac92ff65",
+    "mpvRevision": "f9213292afed1caa77827e66fe9c9216ee5ec513",
+    "os": "Version 26.5 (Build 25F71)",
+    "rootRevision": "c8fc0f1f2ac8df492b526f2b6e61fd6deb1d2201",
+    "rootStatus": "",
+    "sourceSHA256": {
+      "tools/FrameBenchmark/FrameBenchmarkCommand.swift": "fb3a2d88965cf0528270891b105265406d72c7bfaceaf88107e47030a8368a36",
+      "tools/FrameBenchmark/FrameReferenceSequence.swift": "120badd7e6bc9dc790d0cac42d286935e4dda1b1a6a38d1406fd1cf26457c0d2",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift": "7a66e04760623582c0f1848ca1437a6724fcce7b4ada69088454143bebce8155",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDeviceTemporalBackend.swift": "9f662b490cedd2ec8e8719cbdb862acccbe7a52614e78cca31de7941a6e5f37e",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift": "6eeacf6699f1f0978b121811970a0ad77e53378ac197c33fde17681510685389",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoOutput.swift": "5c3ba05fac4d9d22b4a6d38046f588a61edbc77c144d10a38a88de8fde8b98a6"
+    }
+  },
+  "baselineRuntime": {
+    "arguments": [
+      ".build/debug/hdr-benchmark",
+      "--reference-sequence",
+      "artifacts/apple-temporal-full-input-1/manifest.json",
+      "--output",
+      "artifacts/apple-temporal-full-capture-1",
+      "--model",
+      "models/neural-rendering/NeuralRendering.dlssmodel",
+      "--width",
+      "320",
+      "--height",
+      "192",
+      "--strength",
+      "1",
+      "--colour-strength",
+      "1",
+      "--maximum-luminance-ratio",
+      "2",
+      "--reference-white",
+      "203",
+      "--motion",
+      "automatic",
+      "--maximum-output-bytes",
+      "6442450944"
+    ],
+    "binary": ".build/arm64-apple-macosx/debug/hdr-benchmark",
+    "binarySHA256": "02afa6b8658116ccfc7677d1695a8abfffdf729d95da58420caff96983aadc73",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mlxDLSSRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+    "mpvRevision": "f9213292afed1caa77827e66fe9c9216ee5ec513",
+    "os": "Version 26.5 (Build 25F71)",
+    "rootRevision": "cfa8c3c81a3acc8355bc3f5e278c87a4b761777e",
+    "rootStatus": "",
+    "sourceSHA256": {
+      "tools/FrameBenchmark/FrameBenchmarkCommand.swift": "fb3a2d88965cf0528270891b105265406d72c7bfaceaf88107e47030a8368a36",
+      "tools/FrameBenchmark/FrameReferenceSequence.swift": "9c251fdaa833e7b3508301445039bcf8c1678da125c722087d44d51f1b25d033",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift": "93e6b12dd7f4338e286af12eb90a9286f01658d17a9ede944fd39b0d851e4749",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift": "6eeacf6699f1f0978b121811970a0ad77e53378ac197c33fde17681510685389"
+    }
+  },
+  "device": {
+    "name": "Apple M3",
+    "registryID": 4294968507,
+    "unifiedMemory": true
+  },
+  "source": {
+    "bytes": 41784502,
+    "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+    "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5"
+  },
+  "inputManifest": {
+    "path": "artifacts/apple-temporal-full-input-1/manifest.json",
+    "bytes": 167435,
+    "sha256": "b2aa9c8e85c592061bdff5a0201e4893dd48dc0dd1c1164ef463f18b7dbaf1ed"
+  },
+  "model": {
+    "files": {
+      "manifest.json": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32",
+      "weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+    },
+    "path": "models/neural-rendering/NeuralRendering.dlssmodel"
+  },
+  "settings": {
+    "colourStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "mlxCacheBytes": 268435456,
+    "modelInputRange": "bounded-sRGB-after-resample",
+    "motionRequested": "automatic",
+    "precision": "float16",
+    "processingHeight": 192,
+    "processingWidth": 320,
+    "referenceWhiteNits": 203,
+    "sceneCutThreshold": 0.3,
+    "strength": 1,
+    "temporal": true
+  },
+  "baselineSettings": {
+    "colourStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "mlxCacheBytes": 268435456,
+    "motionRequested": "automatic",
+    "precision": "float16",
+    "processingHeight": 192,
+    "processingWidth": 320,
+    "referenceWhiteNits": 203,
+    "sceneCutThreshold": 0.3,
+    "strength": 1,
+    "temporal": true
+  },
+  "onlyAddedSetting": "modelInputRange=bounded-sRGB-after-resample",
+  "sourceAndReferenceDimensions": [
+    1920,
+    1080
+  ],
+  "neuralProcessingDimensions": [
+    320,
+    192
+  ],
+  "sourceFrameRangeInclusive": [
+    1488,
+    1543
+  ],
+  "inspectionPreludeFramesRetained": 8,
+  "reviewFrameRangeInclusive": [
+    1496,
+    1543
+  ],
+  "firstPTS": {
+    "timescale": 24000,
+    "value": 1730489
+  },
+  "lastPTS": {
+    "timescale": 24000,
+    "value": 1785544
+  },
+  "durationEveryFrame": {
+    "value": 1001,
+    "timescale": 24000
+  },
+  "capture": {
+    "manifest": {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+      "bytes": 199716,
+      "sha256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+    },
+    "command": [
+      ".build/debug/hdr-benchmark",
+      "--reference-sequence",
+      "artifacts/apple-temporal-full-input-1/manifest.json",
+      "--output",
+      "artifacts/apple-temporal-bounded-input-capture-1",
+      "--model",
+      "models/neural-rendering/NeuralRendering.dlssmodel",
+      "--width",
+      "320",
+      "--height",
+      "192",
+      "--strength",
+      "1",
+      "--colour-strength",
+      "1",
+      "--maximum-luminance-ratio",
+      "2",
+      "--reference-white",
+      "203",
+      "--motion",
+      "automatic",
+      "--maximum-output-bytes",
+      "6442450944"
+    ],
+    "exitCode": 0,
+    "completedFrames": 56,
+    "rawViews": 224,
+    "rawBytes": 5573836800,
+    "frozenPinsUnchanged": true,
+    "frozenPinCount": 18,
+    "historyResetSourceFrames": [
+      1488,
+      1498,
+      1528
+    ],
+    "historyResetInventoryMatchesBaseline": true,
+    "diagnosticProcessWallSeconds": 296.68595283292234
+  },
+  "pairedComparison": {
+    "newRawViewsVerified": 224,
+    "baselineRawViewsVerified": 224,
+    "directOriginalProxyIdentityByteComparisons": 168,
+    "all168OriginalProxyIdentityByteEqual": true,
+    "all56EnhancedViewsDiffer": true,
+    "largestEnhancedComponentDifference": {
+      "sourceFrameIndex": 1488,
+      "available": true,
+      "maximumAbsoluteComponentNits": 67.22418212890625,
+      "rmsComponentNits": 1.8524800644602504,
+      "meanAbsoluteComponentNits": 0.9072070199700116,
+      "meanSignedComponentNits": 0.035696647966624556,
+      "differentNumericComponents": 6219938,
+      "firstMaximumLocation": {
+        "x": 1479,
+        "y": 530,
+        "channel": "G",
+        "newValue": 730.1680297851562,
+        "referenceValue": 797.3922119140625
+      }
+    },
+    "largestIdentityError": {
+      "sourceFrameIndex": 1492,
+      "available": true,
+      "maximumAbsoluteComponentNits": 0.0001220703125,
+      "rmsComponentNits": 4.149330758794687e-06,
+      "meanAbsoluteComponentNits": 9.030001640411807e-07,
+      "meanSignedComponentNits": -1.6144409760403536e-08,
+      "differentNumericComponents": 753420,
+      "firstMaximumLocation": {
+        "x": 383,
+        "y": 542,
+        "channel": "G",
+        "newValue": 1635.312255859375,
+        "referenceValue": 1635.3121337890625
+      }
+    },
+    "scope": "All exact timing, source links, model/settings, payload hashes and finite checks pass. Full per-frame enhanced differences remain in the pinned audit. A changed enhanced value is not an error relative to ground truth."
+  },
+  "rawStatistics": {
+    "original": {
+      "minimumRGB": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximumRGB": [
+        1168.38720703125,
+        1635.3121337890625,
+        1578.08935546875
+      ],
+      "nonfiniteComponents": 0,
+      "negativeComponents": 0,
+      "above10000Components": 0
+    },
+    "proxy": {
+      "minimumRGB": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximumRGB": [
+        0.9999999403953552,
+        0.9999999403953552,
+        0.9999999403953552
+      ],
+      "nonfiniteComponents": 0,
+      "negativeComponents": 0,
+      "above10000Components": 0
+    },
+    "identity": {
+      "minimumRGB": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximumRGB": [
+        1168.38720703125,
+        1635.312255859375,
+        1578.08935546875
+      ],
+      "nonfiniteComponents": 0,
+      "negativeComponents": 0,
+      "above10000Components": 0
+    },
+    "enhanced": {
+      "minimumRGB": [
+        0.0,
+        -0.00019973017333541065,
+        -0.000469544786028564
+      ],
+      "maximumRGB": [
+        982.2421264648438,
+        1088.78955078125,
+        1060.9830322265625
+      ],
+      "nonfiniteComponents": 0,
+      "negativeComponents": 28,
+      "above10000Components": 0
+    }
+  },
+  "freshCuts": {
+    "report": {
+      "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/report.json",
+      "bytes": 67961,
+      "sha256": "65bccc09c888134d7d5886c162759fc93e3eb04b2639c576873d9f6e95a0a900"
+    },
+    "allEightViewsByteEqual": true,
+    "frozenFilesUnchanged": true,
+    "frozenPinCount": 34,
+    "cases": [
+      {
+        "sourceFrameIndex": 1498,
+        "pts": {
+          "value": 1740499,
+          "timescale": 24000
+        },
+        "duration": {
+          "value": 1001,
+          "timescale": 24000
+        },
+        "exitCode": 0,
+        "wallSeconds": 7.0581999169662595,
+        "inputManifest": {
+          "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/input-1498/manifest.json",
+          "bytes": 4695,
+          "sha256": "f989a1eed13f6e0f5d57a9214ea0bea3fe9c1903c235265456411265b6abc2dd"
+        },
+        "outputManifest": {
+          "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1498/manifest.json",
+          "bytes": 10229,
+          "sha256": "2896774d8268721f21ee86fb389712b5efaf710b0685ccf8c7d2de60b044196a"
+        },
+        "views": {
+          "original": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1498/frame-0000/original.rgb32f",
+              "bytes": 24883200,
+              "sha256": "9afc12474a7d6536b930f0ab44cfb3ca0ac6b8f703a792c86d9406909a919330"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/original.rgb32f",
+              "bytes": 24883200,
+              "sha256": "9afc12474a7d6536b930f0ab44cfb3ca0ac6b8f703a792c86d9406909a919330"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "linear BT2020 RGB component nits"
+          },
+          "proxy": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1498/frame-0000/proxy.rgb32f",
+              "bytes": 24883200,
+              "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f",
+              "bytes": 24883200,
+              "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "normalized sRGB/BT709"
+          },
+          "identity": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1498/frame-0000/identity.rgb32f",
+              "bytes": 24883200,
+              "sha256": "5d62012cca3aeaca58ab4d08e702248d5e130d102c10b09e7f5b1a53fbf8052f"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/identity.rgb32f",
+              "bytes": 24883200,
+              "sha256": "5d62012cca3aeaca58ab4d08e702248d5e130d102c10b09e7f5b1a53fbf8052f"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "linear BT2020 RGB component nits"
+          },
+          "enhanced": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1498/frame-0000/enhanced.rgb32f",
+              "bytes": 24883200,
+              "sha256": "35fc9de7c2e27012cf076bf0bbc331505d35a05a393e10c67edff259bb22116b"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/enhanced.rgb32f",
+              "bytes": 24883200,
+              "sha256": "35fc9de7c2e27012cf076bf0bbc331505d35a05a393e10c67edff259bb22116b"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "linear BT2020 RGB component nits"
+          }
+        }
+      },
+      {
+        "sourceFrameIndex": 1528,
+        "pts": {
+          "value": 1770529,
+          "timescale": 24000
+        },
+        "duration": {
+          "value": 1001,
+          "timescale": 24000
+        },
+        "exitCode": 0,
+        "wallSeconds": 6.902651167009026,
+        "inputManifest": {
+          "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/input-1528/manifest.json",
+          "bytes": 4693,
+          "sha256": "a772e549cd2f86b7697731c1ab83b7f5d8496e39ad5066a210c2913d92c9280b"
+        },
+        "outputManifest": {
+          "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1528/manifest.json",
+          "bytes": 10221,
+          "sha256": "91bc8a72fa16bc6806dc10029eeb40205f911c3b682ffa5e1774012516f16a9a"
+        },
+        "views": {
+          "original": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1528/frame-0000/original.rgb32f",
+              "bytes": 24883200,
+              "sha256": "d5405989ef936d85fa8e56700f1b6674ebb9a6c6413f321d9c1bc8892cb6844e"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0040/original.rgb32f",
+              "bytes": 24883200,
+              "sha256": "d5405989ef936d85fa8e56700f1b6674ebb9a6c6413f321d9c1bc8892cb6844e"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "linear BT2020 RGB component nits"
+          },
+          "proxy": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1528/frame-0000/proxy.rgb32f",
+              "bytes": 24883200,
+              "sha256": "c38ae6ec3ab2a6e195f4785365bb7ebbb220b354e5338276d72493b26317eb6e"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0040/proxy.rgb32f",
+              "bytes": 24883200,
+              "sha256": "c38ae6ec3ab2a6e195f4785365bb7ebbb220b354e5338276d72493b26317eb6e"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "normalized sRGB/BT709"
+          },
+          "identity": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1528/frame-0000/identity.rgb32f",
+              "bytes": 24883200,
+              "sha256": "f62bd7287a0bc9cdc149ba9d3d623bb91278d27bea2bdafab5743e13634b0c9d"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0040/identity.rgb32f",
+              "bytes": 24883200,
+              "sha256": "f62bd7287a0bc9cdc149ba9d3d623bb91278d27bea2bdafab5743e13634b0c9d"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "linear BT2020 RGB component nits"
+          },
+          "enhanced": {
+            "fresh": {
+              "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/capture-1528/frame-0000/enhanced.rgb32f",
+              "bytes": 24883200,
+              "sha256": "8de62e059a40b8dd9020abdcd89d70fd41faf920dd08e11569a0ddc233ba7bd0"
+            },
+            "continuous": {
+              "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0040/enhanced.rgb32f",
+              "bytes": 24883200,
+              "sha256": "8de62e059a40b8dd9020abdcd89d70fd41faf920dd08e11569a0ddc233ba7bd0"
+            },
+            "nonfiniteComponents": 0,
+            "byteEqual": true,
+            "differentComponents": 0,
+            "maximumAbsoluteDifference": 0.0,
+            "meanAbsoluteDifference": 0.0,
+            "units": "linear BT2020 RGB component nits"
+          }
+        }
+      }
+    ],
+    "scope": "Exactly two sequential fresh one-frame processes at the automatic cuts. CPU audits/review overlapped these diagnostic controls; their wall time is not throughput."
+  },
+  "wall": {
+    "sourceFrameRange": [
+      1498,
+      1527
+    ],
+    "ROIxyxy": [
+      40,
+      80,
+      360,
+      720
+    ],
+    "luminanceCoefficientsBT2020": [
+      0.2627,
+      0.678,
+      0.0593
+    ],
+    "domain": "Linear BT.2020 Y in nits. Same fixed unaligned full-resolution ROI; no mask/registration/photometric normalization.",
+    "summaries": {
+      "new": {
+        "original": {
+          "minimumNits": 48.77024915070382,
+          "maximumNits": 49.32952995138184,
+          "meanNits": 48.98358380806869,
+          "stdNits": 0.1299613467825003,
+          "maximumAdjacentDeltaNits": 0.26351243391858503,
+          "signedLargestAdjacentDeltaNits": -0.26351243391858503,
+          "maximumAdjacentPair": [
+            1501,
+            1502
+          ],
+          "rmsAdjacentDeltaNits": 0.10918876945997937
+        },
+        "identity": {
+          "minimumNits": 48.77024906919507,
+          "maximumNits": 49.32952982007233,
+          "meanNits": 48.983583707610585,
+          "stdNits": 0.12996133478533653,
+          "maximumAdjacentDeltaNits": 0.26351237459158483,
+          "signedLargestAdjacentDeltaNits": -0.26351237459158483,
+          "maximumAdjacentPair": [
+            1501,
+            1502
+          ],
+          "rmsAdjacentDeltaNits": 0.10918876255444661
+        },
+        "enhanced": {
+          "minimumNits": 48.171104063388356,
+          "maximumNits": 50.54356868805413,
+          "meanNits": 49.55559567922128,
+          "stdNits": 0.572923435044393,
+          "maximumAdjacentDeltaNits": 1.7748698871480713,
+          "signedLargestAdjacentDeltaNits": 1.7748698871480713,
+          "maximumAdjacentPair": [
+            1503,
+            1504
+          ],
+          "rmsAdjacentDeltaNits": 0.6986318384832256
+        },
+        "residual": {
+          "minimumNits": -0.6230818860580385,
+          "maximumNits": 1.4178760642590973,
+          "meanNits": 0.5720118711526024,
+          "stdNits": 0.5522230303311817,
+          "maximumAdjacentDeltaNits": 1.6551944888797507,
+          "signedLargestAdjacentDeltaNits": 1.6551944888797507,
+          "maximumAdjacentPair": [
+            1503,
+            1504
+          ],
+          "rmsAdjacentDeltaNits": 0.6837138800699634
+        },
+        "identityResidual": {
+          "minimumNits": -1.631632358112256e-07,
+          "maximumNits": -7.411198055251589e-08,
+          "meanNits": -1.0045808309655513e-07,
+          "stdNits": 2.0598202391617043e-08,
+          "maximumAdjacentDeltaNits": 5.9327000201392366e-08,
+          "signedLargestAdjacentDeltaNits": 5.9327000201392366e-08,
+          "maximumAdjacentPair": [
+            1501,
+            1502
+          ],
+          "rmsAdjacentDeltaNits": 1.533725800946052e-08
+        }
+      },
+      "baseline": {
+        "original": {
+          "minimumNits": 48.77024915070382,
+          "maximumNits": 49.32952995138184,
+          "meanNits": 48.98358380806869,
+          "stdNits": 0.1299613467825003,
+          "maximumAdjacentDeltaNits": 0.26351243391858503,
+          "signedLargestAdjacentDeltaNits": -0.26351243391858503,
+          "maximumAdjacentPair": [
+            1501,
+            1502
+          ],
+          "rmsAdjacentDeltaNits": 0.10918876945997937
+        },
+        "identity": {
+          "minimumNits": 48.77024906919507,
+          "maximumNits": 49.32952982007233,
+          "meanNits": 48.983583707610585,
+          "stdNits": 0.12996133478533653,
+          "maximumAdjacentDeltaNits": 0.26351237459158483,
+          "signedLargestAdjacentDeltaNits": -0.26351237459158483,
+          "maximumAdjacentPair": [
+            1501,
+            1502
+          ],
+          "rmsAdjacentDeltaNits": 0.10918876255444661
+        },
+        "enhanced": {
+          "minimumNits": 48.49765285591204,
+          "maximumNits": 50.978675435803154,
+          "meanNits": 49.91619284566116,
+          "stdNits": 0.6002385270408258,
+          "maximumAdjacentDeltaNits": 1.2491406238741263,
+          "signedLargestAdjacentDeltaNits": 1.2491406238741263,
+          "maximumAdjacentPair": [
+            1503,
+            1504
+          ],
+          "rmsAdjacentDeltaNits": 0.5541194293051893
+        },
+        "residual": {
+          "minimumNits": -0.2965330935343573,
+          "maximumNits": 2.013554058000473,
+          "meanNits": 0.9326090375924895,
+          "stdNits": 0.5980187402550311,
+          "maximumAdjacentDeltaNits": 1.1294652256058058,
+          "signedLargestAdjacentDeltaNits": 1.1294652256058058,
+          "maximumAdjacentPair": [
+            1503,
+            1504
+          ],
+          "rmsAdjacentDeltaNits": 0.5298734319780346
+        },
+        "identityResidual": {
+          "minimumNits": -1.631632358112256e-07,
+          "maximumNits": -7.411198055251589e-08,
+          "meanNits": -1.0045808309655513e-07,
+          "stdNits": 2.0598202391617043e-08,
+          "maximumAdjacentDeltaNits": 5.9327000201392366e-08,
+          "signedLargestAdjacentDeltaNits": 5.9327000201392366e-08,
+          "maximumAdjacentPair": [
+            1501,
+            1502
+          ],
+          "rmsAdjacentDeltaNits": 1.533725800946052e-08
+        }
+      },
+      "newMinusBaselineNits": {
+        "original": {
+          "minimumNits": 0.0,
+          "maximumNits": 0.0,
+          "meanNits": 0.0,
+          "stdNits": 0.0,
+          "maximumAdjacentDeltaNits": 0.0,
+          "signedLargestAdjacentDeltaNits": 0.0,
+          "maximumAdjacentPair": [
+            1498,
+            1499
+          ],
+          "rmsAdjacentDeltaNits": 0.0
+        },
+        "identity": {
+          "minimumNits": 0.0,
+          "maximumNits": 0.0,
+          "meanNits": 0.0,
+          "stdNits": 0.0,
+          "maximumAdjacentDeltaNits": 0.0,
+          "signedLargestAdjacentDeltaNits": 0.0,
+          "maximumAdjacentPair": [
+            1498,
+            1499
+          ],
+          "rmsAdjacentDeltaNits": 0.0
+        },
+        "enhanced": {
+          "minimumNits": -2.008879282513547,
+          "maximumNits": 0.6761619868080615,
+          "meanNits": -0.360597166439887,
+          "stdNits": 0.5052175315429097,
+          "maximumAdjacentDeltaNits": 1.4276981492198786,
+          "signedLargestAdjacentDeltaNits": -1.4276981492198786,
+          "maximumAdjacentPair": [
+            1517,
+            1518
+          ],
+          "rmsAdjacentDeltaNits": 0.5032257936257726
+        },
+        "residual": {
+          "minimumNits": -2.008879282513547,
+          "maximumNits": 0.6761619868080615,
+          "meanNits": -0.360597166439887,
+          "stdNits": 0.5052175315429097,
+          "maximumAdjacentDeltaNits": 1.4276981492198786,
+          "signedLargestAdjacentDeltaNits": -1.4276981492198786,
+          "maximumAdjacentPair": [
+            1517,
+            1518
+          ],
+          "rmsAdjacentDeltaNits": 0.5032257936257726
+        },
+        "identityResidual": {
+          "minimumNits": 0.0,
+          "maximumNits": 0.0,
+          "meanNits": 0.0,
+          "stdNits": 0.0,
+          "maximumAdjacentDeltaNits": 0.0,
+          "signedLargestAdjacentDeltaNits": 0.0,
+          "maximumAdjacentPair": [
+            1498,
+            1499
+          ],
+          "rmsAdjacentDeltaNits": 0.0
+        }
+      }
+    },
+    "all30SamplesPerCaptureRetained": true,
+    "exports": [
+      {
+        "path": "docs/evidence/m3-apple-temporal-bounded-input.csv",
+        "bytes": 11038,
+        "sha256": "107bf223f21cfa48e6597cf65e465deb8b2f9899b1c0918376c62d58c520c86c"
+      },
+      {
+        "path": "docs/evidence/m3-apple-temporal-bounded-input.pdf",
+        "bytes": 28484,
+        "sha256": "cdc825365f09b17f5881b738c561d32354bfd93e1488d5a55cd48323ab3f1323"
+      }
+    ],
+    "independentRootPairReplay": {
+      "full": {
+        "original": 0.11967539826832052,
+        "identity": 0.1196753645043529,
+        "enhanced": 1.2491406238741263,
+        "residual": 1.1294652256058058
+      },
+      "bounded-input": {
+        "original": 0.11967539826832052,
+        "identity": 0.1196753645043529,
+        "enhanced": 1.7748698871480713,
+        "residual": 1.6551944888797507
+      }
+    },
+    "interpretation": "Maximum and RMS adjacent enhancement-residual changes increase in this fixed unaligned region. Mean residual is lower. This contract correction does not eliminate the measured variation; no motion registration, perceptual threshold or quality improvement is inferred."
+  },
+  "resources": {
+    "report": {
+      "path": "artifacts/apple-temporal-bounded-input-resource-audit-1/report.json",
+      "bytes": 250378,
+      "sha256": "fa43efa49d4a7d6d969060f6323393ad4734295173622c28a34acc6881f09b7c"
+    },
+    "runs": {
+      "historical": {
+        "processElapsedWallSeconds": 302.16149633401074,
+        "manifestElapsedSeconds": 252.470804041,
+        "differenceOfTimingScopesSeconds": 49.69069229301073,
+        "rssBytes": {
+          "count": 595,
+          "minimum": 475136,
+          "median": 166969344,
+          "p95NearestRank": 469729280,
+          "maximum": 577323008,
+          "first": 475136,
+          "last": 217235456,
+          "lastMinusFirst": 216760320
+        },
+        "rssWindows": [
+          {
+            "startInclusiveSeconds": 0,
+            "endExclusiveSeconds": 45,
+            "rssBytes": {
+              "count": 89,
+              "minimum": 475136,
+              "median": 41091072,
+              "p95NearestRank": 43663360,
+              "maximum": 43663360,
+              "first": 475136,
+              "last": 41107456,
+              "lastMinusFirst": 40632320
+            },
+            "firstSampleSeconds": 0.0055259589571505785,
+            "lastSampleSeconds": 44.71147091698367
+          },
+          {
+            "startInclusiveSeconds": 45,
+            "endExclusiveSeconds": 60,
+            "rssBytes": {
+              "count": 30,
+              "minimum": 41107456,
+              "median": 445128704.0,
+              "p95NearestRank": 521125888,
+              "maximum": 577323008,
+              "first": 41107456,
+              "last": 418349056,
+              "lastMinusFirst": 377241600
+            },
+            "firstSampleSeconds": 45.221457791980356,
+            "lastSampleSeconds": 59.92568750004284
+          },
+          {
+            "startInclusiveSeconds": 60,
+            "endExclusiveSeconds": 120,
+            "rssBytes": {
+              "count": 118,
+              "minimum": 65273856,
+              "median": 420413440.0,
+              "p95NearestRank": 493715456,
+              "maximum": 518176768,
+              "first": 418349056,
+              "last": 114769920,
+              "lastMinusFirst": -303579136
+            },
+            "firstSampleSeconds": 60.4305699999677,
+            "lastSampleSeconds": 119.91971108398866
+          },
+          {
+            "startInclusiveSeconds": 120,
+            "endExclusiveSeconds": 180,
+            "rssBytes": {
+              "count": 118,
+              "minimum": 82296832,
+              "median": 160776192.0,
+              "p95NearestRank": 216285184,
+              "maximum": 216875008,
+              "first": 141459456,
+              "last": 166969344,
+              "lastMinusFirst": 25509888
+            },
+            "firstSampleSeconds": 120.42527095903642,
+            "lastSampleSeconds": 179.87120620894711
+          },
+          {
+            "startInclusiveSeconds": 180,
+            "endExclusiveSeconds": 240,
+            "rssBytes": {
+              "count": 118,
+              "minimum": 72138752,
+              "median": 164782080.0,
+              "p95NearestRank": 217186304,
+              "maximum": 217366528,
+              "first": 166969344,
+              "last": 147505152,
+              "lastMinusFirst": -19464192
+            },
+            "firstSampleSeconds": 180.37991437502205,
+            "lastSampleSeconds": 239.77703766699415
+          },
+          {
+            "startInclusiveSeconds": 240,
+            "endExclusiveSeconds": 302.16149633401074,
+            "rssBytes": {
+              "count": 122,
+              "minimum": 82575360,
+              "median": 166961152.0,
+              "p95NearestRank": 217350144,
+              "maximum": 217563136,
+              "first": 82575360,
+              "last": 217235456,
+              "lastMinusFirst": 134660096
+            },
+            "firstSampleSeconds": 240.2832817089511,
+            "lastSampleSeconds": 301.87352029199246
+          },
+          {
+            "startInclusiveSeconds": 292.16149633401074,
+            "endExclusiveSeconds": 302.16149633401074,
+            "rssBytes": {
+              "count": 20,
+              "minimum": 113377280,
+              "median": 167755776.0,
+              "p95NearestRank": 217513984,
+              "maximum": 217513984,
+              "first": 212484096,
+              "last": 217235456,
+              "lastMinusFirst": 4751360
+            },
+            "firstSampleSeconds": 292.24037766701076,
+            "lastSampleSeconds": 301.87352029199246
+          }
+        ],
+        "rssPeakObservations": [
+          {
+            "elapsedSeconds": 50.29145525000058,
+            "rssBytes": 577323008
+          }
+        ],
+        "rssPeakContext": [
+          {
+            "elapsedSeconds": 48.767679666983895,
+            "rssBytes": 41107456
+          },
+          {
+            "elapsedSeconds": 49.276236708974466,
+            "rssBytes": 41107456
+          },
+          {
+            "elapsedSeconds": 49.7839537919499,
+            "rssBytes": 361545728
+          },
+          {
+            "elapsedSeconds": 50.29145525000058,
+            "rssBytes": 577323008
+          },
+          {
+            "elapsedSeconds": 50.79621075000614,
+            "rssBytes": 485720064
+          },
+          {
+            "elapsedSeconds": 51.30442837497685,
+            "rssBytes": 460849152
+          },
+          {
+            "elapsedSeconds": 51.80882216698956,
+            "rssBytes": 94142464
+          }
+        ],
+        "mlxBytes": {
+          "active": {
+            "count": 56,
+            "minimum": 402622764,
+            "median": 402884904.0,
+            "p95NearestRank": 402884904,
+            "maximum": 402884904,
+            "first": 402622764,
+            "last": 402884904,
+            "lastMinusFirst": 262140
+          },
+          "cache": {
+            "count": 56,
+            "minimum": 268441230,
+            "median": 270988950.0,
+            "p95NearestRank": 283776670,
+            "maximum": 291264158,
+            "first": 269920336,
+            "last": 268818078,
+            "lastMinusFirst": -1102258
+          },
+          "peakActive": {
+            "count": 56,
+            "minimum": 711749780,
+            "median": 711749780.0,
+            "p95NearestRank": 711749780,
+            "maximum": 711749780,
+            "first": 711749780,
+            "last": 711749780,
+            "lastMinusFirst": 0
+          }
+        }
+      },
+      "bounded": {
+        "processElapsedWallSeconds": 296.68595283292234,
+        "manifestElapsedSeconds": 248.696767917,
+        "differenceOfTimingScopesSeconds": 47.98918491592235,
+        "rssBytes": {
+          "count": 583,
+          "minimum": 376832,
+          "median": 167854080,
+          "p95NearestRank": 439205888,
+          "maximum": 1012121600,
+          "first": 376832,
+          "last": 218185728,
+          "lastMinusFirst": 217808896
+        },
+        "rssWindows": [
+          {
+            "startInclusiveSeconds": 0,
+            "endExclusiveSeconds": 45,
+            "rssBytes": {
+              "count": 89,
+              "minimum": 376832,
+              "median": 43597824,
+              "p95NearestRank": 43728896,
+              "maximum": 43728896,
+              "first": 376832,
+              "last": 41058304,
+              "lastMinusFirst": 40681472
+            },
+            "firstSampleSeconds": 0.006061915890313685,
+            "lastSampleSeconds": 44.78178574994672
+          },
+          {
+            "startInclusiveSeconds": 45,
+            "endExclusiveSeconds": 60,
+            "rssBytes": {
+              "count": 30,
+              "minimum": 18579456,
+              "median": 438861824.0,
+              "p95NearestRank": 1012121600,
+              "maximum": 1012121600,
+              "first": 41058304,
+              "last": 438517760,
+              "lastMinusFirst": 397459456
+            },
+            "firstSampleSeconds": 45.28736504097469,
+            "lastSampleSeconds": 59.98973924992606
+          },
+          {
+            "startInclusiveSeconds": 60,
+            "endExclusiveSeconds": 120,
+            "rssBytes": {
+              "count": 117,
+              "minimum": 115654656,
+              "median": 285327360,
+              "p95NearestRank": 488439808,
+              "maximum": 513327104,
+              "first": 463405056,
+              "last": 224182272,
+              "lastMinusFirst": -239222784
+            },
+            "firstSampleSeconds": 60.49821299989708,
+            "lastSampleSeconds": 119.53139820799697
+          },
+          {
+            "startInclusiveSeconds": 120,
+            "endExclusiveSeconds": 180,
+            "rssBytes": {
+              "count": 118,
+              "minimum": 90587136,
+              "median": 167280640.0,
+              "p95NearestRank": 220774400,
+              "maximum": 223985664,
+              "first": 223739904,
+              "last": 142819328,
+              "lastMinusFirst": -80920576
+            },
+            "firstSampleSeconds": 120.0406125409063,
+            "lastSampleSeconds": 179.63663979095872
+          },
+          {
+            "startInclusiveSeconds": 180,
+            "endExclusiveSeconds": 240,
+            "rssBytes": {
+              "count": 118,
+              "minimum": 114606080,
+              "median": 167755776.0,
+              "p95NearestRank": 217776128,
+              "maximum": 218087424,
+              "first": 142819328,
+              "last": 118358016,
+              "lastMinusFirst": -24461312
+            },
+            "firstSampleSeconds": 180.14338845794555,
+            "lastSampleSeconds": 239.6065929159522
+          },
+          {
+            "startInclusiveSeconds": 240,
+            "endExclusiveSeconds": 296.68595283292234,
+            "rssBytes": {
+              "count": 111,
+              "minimum": 114868224,
+              "median": 168181760,
+              "p95NearestRank": 218365952,
+              "maximum": 218480640,
+              "first": 118358016,
+              "last": 218185728,
+              "lastMinusFirst": 99827712
+            },
+            "firstSampleSeconds": 240.11516095791012,
+            "lastSampleSeconds": 296.22789645788725
+          },
+          {
+            "startInclusiveSeconds": 286.68595283292234,
+            "endExclusiveSeconds": 296.68595283292234,
+            "rssBytes": {
+              "count": 19,
+              "minimum": 118636544,
+              "median": 168427520,
+              "p95NearestRank": 218480640,
+              "maximum": 218480640,
+              "first": 218480640,
+              "last": 218185728,
+              "lastMinusFirst": -294912
+            },
+            "firstSampleSeconds": 287.07653812493663,
+            "lastSampleSeconds": 296.22789645788725
+          }
+        ],
+        "rssPeakObservations": [
+          {
+            "elapsedSeconds": 48.83622862491757,
+            "rssBytes": 1012121600
+          },
+          {
+            "elapsedSeconds": 49.340527207939886,
+            "rssBytes": 1012121600
+          }
+        ],
+        "rssPeakContext": [
+          {
+            "elapsedSeconds": 47.31534079089761,
+            "rssBytes": 41058304
+          },
+          {
+            "elapsedSeconds": 47.821202374994755,
+            "rssBytes": 18579456
+          },
+          {
+            "elapsedSeconds": 48.33139758289326,
+            "rssBytes": 665780224
+          },
+          {
+            "elapsedSeconds": 48.83622862491757,
+            "rssBytes": 1012121600
+          },
+          {
+            "elapsedSeconds": 49.340527207939886,
+            "rssBytes": 1012121600
+          },
+          {
+            "elapsedSeconds": 49.8506009579869,
+            "rssBytes": 75726848
+          },
+          {
+            "elapsedSeconds": 50.358679582946934,
+            "rssBytes": 111493120
+          }
+        ],
+        "mlxBytes": {
+          "active": {
+            "count": 56,
+            "minimum": 402622764,
+            "median": 402884904.0,
+            "p95NearestRank": 402884904,
+            "maximum": 402884904,
+            "first": 402622764,
+            "last": 402884904,
+            "lastMinusFirst": 262140
+          },
+          "cache": {
+            "count": 56,
+            "minimum": 268736166,
+            "median": 269063826.0,
+            "p95NearestRank": 283334310,
+            "maximum": 283595410,
+            "first": 271189700,
+            "last": 268899998,
+            "lastMinusFirst": -2289702
+          },
+          "peakActive": {
+            "count": 56,
+            "minimum": 690466708,
+            "median": 690466708.0,
+            "p95NearestRank": 690466708,
+            "maximum": 690466708,
+            "first": 690466708,
+            "last": 690466708,
+            "lastMinusFirst": 0
+          }
+        }
+      }
+    },
+    "all56RetainedMLXActiveValuesExactlyEqual": true,
+    "rssPeakIncreaseBytes": 434798592,
+    "retainedRSSSampleCount": 1178,
+    "retainedFrameRecordCount": 112,
+    "interpretation": "The new sampled startup-region peak is 1,012,121,600 bytes versus 577,323,008 bytes historically. It falls to 75,726,848 bytes by 49.851 seconds. From 120 seconds onward new RSS remains below 214 MiB, with identical retained MLX active values at every matched frame boundary. The higher startup peak remains an unexplained observation, without a demonstrated progressive leak or cause.",
+    "limitations": [
+      "One sequential offline capture per version, not randomized or repeated; no causal throughput comparison.",
+      "RSS is ps -o rss for the benchmark process sampled about every0.5s; sub-sample transients and child processes are not measured.",
+      "The fixed elapsed-time windows are descriptive observations, not instrumented model/capture phase boundaries.",
+      "Manifest elapsed starts after input preflight/model inventory and includes runtime provenance/model startup, frame readback/write, and final model validation; process elapsed additionally includes earlier work and exit.",
+      "Per-frame MLX snapshots follow synchronous four-view readbacks and disk writes; no host timestamp joins them to RSS samples. No post-reset/teardown MLX snapshot exists.",
+      "MLX active/cache/peak-active are allocator counters, not total process RSS or physical unified-memory footprint; these values must not be subtracted from RSS to attribute ownership.",
+      "The configured256MiB MLX cache policy is not a measured hard peak cap; both captures report some cache snapshots above it.",
+      "Stable observed late RSS and frame-boundary active allocation do not prove absence of leaks over longer sessions or hard resource bounds.",
+      "Extra clamp tensor logical size does not predict transient allocation, JIT/driver allocation, residency, memory compression, or allocator behavior. No attributed explanation for the higher RSS spike is established.",
+      "Historical binary hashes and source revisions are preserved; source hashes are validated against their Git objects, not overwritten with current hashes."
+    ]
+  },
+  "review": {
+    "viewer": "artifacts/apple-temporal-bounded-input-review-1/index.html",
+    "report": {
+      "path": "artifacts/apple-temporal-bounded-input-review-1/review.json",
+      "bytes": 169705,
+      "sha256": "9d7f46414000aa1589a20cba01aa68b98f193a968bbf227999cdb1d74259308b"
+    },
+    "completedFrames": 56,
+    "panelOrder": [
+      "original",
+      "proxy",
+      "identity",
+      "enhanced"
+    ],
+    "mapping": {
+      "BT2020toBT709": [
+        [
+          1.660491,
+          -0.5876411,
+          -0.0728499
+        ],
+        [
+          -0.1245505,
+          1.1328999,
+          -0.0083494
+        ],
+        [
+          -0.0181508,
+          -0.1005789,
+          1.1187297
+        ]
+      ],
+      "encoding": "sRGB piecewise OETF, threshold0.0031308; round to nearest8-bit code; embedded sRGB ICC",
+      "gamut": "clip mapped BT709 components to0...1 before sRGB encoding",
+      "luminance709": [
+        0.2126,
+        0.7152,
+        0.0722
+      ],
+      "name": "fixed SDR inspection, codec-equivalent v1",
+      "negativeSourceClamp": "max(component,0) for review only",
+      "proxy": "already bounded encoded sRGB; only8-bit quantization",
+      "referenceWhiteNits": 203.0,
+      "rolloff": "Y>0.75: Y'=0.75+0.25*(1-exp(-(Y-0.75)/0.25)); scale RGB by Y'/Y"
+    },
+    "validation": {
+      "passed": true,
+      "scope": "CPU raw-integrity checks and fixed SDR review export; not HDR display or source-rate playback",
+      "checks": [
+        {
+          "name": "review-six-gib",
+          "command": [
+            "uv",
+            "run",
+            "--frozen",
+            "python",
+            "scripts/review-reference-sequence.py",
+            "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+            "--output",
+            "artifacts/apple-temporal-bounded-input-review-1",
+            "--maximum-input-bytes",
+            "6442450944"
+          ],
+          "exitCode": 0,
+          "expectedExitCode": 0,
+          "elapsedWallSeconds": 51.28922799997963,
+          "passed": true
+        }
+      ],
+      "captureManifestUnchanged": true,
+      "captureManifestSHA256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+    },
+    "rootReview": {
+      "path": "artifacts/apple-temporal-bounded-input-run-1/root-review.json",
+      "bytes": 5444,
+      "sha256": "f77d56b5e20b75b48daf0ca6c84e57371a157f638c7ff7f8c4c4242c8d3fec87"
+    },
+    "all56ReviewImageHashesVerified": true,
+    "visuallyInspectedSourceFrames": [
+      1498,
+      1504,
+      1528
+    ],
+    "visualMethod": "view_image default high detail supplied resized four-panel overview strips, not1:1 pixel inspection.",
+    "visualObservations": [
+      "Both cut frames show the new scene without an obvious previous-shot image.",
+      "Original and identity appear alike in these overviews.",
+      "Enhanced faces and clothing retain visible brightness, colour and softness differences."
+    ],
+    "limits": [
+      "Three stills do not establish temporal quality or fine-detail behavior across all frames.",
+      "Fixed SDR mapping is not a physical HDR observation.",
+      "No aesthetic improvement or perceptual threshold is inferred."
+    ]
+  },
+  "limitations": [
+    "This verifies integrated data contracts and records model-output changes; it applies no temporal/perceptual quality threshold.",
+    "The four views do not expose the actual resized model-input tensor, flow, confidence or network history. Production-helper tests separately establish the post-resize [0,1] contract.",
+    "Unchanged recorded reset locations do not prove all internal temporal behavior unchanged or establish the exact cut/backend cause.",
+    "Full source-resolution output is1920x1080, while neural processing remains320x192 float16.",
+    "Runtime code and binary provenance differ explicitly from baseline; the same model/source/timing/settings apart from the range marker are checked. Enhanced differences are retained without a sole-cause or improvement claim.",
+    "Negative finite enhanced components are counted and retained, not clamped or treated as automatic corruption.",
+    "The exported proxy remains the source-size encoded view. Actual processing-input bounds are verified by separate production-helper GPU tests in the implementation evidence.",
+    "Neither offline wall time nor sampled allocator counters establish playback throughput, physical memory ceilings or source-rate neural Live."
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/apple-temporal-bounded-input-run-1/before.json",
+      "bytes": 3613,
+      "sha256": "c8d9b73f3e1039705983ddbc16878f008764e9f4bdab0612664136bc18fb87fa"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-run-1/capture.py",
+      "bytes": 3392,
+      "sha256": "11879b943acdf26504845e0888c784dadf6349e127a29058eb015dbd39ddf6dc"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-run-1/capture-process.json",
+      "bytes": 53700,
+      "sha256": "3956992e2320bf3d4afea3be1e03d598b8e8708950397db02ecd0bf06381c05a"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+      "bytes": 199716,
+      "sha256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-audit-1/report.json",
+      "bytes": 303782,
+      "sha256": "6d1ee811da8f5ece695166bc1bf1c0617e7756c0056c59b77b51e2e04448c2fd"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-audit-1/audit.py",
+      "bytes": 14066,
+      "sha256": "3d1caead24cff3ba0519967673796eeded3148645f924381b38fc64e8826f4e0"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/report.json",
+      "bytes": 67961,
+      "sha256": "65bccc09c888134d7d5886c162759fc93e3eb04b2639c576873d9f6e95a0a900"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-fresh-cuts-1/run.py",
+      "bytes": 13164,
+      "sha256": "a845fe07e86b51db958919495e583d187d15f08779c54f32a123b01f05d63451"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-resource-audit-1/report.json",
+      "bytes": 250378,
+      "sha256": "fa43efa49d4a7d6d969060f6323393ad4734295173622c28a34acc6881f09b7c"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-resource-audit-1/analyze.py",
+      "bytes": 13790,
+      "sha256": "e390753a2285b29f4edb2eaaa083762d2774d4d49814aa89b008d210820df302"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-resource-audit-1/rss-samples.csv",
+      "bytes": 50250,
+      "sha256": "478df8f126fd9dcbf4fda5568a1e66f7f41345849f0fadc5b77c987b50669d27"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-resource-audit-1/frame-measurements.csv",
+      "bytes": 12629,
+      "sha256": "c0ff1cb10de0425d833f26cb201340c75ec1f18eb037e6845a01a371d6781a46"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-run-1/review.py",
+      "bytes": 1597,
+      "sha256": "89faef105770a022364f260a919be346f8e3d0304d7c7a7c5174f5cdd3f126e8"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-run-1/review-process.json",
+      "bytes": 791,
+      "sha256": "51abbf6e6aba9f9c908b3589770f0fa0c470e60ca11206c969685220596ca855"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-review-1/review.json",
+      "bytes": 169705,
+      "sha256": "9d7f46414000aa1589a20cba01aa68b98f193a968bbf227999cdb1d74259308b"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-run-1/root-review.json",
+      "bytes": 5444,
+      "sha256": "f77d56b5e20b75b48daf0ca6c84e57371a157f638c7ff7f8c4c4242c8d3fec87"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-audit-1/trajectory-export-v2-provenance.json",
+      "bytes": 4155,
+      "sha256": "25bba662e8d4e85aea6f387c736f9a3d9ced44fd0c68bee8bccc75db793f3f73"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-audit-1/export-trajectories-v2.py",
+      "bytes": 7044,
+      "sha256": "09bfa17bf5aecb272c7d9f9f51eaba040a3ddbf60eb500622d9f1128027f5be4"
+    },
+    {
+      "path": "artifacts/apple-temporal-full-capture-1/manifest.json",
+      "bytes": 199818,
+      "sha256": "350b9f2a1ad7c4474c0764a3d41eb1dc1b115ff8d15a98c37073826a961a2bff"
+    },
+    {
+      "path": "artifacts/apple-temporal-full-input-1/manifest.json",
+      "bytes": 167435,
+      "sha256": "b2aa9c8e85c592061bdff5a0201e4893dd48dc0dd1c1164ef463f18b7dbaf1ed"
+    },
+    {
+      "path": "artifacts/reference-runtime-before-sdr-input-bound-1/manifest.json",
+      "bytes": 983,
+      "sha256": "fceaca8cbfa637beb2194e7edcd8b3772134af7b139b1a5d5b5e5cb158674005"
+    }
+  ]
+}
