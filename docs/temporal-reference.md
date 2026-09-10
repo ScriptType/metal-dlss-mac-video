@@ -51,9 +51,9 @@ swift build --product hdr-benchmark -j 2
 
 Validation is CPU-only. The capture runs inference and must use a reserved GPU window when other measurements are active. The output directory must be new. Run from the repository root to record source revisions and file hashes; the report marks unavailable provenance instead of inventing it.
 
-Optional settings are `--frames`, `--strength`, `--colour-strength`, `--maximum-luminance-ratio`, `--reference-white`, `--motion` and `--maximum-output-bytes`. Defaults are all supplied frames, strength 1, colour strength 1, ratio 2, white 203 nits, automatic optical flow and 2 GiB. Motion also accepts `videotoolbox`, `vision` and `zero`; `zero` disables optical flow and must not be represented as an automatic-flow result. Processing dimensions default to 160 × 96 and may contain at most 512 × 288 pixels. Temporal mode, float16 model precision and scene-cut threshold 0.3 remain fixed.
+Optional settings are `--frames`, `--strength`, `--colour-strength`, `--maximum-luminance-ratio`, `--reference-white`, `--motion` and `--maximum-output-bytes`. Defaults are all supplied frames, strength 1, colour strength 1, ratio 2, white 203 nits, automatic optical flow and a 2 GiB output allowance. An explicit `--maximum-output-bytes` may raise that allowance to at most 6 GiB, including the 4 MiB metadata reserve. The CPU-only `--reference-sequence-validate` command accepts the same option. Motion also accepts `videotoolbox`, `vision` and `zero`; `zero` disables optical flow and must not be represented as an automatic-flow result. Processing dimensions default to 160 × 96 and may contain at most 512 × 288 pixels. Temporal mode, float16 model precision and scene-cut threshold 0.3 remain fixed.
 
-Four Float32 RGB views require `frames × width × height × 48` bytes. Preflight reserves another 4 MiB for bounded manifests and frame metadata, within the selected maximum of 2 GiB. The capture processes one frame at a time and writes one view at a time; the model and its temporal state persist. It configures MLX's soft free-cache policy to 256 MiB. Whole-buffer releases can exceed that value until a later allocation reclaims cached buffers; it is neither an instantaneous cache ceiling nor a hard process-memory limit.
+Four Float32 RGB views require `frames × width × height × 48` bytes. Preflight reserves another 4 MiB for bounded manifests and frame metadata, within the selected allowance (2 GiB by default, at most 6 GiB by explicit opt-in). The capture processes one frame at a time and writes one view at a time; the model and its temporal state persist. It configures MLX's soft free-cache policy to 256 MiB. Whole-buffer releases can exceed that value until a later allocation reclaims cached buffers; it is neither an instantaneous cache ceiling nor a hard process-memory limit.
 
 Each frame directory is staged before atomic publication. The run manifest records only published frames and remains `complete: false` until all selected frames finish and the input manifest/model hashes are rechecked. A failed or interrupted run is preserved as incomplete; it is not resumable because reconstructing temporal state would require replay. Use a new output directory for a repeat.
 
@@ -67,6 +67,8 @@ uv run --frozen python scripts/review-reference-sequence.py \
   --output artifacts/temporal-reference-review
 open artifacts/temporal-reference-review/index.html
 ```
+
+The reviewer accepts `--maximum-input-bytes` to opt into at most 6 GiB of raw input; its default remains 2 GiB. Generated review files retain a separate 2 GiB limit. A capture manifest cannot raise either caller limit.
 
 The review script first requires a complete capture and validates its input-manifest copy, paired exact timing, original identity and every payload. It creates one four-panel PNG per frame, `review.json`, and a local frame-step/play viewer. Publication occurs only after all outputs finish. The review directory must be new; raw captures are never rewritten.
 
@@ -116,9 +118,28 @@ uv run --frozen python scripts/review-reference-sequence.py \
   --output artifacts/apple-temporal-reference-review-new
 ```
 
-The preparer performs software HEVC decoding and full 1920 × 1080 PQ linearization before a Float64-accumulated 2 × 2 linear BOX reduction to 960 × 540. Its explicit zscale settings use limited-range BT.2020 NCL, top-left bilinear chroma, `npl=1` and `agamma=false`; planar G,B,R output is reordered into RGB absolute nits. The reference has no white-point scaling, gamut conversion or post-linearization clamp. Actual pre-conversion `showinfo` timestamps and durations must match the pinned inventory exactly. The original compressed source and unchanged raw ffprobe JSON remain authoritative provenance: parsed per-frame metadata is a projection because ffprobe emits repeated JSON keys. HDR10+ display tone mapping is neither applied nor attached to the numerical derivative.
+The preparer performs software HEVC decoding and full 1920 × 1080 PQ linearization. By default it then applies a Float64-accumulated 2 × 2 linear BOX reduction to 960 × 540. `--full-resolution` instead retains decoded Float32 RGB at 1920 × 1080, with the same 56 frames, exact timing and eight-frame inspection prelude. Geometry and reduction policy are recorded explicitly in the manifest. Its explicit zscale settings use limited-range BT.2020 NCL, top-left bilinear chroma, `npl=1` and `agamma=false`; planar G,B,R output is reordered into RGB absolute nits. The reference has no white-point scaling, gamut conversion or post-linearization clamp. Actual pre-conversion `showinfo` timestamps and durations must match the pinned inventory exactly. The original compressed source and unchanged raw ffprobe JSON remain authoritative provenance: parsed per-frame metadata is a projection because ffprobe emits repeated JSON keys. HDR10+ display tone mapping is neither applied nor attached to the numerical derivative.
 
-Mandatory synthetic conversion controls check transfer normalization, channel order and chroma treatment against an independent analytic reference, with absolute tolerance 0.0001 nit plus relative tolerance 0.00005. An earlier stricter extended-domain check failed by 0.7875 nit at an expected 19423.49 nits; its report and source are retained. This does not establish a uniform error below 0.001 nit. The actual source window has no negative or above-10000-nit linear components; its maximum falls from 1635.3121 nits before BOX reduction to 999.1243 after it. The measured preparation also used `--conversion-audit artifacts/apple-temporal-conversion-audit/report.json`, pinning the separately verified 19-control audit and matching FFmpeg binary. That optional local report is not required for other runs. Twelve CPU regression cases cover input/metadata/timing errors, numerical layout, output preservation and a stalled decoder terminated by the watchdog. Existing paths and dangling output symlinks are refused; failed conversion leaves an incomplete preparation report. The decoder deadline is 300 seconds.
+A full-resolution input needs 1,393,459,200 raw bytes; its four captured views need another 5,573,836,800 bytes plus metadata. Use the explicit larger allowance for both capture preflight and review. Neural processing dimensions remain independently set to 320 × 192 in this example:
+
+```sh
+uv run --frozen python scripts/prepare-apple-hdr-reference.py \
+  --full-resolution --output artifacts/apple-temporal-full-input-new
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/apple-temporal-full-input-new/manifest.json --maximum-output-bytes 6442450944
+.build/debug/hdr-benchmark \
+  --reference-sequence artifacts/apple-temporal-full-input-new/manifest.json \
+  --output artifacts/apple-temporal-full-capture-new \
+  --model models/neural-rendering/NeuralRendering.dlssmodel \
+  --width 320 --height 192 --strength 1 --colour-strength 1 \
+  --maximum-luminance-ratio 2 --reference-white 203 --motion automatic \
+  --maximum-output-bytes 6442450944
+uv run --frozen python scripts/review-reference-sequence.py \
+  artifacts/apple-temporal-full-capture-new/manifest.json \
+  --output artifacts/apple-temporal-full-review-new --maximum-input-bytes 6442450944
+```
+
+Mandatory synthetic conversion controls check transfer normalization, channel order and chroma treatment against an independent analytic reference, with absolute tolerance 0.0001 nit plus relative tolerance 0.00005. An earlier stricter extended-domain check failed by 0.7875 nit at an expected 19423.49 nits; its report and source are retained. This does not establish a uniform error below 0.001 nit. The actual source window has no negative or above-10000-nit linear components; its maximum falls from 1635.3121 nits before BOX reduction to 999.1243 after it. The measured preparation also used `--conversion-audit artifacts/apple-temporal-conversion-audit/report.json`, pinning the separately verified 19-control audit and matching FFmpeg binary. That optional local report is not required for other runs. Thirteen CPU regression cases cover input/metadata/timing errors, numerical layout, output preservation and a stalled decoder terminated by the watchdog. Existing paths and dangling output symlinks are refused; failed conversion leaves an incomplete preparation report. The decoder deadline is 300 seconds.
 
 The M3 continuous capture completed all 56 frames with unchanged inputs, model and runtime binaries. All 224 raw views are finite, every original is byte-identical to its input, and maximum identity error is 0.00006103515625 nit. Eleven small negative enhanced components remain in the raw output (minimum −0.000312234 nit). Automatic history resets occurred only at cold source frame 1488 and the two observed cuts, 1498 and 1528. Independent one-frame processes at both cuts produced byte-identical original, proxy, identity and enhanced views: all eight comparisons had zero difference. These checks establish exact cut-frame equivalence for this configuration. They do not establish all subsequent motion-history behaviour. The diagnostic process took 77.543 seconds including preflight, readback and file output; this is not playback throughput. The input requires 348,364,800 bytes and the four raw views 1,393,459,200 bytes, plus metadata and reviews.
 

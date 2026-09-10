@@ -60,6 +60,22 @@ class AppleReferenceTests(unittest.TestCase):
         np.testing.assert_array_equal(prepare.box_half(rgb), [[[-100, 400, 25000]]])
         self.assertEqual(prepare.box_half(rgb).dtype, np.dtype("<f4"))
 
+    def test_full_resolution_keeps_decoded_float_bytes_and_default_keeps_box(self):
+        # Interleave distinct channels, negative/superwhite values and signed
+        # zero through the same planar unpack used by actual preparation.
+        planes = np.array([[[-0., 100], [300, 500]],
+                           [[-100, 20000], [30000, 40000]],
+                           [[1, 2], [3, 4]]], dtype="<f4")
+        rgb = prepare.unpack_gbr(planes.tobytes(), 2, 2)
+        full = prepare.reference_pixels(rgb, full_resolution=True)
+        self.assertEqual(full.shape, (2, 2, 3))
+        self.assertEqual(full.tobytes(), rgb.tobytes())
+        self.assertEqual(full.dtype, np.dtype("<f4"))
+        np.testing.assert_array_equal(prepare.reference_pixels(rgb), [[[2.5, 225, 22475]]])
+        self.assertTrue(np.signbit(full[0, 0, 1]))
+        self.assertEqual(full[0, 0, 2], -100)
+        self.assertEqual(full[1, 1, 2], 40000)
+
     def test_scalar_reference_black_white_and_chroma_co_siting(self):
         neutral = np.full((2, 2), 512, dtype="<u2")
         black = prepare.independent_reference(np.full((4, 4), 64), neutral, neutral)

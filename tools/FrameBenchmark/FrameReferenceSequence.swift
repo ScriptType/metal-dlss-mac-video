@@ -39,13 +39,19 @@ enum FrameReferenceSequence {
     }
 
     static let layout = "RGB float32 little-endian top-to-bottom"
-    static let maximumBytes: UInt64 = 2 * 1024 * 1024 * 1024
+    static let defaultMaximumOutputBytes: UInt64 = 2 * 1024 * 1024 * 1024
+    static let maximumOutputBytesCeiling: UInt64 = 6 * 1024 * 1024 * 1024
+    static let metadataAllowanceBytes: UInt64 = 4 * 1024 * 1024
 
     static func run(_ arguments: [String]) async throws {
         if arguments == ["--reference-sequence-self-test"] { try selfTest(); return }
-        if arguments.count == 2, arguments[0] == "--reference-sequence-validate" {
-            let input = try preflight(URL(fileURLWithPath: arguments[1]))
-            print("reference-sequence preflight passed frames=\(input.manifest.frames.count) frameBytes=\(input.frameBytes) manifestSHA256=\(digest(input.data)); no model or GPU work")
+        if arguments.first == "--reference-sequence-validate" {
+            guard arguments.count == 2 || (arguments.count == 4 && arguments[2] == "--maximum-output-bytes") else {
+                throw Failure("Required: --reference-sequence-validate MANIFEST [--maximum-output-bytes BYTES]")
+            }
+            let budget = try outputBudget(arguments.count == 4 ? arguments[3] : nil)
+            let input = try preflight(URL(fileURLWithPath: arguments[1]), maximumOutputBytes: budget)
+            print("reference-sequence preflight passed frames=\(input.manifest.frames.count) frameBytes=\(input.frameBytes) maximumOutputBytes=\(budget) manifestSHA256=\(digest(input.data)); no model or GPU work")
             return
         }
         let allowed = Set(["--reference-sequence", "--output", "--model", "--frames", "--width", "--height",
@@ -75,25 +81,21 @@ enum FrameReferenceSequence {
         let width = try integer("--width", 160), height = try integer("--height", 96)
         let strength = try scalar("--strength", 1), colour = try scalar("--colour-strength", 1)
         let ratio = try scalar("--maximum-luminance-ratio", 2), white = try scalar("--reference-white", 203)
-        let budget = try integer("--maximum-output-bytes", Int(maximumBytes))
+        let budget = try outputBudget(options["--maximum-output-bytes"])
         guard width > 0, height > 0, width <= 512 * 288 / height,
               (0...1).contains(strength), (0...1).contains(colour), ratio >= 1, white > 0,
-              budget > 0, UInt64(budget) <= maximumBytes,
               let motion = MediaMotion(rawValue: options["--motion"] ?? "automatic") else {
-            throw Failure("Invalid capture settings: processing at most512×288 pixels; output budget at most2GiB")
+            throw Failure("Invalid capture settings: processing at most512×288 pixels")
         }
         // Every input payload is checked before any model/GPU allocation. Read
         // again immediately before processing, detecting edits after preflight.
-        let input = try preflight(URL(fileURLWithPath: inputPath))
+        let input = try preflight(URL(fileURLWithPath: inputPath), maximumOutputBytes: budget)
         let count = try integer("--frames", input.manifest.frames.count)
         guard count > 0, count <= input.manifest.frames.count, count <= 120 else {
             throw Failure("Capture count must be1...120 and available in the manifest")
         }
-        let floatBytes = UInt64(input.frameBytes) * UInt64(count) * 4
-        let metadataAllowance: UInt64 = 4 * 1024 * 1024
-        guard floatBytes + metadataAllowance <= UInt64(budget) else {
-            throw Failure("Four-view float payload plus bounded metadata exceeds output budget")
-        }
+        let floatBytes = try checkedPayloadBytes(frameBytes: UInt64(input.frameBytes),
+                                                frameCount: UInt64(count), budget: budget)
         let model = URL(fileURLWithPath: modelPath).standardizedFileURL.resolvingSymlinksInPath()
         let modelFiles = try modelInventory(model)
         let output = URL(fileURLWithPath: outputPath).standardizedFileURL
@@ -111,7 +113,7 @@ enum FrameReferenceSequence {
             "referenceDomain": ["primaries": "BT.2020", "transfer": "linear", "units": "cd/m2"],
             "proxyDomain": ["primaries": "BT.709", "transfer": "sRGB", "units": "normalized0...1"],
             "requestedFrames": count, "maximumFrames": 120, "maximumOutputBytes": budget,
-            "rawPayloadBytes": floatBytes, "metadataAllowanceBytes": metadataAllowance,
+            "rawPayloadBytes": floatBytes, "metadataAllowanceBytes": metadataAllowanceBytes,
             "sourceIdentity": "sha256:\(digest(input.data))", "generation": 1,
             "settings": ["processingWidth": width, "processingHeight": height, "strength": strength,
                 "colourStrength": colour, "maximumLuminanceRatio": ratio, "referenceWhiteNits": white,
@@ -211,7 +213,37 @@ enum FrameReferenceSequence {
         }
     }
 
-    static func preflight(_ path: URL) throws -> Input {
+    static func validateBudget(_ budget: UInt64) throws {
+        guard budget > 0, budget <= maximumOutputBytesCeiling else {
+            throw Failure("Invalid --maximum-output-bytes: expected 1...\(maximumOutputBytesCeiling) bytes (at most 6 GiB; default 2 GiB)")
+        }
+    }
+
+    static func outputBudget(_ text: String?) throws -> UInt64 {
+        guard let budget = UInt64(text ?? String(defaultMaximumOutputBytes)) else {
+            throw Failure("Invalid --maximum-output-bytes: expected an unsigned byte count")
+        }
+        try validateBudget(budget)
+        return budget
+    }
+
+    /// Includes all four views and reserved metadata, without allocating payloads.
+    static func checkedPayloadBytes(frameBytes: UInt64, frameCount: UInt64, budget: UInt64) throws -> UInt64 {
+        try validateBudget(budget)
+        let (sequenceBytes, sequenceOverflow) = frameBytes.multipliedReportingOverflow(by: frameCount)
+        let (payloadBytes, viewsOverflow) = sequenceBytes.multipliedReportingOverflow(by: 4)
+        let (totalBytes, metadataOverflow) = payloadBytes.addingReportingOverflow(metadataAllowanceBytes)
+        guard !sequenceOverflow, !viewsOverflow, !metadataOverflow else {
+            throw Failure("Four-view output byte count overflows UInt64")
+        }
+        guard totalBytes <= budget else {
+            throw Failure("Four-view float payload plus bounded metadata exceeds output budget (\(budget) bytes)")
+        }
+        return payloadBytes
+    }
+
+    static func preflight(_ path: URL, maximumOutputBytes: UInt64 = defaultMaximumOutputBytes) throws -> Input {
+        try validateBudget(maximumOutputBytes)
         let url = path.standardizedFileURL.resolvingSymlinksInPath()
         let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
         guard size > 0, size <= 1024 * 1024 else { throw Failure("Manifest must be1...1048576 bytes") }
@@ -226,9 +258,9 @@ enum FrameReferenceSequence {
               manifest.width <= 2_073_600 / manifest.height,
               (1...120).contains(manifest.frames.count) else { throw Failure("Unsupported raw sequence contract or bounds") }
         let frameBytes = manifest.width * manifest.height * 12
-        guard UInt64(frameBytes) * UInt64(manifest.frames.count) * 4 + 4 * 1024 * 1024 <= maximumBytes else {
-            throw Failure("Complete input sequence exceeds the2GiB four-view output bound")
-        }
+        // A requested capture subset does not relax the complete-input bound.
+        _ = try checkedPayloadBytes(frameBytes: UInt64(frameBytes), frameCount: UInt64(manifest.frames.count),
+                                    budget: maximumOutputBytes)
         var paths = [URL]()
         for (index, frame) in manifest.frames.enumerated() {
             guard frame.sourceFrameIndex < UInt64(Int.max), frame.pts.timescale > 0,
@@ -364,9 +396,50 @@ enum FrameReferenceSequence {
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
         defer { try? FileManager.default.removeItem(at: root) }
         var checks = 0
-        func reject(_ operation: () throws -> Void) throws {
-            do { try operation() } catch { checks += 1; return }
+        func reject(_ expectedMessage: String? = nil, _ operation: () throws -> Void) throws {
+            do { try operation() } catch {
+                if let expectedMessage, !error.localizedDescription.hasPrefix(expectedMessage) {
+                    throw Failure("CPU self-test rejected input for the wrong reason: \(error.localizedDescription)")
+                }
+                checks += 1; return
+            }
             throw Failure("CPU self-test accepted invalid input")
+        }
+        guard try outputBudget(nil) == 2_147_483_648,
+              try outputBudget("6442450944") == maximumOutputBytesCeiling else {
+            throw Failure("Default or explicit output allowance changed")
+        }
+        checks += 1
+        for invalid in ["0", "-1", "invalid", "1.5", "18446744073709551616", "6442450945"] {
+            try reject("Invalid --maximum-output-bytes") { _ = try outputBudget(invalid) }
+        }
+        let atCeiling = (maximumOutputBytesCeiling - metadataAllowanceBytes) / 4
+        guard try checkedPayloadBytes(frameBytes: atCeiling, frameCount: 1, budget: maximumOutputBytesCeiling)
+                == maximumOutputBytesCeiling - metadataAllowanceBytes else {
+            throw Failure("Exact output-budget boundary was rejected")
+        }
+        checks += 1
+        try reject("Four-view float payload plus bounded metadata exceeds output budget") {
+            _ = try checkedPayloadBytes(frameBytes: atCeiling, frameCount: 1, budget: maximumOutputBytesCeiling - 1)
+        }
+        // Exercise each arithmetic overflow independently; these are counts,
+        // never actual allocations or sparse files with gigabyte lengths.
+        for (frameBytes, frameCount) in [(UInt64.max, UInt64(2)), (UInt64.max / 4 + 1, 1), (UInt64.max / 4, 1)] {
+            try reject("Four-view output byte count overflows UInt64") {
+                _ = try checkedPayloadBytes(frameBytes: frameBytes, frameCount: frameCount, budget: maximumOutputBytesCeiling)
+            }
+        }
+        let fullHDFrameBytes: UInt64 = 1920 * 1080 * 12
+        guard try checkedPayloadBytes(frameBytes: fullHDFrameBytes, frameCount: 56, budget: maximumOutputBytesCeiling)
+                == 5_573_836_800 else { throw Failure("Full-HD four-view count changed") }
+        checks += 1
+        try reject("Four-view float payload plus bounded metadata exceeds output budget") {
+            _ = try checkedPayloadBytes(frameBytes: fullHDFrameBytes, frameCount: 56, budget: defaultMaximumOutputBytes)
+        }
+        for invalid in [UInt64(0), maximumOutputBytesCeiling + 1] {
+            try reject("Invalid --maximum-output-bytes") {
+                _ = try preflight(root.appendingPathComponent("absent.json"), maximumOutputBytes: invalid)
+            }
         }
         let floats: [Float] = [-0.5, 203, 10001]
         let data = floats.withUnsafeBytes { Data($0) }
@@ -381,6 +454,30 @@ enum FrameReferenceSequence {
         let input = try preflight(manifest)
         guard try payload(file, digest(data), 12) == data, input.frameBytes == 12 else { throw Failure("Valid data changed") }
         checks += 1
+        guard try preflight(manifest, maximumOutputBytes: metadataAllowanceBytes + 48).frameBytes == 12 else {
+            throw Failure("Preflight rejected the exact payload-plus-metadata budget")
+        }
+        checks += 1
+        try reject("Four-view float payload plus bounded metadata exceeds output budget") {
+            _ = try preflight(manifest, maximumOutputBytes: metadataAllowanceBytes + 47)
+        }
+        var fullHD = metadata
+        fullHD["width"] = 1920; fullHD["height"] = 1080
+        fullHD["frames"] = (0..<56).map { index in
+            ["sourceFrameIndex": index, "path": "frame.rgb32f", "sha256": digest(data),
+             "pts": ["value": index * 1001, "timescale": 24000],
+             "duration": ["value": 1001, "timescale": 24000]] as [String: Any]
+        }
+        let fullHDManifest = root.appendingPathComponent("full-hd-counts-only.json")
+        try writeJSON(fullHD, fullHDManifest)
+        try reject("Four-view float payload plus bounded metadata exceeds output budget") {
+            _ = try preflight(fullHDManifest)
+        }
+        // The same 56-frame manifest passes budget preflight with explicit 6 GiB
+        // and reaches the deliberately tiny payload's length check instead.
+        try reject("Invalid float payload length/hash") {
+            _ = try preflight(fullHDManifest, maximumOutputBytes: maximumOutputBytesCeiling)
+        }
         try reject { _ = try payload(file, String(repeating: "0", count: 64), 12) }
         try reject { _ = try payload(file, digest(data), 24) }
         try reject { _ = try contained("../outside.rgb32f", in: root) }

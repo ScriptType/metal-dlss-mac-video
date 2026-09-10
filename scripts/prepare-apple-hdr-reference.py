@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Prepare pinned Apple HDR10+ frames as a bounded CPU Float32 reference.
 
-Software decode and explicit zscale produce BT.2020 absolute nits. Linear 2x2
-BOX reduction is separate. This numerical derivative is not a native-import,
-dynamic tone-mapping, physical display or full 1080p quality qualification.
+Software decode and explicit zscale produce BT.2020 absolute nits. The default
+uses linear 2x2 BOX reduction; --full-resolution retains decoded geometry.
+This numerical derivative does not qualify native import, dynamic display
+tone mapping, physical display accuracy or neural image quality.
 """
 import argparse
 from fractions import Fraction
@@ -78,6 +79,10 @@ def box_half(rgb):
     # Accumulate in Float64, then store once as Float32. No range clamp,
     # reference-white division, transfer function or encoded-space resize.
     return rgb.astype(np.float64).reshape(h // 2, 2, w // 2, 2, 3).mean(axis=(1, 3)).astype("<f4")
+
+
+def reference_pixels(rgb, full_resolution=False):
+    return rgb if full_resolution else box_half(rgb)
 
 
 def statistics(rgb):
@@ -212,7 +217,10 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--ffmpeg", type=Path, default=Path("/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg"))
     parser.add_argument("--conversion-audit", type=Path, help="Optional independent report; must pass and match the converter binary")
+    parser.add_argument("--full-resolution", action="store_true",
+                        help="Retain 1920x1080 decoded RGB instead of the default 960x540 linear BOX reduction")
     args = parser.parse_args()
+    reference_width, reference_height = (WIDTH, HEIGHT) if args.full_resolution else (WIDTH//2, HEIGHT//2)
     output = args.output.absolute()
     try: require_new_output(output)
     except FileExistsError as error: parser.error(str(error))
@@ -248,8 +256,8 @@ def main():
             for index, metadata in enumerate(selected, FIRST):
                 raw = read_exact(process.stdout, FRAME_BYTES)
                 rgb = unpack_gbr(raw, WIDTH, HEIGHT)
-                reduced = box_half(rgb)
-                data = reduced.tobytes()
+                reference = reference_pixels(rgb, args.full_resolution)
+                data = reference.tobytes()
                 filename = f"frame-{index:05d}.rgb32f"
                 with (output / filename).open("xb") as frame_file: frame_file.write(data)
                 frames.append({"sourceFrameIndex": index, "path": filename,
@@ -258,7 +266,7 @@ def main():
                     "duration": {"value": metadata["duration"], "timescale": 24000},
                     "ffprobeMetadataProjection": metadata,
                     "fullResolutionPlanarGBRFloatSHA256": hashlib.sha256(raw).hexdigest(),
-                    "beforeResize": statistics(rgb), "afterResize": statistics(reduced),
+                    "beforeResize": statistics(rgb), "afterResize": statistics(reference),
                     "inspectionPrelude": index < FIRST+PRELUDE})
             if process.stdout.read(1): raise ValueError("Decoder emitted extra reference frames")
             process.stdout.close()
@@ -276,27 +284,31 @@ def main():
             "frozenFileSHA256": frozen, "independentConversionAudit": independent,
             "ffmpegVersion": subprocess.check_output([str(ffmpeg), "-version"], text=True),
             "pythonVersion": platform.python_version(), "numpyVersion": np.__version__,
-            "sourceGeometry": [WIDTH, HEIGHT], "referenceGeometry": [WIDTH//2, HEIGHT//2],
+            "sourceGeometry": [WIDTH, HEIGHT], "referenceGeometry": [reference_width, reference_height],
+            "spatialReduction": "none" if args.full_resolution else "Float64 2x2 linear BOX mean then Float32 storage",
             "sourceMetadata": "Per-frame parsed ffprobe fields are a projection; repeated JSON keys remain in the hashed raw sidecar. Pinned compressed source is authoritative.",
             "rawMetadataSidecar": "source-frame-probe.raw.json", "rawMetadataSHA256": probe_pin["sha256"],
             "dynamicHDR": "Source contains SMPTE2094-40. Dynamic display tone mapping is not applied or attached to this linear numerical reference.",
             "pqNegativeDomain": "Negative encoded components floor to 0 during PQ inverse, matching native import. The zscale output does not expose pre-EOTF negative-code counts; linear pre/post-resize counts are explicit.",
-            "conversion": "Software HEVC decode; explicit limited 10-bit BT2020 NCL/top-left bilinear chroma; PQ to absolute nits with zscale npl=1/agamma=false; planar G,B,R reordered to RGB; Float64 2x2 linear BOX mean then Float32 storage. No /203, gamut conversion or post-conversion clamp.",
+            "conversion": ("Software HEVC decode; explicit limited 10-bit BT2020 NCL/top-left bilinear chroma; PQ to absolute nits with zscale npl=1/agamma=false; planar G,B,R reordered to RGB; "
+                + ("full decoded Float32 RGB retained without spatial reduction" if args.full_resolution else "Float64 2x2 linear BOX mean then Float32 storage")
+                + ". No /203, gamut conversion or post-conversion clamp."),
             "filter": filter_chain, "conversionControls": controls,
             "timing": "Original file PTS/duration verified against actual pre-conversion showinfo; no player rebasing, input seek, start_at_zero or CFR duplication",
             "firstSourceFrameIndex": FIRST, "lastSourceFrameIndex": FIRST+COUNT-1,
             "inspectionPreludeFrames": PRELUDE, "reviewSourceFrameRange": [FIRST+PRELUDE, FIRST+COUNT-1],
             "preroll": "All 56 frames retained and processed, including 8 explicit inspection-prelude frames; first supplied frame has cold history",
-            "scope": "Downsampled natural HDR temporal input; CPU conversion is independently tolerance-checked, not native-import bit identity, full 1080p quality or calibrated display evidence"}
-        manifest = {"schemaVersion": 1, "width": WIDTH//2, "height": HEIGHT//2,
+            "scope": ("Full-resolution" if args.full_resolution else "Downsampled")
+                + " natural HDR temporal input; CPU conversion is independently tolerance-checked, not native-import bit identity, neural quality or calibrated display evidence"}
+        manifest = {"schemaVersion": 1, "width": reference_width, "height": reference_height,
             "layout": "RGB float32 little-endian top-to-bottom", "primaries": "BT.2020", "transfer": "linear",
             "units": "cd/m2", "provenance": provenance, "frames": frames}
         encoded = json.dumps(manifest, indent=2, allow_nan=False)+"\n"
         if len(encoded.encode()) > 1024**2: raise ValueError("Reference manifest exceeds existing 1MiB bound")
         with (output / "manifest.json").open("x") as result: result.write(encoded)
         report.update(complete=True, frames=COUNT, actualDecoderTimings=actual,
-            elapsedSeconds=time.monotonic()-started, inputFloatBytes=COUNT*(WIDTH//2)*(HEIGHT//2)*12,
-            futureFourViewBytes=COUNT*(WIDTH//2)*(HEIGHT//2)*48, manifestSHA256=digest(output/"manifest.json"))
+            elapsedSeconds=time.monotonic()-started, inputFloatBytes=COUNT*reference_width*reference_height*12,
+            futureFourViewBytes=COUNT*reference_width*reference_height*48, manifestSHA256=digest(output/"manifest.json"))
     except BaseException as error:
         report["failure"] = str(error)
         raise

@@ -26,6 +26,8 @@ BT2020_TO_709 = np.array([[1.6604910, -0.5876411, -0.0728499],
                           [-0.0181508, -0.1005789, 1.1187297]], dtype=np.float64)
 LUMA_709 = np.array([0.2126, 0.7152, 0.0722])
 MAX_BYTES = 2 * 1024**3
+DEFAULT_MAX_INPUT_BYTES = 2 * 1024**3
+MAX_INPUT_BYTES = 6 * 1024**3
 MAX_MANIFEST = 1024**2
 
 
@@ -111,7 +113,13 @@ def error_statistics(delta: np.ndarray) -> dict:
             "rmsNits": float(np.sqrt(np.mean(delta**2)))}
 
 
-def validate_capture(path: Path) -> tuple[dict, list[dict], float]:
+def validate_input_budget(maximum_input_bytes: int) -> None:
+    if type(maximum_input_bytes) is not int or not 0 < maximum_input_bytes <= MAX_INPUT_BYTES:
+        raise ValueError("Raw capture input allowance must be a positive integer at most 6 GiB")
+
+
+def validate_capture(path: Path, maximum_input_bytes: int = DEFAULT_MAX_INPUT_BYTES) -> tuple[dict, list[dict], float]:
+    validate_input_budget(maximum_input_bytes)
     manifest = read_json(path)
     assert manifest.get("schemaVersion") == 1 and manifest.get("complete") is True, "Capture is incomplete or unsupported"
     assert manifest["layout"] == LAYOUT and tuple(manifest["views"]) == VIEWS, "Unsupported capture layout/views"
@@ -121,7 +129,7 @@ def validate_capture(path: Path) -> tuple[dict, list[dict], float]:
     assert type(width) is int and type(height) is int and width > 0 and height > 0 and width * height <= 2_073_600
     frames = manifest["frames"]
     assert 1 <= len(frames) <= 120 and len(frames) == manifest["completedFrames"] == manifest["requestedFrames"]
-    assert width * height * 48 * len(frames) <= MAX_BYTES, "Reference payload exceeds 2 GiB"
+    assert width * height * 48 * len(frames) <= maximum_input_bytes, "Reference payload exceeds explicit raw input allowance"
     source_manifest = contained(path.parent, manifest["inputManifestCopy"])
     assert digest(source_manifest) == manifest["inputManifestSHA256"], "Source manifest copy changed"
     source = read_json(source_manifest)
@@ -153,8 +161,8 @@ def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n")
 
 
-def review(path: Path, output: Path) -> dict:
-    manifest, frames, white = validate_capture(path)
+def review(path: Path, output: Path, maximum_input_bytes: int = DEFAULT_MAX_INPUT_BYTES) -> dict:
+    manifest, frames, white = validate_capture(path, maximum_input_bytes)
     assert not output.exists(), "Review directory already exists"
     output.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}-", dir=output.parent))
@@ -199,6 +207,8 @@ def review(path: Path, output: Path) -> dict:
         report = {"schemaVersion": 1, "complete": True, "captureManifest": str(path),
                   "captureManifestSHA256": digest(path), "inputManifestSHA256": manifest["inputManifestSHA256"],
                   "provenance": manifest["provenance"], "widthPerPanel": width, "height": height,
+                  "maximumInputBytes": maximum_input_bytes, "rawInputBytes": width * height * 48 * len(frames),
+                  "maximumReviewOutputBytes": MAX_BYTES,
                   "panelOrder": list(VIEWS), "frames": records,
                   "mapping": {"name": "fixed SDR inspection, codec-equivalent v1",
                               "referenceWhiteNits": white, "negativeSourceClamp": "max(component,0) for review only",
@@ -258,6 +268,7 @@ el('position').oninput=e=>{stop();show(Number(e.target.value))};el('speed').onch
 def self_test() -> None:
     # Synthetic CPU tests check the mapper and strict integrity path. They do
     # not substitute for a natural-scene neural capture.
+    from unittest.mock import patch
     checks = 0
     black, _ = mapped_srgb(np.zeros((1, 1, 3)), 203)
     assert np.array_equal(black, np.zeros((1, 1, 3))); checks += 1
@@ -335,6 +346,47 @@ def self_test() -> None:
             assert image.size == (4, 1) and image.info.get("icc_profile")
         assert digest(capture_manifest) == result["captureManifestSHA256"]
         checks += 1
+        # Invalid API allowances fail before even reading the capture manifest.
+        for budget in (None, True, False, 1.0, "96", 0, -1, MAX_INPUT_BYTES + 1):
+            with patch(f"{__name__}.read_json", side_effect=RuntimeError("Unexpected metadata read")):
+                reject(lambda: validate_capture(capture_manifest, budget))
+        # Exact payload boundary: two RGB32F frames, four views, one pixel.
+        assert len(validate_capture(capture_manifest, 96)[1]) == 2; checks += 1
+        with patch(f"{__name__}.load_view", side_effect=RuntimeError("Unexpected raw payload read")):
+            reject(lambda: validate_capture(capture_manifest, 95))
+        # Mock only large raw payload reads. Small, otherwise coherent metadata
+        # exercises the actual full-HD 56-frame arithmetic and caller opt-in.
+        small_source = read_json(source_manifest)
+        large_input, large_output = [], []
+        for ordinal in range(56):
+            timing = {"value": ordinal * 125, "timescale": 2997}
+            source = small_source["frames"][0] | {"sourceFrameIndex": 10000 + ordinal, "pts": timing}
+            frame = output_frames[0] | {"ordinal": ordinal, "sourceFrameIndex": source["sourceFrameIndex"], "pts": timing,
+                "views": {name: value | {"bytes": 1920 * 1080 * 12} for name, value in output_frames[0]["views"].items()}}
+            large_input.append(source); large_output.append(frame)
+        write_json(source_manifest, small_source | {"width": 1920, "height": 1080, "frames": large_input})
+        oversized = captured | {"width": 1920, "height": 1080, "frames": large_output,
+            "completedFrames": 56, "requestedFrames": 56, "inputManifestSHA256": digest(source_manifest),
+            "maximumOutputBytes": MAX_INPUT_BYTES}
+        oversized_path = capture / "oversized-manifest.json"; write_json(oversized_path, oversized)
+        raw_bytes = 56 * 1920 * 1080 * 48
+        assert raw_bytes == 5_573_836_800 and DEFAULT_MAX_INPUT_BYTES < raw_bytes < MAX_INPUT_BYTES
+        with patch(f"{__name__}.load_view", side_effect=RuntimeError("Unexpected raw payload read")):
+            # A generous budget inside the manifest must not widen the caller's default.
+            reject(lambda: validate_capture(oversized_path))
+            reject(lambda: validate_capture(oversized_path, raw_bytes - 1))
+        for budget in (raw_bytes, MAX_INPUT_BYTES):
+            with patch(f"{__name__}.load_view", return_value=None) as reads:
+                assert len(validate_capture(oversized_path, budget)[1]) == 56
+                assert reads.call_count == 56 * len(VIEWS)
+            checks += 1
+        write_json(source_manifest, small_source)
+        # A larger raw input allowance cannot relax generated-review output bounds.
+        assert MAX_BYTES == 2 * 1024**3
+        blocked_output = root / "output-budget-rejected"
+        with patch(f"{__name__}.MAX_BYTES", 1):
+            reject(lambda: review(capture_manifest, blocked_output, MAX_INPUT_BYTES))
+        assert not blocked_output.exists() and not list(root.glob(".output-budget-rejected-*")); checks += 1
         write_json(capture_manifest, captured | {"complete": False})
         reject(lambda: validate_capture(capture_manifest))
     print(json.dumps({"passed": True, "checks": checks, "scope": "CPU integrity/mapping; no GPU or natural-scene qualification"}))
@@ -347,6 +399,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("manifest", type=Path, nargs="?")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--maximum-input-bytes", type=int, default=DEFAULT_MAX_INPUT_BYTES,
+                        help="Raw four-view capture allowance (default 2 GiB, maximum 6 GiB); generated review remains capped at 2 GiB")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     try:
@@ -354,7 +408,7 @@ def main() -> int:
             self_test(); return 0
         if args.manifest is None or args.output is None:
             parser.error("manifest and --output are required")
-        result = review(args.manifest.resolve(strict=True), args.output.resolve())
+        result = review(args.manifest.resolve(strict=True), args.output.resolve(), args.maximum_input_bytes)
         print(json.dumps({"complete": True, "frames": len(result["frames"]), "review": str(args.output / "index.html")}))
         return 0
     except (AssertionError, ValueError, OSError, KeyError, TypeError) as error:
