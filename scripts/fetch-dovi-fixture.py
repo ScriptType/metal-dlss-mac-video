@@ -5,14 +5,14 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
-from dovi_fixtures import FIXTURES, source_path, verify_source
+from dovi_fixtures import FATE_BY_PROFILE, source_path, verify_source
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--profile", choices=FIXTURES, default="8.4")
+    parser.add_argument("--profile", choices=FATE_BY_PROFILE, default="8.4")
     args = parser.parse_args()
-    fixture = FIXTURES[args.profile]
+    fixture = FATE_BY_PROFILE[args.profile]
     destination = source_path(fixture)
     destination.parent.mkdir(parents=True, exist_ok=True)
     try:

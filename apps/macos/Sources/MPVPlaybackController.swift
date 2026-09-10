@@ -146,12 +146,16 @@ private final class MPVPlayerWorker: @unchecked Sendable {
             let library = try MPVLibrary()
             guard let handle = library.create() else { throw MPVFailure(message: "Cannot create mpv playback core") }
             defer { library.destroy(handle) }
-            let options: [String: String] = ["config": "no", "vo": "gpu-next", "gpu-api": "vulkan", "gpu-context": "macvk",
+            var options: [String: String] = ["config": "no", "vo": "gpu-next", "gpu-api": "vulkan", "gpu-context": "macvk",
                 "wid": String(hostPointer), "hwdec": "videotoolbox", "idle": "yes", "keep-open": "yes",
                 "target-colorspace-hint": "yes", "vf": filter, "input-default-bindings": "no", "input-vo-keyboard": "no",
                 "osc": "no", "osd-level": "0", "blend-subtitles": "no", "volume": String(volume), "mute": muted ? "yes" : "no",
                 "cache-pause": "yes", "msg-level": "all=warn", "sub-color": Self.subtitleColor(subtitleBrightness),
                 "sub-scale": String(subtitleScale), "sub-delay": String(subtitleDelay)]
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "dolby-vision",
+               ProcessInfo.processInfo.environment["HDRPLAYER_DV_PROBE_INFO"] == "yes" {
+                options["demuxer-lavf-probe-info"] = "yes"
+            }
             for (key, value) in options {
                 let code = library.setOption(handle, key, value)
                 if code < 0 { throw MPVFailure(message: "\(key): \(library.error(code))") }
@@ -243,6 +247,12 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                         "decoderDrops": Int(number("decoder-frame-drop-count")), "coreLibrary": library.path,
                         "subtitleDelay": number("sub-delay"), "subtitleScale": number("sub-scale", fallback: 1),
                         "nativeSubtitleColor": property("sub-color") ?? ""]
+                    if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "dolby-vision" {
+                        state["nativeDemuxerStartTime"] = property("demuxer-start-time").flatMap(Double.init) as Any?
+                        if let rebase = property("options/rebase-start-time"), rebase == "yes" || rebase == "no" {
+                            state["nativeRebaseStartTime"] = rebase == "yes"
+                        }
+                    }
                     if let text = property("enhancement-state"), let data = text.data(using: .utf8),
                        let enhancement = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] {
                         state["nativeEnhancement"] = enhancement

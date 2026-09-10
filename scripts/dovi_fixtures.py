@@ -1,28 +1,103 @@
-"""Pinned public FATE inputs for profile-specific Dolby Vision diagnostics."""
+"""Pinned public inputs and exact source timing for Dolby Vision diagnostics."""
 import hashlib
+import json
+import math
+from fractions import Fraction
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = {
-    "8.4": {
+    "fate-profile84": {
+        "id": "fate-profile84",
         "filename": "dv84.mov", "url": "https://fate-suite.ffmpeg.org/hevc/dv84.mov",
         "sha256": "aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721",
         "bytes": 3621742, "profile": 8, "compatibility": 4, "seekSeconds": .7,
         "blankTestVideo": False,
         "provenance": "https://ffmpeg.org/pipermail/ffmpeg-devel/2021-November/287700.html",
     },
-    "5": {
+    "fate-profile5": {
+        "id": "fate-profile5",
         "filename": "dovi-p5.mp4", "url": "https://fate-suite.ffmpeg.org/mov/dovi-p5.mp4",
         "sha256": "11fe599fd77e31e26fbf855bae1cd9931df9f261a0a7b1dce9fad9b236677c4b",
         "bytes": 4182, "profile": 5, "compatibility": 0, "seekSeconds": .125,
         "blankTestVideo": True,
         "provenance": "https://ffmpeg.org/pipermail/ffmpeg-devel/2021-December/289651.html",
     },
+    "apple-profile5": {
+        "id": "apple-profile5", "filename": "apple-advanced-dolby-profile5-aac.mp4",
+        "sha256": "69bbb93355cb91d69eefe7f24f6525e61670aa3ae25bbfb4a546a19a0358e110",
+        "bytes": 42855591, "profile": 5, "compatibility": 0, "seekSeconds": 12,
+        "blankTestVideo": False, "catalogAsset": "dolby-profile5",
+        "provenance": "https://developer.apple.com/streaming/examples/advanced-stream-dv-atmos.html",
+    },
 }
 
 
+FATE_BY_PROFILE = {"8.4": FIXTURES["fate-profile84"], "5": FIXTURES["fate-profile5"]}
+
+
+def select_fixture(identifier=None, profile=None):
+    fixture = FIXTURES[identifier] if identifier else FATE_BY_PROFILE[profile or "8.4"]
+    if profile and fixture["profile"] != FATE_BY_PROFILE[profile]["profile"]:
+        raise ValueError("Fixture and requested Dolby profile disagree")
+    return fixture
+
+
 def source_path(fixture):
-    return ROOT / "assets/test-clips/dolbyvision" / fixture["filename"]
+    folder = "apple-hdr" if fixture.get("catalogAsset") else "dolbyvision"
+    return ROOT / "assets/test-clips" / folder / fixture["filename"]
+
+
+def source_catalog(fixture):
+    if not fixture.get("catalogAsset"):
+        return None
+    path = ROOT / "config/apple-hdr-samples.json"
+    catalog = json.loads(path.read_text())
+    asset = catalog["assets"][fixture["catalogAsset"]]
+    return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "publisher": catalog["publisher"], "usage": catalog["usage"],
+            "playlist": asset["playlist"], "concatenatedSHA256": asset["concatenatedSHA256"]}
+
+
+def exact_inventory(probe, fixture):
+    """Use presentation order, independent of packet decode order and float FPS."""
+    video = next(stream for stream in probe["streams"] if stream["codec_type"] == "video")
+    timebase = Fraction(video["time_base"])
+    frames = sorted((int(packet["pts"]), int(packet["duration"])) for packet in probe["packets"]
+                    if packet["stream_index"] == video["index"])
+    if not frames or len({pts for pts, _ in frames}) != len(frames) or any(duration <= 0 for _, duration in frames):
+        raise ValueError("Expected unique presentation timestamps and positive packet durations")
+    if fixture["id"] == "apple-profile5" and (len(frames), frames[0][0], timebase) != (2360, 240000, Fraction(1, 24000)):
+        raise ValueError("Apple video presentation inventory differs from the pinned source")
+    targets = []
+    for seconds in (12, 42, 72):
+        threshold = frames[0][0] * timebase + seconds
+        target = next((frame for frame in frames if frame[0] * timebase >= threshold), None)
+        if target is None:
+            raise ValueError("Representative seek target exceeds the source inventory")
+        targets.append({"pts": target[0], "duration": target[1]})
+    return {"fixtureID": fixture["id"], "sourceSHA256": fixture["sha256"],
+            "timebaseNumerator": timebase.numerator, "timebaseDenominator": timebase.denominator,
+            "formatStartSeconds": probe["format"]["start_time"],
+            "frames": [{"pts": pts, "duration": duration} for pts, duration in frames], "targets": targets}
+
+
+def native_timeline_offset(demuxer_start, rebased, decoder_seconds, player_seconds):
+    """Validate the native decoder/player pair and return file-to-decoder offset.
+
+    mpv rebases demux packets before decoding. Its exact displayed-source-pts
+    field therefore belongs to that decoder timeline. Recover original file
+    PTS by subtracting this offset, then verify against the packet inventory.
+    """
+    if type(demuxer_start) not in (int, float) or not math.isfinite(demuxer_start):
+        raise ValueError("Native demuxer start is unavailable or nonfinite")
+    if type(rebased) is not bool:
+        raise ValueError("Native rebase-start-time is unavailable")
+    offset = -Fraction(str(demuxer_start)) if rebased else Fraction(0)
+    if (decoder_seconds is None or type(player_seconds) not in (int, float) or not math.isfinite(player_seconds)
+            or abs(float(decoder_seconds) - player_seconds) > 1e-6):
+        raise ValueError("Held exact decoder PTS does not match the native player timeline")
+    return offset
 
 
 def verify_source(path, fixture):

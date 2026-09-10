@@ -1,0 +1,821 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-09-10",
+  "hardware": "Apple M3",
+  "scope": "Native original Profile 5 and 8.4 interpretation, representative playback, interpreted screenshot output, exact timestamp mapping, application gating and profile-specific fallback/rejection. No calibrated HDR display or Dolby neural enhancement claim.",
+  "source": {
+    "id": "apple-profile5",
+    "filename": "apple-advanced-dolby-profile5-aac.mp4",
+    "sha256": "69bbb93355cb91d69eefe7f24f6525e61670aa3ae25bbfb4a546a19a0358e110",
+    "bytes": 42855591,
+    "profile": 5,
+    "compatibility": 0,
+    "seekSeconds": 12,
+    "blankTestVideo": false,
+    "catalogAsset": "dolby-profile5",
+    "provenance": "https://developer.apple.com/streaming/examples/advanced-stream-dv-atmos.html",
+    "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/public-hdr-source-audit/apple-advanced-dolby-profile5-aac.mp4",
+    "catalog": {
+      "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/config/apple-hdr-samples.json",
+      "sha256": "ef2a08ac2a400fb47a04ed4e7b687a6f1e1b6751ca2b71e4fea9c519c3f22812",
+      "publisher": "Apple",
+      "usage": "Public developer streaming example for local engineering tests. No open-content or redistribution licence is asserted; media stays outside Git.",
+      "playlist": {
+        "filename": "prog_index.m3u8",
+        "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/prog_index.m3u8",
+        "bytes": 1248,
+        "sha256": "73927d76b5591df0e086c83171b7bae01aa53858c3e2a962ab4b1bcda0b35cc3"
+      },
+      "concatenatedSHA256": "d6d19c2459ae9a04602ef75f172c2be6f4dd1d6a5da5d399569d1aaa6b46e6ae"
+    },
+    "tracked": false,
+    "redistributionLicenceClaimed": false
+  },
+  "sourceAudit": {
+    "decodedVideoFrames": 2360,
+    "framesWithRPU": 2360,
+    "framesWithParsedMetadata": 2360,
+    "timeBase": "1/24000",
+    "originalFirstPTS": 240000,
+    "originalLastPTS": 2601359,
+    "audioFirstPTS": "477888/48000",
+    "actualDecodedMetadata": {
+      "configuration": {
+        "side_data_type": "DOVI configuration record",
+        "dv_version_major": 1,
+        "dv_version_minor": 0,
+        "dv_profile": 5,
+        "dv_level": 3,
+        "rpu_present_flag": 1,
+        "el_present_flag": 0,
+        "bl_present_flag": 1,
+        "dv_bl_signal_compatibility_id": 0,
+        "dv_md_compression": "none"
+      },
+      "decodedFramesWithParsedRPU": 2,
+      "duration": "98.431667",
+      "timeBase": "1/24000",
+      "seekSeconds": 12
+    },
+    "allFramesReport": "artifacts/public-hdr-source-audit/dolby-profile5-all-frames.json"
+  },
+  "interpretation": {
+    "decoder": "FFmpeg parsed AVDOVIMetadata and RPU survive the native mpv frame path; the selected stream also retains profile and base compatibility.",
+    "mapper": "PL_HAVE_DOVI is enabled. pl_map_dovi_metadata copies nonlinear offsets, matrices and polynomial/MMR curves; pl_map_avdovi_metadata selects PL_COLOR_SYSTEM_DOLBYVISION and supplies BT.2020/PQ rendering and available luminance metadata.",
+    "order": [
+      "coded component normalization",
+      "Dolby polynomial/MMR reshaping",
+      "available FEL composition (not claimed or exercised by these single-layer profiles)",
+      "Dolby nonlinear colour transform",
+      "PQ/LMS conversion to RGB and ordinary linear-light rendering/display mapping"
+    ],
+    "neuralBoundary": "Dolby frames bypass and cannot be admitted to the generic SDR/PQ/HLG neural importer. No Dolby proxy/reconstruction path is claimed.",
+    "sourceFiles": {
+      "mapping": "vendor/libplacebo/src/include/libplacebo/utils/libav_internal.h",
+      "shader": "vendor/libplacebo/src/shaders/colorspace.c",
+      "nativeGuard": "vendor/mpv/video/filter/vf_metal_hdr.m"
+    }
+  },
+  "appleProfile5": {
+    "report": "artifacts/dovi-apple-profile5-default-refined-observed/report.json",
+    "passed": true,
+    "native": {
+      "state": {
+        "native-color-path": "native-dolby-vision",
+        "source-dolby-vision": true,
+        "displayed-dolby-vision-metadata": true,
+        "displayed-source-pts": 1729783,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 24000,
+        "generation": 5,
+        "submitted-frames": 0,
+        "completed-frames": 0,
+        "pending-frames": 0,
+        "policy": "bypass",
+        "buffering": false
+      },
+      "exitCode": 0,
+      "timeline": {
+        "nativeDemuxerStartTime": 9.956,
+        "nativeRebaseStartTime": true,
+        "sourceToPlayerOffset": "-2489/250",
+        "initialSourcePTSSeconds": "10",
+        "initialNativeDecoderPTSSeconds": "11/250",
+        "timestampScope": "source fields in this timeline are original file PTS; raw enhancement-state displayed-source-pts is the rebased decoder PTS",
+        "initialPlayerSeconds": 0.044,
+        "nativeDurationSeconds": 98.475667,
+        "ffprobeFormatStartSeconds": "9.956000",
+        "seeks": [
+          {
+            "playerTargetSeconds": 12.056,
+            "exactSourcePTSSeconds": "5503/250",
+            "progressingNativePTSCount": 22,
+            "state": {
+              "native-color-path": "native-dolby-vision",
+              "source-dolby-vision": true,
+              "displayed-dolby-vision-metadata": true,
+              "displayed-source-pts": 289344,
+              "displayed-timebase-num": 1,
+              "displayed-timebase-den": 24000,
+              "generation": 3,
+              "submitted-frames": 0,
+              "completed-frames": 0,
+              "pending-frames": 0,
+              "policy": "bypass",
+              "buffering": false
+            },
+            "screenshot": {
+              "path": "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-1.png",
+              "sha256": "5f6220cd858a63d307ee857eaf34b465296d77a96ac8ea7a9fbb96cfbb335b6d",
+              "width": 1920,
+              "height": 1080,
+              "scope": "libplacebo separate video screenshot render; not raw swapchain, compositor/SCK or physical display"
+            }
+          },
+          {
+            "playerTargetSeconds": 42.044291666666666,
+            "exactSourcePTSSeconds": "1248007/24000",
+            "progressingNativePTSCount": 21,
+            "state": {
+              "native-color-path": "native-dolby-vision",
+              "source-dolby-vision": true,
+              "displayed-dolby-vision-metadata": true,
+              "displayed-source-pts": 1009063,
+              "displayed-timebase-num": 1,
+              "displayed-timebase-den": 24000,
+              "generation": 4,
+              "submitted-frames": 0,
+              "completed-frames": 0,
+              "pending-frames": 0,
+              "policy": "bypass",
+              "buffering": false
+            },
+            "screenshot": {
+              "path": "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-2.png",
+              "sha256": "c152fa793ae78c1ca3ccd8fea39fa5f919d2c7c1c5f43f1d82af827d5cb8cb7a",
+              "width": 1920,
+              "height": 1080,
+              "scope": "libplacebo separate video screenshot render; not raw swapchain, compositor/SCK or physical display"
+            }
+          },
+          {
+            "playerTargetSeconds": 72.07429166666667,
+            "exactSourcePTSSeconds": "1968727/24000",
+            "progressingNativePTSCount": 22,
+            "state": {
+              "native-color-path": "native-dolby-vision",
+              "source-dolby-vision": true,
+              "displayed-dolby-vision-metadata": true,
+              "displayed-source-pts": 1729783,
+              "displayed-timebase-num": 1,
+              "displayed-timebase-den": 24000,
+              "generation": 5,
+              "submitted-frames": 0,
+              "completed-frames": 0,
+              "pending-frames": 0,
+              "policy": "bypass",
+              "buffering": false
+            },
+            "screenshot": {
+              "path": "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-3.png",
+              "sha256": "6ab155cb3846c7b95df094daea0c5924ec7f8193b8ced02bbda95ea9d4acf66b",
+              "width": 1920,
+              "height": 1080,
+              "scope": "libplacebo separate video screenshot render; not raw swapchain, compositor/SCK or physical display"
+            }
+          }
+        ],
+        "nearEnd": {
+          "exactSourcePTSSeconds": "2589347/24000",
+          "playerTargetSeconds": 97.93345833333333,
+          "selectedExactSource": true,
+          "actualPlayerSeconds": 97.933458,
+          "nativeDurationSeconds": 98.475667,
+          "state": {
+            "native-color-path": "native-dolby-vision",
+            "source-dolby-vision": true,
+            "displayed-dolby-vision-metadata": true,
+            "displayed-source-pts": 2350403,
+            "displayed-timebase-num": 1,
+            "displayed-timebase-den": 24000,
+            "generation": 6,
+            "submitted-frames": 0,
+            "completed-frames": 0,
+            "pending-frames": 0,
+            "policy": "bypass",
+            "buffering": false
+          }
+        }
+      }
+    },
+    "app": {
+      "passed": true,
+      "exitCode": 0,
+      "checks": [
+        "decoded Dolby Vision metadata reaches the native surface",
+        "pinned apple-profile5 Profile 5 stream retains compatibility ID 0",
+        "neural quality, effect and Prepared controls are disabled",
+        "direct enhancement request cannot admit a Dolby Vision frame",
+        "Dolby Vision pauses through native controls",
+        "native demuxer start and rebase offset match a held exact source/player pair",
+        "Apple native displayed source PTS equals 528288/24000",
+        "representative native playback begins",
+        "representative native frames progress with metadata and zero neural submissions",
+        "representative playback pauses",
+        "Apple native displayed source PTS equals 1248007/24000",
+        "representative native playback begins",
+        "representative native frames progress with metadata and zero neural submissions",
+        "representative playback pauses",
+        "Apple native displayed source PTS equals 1968727/24000",
+        "representative native playback begins",
+        "representative native frames progress with metadata and zero neural submissions",
+        "representative playback pauses",
+        "actual DOM seek selects the exact near-end source PTS",
+        "direct native bridge reaches the exact near-end source PTS",
+        "actual DOM timeline covers the inventoried near-end source frame",
+        "representative native transport has no playback error; no colour qualification inferred"
+      ],
+      "nativeCoreDestroyed": true,
+      "report": "artifacts/dovi-apple-profile5-default-refined-observed/dom.json",
+      "progressionObservations": [
+        {
+          "sampleCount": 12,
+          "distinctOriginalPTSCount": 10,
+          "elapsedSeconds": 1.2626812083180994,
+          "allAppActive": true,
+          "allOnActiveSpace": true,
+          "allOcclusionVisible": true,
+          "anyPaused": false,
+          "anyBuffering": false
+        },
+        {
+          "sampleCount": 12,
+          "distinctOriginalPTSCount": 9,
+          "elapsedSeconds": 1.24895912501961,
+          "allAppActive": true,
+          "allOnActiveSpace": true,
+          "allOcclusionVisible": true,
+          "anyPaused": false,
+          "anyBuffering": false
+        },
+        {
+          "sampleCount": 12,
+          "distinctOriginalPTSCount": 10,
+          "elapsedSeconds": 1.2600525832967833,
+          "allAppActive": true,
+          "allOnActiveSpace": true,
+          "allOcclusionVisible": true,
+          "anyPaused": false,
+          "anyBuffering": false
+        }
+      ]
+    },
+    "binariesUnchanged": true,
+    "sourcesUnchanged": true,
+    "missingMetadataGuard": {
+      "passed": true,
+      "syntheticNegativeSignalingOnly": false,
+      "actualPinnedProfile5Input": true,
+      "metadataMappingDisabled": true,
+      "audioDisabledForGuard": true,
+      "noVideoOutput": true,
+      "noFilterAutoRemoval": true,
+      "zeroNeuralSubmissions": true,
+      "exitCode": 2
+    },
+    "baseLayer": {
+      "available": false,
+      "reason": "Profile 5 declares no compatible PQ or HLG base; missing metadata must reject"
+    }
+  },
+  "fateProfile5Regression": {
+    "report": "artifacts/dovi-apple-default-fate5-final/report.json",
+    "passed": true,
+    "native": {
+      "state": {
+        "native-color-path": "native-dolby-vision",
+        "source-dolby-vision": true,
+        "displayed-dolby-vision-metadata": true,
+        "displayed-source-pts": 1536,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 12288,
+        "generation": 3,
+        "submitted-frames": 0,
+        "completed-frames": 0,
+        "pending-frames": 0,
+        "policy": "bypass",
+        "buffering": false
+      },
+      "exitCode": 0
+    },
+    "app": {
+      "passed": true,
+      "exitCode": 0,
+      "checks": [
+        "decoded Dolby Vision metadata reaches the native surface",
+        "pinned fate-profile5 Profile 5 stream retains compatibility ID 0",
+        "neural quality, effect and Prepared controls are disabled",
+        "direct enhancement request cannot admit a Dolby Vision frame",
+        "Dolby Vision pauses through native controls",
+        "Dolby Vision seeks while retaining native metadata",
+        "native metadata path has no playback error; no colour qualification inferred"
+      ],
+      "nativeCoreDestroyed": true,
+      "report": "artifacts/dovi-apple-default-fate5-final/dom.json"
+    },
+    "binariesUnchanged": true,
+    "sourcesUnchanged": true,
+    "missingMetadataGuard": {
+      "passed": true,
+      "syntheticNegativeSignalingOnly": false,
+      "actualPinnedProfile5Input": true,
+      "metadataMappingDisabled": true,
+      "audioDisabledForGuard": false,
+      "noVideoOutput": true,
+      "noFilterAutoRemoval": true,
+      "zeroNeuralSubmissions": true,
+      "exitCode": 2
+    },
+    "baseLayer": {
+      "available": false,
+      "reason": "Profile 5 declares no compatible PQ or HLG base; missing metadata must reject"
+    }
+  },
+  "fateProfile84NativeAndHLG": {
+    "report": "artifacts/dovi-apple-default-fate84-final/report.json",
+    "passed": true,
+    "native": {
+      "state": {
+        "native-color-path": "native-dolby-vision",
+        "source-dolby-vision": true,
+        "displayed-dolby-vision-metadata": true,
+        "displayed-source-pts": 840,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 1200,
+        "generation": 3,
+        "submitted-frames": 0,
+        "completed-frames": 0,
+        "pending-frames": 0,
+        "policy": "bypass",
+        "buffering": false
+      },
+      "exitCode": 0,
+      "interpretedScreenshot": {
+        "path": "artifacts/dovi-apple-default-fate84-final/interpreted-fate-profile84-native-dovi.png",
+        "sha256": "edda0ef59af5e99baa16ee23cc3bd2292cd0860103d32be9779d816c9cf67301",
+        "width": 1080,
+        "height": 1920,
+        "exactSourcePTSSeconds": "7/10",
+        "scope": "libplacebo separate video screenshot render; not raw swapchain, compositor/SCK or physical display"
+      }
+    },
+    "app": {
+      "passed": true,
+      "exitCode": 0,
+      "checks": [
+        "decoded Dolby Vision metadata reaches the native surface",
+        "pinned fate-profile84 Profile 8.4 stream retains compatibility ID 4",
+        "neural quality, effect and Prepared controls are disabled",
+        "direct enhancement request cannot admit a Dolby Vision frame",
+        "Dolby Vision pauses through native controls",
+        "Dolby Vision seeks while retaining native metadata",
+        "native metadata path has no playback error; no colour qualification inferred"
+      ],
+      "nativeCoreDestroyed": true,
+      "report": "artifacts/dovi-apple-default-fate84-final/dom.json"
+    },
+    "binariesUnchanged": true,
+    "sourcesUnchanged": true,
+    "missingMetadataGuard": {
+      "passed": true,
+      "syntheticNegativeSignalingOnly": true,
+      "actualPinnedProfile5Input": false,
+      "metadataMappingDisabled": true,
+      "audioDisabledForGuard": false,
+      "noVideoOutput": true,
+      "noFilterAutoRemoval": true,
+      "zeroNeuralSubmissions": true,
+      "exitCode": 0
+    },
+    "baseLayer": {
+      "passed": true,
+      "state": {
+        "native-color-path": "hlg-base-layer",
+        "source-dolby-vision": true,
+        "displayed-dolby-vision-metadata": false,
+        "displayed-source-pts": 840,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 1200,
+        "generation": 3,
+        "submitted-frames": 0,
+        "completed-frames": 0,
+        "pending-frames": 0,
+        "policy": "bypass",
+        "buffering": false
+      },
+      "exitCode": 0,
+      "interpretedScreenshot": {
+        "path": "artifacts/dovi-apple-default-fate84-final/interpreted-fate-profile84-hlg-base.png",
+        "sha256": "4af63a20d3d2d2c47cf2997e8712bce171eec40ef4135b074e4b4a13de22bcbc",
+        "width": 1080,
+        "height": 1920,
+        "exactSourcePTSSeconds": "7/10",
+        "scope": "libplacebo separate video screenshot render; not raw swapchain, compositor/SCK or physical display"
+      }
+    }
+  },
+  "outputInspection": {
+    "scope": "libplacebo separate video screenshot render; not raw swapchain, ScreenCaptureKit compositor or physical display pixels",
+    "reviewers": "Root and hdr_mlx independently inspected the Apple images and final FATE8.4 native/HLG images.",
+    "apple": "Three full 1920x1080 natural scenes: dark interior child/door, daylight family and backlit adult/child. Coherent geometry and distinct colours; no obvious blank output, global channel tint or crop.",
+    "appleFinalMatchesInspectedBaseline": true,
+    "profile84": "Both 1080x1920 outputs show the full upright coastal/water/lighthouse/cloud scene at exact 0.7s. Native and HLG-base outputs differ slightly but both are coherent; no calibrated tonal comparison is inferred.",
+    "calibratedColourGroundTruth": false
+  },
+  "timingAndIntegrityHistory": {
+    "initialAssumptionFailures": {
+      "reports": [
+        "artifacts/dovi-apple-profile5-native-1/report.json",
+        "artifacts/dovi-apple-profile5-offset-audit/report.json"
+      ],
+      "reason": "Harness incorrectly equated native demuxer start to standalone ffprobe aggregate start. The old native default reported 0, despite original file video 10 / audio 9.956. These failed reports remain unchanged."
+    },
+    "defaultRangeFailure": {
+      "report": "artifacts/dovi-apple-profile5-near-end/report.json",
+      "dom": "artifacts/dovi-apple-profile5-near-end/dom.json",
+      "nativeOrigin": 0,
+      "domMaximumSeconds": 98.475667,
+      "desiredNearEndPlayerSeconds": 107.88945833333334,
+      "directNativeSelectedExactOriginalPTS": true,
+      "result": "The DOM clamped the request while direct CLI/app commands reached the exact original frame; a real default timeline-range defect."
+    },
+    "probeInfoControl": {
+      "report": "artifacts/dovi-apple-profile5-probe-control-2/report.json",
+      "passed": true,
+      "appChecks": 21,
+      "override": "demuxer-lavf-probe-info=yes",
+      "nativeOriginSeconds": 9.956,
+      "fileToDecoderOffsetTicks": -238944,
+      "timebaseDenominator": 24000,
+      "nearEndPlayerSeconds": 97.93345833333333
+    },
+    "decoderTimelineAudit": {
+      "failedReport": "artifacts/dovi-apple-profile5-probe-control/report.json",
+      "audit": "artifacts/dovi-apple-profile5-probe-control/initial-timing-audit.json",
+      "reason": "The first control exposed a second harness assumption: native displayed-source-pts is rebased decoder PTS 1056/24000, not original file PTS 240000/24000.",
+      "logIntegrity": "A subsequent traced timing audit reused the failed control log path. The first attempt log was not retained. The second log is explicitly named native-dovi-timing-audit.log; it is not claimed to belong to the original failed report. Report.json and its recorded input/source/binary hashes were left unchanged. The harness now refuses existing report directories and capture paths."
+    },
+    "refinedFollowupFailure": {
+      "report": "artifacts/dovi-apple-profile5-default-refined/report.json",
+      "dom": "artifacts/dovi-apple-profile5-default-refined/dom.json",
+      "lifecycle": "artifacts/dovi-apple-profile5-default-refined/lifecycle.jsonl",
+      "nativeChecksPassed": true,
+      "appPassed": false,
+      "failure": "Fewer than 6 distinct PTS in the first 12 samples taken 100ms apart. Threshold was unchanged in the repeat.",
+      "observation": "Recorder position 12.264542 held from uptime 1023458.958 through 1023459.487 while unpaused, then advanced near a window-unfocused event. The cause is unresolved; no physical cadence inference."
+    },
+    "timingFix": "Derive missing native aggregate origin from known primary A/V stream headers; preserve supplied aggregate timing and sufficient duration. Default app options now select exact near-end source frames. No global probe-info override is enabled.",
+    "priorPrecisionVersion": {
+      "report": "artifacts/dovi-apple-profile5-default-final/report.json",
+      "appChecks": 22,
+      "headerSHA256": "154b92eac895248c87d091c3e5a9f2213038d2ed8e35ff2eadf4a77b3e9145aa",
+      "headerHashScope": "Header hash independently verified immediately after capture; the old per-run source list omitted this new helper. Future/final captures include it explicitly."
+    }
+  },
+  "qualification": {
+    "claimedNativeProfiles": [
+      "5",
+      "8.4"
+    ],
+    "unqualifiedUnadvertisedProfiles": [
+      "7",
+      "8.1",
+      "other profiles/compatibility variants"
+    ],
+    "doneCriteria": {
+      "explicitSupportAndFallback": "Profile 5 requires parsed metadata and has no ordinary PQ/HLG fallback. Profile 8.4 has an explicit HLG base only with matching decoded signalling.",
+      "demonstratedInterpretationAndRepresentativeOutput": "Parsed RPU metadata, compiled libplacebo reshape path, exact native/DOM playback, and inspected interpreted screenshots demonstrated for each claimed profile.",
+      "predictableUnsupportedHandling": "Missing required P5 metadata rejects video with 0 neural submissions, no video output/filter auto-removal and exit 2. Unqualified Dolby streams do not expose neural/Prepared controls; broader profiles remain unadvertised."
+    },
+    "remainingSeparateClaims": [
+      "Physical/calibrated HDR display accuracy (roadmap 3)",
+      "Dolby certification",
+      "Profile 7 MEL/FEL completeness",
+      "Profile 8.1 representative playback",
+      "Neural Dolby enhancement",
+      "Ambient-adaptation/display-metadata pass-through qualification",
+      "Continuous presentation cadence; the retained app observation failure has no established cause"
+    ]
+  },
+  "validation": {
+    "cpuTests": 11,
+    "cpuLog": "artifacts/dovi-apple-profile5-verification/cpu-tests.log",
+    "appBuildLog": "artifacts/dovi-apple-profile5-verification/app-observation-build.log",
+    "captureBinaries": {
+      "apple": {
+        "mpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv",
+          "beforeSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef",
+          "afterSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef"
+        },
+        "FrameEngineShared": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "HDRPlayer": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+          "beforeSHA256": "39dd31e66a9db38da34e176b8d00ef6021e04f592fe845776798caa0c6fe76ee",
+          "afterSHA256": "39dd31e66a9db38da34e176b8d00ef6021e04f592fe845776798caa0c6fe76ee"
+        },
+        "libmpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+          "beforeSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf",
+          "afterSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf"
+        }
+      },
+      "fate5": {
+        "mpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv",
+          "beforeSHA256": "90d94f06b4505a512e9e5bf1a3b105316e6efa9fac2850d8cc070163273e806d",
+          "afterSHA256": "90d94f06b4505a512e9e5bf1a3b105316e6efa9fac2850d8cc070163273e806d"
+        },
+        "FrameEngineShared": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "HDRPlayer": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+          "beforeSHA256": "c4ee1422ced4ab33a2618c532d25bdf81abd4697afc15519eea5bafdeba0a90f",
+          "afterSHA256": "c4ee1422ced4ab33a2618c532d25bdf81abd4697afc15519eea5bafdeba0a90f"
+        },
+        "libmpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+          "beforeSHA256": "e29bb9cbe0346a10b88a1c997880bc756afc2c7cb3a6ecd5bdda401b0e126b3b",
+          "afterSHA256": "e29bb9cbe0346a10b88a1c997880bc756afc2c7cb3a6ecd5bdda401b0e126b3b"
+        }
+      },
+      "fate84": {
+        "mpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv",
+          "beforeSHA256": "90d94f06b4505a512e9e5bf1a3b105316e6efa9fac2850d8cc070163273e806d",
+          "afterSHA256": "90d94f06b4505a512e9e5bf1a3b105316e6efa9fac2850d8cc070163273e806d"
+        },
+        "FrameEngineShared": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "HDRPlayer": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+          "beforeSHA256": "c4ee1422ced4ab33a2618c532d25bdf81abd4697afc15519eea5bafdeba0a90f",
+          "afterSHA256": "c4ee1422ced4ab33a2618c532d25bdf81abd4697afc15519eea5bafdeba0a90f"
+        },
+        "libmpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+          "beforeSHA256": "e29bb9cbe0346a10b88a1c997880bc756afc2c7cb3a6ecd5bdda401b0e126b3b",
+          "afterSHA256": "e29bb9cbe0346a10b88a1c997880bc756afc2c7cb3a6ecd5bdda401b0e126b3b"
+        }
+      }
+    },
+    "primarySourcesAtCapture": {
+      "harness": {
+        "scripts/test-dovi-passthrough.py": "b9536a8795e0818892f940df55c1f3a22dd97216007b7a69be6f9a9dba032c9d",
+        "scripts/dovi_fixtures.py": "d8f3aa2d9ce3746d765d99cf1224e424e597e14e828b033c3144afda926f99b0",
+        "apps/macos/Sources/PlayerSmokeCheck.swift": "f13bbd11483b7604b7a6cdd011c0d3632c7b2b38a0d91aa9dcc39b3bc8e77bd3",
+        "apps/macos/Sources/MPVPlaybackController.swift": "7215a3a1ecc452b3e2cf293668ad760c813f1881bfa54c96afab6d0f7cf44228"
+      },
+      "core": {
+        "vendor/mpv/demux/demux_lavf.c": "85062faec38b4b1b506ed1400f01bec8588e31b4cb93f7410acd618c9604c686",
+        "vendor/mpv/demux/lavf_timing.h": "8d8298739252e62babc273ec68f72e7dc71055f33fb8142e8d5a489d0a071cca",
+        "vendor/mpv/video/decode/vd_lavc.c": "0fde0be9ff74b8cd939a4e6f2333e79cacac97d66e769f60e473a96a0e4a5083",
+        "vendor/mpv/player/command.c": "542ea23f481648a991a0dca7f0929f7d389100e7b19d007a3d2941ab09fbfb77",
+        "vendor/mpv/video/filter/vf_metal_hdr.m": "747d0bec34e1e90877b3e9628cea17ed5e774cbf47f6ffc9a862758ed482450c",
+        "vendor/mpv/video/out/vo_gpu_next.c": "7651020e47467ce26287cf0bf0da720cac86d8b5e06fcccfb3ad9e5c4b6581f4",
+        "vendor/libplacebo/src/shaders/colorspace.c": "9a2f00f72388030685477bcf06ccd5d7433b408a499c616a1016714ad785c625",
+        "vendor/libplacebo/src/include/libplacebo/utils/libav_internal.h": "542055662c561cbccbb479a89be0ed1b6e295bbc7b2298a83d8424d053d14189"
+      }
+    },
+    "mpvRevisionAtCapture": "a9466025dcf459f82f591f42dc12a517a50e7efa",
+    "sourceScope": "Binary hashes identify actual runtime; selected source hashes also bind a build made before its fork commit.",
+    "fatePrecisionScope": "FATE native/app/image regressions use the preceding timing precision binary, accurately recorded separately. The final precision refinement preserves already adequate sub-microsecond durations; its 18 header/seven FFmpeg controls and final native first/last-frame results are in the separate demux timing evidence."
+  },
+  "finalAssemblySourceSHA256": {
+    "scripts/test-dovi-passthrough.py": "b9536a8795e0818892f940df55c1f3a22dd97216007b7a69be6f9a9dba032c9d",
+    "scripts/dovi_fixtures.py": "d8f3aa2d9ce3746d765d99cf1224e424e597e14e828b033c3144afda926f99b0",
+    "scripts/test_dovi_fixtures.py": "ba5451a11d64ead95c651669757ab9f393b992302a8c5be75b0a0e2be7bc0893",
+    "scripts/fetch-dovi-fixture.py": "3d9cb129dd598469d39db8421ab04f58866f4dc79d58393dd697aa9ace7232c5",
+    "apps/macos/Sources/PlayerSmokeCheck.swift": "f13bbd11483b7604b7a6cdd011c0d3632c7b2b38a0d91aa9dcc39b3bc8e77bd3",
+    "apps/macos/Sources/MPVPlaybackController.swift": "7215a3a1ecc452b3e2cf293668ad760c813f1881bfa54c96afab6d0f7cf44228",
+    "scripts/check.sh": "763349bcf0ab91f09e237deb70664c40e89d0ced372a978d5c616fa5356384df",
+    ".github/workflows/ci.yml": "54becc68396c9178a6b82af0c2709dc0c242029a7f9dc67db2a655049e710da5",
+    "docs/dolby-vision.md": "c6eced9ca59daee1fdb395418d2d5c8e687fc428816fb8942486ceb81511a3fa"
+  },
+  "artifactSHA256": {
+    "artifacts/dovi-apple-default-fate5-final/decoded-metadata.json": {
+      "bytes": 11678,
+      "sha256": "70c9e084b562ee9c3bd485264e6f2f1b9effa3678ed079d7620101f67484e585"
+    },
+    "artifacts/dovi-apple-default-fate5-final/dom.json": {
+      "bytes": 18380,
+      "sha256": "8d4e9dabed739963a6a4a86385fbbb87988832a2ff496552f097859316939f8d"
+    },
+    "artifacts/dovi-apple-default-fate5-final/lifecycle.jsonl": {
+      "bytes": 11678,
+      "sha256": "93949f70f69b1faf10b8aba8ccbdddb8bc0e4d8c3990e85a81218179544fa6ed"
+    },
+    "artifacts/dovi-apple-default-fate5-final/missing-metadata.log": {
+      "bytes": 469,
+      "sha256": "f88d0b8215307d502b03aef5510490335895b55f1782e3dd9d058ee83d22b5b6"
+    },
+    "artifacts/dovi-apple-default-fate5-final/native-dovi.log": {
+      "bytes": 71773,
+      "sha256": "60241bdf2fb72599f40a2c4d8f257c0d98b1f4bb43edda7115335cf6e68564c4"
+    },
+    "artifacts/dovi-apple-default-fate5-final/player.log": {
+      "bytes": 27,
+      "sha256": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84"
+    },
+    "artifacts/dovi-apple-default-fate5-final/report.json": {
+      "bytes": 8314,
+      "sha256": "db63f010ccc9605b194356b1ad7718b338358c5214e2f94423b06c1e5e135661"
+    },
+    "artifacts/dovi-apple-default-fate84-final/decoded-metadata.json": {
+      "bytes": 19228,
+      "sha256": "12f681e943d95dbcf4d4aef0fc34d5b4eafc3db818df3847c6d6adad5fffc3af"
+    },
+    "artifacts/dovi-apple-default-fate84-final/dom.json": {
+      "bytes": 19229,
+      "sha256": "9bdb0ca87a659491795f8ca8ca9eb6a478aaa220c5926a167555040b6bb682a9"
+    },
+    "artifacts/dovi-apple-default-fate84-final/hlg-base.log": {
+      "bytes": 162242,
+      "sha256": "23f984d8042d1b94999ff5c8111e5434e442c2c90dbee283d68d18fab17db912"
+    },
+    "artifacts/dovi-apple-default-fate84-final/interpreted-fate-profile84-hlg-base.png": {
+      "bytes": 7942417,
+      "sha256": "4af63a20d3d2d2c47cf2997e8712bce171eec40ef4135b074e4b4a13de22bcbc"
+    },
+    "artifacts/dovi-apple-default-fate84-final/interpreted-fate-profile84-native-dovi.png": {
+      "bytes": 8429239,
+      "sha256": "edda0ef59af5e99baa16ee23cc3bd2292cd0860103d32be9779d816c9cf67301"
+    },
+    "artifacts/dovi-apple-default-fate84-final/lifecycle.jsonl": {
+      "bytes": 10311,
+      "sha256": "b67189c35944750e0db34a03fa405765bd5195c73b8f04cc3bc9a740b27ae3b4"
+    },
+    "artifacts/dovi-apple-default-fate84-final/missing-metadata.log": {
+      "bytes": 501,
+      "sha256": "ce8e5870d7f3865a9729163a23ba228575d6c8937890b33a11ff27e5ce3e0455"
+    },
+    "artifacts/dovi-apple-default-fate84-final/native-dovi.log": {
+      "bytes": 161537,
+      "sha256": "eaf474dc465287b3762a77db7c67e87a5cebc77e0a5a87eeb05905a3144cebcc"
+    },
+    "artifacts/dovi-apple-default-fate84-final/player.log": {
+      "bytes": 27,
+      "sha256": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84"
+    },
+    "artifacts/dovi-apple-default-fate84-final/report.json": {
+      "bytes": 16053,
+      "sha256": "abef668c99fa45c4952a8541b258f0e6d60b5950b84a776f4d88949775f4049b"
+    },
+    "artifacts/dovi-apple-profile5-default-final/dom.json": {
+      "bytes": 109792,
+      "sha256": "4f180bd7ac363d24bb3078044b85279d78e0ae0c9654a1434d21522ed535e82d"
+    },
+    "artifacts/dovi-apple-profile5-default-final/report.json": {
+      "bytes": 22764,
+      "sha256": "389abb1f0ce4265fe13d22b7fab679bbc3da0457adaa2e17d311e1c1693d5856"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/decoded-metadata.json": {
+      "bytes": 20119,
+      "sha256": "20a289b5ff0086ccb8e21765809594d525154f630dc0e2a6803bf71d016aba05"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/dom.json": {
+      "bytes": 132618,
+      "sha256": "47779060c88c5bef4855864884016f844588a10e9447a4c210b1bef25adee697"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-1.png": {
+      "bytes": 4272408,
+      "sha256": "5f6220cd858a63d307ee857eaf34b465296d77a96ac8ea7a9fbb96cfbb335b6d"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-2.png": {
+      "bytes": 10769914,
+      "sha256": "c152fa793ae78c1ca3ccd8fea39fa5f919d2c7c1c5f43f1d82af827d5cb8cb7a"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-3.png": {
+      "bytes": 7223484,
+      "sha256": "6ab155cb3846c7b95df094daea0c5924ec7f8193b8ced02bbda95ea9d4acf66b"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/lifecycle.jsonl": {
+      "bytes": 28268,
+      "sha256": "5bbee220ed5df8391a85a6cb8294d72dfa87ac3db90f7da2bc6a0d2f36f6e3cf"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/missing-metadata.log": {
+      "bytes": 503,
+      "sha256": "8e9040f3db50cda71e37ceb77604dd8b43321c677e5bf75c942c788d730f6c5f"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/native-dovi.log": {
+      "bytes": 188786,
+      "sha256": "93b01fb796417b3f7f4928fd3e98754db44ac927f080731e7986ef581a514045"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/packet-inventory.json": {
+      "bytes": 2606916,
+      "sha256": "5924257d9dec8745bd932c38626eab904882946bc54de870519d2a96c708d1e4"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/player.log": {
+      "bytes": 27,
+      "sha256": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/report.json": {
+      "bytes": 22925,
+      "sha256": "9e4fbff7955e7ea5a3e25b4feb40a53c1a32dc8c74d81201a22757b9f0be2ac9"
+    },
+    "artifacts/dovi-apple-profile5-default-refined-observed/seek-inventory.json": {
+      "bytes": 136546,
+      "sha256": "8adf34143ca43204d9b9d7b71d61cdbfc9946a96aa0fd6d485c3f0e6beae3633"
+    },
+    "artifacts/dovi-apple-profile5-default-refined/dom.json": {
+      "bytes": 30083,
+      "sha256": "d22b542156000646d78971865e7a1ee9e41d997ba3cc6623a337d77acb9c4a49"
+    },
+    "artifacts/dovi-apple-profile5-default-refined/lifecycle.jsonl": {
+      "bytes": 23507,
+      "sha256": "d379ffe6650775b994bdbf86b392a42c0d88d510cb9b3da90d1c805be1fa5ecd"
+    },
+    "artifacts/dovi-apple-profile5-default-refined/report.json": {
+      "bytes": 21340,
+      "sha256": "aab53234db59691df128eadffa88d70a1ea668db56252b9ee91f79c5f05bf32b"
+    },
+    "artifacts/dovi-apple-profile5-native-1/report.json": {
+      "bytes": 3692,
+      "sha256": "b4b634ab8a766312c2a39cbbcadc360c4f7bbcf144c5774d2c02f1b07cf2d007"
+    },
+    "artifacts/dovi-apple-profile5-native-2/dom.json": {
+      "bytes": 89328,
+      "sha256": "5e5f6c4f3077f6a7ec12239d09cc1380daa146573a3c5dd74ee7b4e2f711f03b"
+    },
+    "artifacts/dovi-apple-profile5-native-2/report.json": {
+      "bytes": 19161,
+      "sha256": "5c13d1ae01abc53b200ac530d72981aaadcf4436c167527bbe921241c96f59c7"
+    },
+    "artifacts/dovi-apple-profile5-near-end/dom.json": {
+      "bytes": 104241,
+      "sha256": "86b9dc41019a2c440efdefd5f22afa7d0a0ee6888bbe82887a0b03ca174cda33"
+    },
+    "artifacts/dovi-apple-profile5-near-end/native-dovi.log": {
+      "bytes": 186351,
+      "sha256": "a93953961746300132769f81c8e751a89e171a1c9fd77db888fda2768fafa3b1"
+    },
+    "artifacts/dovi-apple-profile5-near-end/report.json": {
+      "bytes": 19501,
+      "sha256": "79a2acd3ab538b964a3d39a1c87932af225218876795f99e9806beff9a03a160"
+    },
+    "artifacts/dovi-apple-profile5-offset-audit/report.json": {
+      "bytes": 3049,
+      "sha256": "cf09e2633b3a1dab50ca0137d8566c2581d7588e5a0dd6a8239a39c9e104b859"
+    },
+    "artifacts/dovi-apple-profile5-probe-control-2/dom.json": {
+      "bytes": 104837,
+      "sha256": "ac8d47aaf6b38f3071c84a410091d9a597a20319de15a076233d73a4be30653b"
+    },
+    "artifacts/dovi-apple-profile5-probe-control-2/report.json": {
+      "bytes": 21692,
+      "sha256": "07491d3978b1b433b627297ef5daced6c477ea458b03f0636113e7c2acec7b9f"
+    },
+    "artifacts/dovi-apple-profile5-probe-control/audit-provenance.txt": {
+      "bytes": 478,
+      "sha256": "a5ca694e1223ce3852c3f9b5be4c88f7a0275dbb1c1458cbd683afb0a52a66d7"
+    },
+    "artifacts/dovi-apple-profile5-probe-control/initial-timing-audit.json": {
+      "bytes": 1137,
+      "sha256": "6a2bca652b34b895dfaac8fd7d09eb57191809695a2f2df3d3b43ae5847829e5"
+    },
+    "artifacts/dovi-apple-profile5-probe-control/native-dovi-timing-audit.log": {
+      "bytes": 70843,
+      "sha256": "52e2a9a3eb1a9ad1ca2c27940c6ab76dc9d285fc8153ead8f70c4999d67e3890"
+    },
+    "artifacts/dovi-apple-profile5-probe-control/report.json": {
+      "bytes": 4140,
+      "sha256": "bdaa4313ac137658437914c604577ba575a5104a97d02bc37b719ce4a0e51961"
+    },
+    "artifacts/dovi-apple-profile5-verification/app-build.log": {
+      "bytes": 304,
+      "sha256": "155155707ccf4737f57fade0c427b76ee8022e1c3c4932fc6a6f3f572900fb1e"
+    },
+    "artifacts/dovi-apple-profile5-verification/app-observation-build.log": {
+      "bytes": 304,
+      "sha256": "ebc01042cf45fd673f696e16bf74e20a4ecc81bb15bc452563137d391017d12a"
+    },
+    "artifacts/dovi-apple-profile5-verification/cpu-tests.log": {
+      "bytes": 110,
+      "sha256": "0adb4bb2fc99792d5812c425591f723bd2f2510012b129bcb0f611abbffe1fff"
+    },
+    "artifacts/public-hdr-source-audit/dolby-profile5-all-frames.json": {
+      "bytes": 14572265,
+      "sha256": "a68a46e314a8d907a1489b5821679f0468102bb06ca7c1a4f706c7836158c43e"
+    }
+  }
+}

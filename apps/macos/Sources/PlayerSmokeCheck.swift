@@ -330,13 +330,29 @@ final class PlayerSmokeCheck {
         checks.append("Prepared PiP keeps bounded consumer leases and producer capacity")
     }
     private func runDolbyVision() async throws {
-        let requested = ProcessInfo.processInfo.environment["HDRPLAYER_DV_PROFILE"] ?? "8.4"
-        guard requested == "8.4" || requested == "5" else { throw Failure(message: "Unsupported diagnostic Dolby fixture profile") }
-        let profile = requested == "5" ? 5 : 8, compatibility = requested == "5" ? 0 : 4
-        let seekSeconds = requested == "5" ? 0.125 : 0.7
-        let expectedBytes = requested == "5" ? 4182 : 3621742
-        let expectedSHA = requested == "5" ? "11fe599fd77e31e26fbf855bae1cd9931df9f261a0a7b1dce9fad9b236677c4b" :
-            "aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721"
+        let environment = ProcessInfo.processInfo.environment
+        let legacyProfile = environment["HDRPLAYER_DV_PROFILE"] ?? "8.4"
+        let fixture = environment["HDRPLAYER_DV_FIXTURE"] ?? (legacyProfile == "5" ? "fate-profile5" : "fate-profile84")
+        guard ["fate-profile84", "fate-profile5", "apple-profile5"].contains(fixture),
+              environment["HDRPLAYER_DV_PROFILE"] == nil || ["8.4", "5"].contains(legacyProfile) else {
+            throw Failure(message: "Unsupported diagnostic Dolby fixture")
+        }
+        let profile = fixture == "fate-profile84" ? 8 : 5, compatibility = fixture == "fate-profile84" ? 4 : 0
+        let requested = profile == 8 ? "8.4" : "5"
+        let seekSeconds = profile == 5 ? 0.125 : 0.7
+        let expectedBytes: Int
+        let expectedSHA: String
+        switch fixture {
+        case "apple-profile5":
+            expectedBytes = 42855591
+            expectedSHA = "69bbb93355cb91d69eefe7f24f6525e61670aa3ae25bbfb4a546a19a0358e110"
+        case "fate-profile5":
+            expectedBytes = 4182
+            expectedSHA = "11fe599fd77e31e26fbf855bae1cd9931df9f261a0a7b1dce9fad9b236677c4b"
+        default:
+            expectedBytes = 3621742
+            expectedSHA = "aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721"
+        }
         func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
         try await wait("decoded Dolby Vision metadata reaches the native surface", seconds: 20) {
             !self.video.subviews.isEmpty && !self.webView.isLoading &&
@@ -346,15 +362,18 @@ final class PlayerSmokeCheck {
         guard let path = state()["source"] as? String,
               let bytes = try FileManager.default.attributesOfItem(atPath: path)[.size] as? NSNumber,
               bytes.intValue == expectedBytes else { throw Failure(message: "Diagnostic Dolby source does not match the pinned fixture size") }
-        let payload = try Data(contentsOf: URL(fileURLWithPath: path))
-        guard SHA256.hash(data: payload).map({ String(format: "%02x", $0) }).joined() == expectedSHA else {
+        let actualSHA = try await Task.detached(priority: .utility) {
+            let payload = try Data(contentsOf: URL(fileURLWithPath: path))
+            return SHA256.hash(data: payload).map({ String(format: "%02x", $0) }).joined()
+        }.value
+        guard actualSHA == expectedSHA else {
             throw Failure(message: "Diagnostic Dolby source does not match the pinned SHA-256")
         }
         let track = (state()["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
         guard track?["dolby-vision-profile"] as? Int == profile && track?["dolby-vision-compatibility-id"] as? Int == compatibility else {
             throw Failure(message: "Selected native stream does not match the pinned Dolby profile/compatibility")
         }
-        checks.append("pinned Profile \(requested) stream retains compatibility ID \(compatibility)")
+        checks.append("pinned \(fixture) Profile \(requested) stream retains compatibility ID \(compatibility)")
         let disabled = try await script("return ['enhancement','strength','colorStrength','quality','mode'].every(id=>document.getElementById(id).disabled)")
         guard disabled == "true", (state()["capabilities"] as? [String: Any])?["prepared"] as? Bool == false else {
             throw Failure(message: "Unqualified Dolby Vision enhancement controls are available")
@@ -370,6 +389,12 @@ final class PlayerSmokeCheck {
         checks.append("direct enhancement request cannot admit a Dolby Vision frame")
         if state()["paused"] as? Bool != true { try await click("play") }
         try await wait("Dolby Vision pauses through native controls") { self.state()["paused"] as? Bool == true }
+        if fixture == "apple-profile5" {
+            try await runAppleDolbySeeks(sourceSHA: expectedSHA)
+            guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Dolby Vision playback error") }
+            checks.append("representative native transport has no playback error; no colour qualification inferred")
+            return
+        }
         guard seekSeconds > 0 && seekSeconds < number("duration") else { throw Failure(message: "Dolby fixture seek lies outside its actual duration") }
         try await change("timeline", value: String(seekSeconds))
         try await wait("Dolby Vision seeks while retaining native metadata") {
@@ -383,6 +408,154 @@ final class PlayerSmokeCheck {
         }
         guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Dolby Vision playback error") }
         checks.append("native metadata path has no playback error; no colour qualification inferred")
+    }
+    private struct DolbySeekInventory: Decodable {
+        struct Frame: Decodable, Equatable { let pts: Int64; let duration: Int64 }
+        let fixtureID: String
+        let sourceSHA256: String
+        let timebaseNumerator: Int64
+        let timebaseDenominator: Int64
+        let formatStartSeconds: String
+        let frames: [Frame]
+        let targets: [Frame]
+    }
+    private func runAppleDolbySeeks(sourceSHA: String) async throws {
+        guard let path = ProcessInfo.processInfo.environment["HDRPLAYER_DV_INVENTORY"],
+              let size = try FileManager.default.attributesOfItem(atPath: path)[.size] as? NSNumber,
+              size.intValue > 0 && size.intValue < 1_048_576 else {
+            throw Failure(message: "Apple diagnostic requires a bounded exact source inventory from test-dovi-passthrough.py")
+        }
+        let inventory = try JSONDecoder().decode(DolbySeekInventory.self, from: Data(contentsOf: URL(fileURLWithPath: path)))
+        guard inventory.fixtureID == "apple-profile5", inventory.sourceSHA256 == sourceSHA,
+              inventory.timebaseNumerator == 1, inventory.timebaseDenominator == 24000,
+              inventory.frames.count == 2360, inventory.frames.first?.pts == 240000,
+              inventory.frames.allSatisfy({ $0.duration > 0 }), inventory.targets.count == 3,
+              zip(inventory.frames, inventory.frames.dropFirst()).allSatisfy({ $0.pts < $1.pts }),
+              inventory.targets.allSatisfy({ inventory.frames.contains($0) }),
+              let expectedStart = Double(inventory.formatStartSeconds), expectedStart.isFinite,
+              let nativeStart = state()["nativeDemuxerStartTime"] as? Double, nativeStart.isFinite,
+              let rebased = state()["nativeRebaseStartTime"] as? Bool else {
+            throw Failure(message: "Apple inventory or native demuxer/rebase timing does not match the pinned source")
+        }
+        let offset = rebased ? -nativeStart : 0
+        let offsetTicks = offset * Double(inventory.timebaseDenominator)
+        guard offsetTicks.isFinite, abs(offsetTicks - offsetTicks.rounded()) < 1e-6,
+              offsetTicks > Double(Int64.min), offsetTicks < Double(Int64.max) else {
+            throw Failure(message: "Native demuxer offset is not exact in the pinned source timebase")
+        }
+        let exactOffsetTicks = Int64(offsetTicks.rounded())
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func sourcePTS() -> Int64? {
+            guard let pts = (native()["displayed-source-pts"] as? NSNumber)?.int64Value,
+                  let num = (native()["displayed-timebase-num"] as? NSNumber)?.int64Value,
+                  let den = (native()["displayed-timebase-den"] as? NSNumber)?.int64Value,
+                  num == inventory.timebaseNumerator, den == inventory.timebaseDenominator else { return nil }
+            // demux_set_ts_offset runs before decoding; keep original file
+            // inventory PTS separate from the raw exact decoder timestamp.
+            let original = pts.subtractingReportingOverflow(exactOffsetTicks)
+            return original.overflow ? nil : original.partialValue
+        }
+        guard let initialSourcePTS = sourcePTS(), inventory.frames.contains(where: { $0.pts == initialSourcePTS }),
+              abs(Double(initialSourcePTS) / Double(inventory.timebaseDenominator) + offset - number("position")) < 1e-6 else {
+            throw Failure(message: "Observed native offset does not match the held exact source/player pair")
+        }
+        snapshots.append(["check": "observed native source-to-player mapping", "sourceToPlayerOffsetSeconds": offset,
+                          "nativeDemuxerStartTime": nativeStart, "nativeRebaseStartTime": rebased,
+                          "ffprobeFormatStartSeconds": expectedStart, "initialSourcePTS": initialSourcePTS,
+                          "initialNativeDecoderPTS": initialSourcePTS + exactOffsetTicks,
+                          "nativeDecoderOffsetTicks": exactOffsetTicks,
+                          "initialPlayerSeconds": number("position"), "sourceTimebaseDenominator": inventory.timebaseDenominator])
+        checks.append("native demuxer start and rebase offset match a held exact source/player pair")
+        if state()["muted"] as? Bool != true { try await click("mute") }
+        for target in inventory.targets {
+            let sourceSeconds = Double(target.pts) / Double(inventory.timebaseDenominator)
+            let playerSeconds = sourceSeconds + offset
+            guard playerSeconds > 0 && playerSeconds < number("duration") else { throw Failure(message: "Mapped representative seek exceeds the native player range") }
+            // Read the real range value before state updates can replace it.
+            // Its 1ms step may round this rational source-to-player mapping.
+            let effectiveValue = try await script("const e=document.getElementById('timeline');e.value='\(playerSeconds)';const v=Number(e.value);e.dispatchEvent(new Event('change',{bubbles:true}));return v;")
+            guard let effectiveSeconds = Double(effectiveValue), effectiveSeconds.isFinite,
+                  abs(effectiveSeconds - playerSeconds) <= 0.001 else {
+                throw Failure(message: "DOM seek value changed beyond the timeline's millisecond precision")
+            }
+            try await wait("Apple native displayed source PTS equals \(target.pts)/\(inventory.timebaseDenominator)", seconds: 15) {
+                sourcePTS() == target.pts && self.state()["paused"] as? Bool == true &&
+                native()["displayed-dolby-vision-metadata"] as? Bool == true &&
+                native()["native-color-path"] as? String == "native-dolby-vision" &&
+                native()["submitted-frames"] as? Int == 0 && native()["buffering"] as? Bool == false
+            }
+            snapshots.append(["check": "exact mapped representative seek", "requestedPlayerSeconds": playerSeconds,
+                              "effectiveDOMPlayerSeconds": effectiveSeconds, "domRoundingSeconds": effectiveSeconds - playerSeconds,
+                              "expectedSourcePTS": target.pts, "sourceDuration": target.duration, "state": state()])
+            try await click("play")
+            try await wait("representative native playback begins") { self.state()["paused"] as? Bool == false }
+            var observed = Set<Int64>()
+            var samples: [[String: Any]] = []
+            let sampleStart = ProcessInfo.processInfo.systemUptime
+            func recordSamples() {
+                snapshots.append(["check": "representative playback observation window", "samples": samples,
+                    "distinctOriginalPTSCount": observed.count, "sourcePTS": observed.sorted(),
+                    "elapsedSeconds": ProcessInfo.processInfo.systemUptime - sampleStart])
+            }
+            for _ in 0..<12 {
+                try await Task.sleep(for: .milliseconds(100))
+                let currentPTS = sourcePTS()
+                samples.append(["elapsedSeconds": ProcessInfo.processInfo.systemUptime - sampleStart,
+                    "originalSourcePTS": currentPTS.map { $0 as Any } ?? NSNull(),
+                    "nativeDecoderPTS": native()["displayed-source-pts"] ?? NSNull(),
+                    "source": state()["source"] ?? NSNull(), "position": number("position"),
+                    "paused": state()["paused"] ?? NSNull(), "buffering": native()["buffering"] ?? NSNull(),
+                    "appActive": NSApp.isActive, "windowOnActiveSpace": window.isOnActiveSpace,
+                    "windowOcclusionVisible": window.occlusionState.contains(.visible),
+                    "windowVisible": window.isVisible, "windowMinimized": window.isMiniaturized])
+                guard let pts = currentPTS, inventory.frames.contains(where: { $0.pts == pts }),
+                      native()["displayed-dolby-vision-metadata"] as? Bool == true,
+                      native()["native-color-path"] as? String == "native-dolby-vision",
+                      native()["submitted-frames"] as? Int == 0, native()["buffering"] as? Bool == false else {
+                    recordSamples()
+                    throw Failure(message: "Representative native Dolby transport lost source identity/metadata or admitted neural work")
+                }
+                observed.insert(pts)
+            }
+            recordSamples()
+            guard observed.count >= 6 else { throw Failure(message: "Representative native frames did not progress") }
+            snapshots.append(["check": "representative native PTS progression", "sourcePTS": observed.sorted(), "state": state()])
+            checks.append("representative native frames progress with metadata and zero neural submissions")
+            try await click("play")
+            try await wait("representative playback pauses") { self.state()["paused"] as? Bool == true }
+        }
+        let nearEnd = inventory.frames[inventory.frames.count - 13]
+        let nearEndPlayer = Double(nearEnd.pts) / Double(inventory.timebaseDenominator) + offset
+        let nativeDuration = number("duration")
+        let rangeJSON = try await script("const e=document.getElementById('timeline');e.value='\(nearEndPlayer)';const r={maximum:Number(e.max),effective:Number(e.value)};e.dispatchEvent(new Event('change',{bubbles:true}));return r;")
+        guard let rangeData = rangeJSON.data(using: .utf8),
+              let range = try JSONSerialization.jsonObject(with: rangeData) as? [String: Double],
+              let effective = range["effective"], let maximum = range["maximum"] else {
+            throw Failure(message: "Cannot inspect the actual near-end DOM seek range")
+        }
+        try await Task.sleep(for: .seconds(1))
+        snapshots.append(["check": "near-end actual DOM seek", "desiredPlayerSeconds": nearEndPlayer,
+                          "nativeDurationSeconds": nativeDuration, "effectiveDOMPlayerSeconds": effective,
+                          "domMaximumSeconds": maximum, "expectedSourcePTS": nearEnd.pts, "state": state()])
+        if abs(effective - nearEndPlayer) <= 0.001 && maximum >= nearEndPlayer {
+            try await wait("actual DOM seek selects the exact near-end source PTS", seconds: 15) {
+                sourcePTS() == nearEnd.pts && native()["displayed-dolby-vision-metadata"] as? Bool == true &&
+                    native()["submitted-frames"] as? Int == 0
+            }
+        }
+        // Also exercise the existing native command bridge directly. This
+        // separates a DOM range limit from the core's actual seek capability.
+        _ = try await script("window.webkit.messageHandlers.player.postMessage({command:'seek',value:\(nearEndPlayer)});return true")
+        try await wait("direct native bridge reaches the exact near-end source PTS", seconds: 15) {
+            sourcePTS() == nearEnd.pts && native()["displayed-dolby-vision-metadata"] as? Bool == true &&
+                native()["submitted-frames"] as? Int == 0
+        }
+        snapshots.append(["check": "near-end direct bridge result", "desiredPlayerSeconds": nearEndPlayer,
+                          "expectedSourcePTS": nearEnd.pts, "state": state()])
+        guard abs(effective - nearEndPlayer) <= 0.001 && maximum >= nearEndPlayer else {
+            throw Failure(message: "Native duration/DOM maximum \(maximum)s clips source near-end \(nearEndPlayer)s, although the direct native bridge selects its exact source PTS")
+        }
+        checks.append("actual DOM timeline covers the inventoried near-end source frame")
     }
     private func runPreferences(write: Bool) async throws {
         try await wait("empty player and controls initialized", seconds: 20) { self.state()["initialized"] as? Bool == true && !self.webView.isLoading }
