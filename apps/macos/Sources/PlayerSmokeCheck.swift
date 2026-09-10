@@ -46,6 +46,37 @@ final class PlayerSmokeCheck {
     private func selected(_ type: String, id: Int) -> Bool {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
+    private func runDolbyVision() async throws {
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        try await wait("real Dolby Vision frame reaches the native surface", seconds: 20) {
+            !self.video.subviews.isEmpty && !self.webView.isLoading &&
+            native()["source-dolby-vision"] as? Bool == true &&
+            native()["displayed-dolby-vision-metadata"] as? Bool == true
+        }
+        let track = (state()["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
+        guard track?["dolby-vision-profile"] as? Int == 8 && track?["dolby-vision-compatibility-id"] as? Int == 4 else {
+            throw Failure(message: "Expected the real Profile 8.4 regression fixture")
+        }
+        checks.append("selected stream retains Profile 8 and HLG compatibility ID 4")
+        let disabled = try await script("return ['enhancement','strength','colorStrength','quality','mode'].every(id=>document.getElementById(id).disabled)")
+        guard disabled == "true", (state()["capabilities"] as? [String: Any])?["prepared"] as? Bool == false else {
+            throw Failure(message: "Unqualified Dolby Vision enhancement controls are available")
+        }
+        checks.append("neural quality, effect and Prepared controls are disabled")
+        _ = try await script("window.webkit.messageHandlers.player.postMessage({command:'enhancement',value:true});return true")
+        try await Task.sleep(for: .milliseconds(300))
+        guard (state()["processing"] as? [String: Any])?["enabled"] as? Bool == false,
+              native()["submitted-frames"] as? Int == 0 else { throw Failure(message: "Dolby Vision entered neural processing") }
+        checks.append("direct enhancement request cannot admit a Dolby Vision frame")
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("Dolby Vision pauses through native controls") { self.state()["paused"] as? Bool == true }
+        try await change("timeline", value: "0.7")
+        try await wait("Dolby Vision seeks while retaining native metadata") {
+            abs(self.number("position") - 0.7) < 0.08 && native()["displayed-dolby-vision-metadata"] as? Bool == true
+        }
+        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Dolby Vision playback error") }
+        checks.append("native fallback has no playback error")
+    }
     private func runPreferences(write: Bool) async throws {
         try await wait("empty player and controls initialized", seconds: 20) { self.state()["initialized"] as? Bool == true && !self.webView.isLoading }
         if write {
@@ -124,7 +155,9 @@ final class PlayerSmokeCheck {
     private func run() async {
         var failure: String?
         do {
-            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "prepared" {
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "dolby-vision" {
+                try await runDolbyVision()
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "prepared" {
                 try await runPrepared()
             } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"]?.hasPrefix("preferences-") == true {
                 try await runPreferences(write: ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "preferences-write")

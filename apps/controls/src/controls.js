@@ -39,9 +39,10 @@ function update(next) {
   if (!next || next.version !== 1) return;
   state = { ...state, ...next };
   const processing = next.processing ?? {};
+  const enhancementAvailable = Boolean(processing.modelAvailable) && processing.enhancementAvailable !== false;
   const loaded = Number.isFinite(state.duration) && state.duration > 0;
   element('title').textContent = state.title || 'Open a video';
-  element('status').textContent = processing.message || (state.loading ? 'Loading video…' : loaded ? 'Native HDR playback' : 'Open a local video to begin');
+  element('status').textContent = (processing.status === 'error' ? processing.message : processing.unavailableReason || processing.message) || (state.loading ? 'Loading video…' : loaded ? 'Native HDR playback' : 'Open a local video to begin');
   element('timeline').disabled = !loaded;
   element('timeline').max = String(Math.max(0.001, state.duration || 0));
   if (!draggingTimeline) {
@@ -80,15 +81,15 @@ function update(next) {
   element('mode').disabled = availableModes.length === 0;
   for (const option of element('mode').options) option.disabled = !availableModes.includes(option.value);
   element('enhancement').checked = Boolean(processing.enabled);
-  element('enhancement').disabled = !processing.modelAvailable;
+  element('enhancement').disabled = !enhancementAvailable;
   for (const id of ['strength', 'colorStrength']) {
     setRange(id, processing[id] ?? 1);
-    element(id).disabled = !processing.modelAvailable || !processing.enabled;
+    element(id).disabled = !enhancementAvailable || !processing.enabled;
     element(`${id}-value`).textContent = `${Math.round((processing[id] ?? 1) * 100)}%`;
   }
   element('processing-detail').textContent = processing.enabled
     ? `${processing.width ?? '—'} × ${processing.height ?? '—'} · ${processing.status || 'Processing'}`
-    : 'Original HDR';
+    : processing.nativeColorPath || 'Original HDR';
   element('compare').hidden = !next.capabilities?.sameFrameComparison;
   element('compare').textContent = processing.comparison === 'original' ? 'Show enhanced' : 'Compare original';
   element('compare').setAttribute('aria-pressed', String(processing.comparison === 'original'));
@@ -132,7 +133,7 @@ function update(next) {
     optionSignatures.set('prepared-ranges', rangeSignature);
   }
   if (document.activeElement !== element('quality')) element('quality').value = `${processing.width ?? 32}x${processing.height ?? 24}`;
-  element('quality').disabled = !processing.modelAvailable;
+  element('quality').disabled = !enhancementAvailable;
   setRange('subtitleBrightness', processing.subtitleBrightness ?? 1);
   setRange('subtitleScale', next.subtitleScale ?? 1);
   setRange('subtitleDelay', next.subtitleDelay ?? 0);

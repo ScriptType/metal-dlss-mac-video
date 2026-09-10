@@ -219,6 +219,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                     let tracks: [[String: Any]] = array("track-list").map { track in
                         ["id": track["id"] ?? 0, "type": track["type"] ?? "unknown", "title": track["title"] ?? track["codec"] ?? "Track",
                          "language": track["lang"] ?? (track["metadata"] as? [String: Any])?["language"] ?? "", "selected": track["selected"] ?? false, "external": track["external"] ?? false]
+                            .merging(track.filter { $0.key.hasPrefix("dolby-vision-") }) { _, metadata in metadata }
                     }
                     let chapters: [[String: Any]] = array("chapter-list").enumerated().map { index, chapter in
                         ["index": index, "title": chapter["title"] ?? "Chapter \(index + 1)", "time": chapter["time"] ?? 0]
@@ -322,6 +323,8 @@ final class MPVPlaybackController {
         source = url.path
         preparationFailure = nil
         state.removeValue(forKey: "prepared")
+        state.removeValue(forKey: "nativeEnhancement")
+        state["tracks"] = []
         state["source"] = source; state["title"] = url.lastPathComponent; state["loading"] = true
         state.removeValue(forKey: "error")
         worker?.enqueue(["loadfile", url.path, "replace"])
@@ -333,6 +336,9 @@ final class MPVPlaybackController {
     func wake() { if !beforeSleepPaused { worker?.enqueue(["set", "pause", "no"]) } }
     func command(_ name: String, value: Any?) {
         func numeric() -> Double? { (value as? NSNumber)?.doubleValue }
+        if dolbyVisionUnavailableReason != nil &&
+           (["strength", "colorStrength", "quality", "mode"].contains(name) ||
+            (name == "enhancement" && value as? Bool == true)) { publish(); return }
         switch name {
         case "play": worker?.enqueue(["set", "pause", "no"])
         case "pause": worker?.enqueue(["set", "pause", "yes"])
@@ -441,21 +447,36 @@ final class MPVPlaybackController {
         if incoming["error"] == nil { state.removeValue(forKey: "error") }
         publish()
     }
+    private var dolbyVisionUnavailableReason: String? {
+        let native = state["nativeEnhancement"] as? [String: Any] ?? [:]
+        let selected = (state["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
+        guard native["source-dolby-vision"] as? Bool == true || selected?["dolby-vision-profile"] != nil else { return nil }
+        switch native["native-color-path"] as? String {
+        case "hdr10-base-layer": return "Playing the HDR10 base layer. Dolby Vision enhancement is unavailable."
+        case "hlg-base-layer": return "Playing the HLG base layer. Dolby Vision enhancement is unavailable."
+        case "unsupported-dolby-vision": return "This Dolby Vision profile has no supported playback path."
+        default: return "Dolby Vision uses native playback. Neural enhancement is unavailable."
+        }
+    }
     private func updateProcessing() {
         let native = state["nativeEnhancement"] as? [String: Any] ?? [:]
         let progress = native["prepared"] as? [String: Any] ?? [:]
         let error = state["error"] as? String ?? (mode == "prepared" ? preparationFailure : nil) ?? progress["error"] as? String
-        let available = modelURL != nil && (state["duration"] as? Double ?? 0) > 0
+        let unavailableReason = dolbyVisionUnavailableReason
+        let enhancementAvailable = modelURL != nil && unavailableReason == nil
+        let effectiveEnabled = enabled && enhancementAvailable
+        let available = enhancementAvailable && (state["duration"] as? Double ?? 0) > 0
         let qualified = native["live-qualified"] as? Bool == true
         let buffering = native["buffering"] as? Bool == true
         let preview = native["preview-pending"] as? Bool == true
         let selectedVideo = (state["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
         var preparedReason: String?
-        if native["prepared-supported"] as? Bool != true { preparedReason = "This playback core does not support Prepared mode." }
+        if let unavailableReason { preparedReason = unavailableReason }
+        else if native["prepared-supported"] as? Bool != true { preparedReason = "This playback core does not support Prepared mode." }
         else if modelURL == nil { preparedReason = "A neural model is required." }
         else if !source.hasPrefix("/") { preparedReason = "Prepared mode requires a local video file." }
-        else if !["mp4", "m4v", "mov"].contains(URL(fileURLWithPath: source).pathExtension.lowercased()) {
-            preparedReason = "Prepared currently supports MP4, M4V and MOV containers."
+        else if !["mp4", "m4v", "mov", "mkv"].contains(URL(fileURLWithPath: source).pathExtension.lowercased()) {
+            preparedReason = "Prepared currently supports MP4, M4V, MOV and Matroska containers."
         }
         else if selectedVideo?["id"] as? Int != 1 { preparedReason = "Prepared mode supports the first video track only." }
         else if let preparationFailure { preparedReason = preparationFailure }
@@ -482,7 +503,7 @@ final class MPVPlaybackController {
         state["prepared"] = prepared
         let displayedKind = native["displayed-content-kind"] as? String ?? "unknown"
         var message = "Original HDR playback"
-        if enabled {
+        if effectiveEnabled {
             if mode == "prepared" {
                 if progress["configurationState"] as? String == "initializing" || progress.isEmpty {
                     message = "Prepared: checking source and cached ranges…"
@@ -501,15 +522,18 @@ final class MPVPlaybackController {
             else { message = "Adaptive enhancement; audio and video buffer together when needed." }
         }
         if state["configurationPending"] as? Bool == true { message = state["message"] as? String ?? "Updating processing configuration…" }
-        state["processing"] = ["mode": mode, "enabled": enabled, "strength": strength, "colorStrength": colorStrength,
+        let colorPathLabels = ["native-dolby-vision": "Dolby Vision · Original", "hdr10-base-layer": "HDR10 base layer", "hlg-base-layer": "HLG base layer", "unsupported-dolby-vision": "Unsupported Dolby Vision"]
+        state["processing"] = ["mode": mode, "enabled": effectiveEnabled, "strength": strength, "colorStrength": colorStrength,
             "width": width, "height": height, "modelAvailable": modelURL != nil, "liveQualified": qualified, "availableModes": modes,
-            "status": error != nil ? "error" : !enabled ? "original" : mode == "prepared" ? (progress["jobState"] as? String ?? "initializing") : preview ? "preview" : buffering ? "buffering" : "enhancing",
-            "message": error ?? message, "subtitleBrightness": subtitleBrightness,
+            "enhancementAvailable": enhancementAvailable, "unavailableReason": unavailableReason ?? "",
+            "nativeColorPath": colorPathLabels[native["native-color-path"] as? String ?? ""] ?? "Original HDR",
+            "status": error != nil ? "error" : !effectiveEnabled ? "original" : mode == "prepared" ? (progress["jobState"] as? String ?? "initializing") : preview ? "preview" : buffering ? "buffering" : "enhancing",
+            "message": error ?? unavailableReason ?? message, "subtitleBrightness": subtitleBrightness,
             "pendingFrames": native["pending-frames"] ?? 0, "completedFrames": native["completed-frames"] ?? 0,
             "completedP95Seconds": native["completed-p95-seconds"] ?? 0,
             "bufferCount": native["buffer-count"] ?? 0, "bufferSeconds": native["buffer-seconds"] ?? 0,
             "comparison": native["comparison"] ?? "enhanced", "displayedContentKind": displayedKind] as [String: Any]
-        state["capabilities"] = ["prepared": preparedAvailable, "preparedUnavailableReason": preparedReason ?? "", "pip": false, "sameFrameComparison": native["compare-ready"] as? Bool ?? false,
+        state["capabilities"] = ["enhancement": enhancementAvailable, "prepared": preparedAvailable, "preparedUnavailableReason": preparedReason ?? "", "pip": false, "sameFrameComparison": native["compare-ready"] as? Bool ?? false,
             "playbackModes": !modes.isEmpty]
     }
     private func publish() { updateProcessing(); onState?(state) }

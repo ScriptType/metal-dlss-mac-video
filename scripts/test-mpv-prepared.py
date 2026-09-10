@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate source-bound Prepared playback, exact hits/misses and process reuse."""
 import argparse
+from fractions import Fraction
 import json
 from pathlib import Path
 import socket
@@ -10,6 +11,24 @@ import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def source_times(source):
+    probe = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0",
+        "-show_frames", "-show_streams", "-show_entries", "frame=pts:stream=time_base", "-of", "json", str(source)]))
+    scale = Fraction(probe["streams"][0]["time_base"])
+    values = sorted(Fraction(frame["pts"]) * scale for frame in probe["frames"] if "pts" in frame)
+    if len(values) < 12:
+        raise RuntimeError("Prepared smoke requires at least12 source frames")
+    return values
+
+
+def rational(value):
+    return {"value": value.numerator, "timescale": value.denominator}
+
+
+def displayed_time(state):
+    return Fraction(state["displayed-source-pts"] * state["displayed-timebase-num"], state["displayed-timebase-den"])
 
 
 def check_source_guards(source, directory):
@@ -99,17 +118,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, default=ROOT / "assets/test-clips/hdr10-30.mp4")
     parser.add_argument("--model", type=Path)
+    parser.add_argument("--cancel-first", action="store_true", help="Cancel after actual work, then resume the same provider context")
     parser.add_argument("--report", type=Path, default=ROOT / "artifacts/mpv-prepared-smoke.json")
     args = parser.parse_args()
     source = args.source.resolve()
+    inventory = source_times(source)
+    range_start, range_end, hit_pts, miss_pts = inventory[0], inventory[6], inventory[3], inventory[11]
     model = args.model.resolve() if args.model else None
     args.report.parent.mkdir(parents=True, exist_ok=True)
-    report = {"source": str(source), "model": str(model), "phases": [], "errors": []}
+    report = {"source": str(source), "model": str(model), "phases": [], "errors": [],
+        "rangeStart": rational(range_start), "rangeEnd": rational(range_end),
+        "expectedHitPTS": rational(hit_pts), "expectedMissPTS": rational(miss_pts),
+        "timingSelection": "exact decoded source inventory, first six frames; independent source-core preparation decoder"}
     with tempfile.TemporaryDirectory(prefix="mpv-prepared-cache-") as directory:
         cache = Path(directory) / "cache"
         configuration = Path(directory) / "configuration.json"
         request = {"sourcePath": str(source), "cacheDirectory": str(cache), "capacityBytes": 33554432,
-            "rangeStart": {"value": 0, "timescale": 30}, "rangeEnd": {"value": 6, "timescale": 30},
+            "rangeStart": rational(range_start), "rangeEnd": rational(range_end),
             "segmentFrames": 3, "prerollFrames": 1}
         configuration.write_text(json.dumps(request))
         try:
@@ -118,27 +143,36 @@ def main():
                 try:
                     initial = player.wait(lambda s: s.get("compare-ready") and s.get("prepared", {}).get("configurationState") == "ready")
                     player.command("vf-command", "enhance", "prepare", "start")
+                    if phase == 0 and args.cancel_first:
+                        working = player.wait(lambda s: s.get("prepared", {}).get("processedFrames", 0) >= 1)
+                        if working["prepared"]["jobState"] == "complete":
+                            raise RuntimeError("preparation completed before cancellation could be exercised")
+                        player.command("vf-command", "enhance", "prepare", "cancel")
+                        report["cancelled"] = player.wait(lambda s: s.get("prepared", {}).get("jobState") == "cancelled")
+                        player.command("vf-command", "enhance", "prepare", "start")
                     complete = player.wait(lambda s: s.get("prepared", {}).get("jobState") == "complete")
                     generation, hits = complete["generation"], complete["prepared"]["cacheHits"]
-                    player.command("seek", .1, "absolute+exact")
+                    player.command("seek", float(hit_pts), "absolute+exact")
                     hit = player.wait(lambda s: s.get("compare-ready") and s.get("generation", 0) > generation and
                                       s.get("prepared", {}).get("cacheHits", 0) > hits)
-                    if hit["displayed-source-pts"] * hit["displayed-timebase-num"] / hit["displayed-timebase-den"] != .1:
+                    if displayed_time(hit) != hit_pts:
                         raise RuntimeError("cached frame has wrong source timestamp")
                     expected = "prepared-enhanced" if model else "prepared-original"
                     if hit.get("displayed-content-kind") != expected:
                         raise RuntimeError("cached frame lost immutable content provenance")
                     generation, misses = hit["generation"], hit["prepared"]["cacheMisses"]
-                    player.command("seek", .7, "absolute+exact")
+                    player.command("seek", float(miss_pts), "absolute+exact")
                     miss = player.wait(lambda s: s.get("compare-ready") and s.get("generation", 0) > generation and
                                        s.get("prepared", {}).get("cacheMisses", 0) > misses)
                     if miss.get("displayed-content-kind") != "original":
                         raise RuntimeError("cache miss incorrectly labeled enhanced")
+                    if displayed_time(miss) != miss_pts:
+                        raise RuntimeError("original miss has wrong source timestamp")
                     report["phases"].append({"initial": initial, "prepared": complete, "hit": hit, "miss": miss})
                 finally:
                     player.close()
             first, second = (phase["prepared"]["prepared"] for phase in report["phases"])
-            if first["processedFrames"] != 6 or second["reusedSegments"] != 2 or second["processedFrames"] != 0:
+            if first["processedFrames"] + first["reusedSegments"] * 3 != 6 or second["reusedSegments"] != 2 or second["processedFrames"] != 0:
                 raise RuntimeError("reopening did not reuse the published completed segments")
             report["sourceGuards"] = check_source_guards(source, Path(directory))
             report["passed"] = True
