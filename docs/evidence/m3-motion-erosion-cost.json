@@ -1,0 +1,5326 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "scope": "Current unchanged erosion cost on actual pre-erode masks; no optimization candidate",
+  "implementationChanged": false,
+  "optimizationBenefitClaimed": false,
+  "rootRevisionAtCapture": "00d51b7e40090574776f5d563e88496a6ae16711",
+  "mlxRevisionAtCapture": "37eace59204e2290a27584717d156ca72675fce2",
+  "publishedTestMLXRevision": "12c5f16d96205a5d64bd40a1dc0462c025309c5e",
+  "publishedTestSources": [
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift",
+      "bytes": 7643,
+      "sha256": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift",
+      "bytes": 9411,
+      "sha256": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeMotionErosionCostTests.swift",
+      "bytes": 28503,
+      "sha256": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c"
+    }
+  ],
+  "sourceReversal": [
+    {
+      "copy": {
+        "path": "artifacts/native-motion-erosion-cost-1/executed-runtime/ErosionProbeNativeOpticalFlow.swift",
+        "bytes": 7643,
+        "sha256": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62"
+      },
+      "production": {
+        "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift",
+        "bytes": 6706,
+        "sha256": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+      },
+      "markerBlocksRemoved": 4,
+      "renames": [
+        [
+          "ErosionProbeNativeOpticalFlow",
+          "NativeOpticalFlow"
+        ],
+        [
+          "ErosionProbeVideoToolboxFlowSession",
+          "VideoToolboxFlowSession"
+        ]
+      ],
+      "byteExact": true
+    },
+    {
+      "copy": {
+        "path": "artifacts/native-motion-erosion-cost-1/executed-runtime/FrozenErosionProbeVideoMotion.swift",
+        "bytes": 9411,
+        "sha256": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34"
+      },
+      "production": {
+        "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoMotion.swift",
+        "bytes": 8834,
+        "sha256": "d8878517b8e68ce8971c3c8e1813c92796303937ebde387cd875545b7b4e313e"
+      },
+      "markerBlocksRemoved": 3,
+      "renames": [
+        [
+          "FrozenErosionProbeVideoMotion",
+          "MLXVideoMotion"
+        ],
+        [
+          "mlxdlss_erosion_probe_",
+          "mlxdlss_native_"
+        ]
+      ],
+      "byteExact": true
+    }
+  ],
+  "executedRuntimeArchive": {
+    "scope": "Exact tested erosion cost sources/executable archived before any future edits/build. Shared metallib remains recorded a97b9b2b... and pinned in benchmark-before.json.",
+    "files": [
+      {
+        "source": "vendor/MLX-DLSS/Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift",
+        "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/ErosionProbeNativeOpticalFlow.swift",
+        "bytes": 7643,
+        "sha256": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62"
+      },
+      {
+        "source": "vendor/MLX-DLSS/Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift",
+        "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/FrozenErosionProbeVideoMotion.swift",
+        "bytes": 9411,
+        "sha256": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34"
+      },
+      {
+        "source": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeMotionErosionCostTests.swift",
+        "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/NativeMotionErosionCostTests.swift",
+        "bytes": 28503,
+        "sha256": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c"
+      },
+      {
+        "source": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+        "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/MLXDLSSPackageTests",
+        "bytes": 34481424,
+        "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b"
+      }
+    ]
+  },
+  "executedRuntimeArchiveResolution": [
+    {
+      "capturedSource": "vendor/MLX-DLSS/Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift",
+      "sha256": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62",
+      "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/ErosionProbeNativeOpticalFlow.swift"
+    },
+    {
+      "capturedSource": "vendor/MLX-DLSS/Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift",
+      "sha256": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34",
+      "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/FrozenErosionProbeVideoMotion.swift"
+    },
+    {
+      "capturedSource": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeMotionErosionCostTests.swift",
+      "sha256": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c",
+      "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/NativeMotionErosionCostTests.swift"
+    },
+    {
+      "capturedSource": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+      "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b",
+      "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/MLXDLSSPackageTests"
+    },
+    {
+      "capturedSource": "vendor/MLX-DLSS/.build/arm64-apple-macosx/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+      "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b",
+      "archive": "artifacts/native-motion-erosion-cost-1/executed-runtime/MLXDLSSPackageTests"
+    }
+  ],
+  "inputManifest": {
+    "path": "artifacts/native-flow-pool-benchmark-1/inputs.json",
+    "bytes": 5746,
+    "sha256": "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181",
+    "inventory": {
+      "schemaVersion": 1,
+      "width": 1920,
+      "height": 1080,
+      "layout": "Float32 little-endian interleaved RGB",
+      "domain": "Source-size bounded encoded sRGB proxy exported by NativeHDRProcessor. No new decode/conversion or model inference.",
+      "frames": [
+        {
+          "sourceFrameIndex": 1496,
+          "pts": {
+            "timescale": 24000,
+            "value": 1738497
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0008/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f"
+        },
+        {
+          "sourceFrameIndex": 1497,
+          "pts": {
+            "timescale": 24000,
+            "value": 1739498
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0009/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af"
+        },
+        {
+          "sourceFrameIndex": 1498,
+          "pts": {
+            "timescale": 24000,
+            "value": 1740499
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+        },
+        {
+          "sourceFrameIndex": 1499,
+          "pts": {
+            "timescale": 24000,
+            "value": 1741500
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0011/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17"
+        },
+        {
+          "sourceFrameIndex": 1500,
+          "pts": {
+            "timescale": 24000,
+            "value": 1742501
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0012/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3"
+        },
+        {
+          "sourceFrameIndex": 1501,
+          "pts": {
+            "timescale": 24000,
+            "value": 1743502
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0013/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e"
+        },
+        {
+          "sourceFrameIndex": 1502,
+          "pts": {
+            "timescale": 24000,
+            "value": 1744503
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0014/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46"
+        },
+        {
+          "sourceFrameIndex": 1503,
+          "pts": {
+            "timescale": 24000,
+            "value": 1745504
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0015/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b"
+        },
+        {
+          "sourceFrameIndex": 1504,
+          "pts": {
+            "timescale": 24000,
+            "value": 1746505
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0016/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9"
+        },
+        {
+          "sourceFrameIndex": 1505,
+          "pts": {
+            "timescale": 24000,
+            "value": 1747506
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0017/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518"
+        },
+        {
+          "sourceFrameIndex": 1506,
+          "pts": {
+            "timescale": 24000,
+            "value": 1748507
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0018/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c"
+        },
+        {
+          "sourceFrameIndex": 1507,
+          "pts": {
+            "timescale": 24000,
+            "value": 1749508
+          },
+          "duration": {
+            "timescale": 24000,
+            "value": 1001
+          },
+          "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0019/proxy.rgb32f",
+          "bytes": 24883200,
+          "sha256": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b"
+        }
+      ],
+      "captureManifest": {
+        "path": "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+        "bytes": 199716,
+        "sha256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+      },
+      "source": {
+        "bytes": 41784502,
+        "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+        "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5"
+      },
+      "scope": "Twelve consecutive natural source proxy frames1496…1507 for an isolated actual NativeOpticalFlow comparison. Repeated traversals introduce explicitly recorded1507→1496 index discontinuities; timings are not source-rate playback.",
+      "inputRawBytes": 298598400
+    }
+  },
+  "design": {
+    "sourceDimensions": [
+      1920,
+      1080
+    ],
+    "workingDimensions": [
+      960,
+      540
+    ],
+    "VTFlowDimensions": [
+      240,
+      135
+    ],
+    "actualBackend": "videotoolbox",
+    "sourceFrames": [
+      1496,
+      1497,
+      1498,
+      1499,
+      1500,
+      1501,
+      1502,
+      1503,
+      1504,
+      1505,
+      1506,
+      1507
+    ],
+    "captureTraversals": 1,
+    "modelLoaded": false,
+    "sameVTBuffers": "Production and frozen assessment consume the same completed forward/backward VT buffers; production result alone controls reset/history.",
+    "preErodeRetention": "The copy retains quality[0] after existing joint eval; mask/reference bytes are copied outside erosion timing. Capture/session scope ends before isolated timing.",
+    "timingScope": "Fresh original-erode output invocation plus blocking eval; inputs/params already materialized; readback and hashing afterward",
+    "inputMaterialization": "CPU mask bytes and params imported and evaluated before all isolated calls; each call creates a fresh erode result and blocks in eval.",
+    "schedule": "14 masks over 8 passes: first-isolated, 3 warmup, 4 measured. Pass order alternates ascending/descending mask list; every observation retained.",
+    "firstIsolatedIsCold": false,
+    "erosionThreshold": "input>0.0f",
+    "reliableFractionThreshold": "confidence>0.5"
+  },
+  "inventory": {
+    "captureFrames": 12,
+    "initialNilFrame": 1496,
+    "naturalMasks": 11,
+    "sameVTFullMotionParityChecks": 11,
+    "syntheticMasks": 3,
+    "isolatedCalls": 112,
+    "naturalCalls": 88,
+    "syntheticCalls": 24,
+    "measuredNaturalCalls": 44,
+    "measuredSyntheticCalls": 12,
+    "retainedFlowPayloads": 22,
+    "retainedMaskAndReferencePayloads": 28,
+    "retainedPayloadBytes": 235094400
+  },
+  "statisticsDefinition": {
+    "unit": "seconds",
+    "sum": "math.fsum",
+    "mean": "arithmetic mean",
+    "median": "middle value or mean of middle two",
+    "p95": "Nearest-rank sorted observation ceil(.95*N), one-based",
+    "scope": "Natural and synthetic populations remain separate. All first-isolated, warmup, measured and outlier observations retained; no comparison/subtraction against prior bundled assessment timings."
+  },
+  "byPhase": {
+    "all": {
+      "natural": {
+        "count": 88,
+        "sumSeconds": 0.391958333,
+        "meanSeconds": 0.004454071965909091,
+        "medianSeconds": 0.004105229,
+        "p95Seconds": 0.00667775,
+        "minimumSeconds": 0.001068625,
+        "maximumSeconds": 0.00692525
+      },
+      "synthetic": {
+        "count": 24,
+        "sumSeconds": 0.102062455,
+        "meanSeconds": 0.004252602291666667,
+        "medianSeconds": 0.004217875,
+        "p95Seconds": 0.008009958,
+        "minimumSeconds": 0.001147708,
+        "maximumSeconds": 0.008102125
+      }
+    },
+    "first-isolated": {
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.04855754,
+        "meanSeconds": 0.004414321818181818,
+        "medianSeconds": 0.0036565,
+        "p95Seconds": 0.00685625,
+        "minimumSeconds": 0.001116958,
+        "maximumSeconds": 0.00685625
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.014158416,
+        "meanSeconds": 0.004719472,
+        "medianSeconds": 0.004372375,
+        "p95Seconds": 0.008009958,
+        "minimumSeconds": 0.001776083,
+        "maximumSeconds": 0.008009958
+      }
+    },
+    "warmup": {
+      "natural": {
+        "count": 33,
+        "sumSeconds": 0.146923963,
+        "meanSeconds": 0.004452241303030303,
+        "medianSeconds": 0.004312583,
+        "p95Seconds": 0.006546583,
+        "minimumSeconds": 0.001068625,
+        "maximumSeconds": 0.00692525
+      },
+      "synthetic": {
+        "count": 9,
+        "sumSeconds": 0.031078542,
+        "meanSeconds": 0.0034531713333333333,
+        "medianSeconds": 0.00414625,
+        "p95Seconds": 0.005526375,
+        "minimumSeconds": 0.001147708,
+        "maximumSeconds": 0.005526375
+      }
+    },
+    "measured": {
+      "natural": {
+        "count": 44,
+        "sumSeconds": 0.19647683,
+        "meanSeconds": 0.0044653825,
+        "medianSeconds": 0.003832583,
+        "p95Seconds": 0.006560416,
+        "minimumSeconds": 0.001316791,
+        "maximumSeconds": 0.006737875
+      },
+      "synthetic": {
+        "count": 12,
+        "sumSeconds": 0.056825497,
+        "meanSeconds": 0.004735458083333333,
+        "medianSeconds": 0.0042740205,
+        "p95Seconds": 0.008102125,
+        "minimumSeconds": 0.001170708,
+        "maximumSeconds": 0.008102125
+      }
+    }
+  },
+  "perMask": [
+    {
+      "name": "natural-1497",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6112165966251635,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6128096064814815,
+        "positiveScalars": 1270722,
+        "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f",
+        "zeroScalars": 802878
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.038689042,
+          "meanSeconds": 0.00483613025,
+          "medianSeconds": 0.0048935,
+          "p95Seconds": 0.00685625,
+          "minimumSeconds": 0.003206833,
+          "maximumSeconds": 0.00685625
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.00685625,
+          "meanSeconds": 0.00685625,
+          "medianSeconds": 0.00685625,
+          "p95Seconds": 0.00685625,
+          "minimumSeconds": 0.00685625,
+          "maximumSeconds": 0.00685625
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.015185376,
+          "meanSeconds": 0.005061792,
+          "medianSeconds": 0.005862334,
+          "p95Seconds": 0.006116209,
+          "minimumSeconds": 0.003206833,
+          "maximumSeconds": 0.006116209
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.016647415999999998,
+          "meanSeconds": 0.0041618539999999996,
+          "medianSeconds": 0.0036175620000000004,
+          "p95Seconds": 0.00620175,
+          "minimumSeconds": 0.003210542,
+          "maximumSeconds": 0.00620175
+        }
+      }
+    },
+    {
+      "name": "natural-1498",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0,
+        "meanFinite": 0,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0,
+        "positiveScalars": 0,
+        "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+        "zeroScalars": 2073600
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.010854751,
+          "meanSeconds": 0.001356843875,
+          "medianSeconds": 0.0013712915,
+          "p95Seconds": 0.001828584,
+          "minimumSeconds": 0.001068625,
+          "maximumSeconds": 0.001828584
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.001116958,
+          "meanSeconds": 0.001116958,
+          "medianSeconds": 0.001116958,
+          "p95Seconds": 0.001116958,
+          "minimumSeconds": 0.001116958,
+          "maximumSeconds": 0.001116958
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.003661709,
+          "meanSeconds": 0.0012205696666666667,
+          "medianSeconds": 0.001167292,
+          "p95Seconds": 0.001425792,
+          "minimumSeconds": 0.001068625,
+          "maximumSeconds": 0.001425792
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.006076084000000001,
+          "meanSeconds": 0.0015190210000000002,
+          "medianSeconds": 0.0014653545,
+          "p95Seconds": 0.001828584,
+          "minimumSeconds": 0.001316791,
+          "maximumSeconds": 0.001828584
+        }
+      }
+    },
+    {
+      "name": "natural-1499",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6814201767649993,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6838093171296297,
+        "positiveScalars": 1417947,
+        "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1",
+        "zeroScalars": 655653
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.042532167,
+          "meanSeconds": 0.005316520875,
+          "medianSeconds": 0.0056939585000000004,
+          "p95Seconds": 0.006693916,
+          "minimumSeconds": 0.003532375,
+          "maximumSeconds": 0.006693916
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.006693916,
+          "meanSeconds": 0.006693916,
+          "medianSeconds": 0.006693916,
+          "p95Seconds": 0.006693916,
+          "minimumSeconds": 0.006693916,
+          "maximumSeconds": 0.006693916
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.016038834000000002,
+          "meanSeconds": 0.005346278,
+          "medianSeconds": 0.006065625,
+          "p95Seconds": 0.006433542,
+          "minimumSeconds": 0.003539667,
+          "maximumSeconds": 0.006433542
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.019799417,
+          "meanSeconds": 0.00494985425,
+          "medianSeconds": 0.0050266045,
+          "p95Seconds": 0.006213833,
+          "minimumSeconds": 0.003532375,
+          "maximumSeconds": 0.006213833
+        }
+      }
+    },
+    {
+      "name": "natural-1500",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6825965377212365,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6851847029320988,
+        "positiveScalars": 1420799,
+        "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c",
+        "zeroScalars": 652801
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.035055583,
+          "meanSeconds": 0.004381947875,
+          "medianSeconds": 0.0035639375000000003,
+          "p95Seconds": 0.00667775,
+          "minimumSeconds": 0.003406833,
+          "maximumSeconds": 0.00667775
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.003480042,
+          "meanSeconds": 0.003480042,
+          "medianSeconds": 0.003480042,
+          "p95Seconds": 0.003480042,
+          "minimumSeconds": 0.003480042,
+          "maximumSeconds": 0.003480042
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.0112095,
+          "meanSeconds": 0.0037365000000000002,
+          "medianSeconds": 0.003516875,
+          "p95Seconds": 0.004285792,
+          "minimumSeconds": 0.003406833,
+          "maximumSeconds": 0.004285792
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.020366041,
+          "meanSeconds": 0.00509151025,
+          "medianSeconds": 0.0050691455,
+          "p95Seconds": 0.00667775,
+          "minimumSeconds": 0.00355,
+          "maximumSeconds": 0.00667775
+        }
+      }
+    },
+    {
+      "name": "natural-1501",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.7259878334864693,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.7299537037037037,
+        "positiveScalars": 1513632,
+        "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12",
+        "zeroScalars": 559968
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.037972125,
+          "meanSeconds": 0.004746515625,
+          "medianSeconds": 0.0037229374999999997,
+          "p95Seconds": 0.00692525,
+          "minimumSeconds": 0.003637625,
+          "maximumSeconds": 0.00692525
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.003637625,
+          "meanSeconds": 0.003637625,
+          "medianSeconds": 0.003637625,
+          "p95Seconds": 0.003637625,
+          "minimumSeconds": 0.003637625,
+          "maximumSeconds": 0.003637625
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.016904959,
+          "meanSeconds": 0.005634986333333333,
+          "medianSeconds": 0.006326917,
+          "p95Seconds": 0.00692525,
+          "minimumSeconds": 0.003652792,
+          "maximumSeconds": 0.00692525
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.017429541,
+          "meanSeconds": 0.00435738525,
+          "medianSeconds": 0.0037229374999999997,
+          "p95Seconds": 0.006303708,
+          "minimumSeconds": 0.003679958,
+          "maximumSeconds": 0.006303708
+        }
+      }
+    },
+    {
+      "name": "natural-1502",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6259737338137039,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6299474344135803,
+        "positiveScalars": 1306259,
+        "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974",
+        "zeroScalars": 767341
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.031616168,
+          "meanSeconds": 0.003952021,
+          "medianSeconds": 0.0034479380000000002,
+          "p95Seconds": 0.006377375,
+          "minimumSeconds": 0.00125075,
+          "maximumSeconds": 0.006377375
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.006377375,
+          "meanSeconds": 0.006377375,
+          "medianSeconds": 0.006377375,
+          "p95Seconds": 0.006377375,
+          "minimumSeconds": 0.006377375,
+          "maximumSeconds": 0.006377375
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.008071876,
+          "meanSeconds": 0.0026906253333333335,
+          "medianSeconds": 0.003400042,
+          "p95Seconds": 0.003421084,
+          "minimumSeconds": 0.00125075,
+          "maximumSeconds": 0.003421084
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.017166917,
+          "meanSeconds": 0.00429172925,
+          "medianSeconds": 0.0039940835000000004,
+          "p95Seconds": 0.00576875,
+          "minimumSeconds": 0.00341,
+          "maximumSeconds": 0.00576875
+        }
+      }
+    },
+    {
+      "name": "natural-1503",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6355677953531412,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6420003858024691,
+        "positiveScalars": 1331252,
+        "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899",
+        "zeroScalars": 742348
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.039472916,
+          "meanSeconds": 0.0049341145,
+          "medianSeconds": 0.0061200835,
+          "p95Seconds": 0.006438625,
+          "minimumSeconds": 0.001264542,
+          "maximumSeconds": 0.006438625
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.001264542,
+          "meanSeconds": 0.001264542,
+          "medianSeconds": 0.001264542,
+          "p95Seconds": 0.001264542,
+          "minimumSeconds": 0.001264542,
+          "maximumSeconds": 0.001264542
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.015936625,
+          "meanSeconds": 0.005312208333333334,
+          "medianSeconds": 0.006059417,
+          "p95Seconds": 0.006408708,
+          "minimumSeconds": 0.0034685,
+          "maximumSeconds": 0.006408708
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.022271749,
+          "meanSeconds": 0.00556793725,
+          "medianSeconds": 0.006212479,
+          "p95Seconds": 0.006438625,
+          "minimumSeconds": 0.003408166,
+          "maximumSeconds": 0.006438625
+        }
+      }
+    },
+    {
+      "name": "natural-1504",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.5757042646809843,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.5809620949074074,
+        "positiveScalars": 1204683,
+        "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345",
+        "zeroScalars": 868917
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.032805125,
+          "meanSeconds": 0.004100640625,
+          "medianSeconds": 0.0032795625000000004,
+          "p95Seconds": 0.006037791,
+          "minimumSeconds": 0.003184542,
+          "maximumSeconds": 0.006037791
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.006037791,
+          "meanSeconds": 0.006037791,
+          "medianSeconds": 0.006037791,
+          "p95Seconds": 0.006037791,
+          "minimumSeconds": 0.006037791,
+          "maximumSeconds": 0.006037791
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.011346543,
+          "meanSeconds": 0.003782181,
+          "medianSeconds": 0.003241542,
+          "p95Seconds": 0.004920459,
+          "minimumSeconds": 0.003184542,
+          "maximumSeconds": 0.004920459
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.015420791,
+          "meanSeconds": 0.00385519775,
+          "medianSeconds": 0.0032795625000000004,
+          "p95Seconds": 0.005639666,
+          "minimumSeconds": 0.003222,
+          "maximumSeconds": 0.005639666
+        }
+      }
+    },
+    {
+      "name": "natural-1505",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6136646941118061,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6193561921296297,
+        "positiveScalars": 1284297,
+        "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5",
+        "zeroScalars": 789303
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.043739459,
+          "meanSeconds": 0.005467432375,
+          "medianSeconds": 0.0060063335,
+          "p95Seconds": 0.006737875,
+          "minimumSeconds": 0.00340275,
+          "maximumSeconds": 0.006737875
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.0034325,
+          "meanSeconds": 0.0034325,
+          "medianSeconds": 0.0034325,
+          "p95Seconds": 0.0034325,
+          "minimumSeconds": 0.0034325,
+          "maximumSeconds": 0.0034325
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.018145375999999998,
+          "meanSeconds": 0.006048458666666667,
+          "medianSeconds": 0.006091375,
+          "p95Seconds": 0.006132709,
+          "minimumSeconds": 0.005921292,
+          "maximumSeconds": 0.006132709
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.022161583,
+          "meanSeconds": 0.00554039575,
+          "medianSeconds": 0.006010479,
+          "p95Seconds": 0.006737875,
+          "minimumSeconds": 0.00340275,
+          "maximumSeconds": 0.006737875
+        }
+      }
+    },
+    {
+      "name": "natural-1506",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.5168932861892734,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.5220924961419753,
+        "positiveScalars": 1082611,
+        "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b",
+        "zeroScalars": 990989
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.03547304,
+          "meanSeconds": 0.00443413,
+          "medianSeconds": 0.0044047495,
+          "p95Seconds": 0.006004041,
+          "minimumSeconds": 0.003089708,
+          "maximumSeconds": 0.006004041
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.006004041,
+          "meanSeconds": 0.006004041,
+          "medianSeconds": 0.006004041,
+          "p95Seconds": 0.006004041,
+          "minimumSeconds": 0.006004041,
+          "maximumSeconds": 0.006004041
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.011922874,
+          "meanSeconds": 0.003974291333333334,
+          "medianSeconds": 0.004312583,
+          "p95Seconds": 0.004496916,
+          "minimumSeconds": 0.003113375,
+          "maximumSeconds": 0.004496916
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.017546125,
+          "meanSeconds": 0.00438653125,
+          "medianSeconds": 0.004305521,
+          "p95Seconds": 0.005845375,
+          "minimumSeconds": 0.003089708,
+          "maximumSeconds": 0.005845375
+        }
+      }
+    },
+    {
+      "name": "natural-1507",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6237458015540802,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.629005111882716,
+        "positiveScalars": 1304305,
+        "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f",
+        "zeroScalars": 769295
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.043747957000000004,
+          "meanSeconds": 0.0054684946250000005,
+          "medianSeconds": 0.005976854,
+          "p95Seconds": 0.006546583,
+          "minimumSeconds": 0.003439042,
+          "maximumSeconds": 0.006546583
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.0036565,
+          "meanSeconds": 0.0036565,
+          "medianSeconds": 0.0036565,
+          "p95Seconds": 0.0036565,
+          "minimumSeconds": 0.0036565,
+          "maximumSeconds": 0.0036565
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.018500291000000002,
+          "meanSeconds": 0.006166763666666667,
+          "medianSeconds": 0.006127208,
+          "p95Seconds": 0.006546583,
+          "minimumSeconds": 0.0058265,
+          "maximumSeconds": 0.006546583
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.021591166000000002,
+          "meanSeconds": 0.0053977915000000005,
+          "medianSeconds": 0.005919333000000001,
+          "p95Seconds": 0.006313458,
+          "minimumSeconds": 0.003439042,
+          "maximumSeconds": 0.006313458
+        }
+      }
+    },
+    {
+      "name": "all-positive",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0.875,
+        "meanFinite": 0.4999996383101852,
+        "minimumFinite": 0.125,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 1,
+        "positiveScalars": 2073600,
+        "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5",
+        "zeroScalars": 0
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.046248499,
+          "meanSeconds": 0.005781062375,
+          "medianSeconds": 0.004901,
+          "p95Seconds": 0.008102125,
+          "minimumSeconds": 0.004075875,
+          "maximumSeconds": 0.008102125
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.008009958,
+          "meanSeconds": 0.008009958,
+          "medianSeconds": 0.008009958,
+          "p95Seconds": 0.008009958,
+          "minimumSeconds": 0.008009958,
+          "maximumSeconds": 0.008009958
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.013807125,
+          "meanSeconds": 0.004602375,
+          "medianSeconds": 0.00414625,
+          "p95Seconds": 0.005526375,
+          "minimumSeconds": 0.0041345,
+          "maximumSeconds": 0.005526375
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.024431415999999997,
+          "meanSeconds": 0.006107853999999999,
+          "medianSeconds": 0.006126708,
+          "p95Seconds": 0.008102125,
+          "minimumSeconds": 0.004075875,
+          "maximumSeconds": 0.008102125
+        }
+      }
+    },
+    {
+      "name": "sparse-invalid",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0.875,
+        "meanFinite": 0.49995087046682096,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.9999021026234568,
+        "positiveScalars": 2073397,
+        "sha256": "80a6d83d82542a5c2fca9e35e10a611b62695ff07a8d290907159ff9876b37e8",
+        "zeroScalars": 203
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.044781582,
+          "meanSeconds": 0.00559769775,
+          "medianSeconds": 0.004566917,
+          "p95Seconds": 0.007829166,
+          "minimumSeconds": 0.004190125,
+          "maximumSeconds": 0.007829166
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.004372375,
+          "meanSeconds": 0.004372375,
+          "medianSeconds": 0.004372375,
+          "p95Seconds": 0.004372375,
+          "minimumSeconds": 0.004372375,
+          "maximumSeconds": 0.004372375
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.013197209000000001,
+          "meanSeconds": 0.0043990696666666666,
+          "medianSeconds": 0.004245625,
+          "p95Seconds": 0.004761459,
+          "minimumSeconds": 0.004190125,
+          "maximumSeconds": 0.004761459
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.027211998,
+          "meanSeconds": 0.0068029995,
+          "medianSeconds": 0.007555208,
+          "p95Seconds": 0.007829166,
+          "minimumSeconds": 0.004272416,
+          "maximumSeconds": 0.007829166
+        }
+      }
+    },
+    {
+      "name": "dense-invalid",
+      "inputStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0.75,
+        "meanFinite": 0.1875,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.25,
+        "positiveScalars": 518400,
+        "sha256": "863b06634ceb4d3448bd4b50416825b3de7c01f07ab7f5f7272101def693195b",
+        "zeroScalars": 1555200
+      },
+      "phases": {
+        "all": {
+          "count": 8,
+          "sumSeconds": 0.011032374,
+          "meanSeconds": 0.00137904675,
+          "medianSeconds": 0.0012584584999999998,
+          "p95Seconds": 0.001776083,
+          "minimumSeconds": 0.001147708,
+          "maximumSeconds": 0.001776083
+        },
+        "first-isolated": {
+          "count": 1,
+          "sumSeconds": 0.001776083,
+          "meanSeconds": 0.001776083,
+          "medianSeconds": 0.001776083,
+          "p95Seconds": 0.001776083,
+          "minimumSeconds": 0.001776083,
+          "maximumSeconds": 0.001776083
+        },
+        "warmup": {
+          "count": 3,
+          "sumSeconds": 0.004074208,
+          "meanSeconds": 0.0013580693333333333,
+          "medianSeconds": 0.00116025,
+          "p95Seconds": 0.00176625,
+          "minimumSeconds": 0.001147708,
+          "maximumSeconds": 0.00176625
+        },
+        "measured": {
+          "count": 4,
+          "sumSeconds": 0.005182083,
+          "meanSeconds": 0.00129552075,
+          "medianSeconds": 0.0012584584999999998,
+          "p95Seconds": 0.001494458,
+          "minimumSeconds": 0.001170708,
+          "maximumSeconds": 0.001494458
+        }
+      }
+    }
+  ],
+  "perPassAndOrder": [
+    {
+      "pass": 0,
+      "order": "ascending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.04855754,
+        "meanSeconds": 0.004414321818181818,
+        "medianSeconds": 0.0036565,
+        "p95Seconds": 0.00685625,
+        "minimumSeconds": 0.001116958,
+        "maximumSeconds": 0.00685625
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.014158416,
+        "meanSeconds": 0.004719472,
+        "medianSeconds": 0.004372375,
+        "p95Seconds": 0.008009958,
+        "minimumSeconds": 0.001776083,
+        "maximumSeconds": 0.008009958
+      }
+    },
+    {
+      "pass": 1,
+      "order": "descending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.045800503,
+        "meanSeconds": 0.004163682090909091,
+        "medianSeconds": 0.003652792,
+        "p95Seconds": 0.006546583,
+        "minimumSeconds": 0.001068625,
+        "maximumSeconds": 0.006546583
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.010056209,
+        "meanSeconds": 0.003352069666666667,
+        "medianSeconds": 0.0041345,
+        "p95Seconds": 0.004761459,
+        "minimumSeconds": 0.00116025,
+        "maximumSeconds": 0.004761459
+      }
+    },
+    {
+      "pass": 2,
+      "order": "ascending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.050413876,
+        "meanSeconds": 0.004583079636363637,
+        "medianSeconds": 0.004312583,
+        "p95Seconds": 0.00692525,
+        "minimumSeconds": 0.001425792,
+        "maximumSeconds": 0.00692525
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.010919708,
+        "meanSeconds": 0.0036399026666666667,
+        "medianSeconds": 0.004245625,
+        "p95Seconds": 0.005526375,
+        "minimumSeconds": 0.001147708,
+        "maximumSeconds": 0.005526375
+      }
+    },
+    {
+      "pass": 3,
+      "order": "descending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.050709584,
+        "meanSeconds": 0.004609962181818182,
+        "medianSeconds": 0.0058265,
+        "p95Seconds": 0.006433542,
+        "minimumSeconds": 0.001167292,
+        "maximumSeconds": 0.006433542
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.010102625,
+        "meanSeconds": 0.0033675416666666667,
+        "medianSeconds": 0.00414625,
+        "p95Seconds": 0.004190125,
+        "minimumSeconds": 0.00176625,
+        "maximumSeconds": 0.004190125
+      }
+    },
+    {
+      "pass": 4,
+      "order": "ascending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.045844457,
+        "meanSeconds": 0.004167677909090909,
+        "medianSeconds": 0.003577875,
+        "p95Seconds": 0.006313458,
+        "minimumSeconds": 0.001465542,
+        "maximumSeconds": 0.006313458
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.012770708,
+        "meanSeconds": 0.004256902666666666,
+        "medianSeconds": 0.004275625,
+        "p95Seconds": 0.007324375,
+        "minimumSeconds": 0.001170708,
+        "maximumSeconds": 0.007324375
+      }
+    },
+    {
+      "pass": 5,
+      "order": "descending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.048935667,
+        "meanSeconds": 0.004448697,
+        "medianSeconds": 0.003924666,
+        "p95Seconds": 0.00667775,
+        "minimumSeconds": 0.001828584,
+        "maximumSeconds": 0.00667775
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.013399499,
+        "meanSeconds": 0.004466499666666667,
+        "medianSeconds": 0.004075875,
+        "p95Seconds": 0.007829166,
+        "minimumSeconds": 0.001494458,
+        "maximumSeconds": 0.007829166
+      }
+    },
+    {
+      "pass": 6,
+      "order": "ascending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.04953325,
+        "meanSeconds": 0.004503022727272727,
+        "medianSeconds": 0.0037405,
+        "p95Seconds": 0.006438625,
+        "minimumSeconds": 0.001465167,
+        "maximumSeconds": 0.006438625
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.013554915,
+        "meanSeconds": 0.004518305,
+        "medianSeconds": 0.004272416,
+        "p95Seconds": 0.007977791,
+        "minimumSeconds": 0.001304708,
+        "maximumSeconds": 0.007977791
+      }
+    },
+    {
+      "pass": 7,
+      "order": "descending-mask-list",
+      "natural": {
+        "count": 11,
+        "sumSeconds": 0.052163456000000004,
+        "meanSeconds": 0.004742132363636364,
+        "medianSeconds": 0.005322292,
+        "p95Seconds": 0.006737875,
+        "minimumSeconds": 0.001316791,
+        "maximumSeconds": 0.006737875
+      },
+      "synthetic": {
+        "count": 3,
+        "sumSeconds": 0.017100375,
+        "meanSeconds": 0.0057001249999999995,
+        "medianSeconds": 0.007786041,
+        "p95Seconds": 0.008102125,
+        "minimumSeconds": 0.001212209,
+        "maximumSeconds": 0.008102125
+      }
+    }
+  ],
+  "allCallsCSV": {
+    "path": "docs/evidence/m3-motion-erosion-cost.csv",
+    "bytes": 52840,
+    "sha256": "5d314f38270e5ef196fded662fdc492eb665cf49757dfc73a83c56e9aed49e92",
+    "rows": 112,
+    "columns": 29,
+    "valueTypes": {
+      "byteEqual": [
+        "bool"
+      ],
+      "endUptimeNanoseconds": [
+        "int"
+      ],
+      "erosionCompletedWallSeconds": [
+        "float"
+      ],
+      "expectedSHA256": [
+        "str"
+      ],
+      "inputSHA256": [
+        "str"
+      ],
+      "maskKind": [
+        "str"
+      ],
+      "maskName": [
+        "str"
+      ],
+      "maskProvenance": [
+        "str"
+      ],
+      "measured": [
+        "bool"
+      ],
+      "mlxBytes.active": [
+        "int"
+      ],
+      "mlxBytes.cache": [
+        "int"
+      ],
+      "mlxBytes.peakActive": [
+        "int"
+      ],
+      "orderIndex": [
+        "int"
+      ],
+      "outputSHA256": [
+        "str"
+      ],
+      "outputStatistics.bytes": [
+        "int"
+      ],
+      "outputStatistics.maximumFinite": [
+        "float",
+        "int"
+      ],
+      "outputStatistics.meanFinite": [
+        "float",
+        "int"
+      ],
+      "outputStatistics.minimumFinite": [
+        "float",
+        "int"
+      ],
+      "outputStatistics.negativeScalars": [
+        "int"
+      ],
+      "outputStatistics.nonfiniteScalars": [
+        "int"
+      ],
+      "outputStatistics.positiveFraction": [
+        "float",
+        "int"
+      ],
+      "outputStatistics.positiveScalars": [
+        "int"
+      ],
+      "outputStatistics.sha256": [
+        "str"
+      ],
+      "outputStatistics.zeroScalars": [
+        "int"
+      ],
+      "pass": [
+        "int"
+      ],
+      "phase": [
+        "str"
+      ],
+      "sourceFrameIndex": [
+        "NoneType",
+        "int"
+      ],
+      "startUptimeNanoseconds": [
+        "int"
+      ]
+    },
+    "encoding": "Every raw sample leaf flattened with dot-separated keys; sequence added. Strings verbatim, other values JSON literals. Blank is absent; null is explicit null. Every cell round-trips."
+  },
+  "captureFrames": [
+    {
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "hasMotion": false,
+      "inputSHA256": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f",
+      "ordinal": 0,
+      "preErodeMask": null,
+      "pts": {
+        "timescale": 24000,
+        "value": 1738497
+      },
+      "sourceFrameIndex": 1496
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1497-backward.rg16f",
+          "sha256": "62ac5f6746a112c28414194e379680a624e31697da27c3d1a405989f7e3874f6"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1497-forward.rg16f",
+          "sha256": "014c2dfcceead5fa1ad2b96309c2cf9088273712b4ac362c8b6b3b77985a679e"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5580001935950686,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5587991898148148,
+          "positiveScalars": 1158726,
+          "sha256": "ff24d7286b3978166808fccb18ded53d06f8a0687fe03a9af73eba1e698dc25c",
+          "zeroScalars": 914874
+        },
+        "reliableFractionBits": 1057945836,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.011241086758673191,
+          "meanFinite": -0.00039731407795095766,
+          "minimumFinite": -0.0075321197509765625,
+          "negativeScalars": 2384242,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.42509596836419755,
+          "positiveScalars": 1762958,
+          "sha256": "b5af93cbe1cc5d1d7f6ad42630abe65e9ea2748429906730d52b29109c701e87",
+          "zeroScalars": 0
+        },
+        "warpedLumaErrorBits": 996707947
+      },
+      "hasMotion": true,
+      "inputSHA256": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af",
+      "ordinal": 1,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1497-pre-erode.f32",
+        "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6112165966251635,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6128096064814815,
+        "positiveScalars": 1270722,
+        "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f",
+        "zeroScalars": 802878
+      },
+      "previousSourceFrameIndex": 1496,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5580001935950686,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5587991898148148,
+          "positiveScalars": 1158726,
+          "sha256": "ff24d7286b3978166808fccb18ded53d06f8a0687fe03a9af73eba1e698dc25c",
+          "zeroScalars": 914874
+        },
+        "reliableFractionBits": 1057945836,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.011241086758673191,
+          "meanFinite": -0.00039731407795095766,
+          "minimumFinite": -0.0075321197509765625,
+          "negativeScalars": 2384242,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.42509596836419755,
+          "positiveScalars": 1762958,
+          "sha256": "b5af93cbe1cc5d1d7f6ad42630abe65e9ea2748429906730d52b29109c701e87",
+          "zeroScalars": 0
+        },
+        "warpedLumaErrorBits": 996707947
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1739498
+      },
+      "randomAccessSubmitted": true,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1497,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1498-backward.rg16f",
+          "sha256": "bac1e5a72b09070d1b0185f50b6849776f1249533f4c6faa44731508ef45247e"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1498-forward.rg16f",
+          "sha256": "9db16eb0ef3effa12e04a69f82fdd4767dd49e082118a079bfa3c17a9146f4d8"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 0,
+          "meanFinite": 0,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0,
+          "positiveScalars": 0,
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+          "zeroScalars": 2073600
+        },
+        "reliableFractionBits": 0,
+        "reset": true,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.12668024003505707,
+          "meanFinite": -0.00822357325689355,
+          "minimumFinite": -0.23784224689006805,
+          "negativeScalars": 2111921,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.49075978973765433,
+          "positiveScalars": 2035279,
+          "sha256": "1dd7f8a26e56dfba878da177773321a53dca3f2b9d00b46118d4425ec3093903",
+          "zeroScalars": 0
+        },
+        "warpedLumaErrorBits": 1049357384
+      },
+      "hasMotion": true,
+      "inputSHA256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8",
+      "ordinal": 2,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1498-pre-erode.f32",
+        "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0,
+        "meanFinite": 0,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0,
+        "positiveScalars": 0,
+        "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+        "zeroScalars": 2073600
+      },
+      "previousSourceFrameIndex": 1497,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 0,
+          "meanFinite": 0,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0,
+          "positiveScalars": 0,
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+          "zeroScalars": 2073600
+        },
+        "reliableFractionBits": 0,
+        "reset": true,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.12668024003505707,
+          "meanFinite": -0.00822357325689355,
+          "minimumFinite": -0.23784224689006805,
+          "negativeScalars": 2111921,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.49075978973765433,
+          "positiveScalars": 2035279,
+          "sha256": "1dd7f8a26e56dfba878da177773321a53dca3f2b9d00b46118d4425ec3093903",
+          "zeroScalars": 0
+        },
+        "warpedLumaErrorBits": 1049357384
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1740499
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1498,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1499-backward.rg16f",
+          "sha256": "4fab6cf9e5bac44f8eec86b16f32db8639059730a880a9e915830697a13e4ca0"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1499-forward.rg16f",
+          "sha256": "4dca3d315184f62ab27c7e60560f35b5b890d5accc54d13b9aacd7e044a3ef27"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.6057567670294466,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.6072608024691358,
+          "positiveScalars": 1259216,
+          "sha256": "e4d7d9ae97135d7dc185243b19490a1f40bcca651cf2b759538db368bedc01b7",
+          "zeroScalars": 814384
+        },
+        "reliableFractionBits": 1058754825,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.002702204277738929,
+          "meanFinite": 2.3930811790998148e-05,
+          "minimumFinite": -0.008261729963123798,
+          "negativeScalars": 1888868,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5445428240740741,
+          "positiveScalars": 2258328,
+          "sha256": "ee54d44ebac3dca564784630aa7e04eb0e50afdb17521dfa1b05c85b78882a48",
+          "zeroScalars": 4
+        },
+        "warpedLumaErrorBits": 994358578
+      },
+      "hasMotion": true,
+      "inputSHA256": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17",
+      "ordinal": 3,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1499-pre-erode.f32",
+        "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6814201767649993,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6838093171296297,
+        "positiveScalars": 1417947,
+        "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1",
+        "zeroScalars": 655653
+      },
+      "previousSourceFrameIndex": 1498,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.6057567670294466,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.6072608024691358,
+          "positiveScalars": 1259216,
+          "sha256": "e4d7d9ae97135d7dc185243b19490a1f40bcca651cf2b759538db368bedc01b7",
+          "zeroScalars": 814384
+        },
+        "reliableFractionBits": 1058754825,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.002702204277738929,
+          "meanFinite": 2.3930811790998148e-05,
+          "minimumFinite": -0.008261729963123798,
+          "negativeScalars": 1888868,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5445428240740741,
+          "positiveScalars": 2258328,
+          "sha256": "ee54d44ebac3dca564784630aa7e04eb0e50afdb17521dfa1b05c85b78882a48",
+          "zeroScalars": 4
+        },
+        "warpedLumaErrorBits": 994358578
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1741500
+      },
+      "randomAccessSubmitted": true,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1499,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1500-backward.rg16f",
+          "sha256": "3f4f71973c83e9c320cfddab380fbfc08b5c4aa0ac7326bd9ac387a5501ed940"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1500-forward.rg16f",
+          "sha256": "bedb6e26aaffd4d0b4be753b26b889bac9f851e76ab68725fcf4b9174aa228ce"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.6108848549398807,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.6125993441358024,
+          "positiveScalars": 1270286,
+          "sha256": "ff2eeb16566030b9dd06a8c01bbf967fa94070c40acdbbea6a0d2dc48c7167eb",
+          "zeroScalars": 803314
+        },
+        "reliableFractionBits": 1058843080,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.00523300189524889,
+          "meanFinite": 3.935026889083583e-06,
+          "minimumFinite": -0.009355559013783932,
+          "negativeScalars": 1867492,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5496959394290123,
+          "positiveScalars": 2279699,
+          "sha256": "26438fbe98f93bb7ea392c433b2bfd232c214d8aa921dac0b16df381e5575aa2",
+          "zeroScalars": 9
+        },
+        "warpedLumaErrorBits": 993628541
+      },
+      "hasMotion": true,
+      "inputSHA256": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3",
+      "ordinal": 4,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1500-pre-erode.f32",
+        "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6825965377212365,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6851847029320988,
+        "positiveScalars": 1420799,
+        "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c",
+        "zeroScalars": 652801
+      },
+      "previousSourceFrameIndex": 1499,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.6108848549398807,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.6125993441358024,
+          "positiveScalars": 1270286,
+          "sha256": "ff2eeb16566030b9dd06a8c01bbf967fa94070c40acdbbea6a0d2dc48c7167eb",
+          "zeroScalars": 803314
+        },
+        "reliableFractionBits": 1058843080,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.00523300189524889,
+          "meanFinite": 3.935026889083583e-06,
+          "minimumFinite": -0.009355559013783932,
+          "negativeScalars": 1867492,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5496959394290123,
+          "positiveScalars": 2279699,
+          "sha256": "26438fbe98f93bb7ea392c433b2bfd232c214d8aa921dac0b16df381e5575aa2",
+          "zeroScalars": 9
+        },
+        "warpedLumaErrorBits": 993628541
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1742501
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1500,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1501-backward.rg16f",
+          "sha256": "8532dd5dab3f495607498572bdbd366653dc9daa05147d774501b04333409f31"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1501-forward.rg16f",
+          "sha256": "b3f8e6ffe80986ab4f9090eee0d097b8cdad6bae04270cb02c0ec71c77175c69"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.6434173492906502,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.6461193094135802,
+          "positiveScalars": 1339793,
+          "sha256": "7e53933ec6ffad34b19572512b6e4dd79cdf79d53cce1b9679f28641c8345004",
+          "zeroScalars": 733807
+        },
+        "reliableFractionBits": 1059399821,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.0060884952545166016,
+          "meanFinite": -0.00011930742275908047,
+          "minimumFinite": -0.011883347295224667,
+          "negativeScalars": 2045719,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5067216435185186,
+          "positiveScalars": 2101476,
+          "sha256": "7978f43a3bced6a1c55c28e1bf996272c6bc5d5c543a9ffead43532ef8542ed8",
+          "zeroScalars": 5
+        },
+        "warpedLumaErrorBits": 996278982
+      },
+      "hasMotion": true,
+      "inputSHA256": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e",
+      "ordinal": 5,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1501-pre-erode.f32",
+        "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.7259878334864693,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.7299537037037037,
+        "positiveScalars": 1513632,
+        "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12",
+        "zeroScalars": 559968
+      },
+      "previousSourceFrameIndex": 1500,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.6434173492906502,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.6461193094135802,
+          "positiveScalars": 1339793,
+          "sha256": "7e53933ec6ffad34b19572512b6e4dd79cdf79d53cce1b9679f28641c8345004",
+          "zeroScalars": 733807
+        },
+        "reliableFractionBits": 1059399821,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.0060884952545166016,
+          "meanFinite": -0.00011930742275908047,
+          "minimumFinite": -0.011883347295224667,
+          "negativeScalars": 2045719,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5067216435185186,
+          "positiveScalars": 2101476,
+          "sha256": "7978f43a3bced6a1c55c28e1bf996272c6bc5d5c543a9ffead43532ef8542ed8",
+          "zeroScalars": 5
+        },
+        "warpedLumaErrorBits": 996278982
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1743502
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1501,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1502-backward.rg16f",
+          "sha256": "c0972dd1fc3c498187a344db559a34320d5c8cf85f5c42b12d154699b4299b9a"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1502-forward.rg16f",
+          "sha256": "cb056f22851c4f7f9f7d8fa538e6ae21354942157266212478f98f07f33d2181"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5464105376980998,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5487823109567901,
+          "positiveScalars": 1137955,
+          "sha256": "a1dc46082a3247c370a0bea80eac8a6a710ea1d6c4447263d927751d18344a45",
+          "zeroScalars": 935645
+        },
+        "reliableFractionBits": 1057767602,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.011320527642965317,
+          "meanFinite": -0.00025843947588864924,
+          "minimumFinite": -0.015538307838141918,
+          "negativeScalars": 2180131,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.47431061921296297,
+          "positiveScalars": 1967061,
+          "sha256": "e33097e78f0358cea2f0b6c880c8d7430606842815c4dde063dad6f92247d23d",
+          "zeroScalars": 8
+        },
+        "warpedLumaErrorBits": 998857116
+      },
+      "hasMotion": true,
+      "inputSHA256": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46",
+      "ordinal": 6,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1502-pre-erode.f32",
+        "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6259737338137039,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6299474344135803,
+        "positiveScalars": 1306259,
+        "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974",
+        "zeroScalars": 767341
+      },
+      "previousSourceFrameIndex": 1501,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5464105376980998,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5487823109567901,
+          "positiveScalars": 1137955,
+          "sha256": "a1dc46082a3247c370a0bea80eac8a6a710ea1d6c4447263d927751d18344a45",
+          "zeroScalars": 935645
+        },
+        "reliableFractionBits": 1057767602,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.011320527642965317,
+          "meanFinite": -0.00025843947588864924,
+          "minimumFinite": -0.015538307838141918,
+          "negativeScalars": 2180131,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.47431061921296297,
+          "positiveScalars": 1967061,
+          "sha256": "e33097e78f0358cea2f0b6c880c8d7430606842815c4dde063dad6f92247d23d",
+          "zeroScalars": 8
+        },
+        "warpedLumaErrorBits": 998857116
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1744503
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1502,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1503-backward.rg16f",
+          "sha256": "df508e64a30657f4013a31c1af8b55ced35002ca15799caa3af93af423b5ad6b"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1503-forward.rg16f",
+          "sha256": "588318e753fd29b84011a4ca152abdecee62aef65f587d5a7a8cc792703454d1"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5558029466185292,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5594878472222222,
+          "positiveScalars": 1160154,
+          "sha256": "258955f94ba510e2de8a6b14dfe07f10e1b6ab8e7d73c54fe6bc36c37eaa3d6d",
+          "zeroScalars": 913446
+        },
+        "reliableFractionBits": 1057932308,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.018684513866901398,
+          "meanFinite": -0.0007737493323636908,
+          "minimumFinite": -0.020751897245645523,
+          "negativeScalars": 2411642,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.4184881365740741,
+          "positiveScalars": 1735554,
+          "sha256": "78c5f5048602e5bfe730d96301fea06c51773051ba1cc57f91269c205da7c095",
+          "zeroScalars": 4
+        },
+        "warpedLumaErrorBits": 1003234174
+      },
+      "hasMotion": true,
+      "inputSHA256": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b",
+      "ordinal": 7,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1503-pre-erode.f32",
+        "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6355677953531412,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6420003858024691,
+        "positiveScalars": 1331252,
+        "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899",
+        "zeroScalars": 742348
+      },
+      "previousSourceFrameIndex": 1502,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5558029466185292,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5594878472222222,
+          "positiveScalars": 1160154,
+          "sha256": "258955f94ba510e2de8a6b14dfe07f10e1b6ab8e7d73c54fe6bc36c37eaa3d6d",
+          "zeroScalars": 913446
+        },
+        "reliableFractionBits": 1057932308,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.018684513866901398,
+          "meanFinite": -0.0007737493323636908,
+          "minimumFinite": -0.020751897245645523,
+          "negativeScalars": 2411642,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.4184881365740741,
+          "positiveScalars": 1735554,
+          "sha256": "78c5f5048602e5bfe730d96301fea06c51773051ba1cc57f91269c205da7c095",
+          "zeroScalars": 4
+        },
+        "warpedLumaErrorBits": 1003234174
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1745504
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1503,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1504-backward.rg16f",
+          "sha256": "c726957616200f0636f24c9a1b06a028076caa50130443aff6bda10ef4d66e29"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1504-forward.rg16f",
+          "sha256": "f82166e178af8ad1c5bce4c0625530b3d1c69b4ddbad2a3930db78ae59dfb9f6"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.4967001883586973,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.4987109375,
+          "positiveScalars": 1034127,
+          "sha256": "19e13139913e3ab371c6400a1c7c2c109d1d6fdfbe6cb24aaa64906f6d77c38d",
+          "zeroScalars": 1039473
+        },
+        "reliableFractionBits": 1056893975,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.02484792098402977,
+          "meanFinite": -0.000152401579508241,
+          "minimumFinite": -0.027530359104275703,
+          "negativeScalars": 1960742,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.527212818287037,
+          "positiveScalars": 2186457,
+          "sha256": "24a3e209d060296693c3cbd16489d2a7e2d46cced3ec107c250b5b226a6785b8",
+          "zeroScalars": 1
+        },
+        "warpedLumaErrorBits": 1006775909
+      },
+      "hasMotion": true,
+      "inputSHA256": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9",
+      "ordinal": 8,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1504-pre-erode.f32",
+        "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.5757042646809843,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.5809620949074074,
+        "positiveScalars": 1204683,
+        "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345",
+        "zeroScalars": 868917
+      },
+      "previousSourceFrameIndex": 1503,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.4967001883586973,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.4987109375,
+          "positiveScalars": 1034127,
+          "sha256": "19e13139913e3ab371c6400a1c7c2c109d1d6fdfbe6cb24aaa64906f6d77c38d",
+          "zeroScalars": 1039473
+        },
+        "reliableFractionBits": 1056893975,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.02484792098402977,
+          "meanFinite": -0.000152401579508241,
+          "minimumFinite": -0.027530359104275703,
+          "negativeScalars": 1960742,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.527212818287037,
+          "positiveScalars": 2186457,
+          "sha256": "24a3e209d060296693c3cbd16489d2a7e2d46cced3ec107c250b5b226a6785b8",
+          "zeroScalars": 1
+        },
+        "warpedLumaErrorBits": 1006775909
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1746505
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1504,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1505-backward.rg16f",
+          "sha256": "ab1148d3dc527bf57e0f370f2df492ac1d8bdd82f4a65dae3ef475ab5681c795"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1505-forward.rg16f",
+          "sha256": "fe436af19eb85963e9ca58a04263a84616c6a1cd7fb75f3be8d334588c33a793"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5260632195270778,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5287456597222222,
+          "positiveScalars": 1096407,
+          "sha256": "def4be0fb3fad44d0bba17f4ec87b34a29779692689a1e34b7c1d14c9890783d",
+          "zeroScalars": 977193
+        },
+        "reliableFractionBits": 1057428587,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.02820619009435177,
+          "meanFinite": -0.0005357904402438571,
+          "minimumFinite": -0.03139456361532211,
+          "negativeScalars": 2222187,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.46417100694444446,
+          "positiveScalars": 1925010,
+          "sha256": "d25a99836273ea0743af4085c581ad6a8686930de7930c31b2dc4751ddf3138e",
+          "zeroScalars": 3
+        },
+        "warpedLumaErrorBits": 1006014090
+      },
+      "hasMotion": true,
+      "inputSHA256": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518",
+      "ordinal": 9,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1505-pre-erode.f32",
+        "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6136646941118061,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6193561921296297,
+        "positiveScalars": 1284297,
+        "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5",
+        "zeroScalars": 789303
+      },
+      "previousSourceFrameIndex": 1504,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5260632195270778,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5287456597222222,
+          "positiveScalars": 1096407,
+          "sha256": "def4be0fb3fad44d0bba17f4ec87b34a29779692689a1e34b7c1d14c9890783d",
+          "zeroScalars": 977193
+        },
+        "reliableFractionBits": 1057428587,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.02820619009435177,
+          "meanFinite": -0.0005357904402438571,
+          "minimumFinite": -0.03139456361532211,
+          "negativeScalars": 2222187,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.46417100694444446,
+          "positiveScalars": 1925010,
+          "sha256": "d25a99836273ea0743af4085c581ad6a8686930de7930c31b2dc4751ddf3138e",
+          "zeroScalars": 3
+        },
+        "warpedLumaErrorBits": 1006014090
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1747506
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1505,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1506-backward.rg16f",
+          "sha256": "97a92fa2f7c12a256607fe5b77a610b4eef3aa847b295eeae08dd5d9bd702c0b"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1506-forward.rg16f",
+          "sha256": "67f95a7838e3c489df45d535846f5cd1e6d0e8473518f64b569c63c73029cfde"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.4329532932854955,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.4353197337962963,
+          "positiveScalars": 902679,
+          "sha256": "4884d6f9f54612fb41275b8e8d13cddd2192972bfafae0abaa4314560ed442e6",
+          "zeroScalars": 1170921
+        },
+        "reliableFractionBits": 1054758990,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.02942047081887722,
+          "meanFinite": -0.00039029555460797893,
+          "minimumFinite": -0.04015740379691124,
+          "negativeScalars": 2362930,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.43023461612654323,
+          "positiveScalars": 1784269,
+          "sha256": "6535db30047013aff9361867183968d00e14f046061dc1e02eb431fc8c269d36",
+          "zeroScalars": 1
+        },
+        "warpedLumaErrorBits": 1006712293
+      },
+      "hasMotion": true,
+      "inputSHA256": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c",
+      "ordinal": 10,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1506-pre-erode.f32",
+        "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.5168932861892734,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.5220924961419753,
+        "positiveScalars": 1082611,
+        "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b",
+        "zeroScalars": 990989
+      },
+      "previousSourceFrameIndex": 1505,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.4329532932854955,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.4353197337962963,
+          "positiveScalars": 902679,
+          "sha256": "4884d6f9f54612fb41275b8e8d13cddd2192972bfafae0abaa4314560ed442e6",
+          "zeroScalars": 1170921
+        },
+        "reliableFractionBits": 1054758990,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.02942047081887722,
+          "meanFinite": -0.00039029555460797893,
+          "minimumFinite": -0.04015740379691124,
+          "negativeScalars": 2362930,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.43023461612654323,
+          "positiveScalars": 1784269,
+          "sha256": "6535db30047013aff9361867183968d00e14f046061dc1e02eb431fc8c269d36",
+          "zeroScalars": 1
+        },
+        "warpedLumaErrorBits": 1006712293
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1748507
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1506,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    },
+    {
+      "backwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1507-backward.rg16f",
+          "sha256": "1a4f6c6ee45ff0d79f9089c49acae5b874067005538f145c4df8317f7d760b72"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "duration": {
+        "timescale": 24000,
+        "value": 1001
+      },
+      "forwardFlow": {
+        "height": 135,
+        "layout": "Tightly packed two-component Float16 native little-endian; original row padding excluded",
+        "logicalBytesPerRow": 960,
+        "originalBytesPerRow": 960,
+        "payload": {
+          "bytes": 129600,
+          "path": "natural-1507-forward.rg16f",
+          "sha256": "31b07d72c5cdd86a3b71a1a53d1f4ac7bcf8b4e022f58ab2207cd94e07550e89"
+        },
+        "pixelFormat": 843264104,
+        "units": "flowPixels",
+        "width": 240
+      },
+      "frozenMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5346288507812772,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5367033179012346,
+          "positiveScalars": 1112908,
+          "sha256": "4a85e0bcb8f464c66c75cb11c1eec19ea4773c4d0c27fb17ca25c0938dce94de",
+          "zeroScalars": 960692
+        },
+        "reliableFractionBits": 1057566584,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.0404788963496685,
+          "meanFinite": -0.0006126059190670107,
+          "minimumFinite": -0.03368807211518288,
+          "negativeScalars": 2936993,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.2918130304783951,
+          "positiveScalars": 1210207,
+          "sha256": "95337bec55e8cd043e66cac3aa222461d766c6318d86d69f2b8bc74569569192",
+          "zeroScalars": 0
+        },
+        "warpedLumaErrorBits": 1007816552
+      },
+      "hasMotion": true,
+      "inputSHA256": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b",
+      "ordinal": 11,
+      "preErodeMask": {
+        "bytes": 8294400,
+        "path": "natural-1507-pre-erode.f32",
+        "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f"
+      },
+      "preErodeStatistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6237458015540802,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.629005111882716,
+        "positiveScalars": 1304305,
+        "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f",
+        "zeroScalars": 769295
+      },
+      "previousSourceFrameIndex": 1506,
+      "productionMotion": {
+        "confidence": {
+          "bytes": 8294400,
+          "maximumFinite": 1,
+          "meanFinite": 0.5346288507812772,
+          "minimumFinite": 0,
+          "negativeScalars": 0,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.5367033179012346,
+          "positiveScalars": 1112908,
+          "sha256": "4a85e0bcb8f464c66c75cb11c1eec19ea4773c4d0c27fb17ca25c0938dce94de",
+          "zeroScalars": 960692
+        },
+        "reliableFractionBits": 1057566584,
+        "reset": false,
+        "vectors": {
+          "bytes": 16588800,
+          "maximumFinite": 0.0404788963496685,
+          "meanFinite": -0.0006126059190670107,
+          "minimumFinite": -0.03368807211518288,
+          "negativeScalars": 2936993,
+          "nonfiniteScalars": 0,
+          "positiveFraction": 0.2918130304783951,
+          "positiveScalars": 1210207,
+          "sha256": "95337bec55e8cd043e66cac3aa222461d766c6318d86d69f2b8bc74569569192",
+          "zeroScalars": 0
+        },
+        "warpedLumaErrorBits": 1007816552
+      },
+      "pts": {
+        "timescale": 24000,
+        "value": 1749508
+      },
+      "randomAccessSubmitted": false,
+      "sameVTBuffersFullMotionExact": true,
+      "sourceFrameIndex": 1507,
+      "sourcePTSIsDistinctFromVTIndexTimestamp": true,
+      "vtAPIIndexTimebase": 60
+    }
+  ],
+  "capturedMasks": [
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1497-confidence.f32",
+        "sha256": "ff24d7286b3978166808fccb18ded53d06f8a0687fe03a9af73eba1e698dc25c"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1497-pre-erode.f32",
+        "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f"
+      },
+      "name": "natural-1497",
+      "sourceFrameIndex": 1497,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6112165966251635,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6128096064814815,
+        "positiveScalars": 1270722,
+        "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f",
+        "zeroScalars": 802878
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1498-confidence.f32",
+        "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1498-pre-erode.f32",
+        "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+      },
+      "name": "natural-1498",
+      "sourceFrameIndex": 1498,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0,
+        "meanFinite": 0,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0,
+        "positiveScalars": 0,
+        "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+        "zeroScalars": 2073600
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1499-confidence.f32",
+        "sha256": "e4d7d9ae97135d7dc185243b19490a1f40bcca651cf2b759538db368bedc01b7"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1499-pre-erode.f32",
+        "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1"
+      },
+      "name": "natural-1499",
+      "sourceFrameIndex": 1499,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6814201767649993,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6838093171296297,
+        "positiveScalars": 1417947,
+        "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1",
+        "zeroScalars": 655653
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1500-confidence.f32",
+        "sha256": "ff2eeb16566030b9dd06a8c01bbf967fa94070c40acdbbea6a0d2dc48c7167eb"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1500-pre-erode.f32",
+        "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c"
+      },
+      "name": "natural-1500",
+      "sourceFrameIndex": 1500,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6825965377212365,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6851847029320988,
+        "positiveScalars": 1420799,
+        "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c",
+        "zeroScalars": 652801
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1501-confidence.f32",
+        "sha256": "7e53933ec6ffad34b19572512b6e4dd79cdf79d53cce1b9679f28641c8345004"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1501-pre-erode.f32",
+        "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12"
+      },
+      "name": "natural-1501",
+      "sourceFrameIndex": 1501,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.7259878334864693,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.7299537037037037,
+        "positiveScalars": 1513632,
+        "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12",
+        "zeroScalars": 559968
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1502-confidence.f32",
+        "sha256": "a1dc46082a3247c370a0bea80eac8a6a710ea1d6c4447263d927751d18344a45"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1502-pre-erode.f32",
+        "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974"
+      },
+      "name": "natural-1502",
+      "sourceFrameIndex": 1502,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6259737338137039,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6299474344135803,
+        "positiveScalars": 1306259,
+        "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974",
+        "zeroScalars": 767341
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1503-confidence.f32",
+        "sha256": "258955f94ba510e2de8a6b14dfe07f10e1b6ab8e7d73c54fe6bc36c37eaa3d6d"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1503-pre-erode.f32",
+        "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899"
+      },
+      "name": "natural-1503",
+      "sourceFrameIndex": 1503,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6355677953531412,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6420003858024691,
+        "positiveScalars": 1331252,
+        "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899",
+        "zeroScalars": 742348
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1504-confidence.f32",
+        "sha256": "19e13139913e3ab371c6400a1c7c2c109d1d6fdfbe6cb24aaa64906f6d77c38d"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1504-pre-erode.f32",
+        "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345"
+      },
+      "name": "natural-1504",
+      "sourceFrameIndex": 1504,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.5757042646809843,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.5809620949074074,
+        "positiveScalars": 1204683,
+        "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345",
+        "zeroScalars": 868917
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1505-confidence.f32",
+        "sha256": "def4be0fb3fad44d0bba17f4ec87b34a29779692689a1e34b7c1d14c9890783d"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1505-pre-erode.f32",
+        "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5"
+      },
+      "name": "natural-1505",
+      "sourceFrameIndex": 1505,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6136646941118061,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.6193561921296297,
+        "positiveScalars": 1284297,
+        "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5",
+        "zeroScalars": 789303
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1506-confidence.f32",
+        "sha256": "4884d6f9f54612fb41275b8e8d13cddd2192972bfafae0abaa4314560ed442e6"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1506-pre-erode.f32",
+        "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b"
+      },
+      "name": "natural-1506",
+      "sourceFrameIndex": 1506,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.5168932861892734,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.5220924961419753,
+        "positiveScalars": 1082611,
+        "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b",
+        "zeroScalars": 990989
+      }
+    },
+    {
+      "expected": {
+        "bytes": 8294400,
+        "path": "natural-1507-confidence.f32",
+        "sha256": "4a85e0bcb8f464c66c75cb11c1eec19ea4773c4d0c27fb17ca25c0938dce94de"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "natural-1507-pre-erode.f32",
+        "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f"
+      },
+      "name": "natural-1507",
+      "sourceFrameIndex": 1507,
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 1,
+        "meanFinite": 0.6237458015540802,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.629005111882716,
+        "positiveScalars": 1304305,
+        "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f",
+        "zeroScalars": 769295
+      }
+    }
+  ],
+  "syntheticControls": [
+    {
+      "definition": "Every center positive; preserve nonbinary original0.125...0.875 exactly",
+      "expected": {
+        "bytes": 8294400,
+        "path": "synthetic-all-positive-expected.f32",
+        "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "synthetic-all-positive-input.f32",
+        "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5"
+      },
+      "name": "all-positive",
+      "oracle": "Independent Boolean-predicate construction; no alternative GPU kernel",
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0.875,
+        "meanFinite": 0.4999996383101852,
+        "minimumFinite": 0.125,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 1,
+        "positiveScalars": 2073600,
+        "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5",
+        "zeroScalars": 0
+      }
+    },
+    {
+      "definition": "Zero grid97x113 plus remaining corners; CPU expected zeros in radius3 of each fault",
+      "expected": {
+        "bytes": 8294400,
+        "path": "synthetic-sparse-invalid-expected.f32",
+        "sha256": "2925f3cdc8173bf2ceb5c91d1bc8f9ad294f4b952c68c3bcada8b61c29b404ed"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "synthetic-sparse-invalid-input.f32",
+        "sha256": "80a6d83d82542a5c2fca9e35e10a611b62695ff07a8d290907159ff9876b37e8"
+      },
+      "name": "sparse-invalid",
+      "oracle": "Independent Boolean-predicate construction; no alternative GPU kernel",
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0.875,
+        "meanFinite": 0.49995087046682096,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.9999021026234568,
+        "positiveScalars": 2073397,
+        "sha256": "80a6d83d82542a5c2fca9e35e10a611b62695ff07a8d290907159ff9876b37e8",
+        "zeroScalars": 203
+      }
+    },
+    {
+      "definition": "Only linear indices divisible by4 are positive; every7x7 neighborhood contains zero",
+      "expected": {
+        "bytes": 8294400,
+        "path": "synthetic-dense-invalid-expected.f32",
+        "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+      },
+      "input": {
+        "bytes": 8294400,
+        "path": "synthetic-dense-invalid-input.f32",
+        "sha256": "863b06634ceb4d3448bd4b50416825b3de7c01f07ab7f5f7272101def693195b"
+      },
+      "name": "dense-invalid",
+      "oracle": "Independent Boolean-predicate construction; no alternative GPU kernel",
+      "statistics": {
+        "bytes": 8294400,
+        "maximumFinite": 0.75,
+        "meanFinite": 0.1875,
+        "minimumFinite": 0,
+        "negativeScalars": 0,
+        "nonfiniteScalars": 0,
+        "positiveFraction": 0.25,
+        "positiveScalars": 518400,
+        "sha256": "863b06634ceb4d3448bd4b50416825b3de7c01f07ab7f5f7272101def693195b",
+        "zeroScalars": 1555200
+      }
+    }
+  ],
+  "payloadPathBase": "artifacts/native-motion-erosion-cost-1/capture-1",
+  "tests": {
+    "passed": true,
+    "focusedTests": 2,
+    "failures": 0,
+    "skips": 0,
+    "filter": "MLXVideoMotionTests",
+    "source": {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMLXTests/MLXVideoMotionTests.swift",
+      "bytes": 2361,
+      "sha256": "56b60b3ae7e658646b5352554d7f8e8ac093c29a5bacecd0e232a90f2316f5c2"
+    },
+    "log": {
+      "path": "artifacts/native-motion-erosion-cost-1/focused-build-tests.log",
+      "bytes": 1819,
+      "sha256": "52a26d5ff9461637802e832936907d60f56e43f36db0e8bfac6adad4f7a73a71"
+    },
+    "result": {
+      "path": "artifacts/native-motion-erosion-cost-1/focused-result.json",
+      "bytes": 1319,
+      "sha256": "c591826684609c7edcd7a8f7f6c56d1743ceaa734cf1ac95f7f20d1c2151f44b"
+    },
+    "buildSeconds": 16.75,
+    "testSeconds": 0.051,
+    "buildAndTestProcessWallSeconds": 18.357844499871135,
+    "command": [
+      "swift",
+      "test",
+      "--package-path",
+      "vendor/MLX-DLSS",
+      "-c",
+      "release",
+      "--jobs",
+      "2",
+      "--filter",
+      "MLXVideoMotionTests"
+    ],
+    "scope": "Existing scene-cut/disabled-cut and invalid-motion finite-output tests; the separate opt-in run captures actual VT confidence and times the unchanged erosion kernel."
+  },
+  "resources": {
+    "processWallSeconds": 10.168327084043995,
+    "maximumSampledTreeRSSBytes": 1136099328,
+    "minimumSampledFreeBytes": 12732391424,
+    "resourceSampleCount": 21,
+    "resourceSamples": [
+      {
+        "elapsedSeconds": 0.0016234589274972677,
+        "treeRSSBytes": 6586368,
+        "freeBytes": 12968751104,
+        "progressUnits": 0,
+        "completedPhase": null,
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 6586368
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 0.5237647918984294,
+        "treeRSSBytes": 118390784,
+        "freeBytes": 12968665088,
+        "progressUnits": 0,
+        "completedPhase": null,
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 51429376
+          },
+          {
+            "pid": 91525,
+            "ppid": 91512,
+            "rssBytes": 34996224
+          },
+          {
+            "pid": 91526,
+            "ppid": 91525,
+            "rssBytes": 31965184
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 1.0488549589645118,
+        "treeRSSBytes": 51675136,
+        "freeBytes": 12968587264,
+        "progressUnits": 0,
+        "completedPhase": null,
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 51642368
+          },
+          {
+            "pid": 91593,
+            "ppid": 91512,
+            "rssBytes": 32768
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 1.5717988340184093,
+        "treeRSSBytes": 149946368,
+        "freeBytes": 12968587264,
+        "progressUnits": 0,
+        "completedPhase": null,
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 57671680
+          },
+          {
+            "pid": 91598,
+            "ppid": 91512,
+            "rssBytes": 35143680
+          },
+          {
+            "pid": 91601,
+            "ppid": 91598,
+            "rssBytes": 16711680
+          },
+          {
+            "pid": 91602,
+            "ppid": 91601,
+            "rssBytes": 40419328
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 2.0900232498534024,
+        "treeRSSBytes": 260751360,
+        "freeBytes": 12968738816,
+        "progressUnits": 0,
+        "completedPhase": null,
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 58081280
+          },
+          {
+            "pid": 91668,
+            "ppid": 91512,
+            "rssBytes": 35012608
+          },
+          {
+            "pid": 91669,
+            "ppid": 91512,
+            "rssBytes": 35028992
+          },
+          {
+            "pid": 91673,
+            "ppid": 91669,
+            "rssBytes": 68370432
+          },
+          {
+            "pid": 91674,
+            "ppid": 91668,
+            "rssBytes": 64258048
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 2.6097927088849247,
+        "treeRSSBytes": 59146240,
+        "freeBytes": 12968689664,
+        "progressUnits": 0,
+        "completedPhase": null,
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 59146240
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 3.1349653750658035,
+        "treeRSSBytes": 265666560,
+        "freeBytes": 12968513536,
+        "progressUnits": 0,
+        "completedPhase": null,
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 70074368
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 195592192
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 3.663562166970223,
+        "treeRSSBytes": 801308672,
+        "freeBytes": 12968407040,
+        "progressUnits": 0,
+        "completedPhase": "capture",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 63684608
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 737624064
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 4.191084499936551,
+        "treeRSSBytes": 410124288,
+        "freeBytes": 12968325120,
+        "progressUnits": 1,
+        "completedPhase": "capture",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50954240
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 359170048
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 4.722932500066236,
+        "treeRSSBytes": 552402944,
+        "freeBytes": 12917645312,
+        "progressUnits": 4,
+        "completedPhase": "capture",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50905088
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 501497856
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 5.241773375077173,
+        "treeRSSBytes": 423198720,
+        "freeBytes": 12850225152,
+        "progressUnits": 8,
+        "completedPhase": "capture",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50855936
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 372342784
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 5.768130708951503,
+        "treeRSSBytes": 569835520,
+        "freeBytes": 12782727168,
+        "progressUnits": 12,
+        "completedPhase": "capture",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50839552
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 518995968
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 6.2840117500163615,
+        "treeRSSBytes": 677183488,
+        "freeBytes": 12732964864,
+        "progressUnits": 22,
+        "completedPhase": "isolated-erosion",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50839552
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 626343936
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 6.808618834009394,
+        "treeRSSBytes": 687833088,
+        "freeBytes": 12732919808,
+        "progressUnits": 43,
+        "completedPhase": "isolated-erosion",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50839552
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 636993536
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 7.322692374931648,
+        "treeRSSBytes": 690536448,
+        "freeBytes": 12732854272,
+        "progressUnits": 63,
+        "completedPhase": "isolated-erosion",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50839552
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 639696896
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 7.845720459008589,
+        "treeRSSBytes": 685588480,
+        "freeBytes": 12732751872,
+        "progressUnits": 83,
+        "completedPhase": "isolated-erosion",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50839552
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 634748928
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 8.3681463340763,
+        "treeRSSBytes": 695566336,
+        "freeBytes": 12732633088,
+        "progressUnits": 102,
+        "completedPhase": "isolated-erosion",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50724864
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 644841472
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 8.892190749989823,
+        "treeRSSBytes": 699351040,
+        "freeBytes": 12732391424,
+        "progressUnits": 121,
+        "completedPhase": "isolated-erosion",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50724864
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 648626176
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 9.4061544588767,
+        "treeRSSBytes": 944046080,
+        "freeBytes": 12732571648,
+        "progressUnits": 124,
+        "completedPhase": "isolated-erosion",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 50577408
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 893468672
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 9.933962875045836,
+        "treeRSSBytes": 1136099328,
+        "freeBytes": 12732542976,
+        "progressUnits": 124,
+        "completedPhase": "complete",
+        "processes": [
+          {
+            "pid": 91512,
+            "ppid": 91493,
+            "rssBytes": 38879232
+          },
+          {
+            "pid": 91818,
+            "ppid": 91512,
+            "rssBytes": 1097220096
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 10.154966583941132,
+        "treeRSSBytes": 0,
+        "freeBytes": 12732735488,
+        "progressUnits": 124,
+        "completedPhase": "complete",
+        "processes": []
+      }
+    ],
+    "limits": {
+      "processTreeRSSBytes": 4294967296,
+      "minimumFreeBytes": 8589934592,
+      "totalSeconds": 300,
+      "initialProgressSeconds": 180,
+      "progressSeconds": 90,
+      "sampleSeconds": 0.5
+    },
+    "powerBefore": {
+      "batt": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t97%; discharging; 4:48 remaining present: true\n",
+      "therm": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n"
+    },
+    "powerAfter": {
+      "batt": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t97%; discharging; 4:48 remaining present: true\n",
+      "therm": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n"
+    },
+    "powerSummary": "Battery power, 97% before and after; prior stage attribution used AC and is not a matched timing comparison.",
+    "softFreeCachePolicyBytes": 268435456,
+    "priorAndRestoredCachePolicyBytes": [
+      16320875724,
+      16320875724
+    ],
+    "mlxSampledMaxima": {
+      "active": 124600352,
+      "cache": 230278256,
+      "peakActive": 421394704
+    },
+    "scope": "RSS/disk observations are sampled, not instantaneous maxima. MLX peakActive is the process-lifetime peak, including capture; the counter was not reset before isolated timing and is not an erosion-only peak. pmset warning output does not measure thermal pressure continuously. Soft cache policy is not a hard total-memory ceiling."
+  },
+  "frozenSHA256Before": {
+    ".build/debug/hdr-benchmark": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83",
+    ".build/debug/libFrameEngineShared.dylib": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18",
+    ".build/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0008/proxy.rgb32f": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0009/proxy.rgb32f": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0011/proxy.rgb32f": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0012/proxy.rgb32f": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0013/proxy.rgb32f": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0014/proxy.rgb32f": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0015/proxy.rgb32f": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0016/proxy.rgb32f": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0017/proxy.rgb32f": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0018/proxy.rgb32f": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0019/proxy.rgb32f": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b",
+    "artifacts/apple-temporal-bounded-input-capture-1/manifest.json": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3",
+    "artifacts/native-flow-pool-benchmark-1/inputs.json": "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181",
+    "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "vendor/MLX-DLSS/.build/arm64-apple-macosx/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b",
+    "vendor/MLX-DLSS/.build/release/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "vendor/MLX-DLSS/Sources/DLSSMedia/NativeImageIO.swift": "cb7f7ca2e06f32edad63363e67f6dd4b1d25796436e336601878b2209d395c23",
+    "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d",
+    "vendor/MLX-DLSS/Sources/DLSSMLX/MLXRuntimeDiagnostics.swift": "f1eacd50f79355b72457f26299ec76b1ed66b6b2663d4cfd6ec3011b1f249c21",
+    "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoFrame.swift": "ada850525effdbe7d317dd38c65fa0d10ec9e7240842ec0553189d0e2e6c9fcc",
+    "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoMotion.swift": "d8878517b8e68ce8971c3c8e1813c92796303937ebde387cd875545b7b4e313e",
+    "vendor/MLX-DLSS/Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62",
+    "vendor/MLX-DLSS/Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34",
+    "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeMotionErosionCostTests.swift": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c"
+  },
+  "frozenSHA256After": {
+    ".build/debug/hdr-benchmark": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83",
+    ".build/debug/libFrameEngineShared.dylib": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18",
+    ".build/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0008/proxy.rgb32f": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0009/proxy.rgb32f": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0011/proxy.rgb32f": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0012/proxy.rgb32f": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0013/proxy.rgb32f": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0014/proxy.rgb32f": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0015/proxy.rgb32f": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0016/proxy.rgb32f": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0017/proxy.rgb32f": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0018/proxy.rgb32f": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c",
+    "artifacts/apple-temporal-bounded-input-capture-1/frame-0019/proxy.rgb32f": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b",
+    "artifacts/apple-temporal-bounded-input-capture-1/manifest.json": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3",
+    "artifacts/native-flow-pool-benchmark-1/inputs.json": "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181",
+    "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "vendor/MLX-DLSS/.build/arm64-apple-macosx/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b",
+    "vendor/MLX-DLSS/.build/release/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "vendor/MLX-DLSS/Sources/DLSSMedia/NativeImageIO.swift": "cb7f7ca2e06f32edad63363e67f6dd4b1d25796436e336601878b2209d395c23",
+    "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d",
+    "vendor/MLX-DLSS/Sources/DLSSMLX/MLXRuntimeDiagnostics.swift": "f1eacd50f79355b72457f26299ec76b1ed66b6b2663d4cfd6ec3011b1f249c21",
+    "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoFrame.swift": "ada850525effdbe7d317dd38c65fa0d10ec9e7240842ec0553189d0e2e6c9fcc",
+    "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoMotion.swift": "d8878517b8e68ce8971c3c8e1813c92796303937ebde387cd875545b7b4e313e",
+    "vendor/MLX-DLSS/Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62",
+    "vendor/MLX-DLSS/Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34",
+    "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeMotionErosionCostTests.swift": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c"
+  },
+  "processPinsBefore": [
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/run-watched.py",
+      "bytes": 13568,
+      "sha256": "13279d25b2eb90ee0fb58ded07289edf9550d18b9b332f996ccde00576189209"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/wrapper-config.json",
+      "bytes": 3112,
+      "sha256": "40af2f2069fcedfa1adb37426d3f2802313ffb4a5e09edeff69b9beda86a1c91"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/inputs.json",
+      "bytes": 5746,
+      "sha256": "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0008/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0009/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0011/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0012/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0013/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0014/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0015/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0016/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0017/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0018/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0019/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+      "bytes": 199716,
+      "sha256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+      "bytes": 41784502,
+      "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5"
+    },
+    {
+      "path": "Package.swift",
+      "bytes": 1903,
+      "sha256": "544a18e763b44471522a84fe41aea4596e63f8fd1348ff17c1a9c151b5624e49"
+    },
+    {
+      "path": "Package.resolved",
+      "bytes": 939,
+      "sha256": "a7c4dd5c6a00247650014107f6d50e5a68e32e9499e9e629d3fc0613342079b3"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Package.swift",
+      "bytes": 2585,
+      "sha256": "8587969b2c275b23d097f67eccbdadedfbaad46cec2187f3c471564baa657180"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Package.resolved",
+      "bytes": 939,
+      "sha256": "e8181c2047777aba58c437640af51da51bea1ebfef03ada7f9d9367622a96de3"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift",
+      "bytes": 6706,
+      "sha256": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeImageIO.swift",
+      "bytes": 5702,
+      "sha256": "cb7f7ca2e06f32edad63363e67f6dd4b1d25796436e336601878b2209d395c23"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoFrame.swift",
+      "bytes": 9855,
+      "sha256": "ada850525effdbe7d317dd38c65fa0d10ec9e7240842ec0553189d0e2e6c9fcc"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoMotion.swift",
+      "bytes": 8834,
+      "sha256": "d8878517b8e68ce8971c3c8e1813c92796303937ebde387cd875545b7b4e313e"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift",
+      "bytes": 12116,
+      "sha256": "0069997732bf1c3bd7d334276b0ebe162f28000c4b014ce23d1f541d22a6f3b8"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXRuntimeDiagnostics.swift",
+      "bytes": 1098,
+      "sha256": "f1eacd50f79355b72457f26299ec76b1ed66b6b2663d4cfd6ec3011b1f249c21"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift",
+      "bytes": 7643,
+      "sha256": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift",
+      "bytes": 9411,
+      "sha256": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeMotionErosionCostTests.swift",
+      "bytes": 28503,
+      "sha256": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c"
+    },
+    {
+      "path": ".build/debug/hdr-benchmark",
+      "bytes": 50590720,
+      "sha256": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83"
+    },
+    {
+      "path": ".build/debug/libFrameEngineShared.dylib",
+      "bytes": 50161944,
+      "sha256": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18"
+    },
+    {
+      "path": ".build/debug/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+      "bytes": 34481424,
+      "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/arm64-apple-macosx/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+      "bytes": 34481424,
+      "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b"
+    }
+  ],
+  "processPinsAfter": [
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/run-watched.py",
+      "bytes": 13568,
+      "sha256": "13279d25b2eb90ee0fb58ded07289edf9550d18b9b332f996ccde00576189209"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/wrapper-config.json",
+      "bytes": 3112,
+      "sha256": "40af2f2069fcedfa1adb37426d3f2802313ffb4a5e09edeff69b9beda86a1c91"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/inputs.json",
+      "bytes": 5746,
+      "sha256": "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0008/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0009/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0011/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0012/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0013/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0014/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0015/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0016/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0017/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0018/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0019/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+      "bytes": 199716,
+      "sha256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+      "bytes": 41784502,
+      "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5"
+    },
+    {
+      "path": "Package.swift",
+      "bytes": 1903,
+      "sha256": "544a18e763b44471522a84fe41aea4596e63f8fd1348ff17c1a9c151b5624e49"
+    },
+    {
+      "path": "Package.resolved",
+      "bytes": 939,
+      "sha256": "a7c4dd5c6a00247650014107f6d50e5a68e32e9499e9e629d3fc0613342079b3"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Package.swift",
+      "bytes": 2585,
+      "sha256": "8587969b2c275b23d097f67eccbdadedfbaad46cec2187f3c471564baa657180"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Package.resolved",
+      "bytes": 939,
+      "sha256": "e8181c2047777aba58c437640af51da51bea1ebfef03ada7f9d9367622a96de3"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift",
+      "bytes": 6706,
+      "sha256": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeImageIO.swift",
+      "bytes": 5702,
+      "sha256": "cb7f7ca2e06f32edad63363e67f6dd4b1d25796436e336601878b2209d395c23"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoFrame.swift",
+      "bytes": 9855,
+      "sha256": "ada850525effdbe7d317dd38c65fa0d10ec9e7240842ec0553189d0e2e6c9fcc"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoMotion.swift",
+      "bytes": 8834,
+      "sha256": "d8878517b8e68ce8971c3c8e1813c92796303937ebde387cd875545b7b4e313e"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift",
+      "bytes": 12116,
+      "sha256": "0069997732bf1c3bd7d334276b0ebe162f28000c4b014ce23d1f541d22a6f3b8"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXRuntimeDiagnostics.swift",
+      "bytes": 1098,
+      "sha256": "f1eacd50f79355b72457f26299ec76b1ed66b6b2663d4cfd6ec3011b1f249c21"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift",
+      "bytes": 7643,
+      "sha256": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift",
+      "bytes": 9411,
+      "sha256": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMediaTests/NativeMotionErosionCostTests.swift",
+      "bytes": 28503,
+      "sha256": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c"
+    },
+    {
+      "path": ".build/debug/hdr-benchmark",
+      "bytes": 50590720,
+      "sha256": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83"
+    },
+    {
+      "path": ".build/debug/libFrameEngineShared.dylib",
+      "bytes": 50161944,
+      "sha256": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18"
+    },
+    {
+      "path": ".build/debug/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+      "bytes": 34481424,
+      "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/arm64-apple-macosx/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+      "bytes": 34481424,
+      "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b"
+    }
+  ],
+  "verifiedPins": [
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/executed-runtime/ErosionProbeNativeOpticalFlow.swift",
+      "bytes": 7643,
+      "sha256": "8fb64028f77ad62fce315ef4fc4d050fa601c817c30b31c099bb937957d72c62"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/executed-runtime/FrozenErosionProbeVideoMotion.swift",
+      "bytes": 9411,
+      "sha256": "4121a3441c5bc2f93e4508ec5f5b12abfd446c0582a2b0158fd329f589c5af34"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/executed-runtime/NativeMotionErosionCostTests.swift",
+      "bytes": 28503,
+      "sha256": "762c466d4f01a3aed321263095ab56f647fdc605ccaa6f9f78114e1865b1b91c"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/executed-runtime/MLXDLSSPackageTests",
+      "bytes": 34481424,
+      "sha256": "4bd5509bc7cd4e2de3e363778b3823c872e2e79f75ba3728b23f8c938f176c8b"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/run-watched.py",
+      "bytes": 13568,
+      "sha256": "13279d25b2eb90ee0fb58ded07289edf9550d18b9b332f996ccde00576189209"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/wrapper-config.json",
+      "bytes": 3112,
+      "sha256": "40af2f2069fcedfa1adb37426d3f2802313ffb4a5e09edeff69b9beda86a1c91"
+    },
+    {
+      "path": "artifacts/native-flow-pool-benchmark-1/inputs.json",
+      "bytes": 5746,
+      "sha256": "3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0008/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "2067ac390b0ae7bb329aa2412208bdd5cd343cce076d9e653723773fae4aeb2f"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0009/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "26e222bb9f5e7471b646ea2c9aaa390c6d8295fff6a32776e1c662fe80b942af"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0010/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "e7e2b99a952b73cd3f5f6d84afa8bc6182ca7e151166c9c5dfaa1fbfc557d4b8"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0011/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "14bb670c4466232e6ab633a2a6fdefd4c99bace2d8b10f6043f30829c0354b17"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0012/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d0803a559d88c0bd6b54e5cfded20c04d64f959e3c5009ee65a67a705aa33ce3"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0013/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "4945f8e1ed2a6ce70e38e9f25e6ee38a7d2a8b0e0901cab474531c8113227e4e"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0014/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "ad7ed19b2a9ce48b75220fac53032ab41cea9d4eddfe62f09bb1c86e063d6e46"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0015/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d0e5c2803d70ef53f24fac74b8d5709c4d6caeb53dcb90684c7e1275fa774a9b"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0016/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "d841adda17732722059f6de44301e74fecb55acc82790a6183686bebf268ffa9"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0017/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "5e9f8c578fbdaa9a79951a9a0b0db54ad2a6dc573f3248623711260204a2f518"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0018/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "005b4fbe5a259b3440cdbacb4d77d7d1174f34b0c160e36ea1d31a6d1e17e58c"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/frame-0019/proxy.rgb32f",
+      "bytes": 24883200,
+      "sha256": "ae848c323367785c4afaf1dce9a980f379438c1285609a99009bbad4ea0dc89b"
+    },
+    {
+      "path": "artifacts/apple-temporal-bounded-input-capture-1/manifest.json",
+      "bytes": 199716,
+      "sha256": "631767e1452dd11e6e6f0e7cc7486a1a8fe35ecd6505cc10706f195075a67cd3"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+      "bytes": 41784502,
+      "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5"
+    },
+    {
+      "path": "Package.swift",
+      "bytes": 1903,
+      "sha256": "544a18e763b44471522a84fe41aea4596e63f8fd1348ff17c1a9c151b5624e49"
+    },
+    {
+      "path": "Package.resolved",
+      "bytes": 939,
+      "sha256": "a7c4dd5c6a00247650014107f6d50e5a68e32e9499e9e629d3fc0613342079b3"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Package.swift",
+      "bytes": 2585,
+      "sha256": "8587969b2c275b23d097f67eccbdadedfbaad46cec2187f3c471564baa657180"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Package.resolved",
+      "bytes": 939,
+      "sha256": "e8181c2047777aba58c437640af51da51bea1ebfef03ada7f9d9367622a96de3"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift",
+      "bytes": 6706,
+      "sha256": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeImageIO.swift",
+      "bytes": 5702,
+      "sha256": "cb7f7ca2e06f32edad63363e67f6dd4b1d25796436e336601878b2209d395c23"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoFrame.swift",
+      "bytes": 9855,
+      "sha256": "ada850525effdbe7d317dd38c65fa0d10ec9e7240842ec0553189d0e2e6c9fcc"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoMotion.swift",
+      "bytes": 8834,
+      "sha256": "d8878517b8e68ce8971c3c8e1813c92796303937ebde387cd875545b7b4e313e"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift",
+      "bytes": 12116,
+      "sha256": "0069997732bf1c3bd7d334276b0ebe162f28000c4b014ce23d1f541d22a6f3b8"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Sources/DLSSMLX/MLXRuntimeDiagnostics.swift",
+      "bytes": 1098,
+      "sha256": "f1eacd50f79355b72457f26299ec76b1ed66b6b2663d4cfd6ec3011b1f249c21"
+    },
+    {
+      "path": ".build/debug/hdr-benchmark",
+      "bytes": 50590720,
+      "sha256": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83"
+    },
+    {
+      "path": ".build/debug/libFrameEngineShared.dylib",
+      "bytes": 50161944,
+      "sha256": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18"
+    },
+    {
+      "path": ".build/debug/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/MLXDLSSPackageTests.xctest/Contents/MacOS/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "vendor/MLX-DLSS/.build/release/mlx.metallib",
+      "bytes": 107392404,
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/benchmark-process.log",
+      "bytes": 1070,
+      "sha256": "0cba33df54d12c735be98c0500775d178a2b6c77bf97ada02844b5633fc198de"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/report.json",
+      "bytes": 217856,
+      "sha256": "4bbca00854a99638a7a007a9ef54afe886dac49284c9354bb92f7ceb65bbdd5f"
+    },
+    {
+      "path": "vendor/MLX-DLSS/Tests/DLSSMLXTests/MLXVideoMotionTests.swift",
+      "bytes": 2361,
+      "sha256": "56b60b3ae7e658646b5352554d7f8e8ac093c29a5bacecd0e232a90f2316f5c2"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1497-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "014c2dfcceead5fa1ad2b96309c2cf9088273712b4ac362c8b6b3b77985a679e"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1497-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "62ac5f6746a112c28414194e379680a624e31697da27c3d1a405989f7e3874f6"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1498-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "9db16eb0ef3effa12e04a69f82fdd4767dd49e082118a079bfa3c17a9146f4d8"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1498-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "bac1e5a72b09070d1b0185f50b6849776f1249533f4c6faa44731508ef45247e"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1499-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "4dca3d315184f62ab27c7e60560f35b5b890d5accc54d13b9aacd7e044a3ef27"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1499-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "4fab6cf9e5bac44f8eec86b16f32db8639059730a880a9e915830697a13e4ca0"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1500-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "bedb6e26aaffd4d0b4be753b26b889bac9f851e76ab68725fcf4b9174aa228ce"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1500-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "3f4f71973c83e9c320cfddab380fbfc08b5c4aa0ac7326bd9ac387a5501ed940"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1501-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "b3f8e6ffe80986ab4f9090eee0d097b8cdad6bae04270cb02c0ec71c77175c69"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1501-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "8532dd5dab3f495607498572bdbd366653dc9daa05147d774501b04333409f31"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1502-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "cb056f22851c4f7f9f7d8fa538e6ae21354942157266212478f98f07f33d2181"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1502-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "c0972dd1fc3c498187a344db559a34320d5c8cf85f5c42b12d154699b4299b9a"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1503-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "588318e753fd29b84011a4ca152abdecee62aef65f587d5a7a8cc792703454d1"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1503-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "df508e64a30657f4013a31c1af8b55ced35002ca15799caa3af93af423b5ad6b"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1504-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "f82166e178af8ad1c5bce4c0625530b3d1c69b4ddbad2a3930db78ae59dfb9f6"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1504-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "c726957616200f0636f24c9a1b06a028076caa50130443aff6bda10ef4d66e29"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1505-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "fe436af19eb85963e9ca58a04263a84616c6a1cd7fb75f3be8d334588c33a793"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1505-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "ab1148d3dc527bf57e0f370f2df492ac1d8bdd82f4a65dae3ef475ab5681c795"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1506-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "67f95a7838e3c489df45d535846f5cd1e6d0e8473518f64b569c63c73029cfde"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1506-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "97a92fa2f7c12a256607fe5b77a610b4eef3aa847b295eeae08dd5d9bd702c0b"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1507-forward.rg16f",
+      "bytes": 129600,
+      "sha256": "31b07d72c5cdd86a3b71a1a53d1f4ac7bcf8b4e022f58ab2207cd94e07550e89"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1507-backward.rg16f",
+      "bytes": 129600,
+      "sha256": "1a4f6c6ee45ff0d79f9089c49acae5b874067005538f145c4df8317f7d760b72"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1497-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1497-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "ff24d7286b3978166808fccb18ded53d06f8a0687fe03a9af73eba1e698dc25c"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1498-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1498-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1499-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1499-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "e4d7d9ae97135d7dc185243b19490a1f40bcca651cf2b759538db368bedc01b7"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1500-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1500-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "ff2eeb16566030b9dd06a8c01bbf967fa94070c40acdbbea6a0d2dc48c7167eb"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1501-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1501-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "7e53933ec6ffad34b19572512b6e4dd79cdf79d53cce1b9679f28641c8345004"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1502-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1502-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "a1dc46082a3247c370a0bea80eac8a6a710ea1d6c4447263d927751d18344a45"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1503-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1503-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "258955f94ba510e2de8a6b14dfe07f10e1b6ab8e7d73c54fe6bc36c37eaa3d6d"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1504-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1504-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "19e13139913e3ab371c6400a1c7c2c109d1d6fdfbe6cb24aaa64906f6d77c38d"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1505-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1505-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "def4be0fb3fad44d0bba17f4ec87b34a29779692689a1e34b7c1d14c9890783d"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1506-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1506-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "4884d6f9f54612fb41275b8e8d13cddd2192972bfafae0abaa4314560ed442e6"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1507-pre-erode.f32",
+      "bytes": 8294400,
+      "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/natural-1507-confidence.f32",
+      "bytes": 8294400,
+      "sha256": "4a85e0bcb8f464c66c75cb11c1eec19ea4773c4d0c27fb17ca25c0938dce94de"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/synthetic-all-positive-input.f32",
+      "bytes": 8294400,
+      "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/synthetic-all-positive-expected.f32",
+      "bytes": 8294400,
+      "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/synthetic-sparse-invalid-input.f32",
+      "bytes": 8294400,
+      "sha256": "80a6d83d82542a5c2fca9e35e10a611b62695ff07a8d290907159ff9876b37e8"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/synthetic-sparse-invalid-expected.f32",
+      "bytes": 8294400,
+      "sha256": "2925f3cdc8173bf2ceb5c91d1bc8f9ad294f4b952c68c3bcada8b61c29b404ed"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/synthetic-dense-invalid-input.f32",
+      "bytes": 8294400,
+      "sha256": "863b06634ceb4d3448bd4b50416825b3de7c01f07ab7f5f7272101def693195b"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/synthetic-dense-invalid-expected.f32",
+      "bytes": 8294400,
+      "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/process-report.json",
+      "bytes": 28188,
+      "sha256": "464d8499c3ade259857788c1b1493ed3c8e8cf677fe109fa9a94e4e8371ba8df"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/benchmark-before.json",
+      "bytes": 11759,
+      "sha256": "9a302eeaaa83e6eab16a0f97c35b9006226d48e952203170d166480dff2168dc"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/independent-audit.py",
+      "bytes": 19077,
+      "sha256": "3e418db58643e7aec133296d68295d5eda3d55adc974835e0245651be70e99d0"
+    }
+  ],
+  "independentAudit": {
+    "status": "passed",
+    "report": {
+      "path": "artifacts/native-motion-erosion-cost-1/independent-audit.json",
+      "bytes": 72362,
+      "sha256": "2a0cbd264707832a4d3edd8d7eba748cc1c95dabc5a0e80a3d72c7dcd2717ea5"
+    },
+    "verifiedAuditPinCount": 92,
+    "scope": "Independent CPU replay; no additional runtime measurement.",
+    "publisherReconciliation": "All phase/population statistics, 21 resource rows and mask identities agree. All audit pins reverified using the executable archive aliases.",
+    "counts": {
+      "samples": 112,
+      "progressUnits": 124,
+      "capturedFrames": 12,
+      "sameVTProductionParity": 11,
+      "maskReferencePayloads": 28,
+      "rawVTPayloads": 22,
+      "cpuOracleMasks": 14,
+      "resourceSamples": 21,
+      "phaseCounts": {
+        "natural": {
+          "first-isolated": 11,
+          "warmup": 33,
+          "measured": 44
+        },
+        "synthetic": {
+          "first-isolated": 3,
+          "warmup": 9,
+          "measured": 12
+        }
+      }
+    },
+    "clockMaximumAbsoluteErrorSeconds": 0.0,
+    "maskOracleResults": [
+      {
+        "name": "natural-1497",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1497-pre-erode.f32",
+          "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1497-confidence.f32",
+          "sha256": "ff24d7286b3978166808fccb18ded53d06f8a0687fe03a9af73eba1e698dc25c"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "7389257eb62b35d1311f9027f2cc088363fdef9f52406398a05024e96ca7634f",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1270722,
+          "zeroScalars": 802878,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6128096064814815,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6112165966251635
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "ff24d7286b3978166808fccb18ded53d06f8a0687fe03a9af73eba1e698dc25c",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1158726,
+          "zeroScalars": 914874,
+          "negativeScalars": 0,
+          "positiveFraction": 0.5587991898148148,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.5580001935950686
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1498",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1498-pre-erode.f32",
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1498-confidence.f32",
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 0,
+          "zeroScalars": 2073600,
+          "negativeScalars": 0,
+          "positiveFraction": 0.0,
+          "minimumFinite": 0.0,
+          "maximumFinite": 0.0,
+          "meanFinite": 0.0
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 0,
+          "zeroScalars": 2073600,
+          "negativeScalars": 0,
+          "positiveFraction": 0.0,
+          "minimumFinite": 0.0,
+          "maximumFinite": 0.0,
+          "meanFinite": 0.0
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1499",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1499-pre-erode.f32",
+          "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1499-confidence.f32",
+          "sha256": "e4d7d9ae97135d7dc185243b19490a1f40bcca651cf2b759538db368bedc01b7"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "189292e00661ef089f37c248b608e927d6ac2828d78ec57b3b8a070aee243ef1",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1417947,
+          "zeroScalars": 655653,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6838093171296297,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6814201767649993
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "e4d7d9ae97135d7dc185243b19490a1f40bcca651cf2b759538db368bedc01b7",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1259216,
+          "zeroScalars": 814384,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6072608024691358,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6057567670294466
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1500",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1500-pre-erode.f32",
+          "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1500-confidence.f32",
+          "sha256": "ff2eeb16566030b9dd06a8c01bbf967fa94070c40acdbbea6a0d2dc48c7167eb"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "a1831330a8b322484403fd9244f7cff12dcec82bc068b0215790e84a55edb66c",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1420799,
+          "zeroScalars": 652801,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6851847029320988,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6825965377212365
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "ff2eeb16566030b9dd06a8c01bbf967fa94070c40acdbbea6a0d2dc48c7167eb",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1270286,
+          "zeroScalars": 803314,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6125993441358024,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6108848549398807
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1501",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1501-pre-erode.f32",
+          "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1501-confidence.f32",
+          "sha256": "7e53933ec6ffad34b19572512b6e4dd79cdf79d53cce1b9679f28641c8345004"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "10a50f2709cccd846b33cda5498a15b41ad61332e2284bd7c8a188f4134d4c12",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1513632,
+          "zeroScalars": 559968,
+          "negativeScalars": 0,
+          "positiveFraction": 0.7299537037037037,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.7259878334864693
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "7e53933ec6ffad34b19572512b6e4dd79cdf79d53cce1b9679f28641c8345004",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1339793,
+          "zeroScalars": 733807,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6461193094135802,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6434173492906502
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1502",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1502-pre-erode.f32",
+          "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1502-confidence.f32",
+          "sha256": "a1dc46082a3247c370a0bea80eac8a6a710ea1d6c4447263d927751d18344a45"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "80fb7b59839bc3ef553ea700cca4948213992df8929b065322b349df5c2b9974",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1306259,
+          "zeroScalars": 767341,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6299474344135803,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6259737338137039
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "a1dc46082a3247c370a0bea80eac8a6a710ea1d6c4447263d927751d18344a45",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1137955,
+          "zeroScalars": 935645,
+          "negativeScalars": 0,
+          "positiveFraction": 0.5487823109567901,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.5464105376980998
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1503",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1503-pre-erode.f32",
+          "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1503-confidence.f32",
+          "sha256": "258955f94ba510e2de8a6b14dfe07f10e1b6ab8e7d73c54fe6bc36c37eaa3d6d"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "cb432adf0baf47a4e0ed095cc7d823427738c5aa006135d016d6ae9ddee87899",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1331252,
+          "zeroScalars": 742348,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6420003858024691,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6355677953531412
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "258955f94ba510e2de8a6b14dfe07f10e1b6ab8e7d73c54fe6bc36c37eaa3d6d",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1160154,
+          "zeroScalars": 913446,
+          "negativeScalars": 0,
+          "positiveFraction": 0.5594878472222222,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.5558029466185292
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1504",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1504-pre-erode.f32",
+          "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1504-confidence.f32",
+          "sha256": "19e13139913e3ab371c6400a1c7c2c109d1d6fdfbe6cb24aaa64906f6d77c38d"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "bc1efaeb0a94427015bf1b360a9ed5013c1959c7be0f97eacee15e97fa4d5345",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1204683,
+          "zeroScalars": 868917,
+          "negativeScalars": 0,
+          "positiveFraction": 0.5809620949074074,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.5757042646809843
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "19e13139913e3ab371c6400a1c7c2c109d1d6fdfbe6cb24aaa64906f6d77c38d",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1034127,
+          "zeroScalars": 1039473,
+          "negativeScalars": 0,
+          "positiveFraction": 0.4987109375,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.4967001883586973
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1505",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1505-pre-erode.f32",
+          "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1505-confidence.f32",
+          "sha256": "def4be0fb3fad44d0bba17f4ec87b34a29779692689a1e34b7c1d14c9890783d"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "3cd48e5b732947674c4a6e32824115b3e41ae92049a89938af339726f6f4ede5",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1284297,
+          "zeroScalars": 789303,
+          "negativeScalars": 0,
+          "positiveFraction": 0.6193561921296297,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6136646941118061
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "def4be0fb3fad44d0bba17f4ec87b34a29779692689a1e34b7c1d14c9890783d",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1096407,
+          "zeroScalars": 977193,
+          "negativeScalars": 0,
+          "positiveFraction": 0.5287456597222222,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.5260632195270778
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1506",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1506-pre-erode.f32",
+          "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1506-confidence.f32",
+          "sha256": "4884d6f9f54612fb41275b8e8d13cddd2192972bfafae0abaa4314560ed442e6"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "6c5f8a443a7b5b54701f1a7774dac18df1a092494a23d814bdd77e6c6bbe710b",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1082611,
+          "zeroScalars": 990989,
+          "negativeScalars": 0,
+          "positiveFraction": 0.5220924961419753,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.5168932861892734
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "4884d6f9f54612fb41275b8e8d13cddd2192972bfafae0abaa4314560ed442e6",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 902679,
+          "zeroScalars": 1170921,
+          "negativeScalars": 0,
+          "positiveFraction": 0.4353197337962963,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.4329532932854955
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "natural-1507",
+        "provenance": "natural",
+        "input": {
+          "bytes": 8294400,
+          "path": "natural-1507-pre-erode.f32",
+          "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "natural-1507-confidence.f32",
+          "sha256": "4a85e0bcb8f464c66c75cb11c1eec19ea4773c4d0c27fb17ca25c0938dce94de"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "8c68fdeba1e149eae0336bbc5b4aecca6822250c7a21a8bcb8a057ee93d8da2f",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1304305,
+          "zeroScalars": 769295,
+          "negativeScalars": 0,
+          "positiveFraction": 0.629005111882716,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.6237458015540803
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "4a85e0bcb8f464c66c75cb11c1eec19ea4773c4d0c27fb17ca25c0938dce94de",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 1112908,
+          "zeroScalars": 960692,
+          "negativeScalars": 0,
+          "positiveFraction": 0.5367033179012346,
+          "minimumFinite": 0.0,
+          "maximumFinite": 1.0,
+          "meanFinite": 0.5346288507812772
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "all-positive",
+        "provenance": "synthetic",
+        "input": {
+          "bytes": 8294400,
+          "path": "synthetic-all-positive-input.f32",
+          "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "synthetic-all-positive-expected.f32",
+          "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 2073600,
+          "zeroScalars": 0,
+          "negativeScalars": 0,
+          "positiveFraction": 1.0,
+          "minimumFinite": 0.125,
+          "maximumFinite": 0.875,
+          "meanFinite": 0.4999996383101852
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "8a51d9d7f9968563b7dd371f289fda22b1230b08f8f427295bd9f3c4250275e5",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 2073600,
+          "zeroScalars": 0,
+          "negativeScalars": 0,
+          "positiveFraction": 1.0,
+          "minimumFinite": 0.125,
+          "maximumFinite": 0.875,
+          "meanFinite": 0.4999996383101852
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "sparse-invalid",
+        "provenance": "synthetic",
+        "input": {
+          "bytes": 8294400,
+          "path": "synthetic-sparse-invalid-input.f32",
+          "sha256": "80a6d83d82542a5c2fca9e35e10a611b62695ff07a8d290907159ff9876b37e8"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "synthetic-sparse-invalid-expected.f32",
+          "sha256": "2925f3cdc8173bf2ceb5c91d1bc8f9ad294f4b952c68c3bcada8b61c29b404ed"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "80a6d83d82542a5c2fca9e35e10a611b62695ff07a8d290907159ff9876b37e8",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 2073397,
+          "zeroScalars": 203,
+          "negativeScalars": 0,
+          "positiveFraction": 0.9999021026234568,
+          "minimumFinite": 0.0,
+          "maximumFinite": 0.875,
+          "meanFinite": 0.49995087046682096
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "2925f3cdc8173bf2ceb5c91d1bc8f9ad294f4b952c68c3bcada8b61c29b404ed",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 2064373,
+          "zeroScalars": 9227,
+          "negativeScalars": 0,
+          "positiveFraction": 0.995550250771605,
+          "minimumFinite": 0.0,
+          "maximumFinite": 0.875,
+          "meanFinite": 0.4977750651041667
+        },
+        "independentWindowOracleByteExact": true
+      },
+      {
+        "name": "dense-invalid",
+        "provenance": "synthetic",
+        "input": {
+          "bytes": 8294400,
+          "path": "synthetic-dense-invalid-input.f32",
+          "sha256": "863b06634ceb4d3448bd4b50416825b3de7c01f07ab7f5f7272101def693195b"
+        },
+        "expected": {
+          "bytes": 8294400,
+          "path": "synthetic-dense-invalid-expected.f32",
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49"
+        },
+        "inputStatistics": {
+          "bytes": 8294400,
+          "sha256": "863b06634ceb4d3448bd4b50416825b3de7c01f07ab7f5f7272101def693195b",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 518400,
+          "zeroScalars": 1555200,
+          "negativeScalars": 0,
+          "positiveFraction": 0.25,
+          "minimumFinite": 0.0,
+          "maximumFinite": 0.75,
+          "meanFinite": 0.1875
+        },
+        "outputStatistics": {
+          "bytes": 8294400,
+          "sha256": "788ae0147bdf979a6575938ca2d7d4403788588f7be2010f03776c968fd1ab49",
+          "nonfiniteScalars": 0,
+          "positiveScalars": 0,
+          "zeroScalars": 2073600,
+          "negativeScalars": 0,
+          "positiveFraction": 0.0,
+          "minimumFinite": 0.0,
+          "maximumFinite": 0.0,
+          "meanFinite": 0.0
+        },
+        "independentWindowOracleByteExact": true
+      }
+    ],
+    "checks": [
+      "Terminal test/process passed and exited0",
+      "Actual VideoToolbox; no model",
+      "Terminal124progress units and complete phase",
+      "Raw frozen before/after map identical",
+      "Wrapper37before/after pins identical",
+      "Actual executed runtime agrees wrapper canonical pin",
+      "Exact twelve source indices",
+      "Exact source reversal Tests/DLSSMediaTests/ErosionProbeNativeOpticalFlow.swift",
+      "Exact source reversal Tests/DLSSMediaTests/FrozenErosionProbeVideoMotion.swift",
+      "12captured frames /11actual masks /3synthetic controls",
+      "Initial1496 has no motion or invented mask",
+      "Masks at full1920x1080 source extent",
+      "11exact same-VT parity records;22retained RG16F payloads finite/hashed",
+      "All28mask/reference payloads finite, range/density/statistics checked; all14 CPU erosion oracles byte-exact",
+      "112isolated samples",
+      "112exact uptime differences/monotonic ordering and112expected output hash+statistics records",
+      "Natural88/synthetic24 total; measured44+12; distinct phases retained",
+      "Published numerical count fields agree rows",
+      "21resource samples retained",
+      "Resource maxima/minima and tree sums replayed",
+      "Observed124final progress under operational deadline",
+      "Temporary256MiB MLX cache policy restored; distinct from RSS",
+      "Battery97percent both endpoints; not comparable to earlier AC attribution"
+    ]
+  },
+  "limitations": [
+    "First-isolated is not cold or first compilation: frozen erode already runs in capture/parity.",
+    "Pre-erode mask comes from source-identical test copy on same actual VT buffers, not access to private production storage.",
+    "Isolated eval/input materialization/cache behavior does not reproduce upstream pipeline overlap; do not subtract from earlier bundled assessment time.",
+    "Input/output readback and report writes outside timers still influence operating conditions.",
+    "No model, candidate, playback, temporal-quality, Live, M5 or hard-memory claim.",
+    "Timing includes host dispatch, output allocation and completed evaluation; it is not isolated GPU kernel duration.",
+    "Successful timed output and motion-vector bytes were compared directly in the test and hashed; only mask/reference/VT payloads are retained for independent replay.",
+    "No timing ratio or subtraction against the prior AC-powered combined motion-assessment measurement is valid for this battery-powered isolated workload."
+  ],
+  "reproduction": {
+    "build": [
+      "swift",
+      "test",
+      "--package-path",
+      "vendor/MLX-DLSS",
+      "-c",
+      "release",
+      "--jobs",
+      "2",
+      "--filter",
+      "MLXVideoMotionTests"
+    ],
+    "run": [
+      "swift",
+      "test",
+      "--package-path",
+      "vendor/MLX-DLSS",
+      "-c",
+      "release",
+      "--skip-build",
+      "--filter",
+      "NativeMotionErosionCostTests/testCurrentErosionOnActualConfidence"
+    ],
+    "environment": {
+      "MLXDLSS_EROSION_COST_INPUTS": "artifacts/native-flow-pool-benchmark-1/inputs.json",
+      "MLXDLSS_EROSION_COST_OUTPUT": "artifacts/native-motion-erosion-cost-1/capture-1"
+    },
+    "outputMustBeFresh": true,
+    "watcher": {
+      "path": "artifacts/native-motion-erosion-cost-1/run-watched.py",
+      "bytes": 13568,
+      "sha256": "13279d25b2eb90ee0fb58ded07289edf9550d18b9b332f996ccde00576189209"
+    },
+    "publisher": "python3 artifacts/native-motion-erosion-cost-1/publish.py --independent-audit artifacts/native-motion-erosion-cost-1/independent-audit.json"
+  },
+  "rawArtifacts": [
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/production-before.json",
+      "bytes": 1363,
+      "sha256": "d18484ca4e586f6fd39e4657826fff700794008e68c5723f80cd27795e5b7f78"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/focused-before.json",
+      "bytes": 827,
+      "sha256": "a8c36e74042412d40007af1f90d22a6cea98628da377795ce63406a09fbfcae8"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/focused-result.json",
+      "bytes": 1319,
+      "sha256": "c591826684609c7edcd7a8f7f6c56d1743ceaa734cf1ac95f7f20d1c2151f44b"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/focused-build-tests.log",
+      "bytes": 1819,
+      "sha256": "52a26d5ff9461637802e832936907d60f56e43f36db0e8bfac6adad4f7a73a71"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/benchmark-before.json",
+      "bytes": 11759,
+      "sha256": "9a302eeaaa83e6eab16a0f97c35b9006226d48e952203170d166480dff2168dc"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/run-watched.py",
+      "bytes": 13568,
+      "sha256": "13279d25b2eb90ee0fb58ded07289edf9550d18b9b332f996ccde00576189209"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/wrapper-config.json",
+      "bytes": 3112,
+      "sha256": "40af2f2069fcedfa1adb37426d3f2802313ffb4a5e09edeff69b9beda86a1c91"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/process-report.json",
+      "bytes": 28188,
+      "sha256": "464d8499c3ade259857788c1b1493ed3c8e8cf677fe109fa9a94e4e8371ba8df"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/benchmark-process.log",
+      "bytes": 1070,
+      "sha256": "0cba33df54d12c735be98c0500775d178a2b6c77bf97ada02844b5633fc198de"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/capture-1/report.json",
+      "bytes": 217856,
+      "sha256": "4bbca00854a99638a7a007a9ef54afe886dac49284c9354bb92f7ceb65bbdd5f"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/executed-runtime/manifest.json",
+      "bytes": 1492,
+      "sha256": "4936976e5b997d65ec959a421cf1c0916c5596b0ccdbdb2aed9830153f44c7bb"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/fork-commit.json",
+      "bytes": 723,
+      "sha256": "10dd15af29ea35c0495f156b89a6c0d8d5b35f8a54306f96d6bbf0910412eb80"
+    },
+    {
+      "path": "artifacts/native-motion-erosion-cost-1/summary-initial.json",
+      "bytes": 4850,
+      "sha256": "b667cb3c92dc2431f101bbb3a94c78ca8fcd79f850d629fb3dc4fb636073ada6"
+    }
+  ],
+  "publicationScript": {
+    "path": "artifacts/native-motion-erosion-cost-1/publish.py",
+    "bytes": 24254,
+    "sha256": "3a3f89475ecd87a7f6638d5cc65a80a2b19c7e0acc475f7e254b9cc735e3f108"
+  }
+}

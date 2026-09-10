@@ -149,3 +149,36 @@ swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
 ```
 
 The test pins the actual executed XCTest, metallib, source and inputs. Existing root debug binaries are required as contamination controls. Preserve the raw reports, recorded operational bounds and hashes when interpreting a repeat.
+
+## Original motion-confidence erosion
+
+The existing 7 × 7 erosion operation takes enough time on the retained natural masks to justify a separate candidate comparison. [Evidence](evidence/m3-motion-erosion-cost.json) and [all 112 calls](evidence/m3-motion-erosion-cost.csv) record this measurement of the unchanged kernel. Production code remains unchanged.
+
+One traversal of the twelve 1920 × 1080 proxy frames produces eleven actual pre-erosion masks; the initial frame has no motion. A source-identical test copy computes these masks from the same completed VideoToolbox buffers as production. All eleven complete vector/confidence outputs, scalar bits and reset decisions match production. The probe preserves production history ownership and retains each mask after the existing joint evaluation. It does not access production's private pre-erosion storage. All masks, confidence references and 22 logical RG16F flow payloads are retained with hashes.
+
+After capture, the test releases the flow session and materializes the masks as independent MLX arrays. Every timed call constructs a fresh output from the original kernel and waits for completed evaluation. Readback, comparison and report writes follow the timer. Four measured passes follow one initial isolated pass and three warmup passes, alternating mask order. The initial isolated pass is already after kernel use during capture; it is not cold compilation.
+
+| Input group | Measured calls | Mean | Median | p95, nearest rank |
+|---|---:|---:|---:|---:|
+| Eleven natural masks | 44 | 4.465 ms | 3.833 ms | 6.560 ms |
+| All-positive control | 4 | 6.108 ms | 6.127 ms | 8.102 ms |
+| Sparse-zero control | 4 | 6.803 ms | 7.555 ms | 7.829 ms |
+| Dense-zero control | 4 | 1.296 ms | 1.258 ms | 1.494 ms |
+
+All 112 outputs match their full-byte references. All fourteen mask/reference pairs also match an independent CPU Boolean-erosion calculation. Synthetic references exercise nonbinary confidence preservation and the radius-three effect of sparse/dense zeros. The erosion predicate is `input > 0`, distinct from the later `confidence > 0.5` reliable-fraction calculation. The two existing motion tests also pass in the newly built release XCTest.
+
+The process completes in 10.168 seconds, with 21 resource samples, peak sampled process-tree RSS of 1,136,099,328 bytes and at least 12,732,391,424 free disk bytes. Before/after power readings both show battery power at 97%; the earlier flow-stage attribution ran on AC. All frozen pins remain unchanged, and the temporary 256-MiB MLX cache policy is restored. Different power, materialization, allocation and scheduling conditions prevent treating these isolated times as a fraction of, or subtraction from, the earlier bundled assessment measurement.
+
+A separable Boolean erosion is the next candidate: it must preserve original centre confidence bits, prove a completed-work benefit in a paired comparison, and then pass full-motion/prepare parity and timing checks. This measurement retains no optimization and closes no playback, temporal, physical-display or M5 acceptance gate.
+
+To reproduce with the same input manifest described above, use a new output directory:
+
+```sh
+source scripts/env.sh
+MLXDLSS_EROSION_COST_INPUTS=/absolute/path/to/inputs.json \
+MLXDLSS_EROSION_COST_OUTPUT=/absolute/path/to/new-output \
+swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
+  --filter NativeMotionErosionCostTests/testCurrentErosionOnActualConfidence
+```
+
+Preserve the executed XCTest, metallib, source and input pins, and record the power state and process limits with each repeat. Existing root debug binaries serve as contamination controls.
