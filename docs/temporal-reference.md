@@ -248,3 +248,41 @@ At frames 1526→1527, aligned original mean luminance falls by 0.039–0.041 ni
 Two independent fresh-frame runs at 1526 and 1527 use the same benchmark binary, model, source payloads and processing settings as the continuous capture. Original, proxy and identity views match byte for byte; enhanced views differ. Across the whole historical wall region, the adjacent enhancement-residual change is −1.999 nits fresh versus −0.926 nit continuous. Fresh processing changes both history and the noise index, so it isolates neither mechanism. Both processes exit cleanly and all frozen files remain unchanged.
 
 The tested translations do not explain the extra variation. The smooth wall, uncertain local motion/parallax and absence of captured internal model output, flow and confidence prevent a sole-cause diagnosis. These measurements establish neither a reconstruction/model defect nor acceptable flicker. Broader temporal content, full-resolution quality and physical HDR inspection remain open; no runtime algorithm or perceptual threshold changes follow from this audit.
+
+## Captured noise and history diagnostic
+
+The [controlled-state evidence](evidence/m3-occlusion-state.json) investigates the static occlusion pair 45→46 with an opt-in diagnostic published in [MLX commit `7529fd4`](https://github.com/ScriptType/MLX-DLSS/commit/7529fd460bfc90624205a8cec4e2cc6d88a7be7a). It retains the canonical 960 × 540 source, 512 × 288 logical processing, padded 512 × 320 network extent, Float16 precision and automatic motion request. Strength and colour strength remain 1, ratio 2 and reference white 203 nits. The evidence identifies the executed source and binary hashes separately from the source publication commit.
+
+One unchanged traversal processes all 48 frames before any intervention. The harness compares all 192 full original/proxy/identity/enhanced views byte for byte with the retained capture, including exact timing, generation and reset inventory. Only frame 0 resets history. Any mismatch stops the diagnostic before the four replays and retains the failing output. Captured private arrays from frames 45 and 46 are exported only after that baseline completes, preserving their actual dtype, shape and bytes.
+
+The four noncommitting replays keep frame-45 colour, motion, confidence, depth and full-resolution proxy fixed. They combine the naturally reached noise indices 45 and 46 with incoming histories H44 and H45: the postprocessed histories produced by frames 44 and 45 respectively. The original combination must reproduce captured features, model heads, composed model output and enhanced HDR bytes exactly before other combinations proceed. Each replay must leave the retained temporal state unchanged. The ordinary HDR codec resolves every replay back to the full source dimensions.
+
+For this captured static pair, the actual frame-45 and frame-46 originals, colour, motion, confidence, depth and proxy are also byte-identical; that equality is observed rather than assumed. The [complete scalar CSV](evidence/m3-occlusion-state.csv) retains the comparisons. The table reports whole-frame, equal-weight RGB-component RMS differences in nits; these are neither luminance scores nor perceptual thresholds.
+
+| Noise index | Incoming history | RMS versus actual 45 | RMS versus actual 46 |
+| --- | --- | ---: | ---: |
+| 45 | H44 | 0 | 8.381745 |
+| 46 | H44 | 10.750322 | 2.876358 |
+| 45 | H45 | 8.770974 | 2.043750 |
+| 46 | H45 | 8.381745 | 0 |
+
+Using both next-frame values reproduces every captured frame-46 tensor and enhanced output byte exactly. Changing either value alone produces a different result. Their effects are not additive: the joint change minus the sum of the two single changes has an 11.258242-nit component RMS. This is a fixed-input intervention on one static pair, not a percentage attribution of noise/history contributions or an explanation of all earlier disocclusion variation. No noise, history, reset or playback policy is tuned, and no temporal-quality, source-rate or physical-HDR acceptance follows.
+
+The run completes 52 model evaluations and preserves all 706 wrapper pins. The independent CPU audit verifies all 132 saved state/replay payloads at their native dtype and recomputes the scalar comparisons. For the unchanged 48-frame baseline, it verifies the harness's equality records against independently rehashed historical references; matching full baseline outputs are not duplicated. Raw tensors, model files and executable binaries remain local rather than part of the public scalar evidence.
+
+### Reproduction requirements
+
+Use a separate checkout of the diagnostic commit, the pinned model package, and both retained directories: `artifacts/temporal-occlusion-reference-1/input` and `capture-1`. Their manifest SHA-256 values are `08790dec58ec181e927072400d9defcffd6b974b26e51b816d9558a2cdbb6262` and `fa1747a8432fb229e7890dea060f7486b7e679909411500bca7cc73e49f8c1fa`. A newly generated or differently captured sequence does not satisfy this exact reproduction gate. The public scalar files alone are insufficient.
+
+The diagnostic APIs and test compile only with `MLXDLSS_TEMPORAL_DIAGNOSTICS`. Build the release test bundle with the recorded dependency and Metal-library pins:
+
+```sh
+source scripts/env.sh
+task_checkout="$PWD/artifacts/occlusion-state-checkout"
+swift build --package-path "$task_checkout" -c release --build-tests --jobs 2 \
+  -Xswiftc -DMLXDLSS_TEMPORAL_DIAGNOSTICS -Xswiftc -enable-testing
+```
+
+Select only `DLSSMediaTests.NativeHDRTemporalStateReplayTests/testCapturedOcclusionStateReplay` through `xctest -XCTest`. Supply all four explicit environment paths: `MLXDLSS_TEMPORAL_STATE_INPUT` and `MLXDLSS_TEMPORAL_STATE_CAPTURE` name the manifests, `MLXDLSS_TEMPORAL_STATE_MODEL` names the model directory, and `MLXDLSS_TEMPORAL_STATE_OUTPUT` names a new output directory. With no opt-in paths the selected test skips; incomplete opt-in is an error. The process sets a 256 MiB soft MLX cache policy before model initialization. This is not a hard memory ceiling or a parent-process cache restoration.
+
+The retained `artifacts/occlusion-state-diagnostic-1/run-watched.py` and `wrapper-config.json`, pinned by the evidence, freeze the successful build and inputs before launching that single test. They allow only the five inherited environment keys `DEVELOPER_DIR`, `PATH`, `HOME`, `TMPDIR`, `LANG`, plus the four explicit paths. The wrapper requires external power and samples process-tree RSS/free disk each second, with a 4 GiB RSS guard, 2 GiB free-space reserve and 300/180/90-second total/first-progress/subsequent-progress deadlines. It preserves failed or interrupted output without retry. Reproduction needs a newly named output/report set and a reviewed freeze of the intended build; existing evidence is never overwritten. These watchdog limits protect the diagnostic and do not measure playback performance.

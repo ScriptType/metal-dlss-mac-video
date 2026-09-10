@@ -1,0 +1,2919 @@
+{
+  "acceptanceCriteriaClosed": [],
+  "actual46Versus45Enhanced": {
+    "actualBytes": 6220800,
+    "actualSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+    "bytesEqual": false,
+    "differentBytes": 4553089,
+    "expectedBytes": 6220800,
+    "expectedSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+    "numericDifference": {
+      "maximumAbsolute": 275.5301513671875,
+      "meanAbsolute": 0.6997588416960829,
+      "rms": 8.381745200364385,
+      "signedMean": -0.5945667782478711
+    }
+  },
+  "csv": {
+    "bytes": 32938,
+    "path": "m3-occlusion-state.csv",
+    "rows": 130,
+    "sha256": "db810b65fadef307601fc9ef9a3c6fea719492d74565ba196649d6ad3f8b24ba"
+  },
+  "execution": {
+    "baselineAllViewsByteExact": true,
+    "baselineFrames": 48,
+    "baselineViewComparisons": 192,
+    "cachePolicyBytes": 268435456,
+    "cacheScope": "Standalone filtered process;256MiB soft free-cache policy set and peak reset before model initialization. No parent-process cache restoration is claimed.",
+    "completedModelCalls": 52,
+    "exitCode": 0,
+    "frozenFilesUnchanged": 706,
+    "identicalStateReplayByteExact": true,
+    "matrixStateUnchanged": true,
+    "maximumSampledProcessTreeRSSBytes": 1349402624,
+    "minimumSampledFreeBytes": 4218662912,
+    "noncommittingReplays": 4,
+    "power": "AC throughout recorded before/after snapshots",
+    "processWallSeconds": 23.91163729201071,
+    "resourceSamples": 25,
+    "savedNativePayloadBytes": 346898944,
+    "savedNativePayloads": 132,
+    "timingScope": "Includes diagnostics, readback and file work; not a throughput measurement or comparison.",
+    "watchdogs": {
+      "firstProgressSeconds": 180,
+      "minimumFreeBytes": 2147483648,
+      "processTreeRSSBytes": 4294967296,
+      "progressSeconds": 90,
+      "sampleSeconds": 1,
+      "totalSeconds": 300
+    }
+  },
+  "finding": "For this pair, jointly advancing the captured noise and incoming history reproduces actual frame46 exactly while base45 guides stay fixed; each single intervention differs. The effects are nonadditive.",
+  "geometry": {
+    "fullRGB": [
+      960,
+      540
+    ],
+    "paddedNetwork": [
+      512,
+      320
+    ],
+    "processing": [
+      512,
+      288
+    ],
+    "sourceFrames": 48,
+    "sourceRate": {
+      "denominator": 1,
+      "numerator": 30
+    }
+  },
+  "hardware": {
+    "chip": "Apple M3",
+    "platform": "macOS-26.5-arm64-arm-64bit",
+    "unifiedMemoryGiB": 16
+  },
+  "independentAudit": {
+    "allConsumedFilesStatUnchanged": true,
+    "baselineActualBytesScope": "Actual matching outputs were compared/read by the harness; only prior matching references and any actual failures are retained for this independent audit.",
+    "numericReductionTolerance": {
+      "absolute": 2e-12,
+      "relative": 2e-10,
+      "scope": "Float64 reduction-order reconciliation only, not image/quality tolerance"
+    },
+    "numpy": "2.5.3",
+    "passed": true,
+    "python": "3.12.14 (main, Aug 14 2026, 15:24:41) [Clang 22.1.3 ]",
+    "stateInventories": {
+      "matrixAfter": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "matrixBefore": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay0-stateAfter": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay0-stateBefore": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay1-stateAfter": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay1-stateBefore": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay2-stateAfter": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay2-stateBefore": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay3-stateAfter": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ],
+      "replay3-stateBefore": [
+        {
+          "bytes": 2048,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 512,
+            "maximum": 511.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionColumns",
+          "sha256": "d1db81dae1e4b4104680a50b8db0a91c7880c6cdc0040917d5a8a168a0e44439",
+          "shape": [
+            512
+          ]
+        },
+        {
+          "bytes": 1280,
+          "dtype": "int32",
+          "independentRange": {
+            "dtype": "int32",
+            "elements": 320,
+            "maximum": 287.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "extensionRows",
+          "sha256": "13537b9baa88336aa8ddef1d5f3c23286e1c92bc9422053b79068ef504f42dd0",
+          "shape": [
+            320
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008857771754264832,
+            "nonfiniteScalars": 0
+          },
+          "name": "history",
+          "sha256": "96b97e9cb9a3c7269897f9cac0ecdfdd03660ff0dc19868b05806d37bb84a4f5",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideDepth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "nativeGuideMotion",
+          "sha256": "a76c77fe203db862b48214c88fbdc1d5560655ccba2f7a2c7166baf6f846e856",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        }
+      ]
+    },
+    "tensorInventories": {
+      "captured45": [
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "color",
+          "sha256": "d3b66f3cf93ebfbf5053546a1df459c16e23af2febba46f90eb8a433ccc6d90b",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "confidence",
+          "sha256": "f51c91d28bb8a48d0e651aca1de8a95c7268a7256186755cc1f593a8daf1e727",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "depth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 1.0744742155075073,
+            "minimum": -0.014645451679825783,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionModel",
+          "sha256": "c99029e8047eec701ad0110c2340bdf28394a2939638fd887feb80ae9e3c7b3a",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 0.9999999403953552,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionProxy",
+          "sha256": "15e9e92059e12c6b8e29c23bc016fc24726cd3a68db3f160100a2d1409aff722",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 0.9950332641601562,
+            "minimum": 0.015838749706745148,
+            "nonfiniteScalars": 0
+          },
+          "name": "incomingHistory",
+          "sha256": "09e747ebe39c60fa878cb1e51c4bad9d5571cd81dbb29e55fc118cc42527be1d",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 9437184,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2359296,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalFeatures",
+          "sha256": "b34c3b1f97e85832946cfa6108891678eb9a29b4fd660ffbcc8ed5f17973bb29",
+          "shape": [
+            1,
+            288,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 589824,
+            "maximum": 2.240234375,
+            "minimum": -2.716796875,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalHead",
+          "sha256": "4ccb12f0fefed5b5a0b6e55ec3defcd4c8d9763635783a8f42761b7912f7569d",
+          "shape": [
+            1,
+            288,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0024115152191370726,
+            "minimum": -0.0022151381708681583,
+            "nonfiniteScalars": 0
+          },
+          "name": "motion",
+          "sha256": "e08d642195483e5877337e4b00bafb8ba1e9e00210ca6a4954eaa6cf0a5b6620",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        },
+        {
+          "bytes": 10485760,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2621440,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkFeatures",
+          "sha256": "f363567f9b4f5da18f8449a578170e99ca6b0a1046604aed47111c0af1369776",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1310720,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 655360,
+            "maximum": 2.240234375,
+            "minimum": -2.716796875,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkHead",
+          "sha256": "9387f9627b69c91696ce47fbb1dd34ad15eba3d12321d3a6c1654e443fc8b087",
+          "shape": [
+            1,
+            320,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008918806910514832,
+            "nonfiniteScalars": 0
+          },
+          "name": "postprocessedSDR",
+          "sha256": "b3540620ad4b754f90f6bd194292b6df811ba5e048c237c4aac214fd78bf18f2",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 5242880,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 2621440,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "preparedFeatures",
+          "sha256": "e52786f9602c80ddb15acd0b53dd03d8d694d8641246e61f440f0585e52cf502",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        }
+      ],
+      "captured46": [
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "color",
+          "sha256": "d3b66f3cf93ebfbf5053546a1df459c16e23af2febba46f90eb8a433ccc6d90b",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "confidence",
+          "sha256": "f51c91d28bb8a48d0e651aca1de8a95c7268a7256186755cc1f593a8daf1e727",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "depth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 1.058652400970459,
+            "minimum": -0.013503829017281532,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionModel",
+          "sha256": "6438e99da25f1eed08bba556aaba62d10edc7a1b2c164770dc7dcd74df3982d6",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 0.9999999403953552,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionProxy",
+          "sha256": "15e9e92059e12c6b8e29c23bc016fc24726cd3a68db3f160100a2d1409aff722",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008918806910514832,
+            "nonfiniteScalars": 0
+          },
+          "name": "incomingHistory",
+          "sha256": "b3540620ad4b754f90f6bd194292b6df811ba5e048c237c4aac214fd78bf18f2",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 9437184,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2359296,
+            "maximum": 4.2890625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalFeatures",
+          "sha256": "350c64f3996a6dd5616e04c686f00f9d42fcf14a04f6d2265350d3b9b0dc309a",
+          "shape": [
+            1,
+            288,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 589824,
+            "maximum": 2.248046875,
+            "minimum": -3.283203125,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalHead",
+          "sha256": "c738d5bccdad3fff9892d56965beab9a4af56556f31d8f61c1a37794a39c4b68",
+          "shape": [
+            1,
+            288,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0024115152191370726,
+            "minimum": -0.0022151381708681583,
+            "nonfiniteScalars": 0
+          },
+          "name": "motion",
+          "sha256": "e08d642195483e5877337e4b00bafb8ba1e9e00210ca6a4954eaa6cf0a5b6620",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        },
+        {
+          "bytes": 10485760,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2621440,
+            "maximum": 4.5390625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkFeatures",
+          "sha256": "7bd69224422bce84555596db27473e2769bf66be885d278f6aefa2a566413e05",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1310720,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 655360,
+            "maximum": 2.248046875,
+            "minimum": -3.283203125,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkHead",
+          "sha256": "6dc91abb7344665f23b962e11644ad71c17dc7c7f353b896879e64018af371b6",
+          "shape": [
+            1,
+            320,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 0.9951553344726562,
+            "minimum": 0.011632951907813549,
+            "nonfiniteScalars": 0
+          },
+          "name": "postprocessedSDR",
+          "sha256": "306c88adaaa2e9fb956e9f0dc7eecc3aa8f732f48ccf1f0162c9342fd035d0f2",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 5242880,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 2621440,
+            "maximum": 4.5390625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "preparedFeatures",
+          "sha256": "654c9cec152d7c7724d7e72aa3b9ff038f9c2c0e75c59e9e25f69e45229c3ba7",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        }
+      ],
+      "replay0": [
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "color",
+          "sha256": "d3b66f3cf93ebfbf5053546a1df459c16e23af2febba46f90eb8a433ccc6d90b",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "confidence",
+          "sha256": "f51c91d28bb8a48d0e651aca1de8a95c7268a7256186755cc1f593a8daf1e727",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "depth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 1.0744742155075073,
+            "minimum": -0.014645451679825783,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionModel",
+          "sha256": "c99029e8047eec701ad0110c2340bdf28394a2939638fd887feb80ae9e3c7b3a",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 0.9999999403953552,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionProxy",
+          "sha256": "15e9e92059e12c6b8e29c23bc016fc24726cd3a68db3f160100a2d1409aff722",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 0.9950332641601562,
+            "minimum": 0.015838749706745148,
+            "nonfiniteScalars": 0
+          },
+          "name": "incomingHistory",
+          "sha256": "09e747ebe39c60fa878cb1e51c4bad9d5571cd81dbb29e55fc118cc42527be1d",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 9437184,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2359296,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalFeatures",
+          "sha256": "b34c3b1f97e85832946cfa6108891678eb9a29b4fd660ffbcc8ed5f17973bb29",
+          "shape": [
+            1,
+            288,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 589824,
+            "maximum": 2.240234375,
+            "minimum": -2.716796875,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalHead",
+          "sha256": "4ccb12f0fefed5b5a0b6e55ec3defcd4c8d9763635783a8f42761b7912f7569d",
+          "shape": [
+            1,
+            288,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0024115152191370726,
+            "minimum": -0.0022151381708681583,
+            "nonfiniteScalars": 0
+          },
+          "name": "motion",
+          "sha256": "e08d642195483e5877337e4b00bafb8ba1e9e00210ca6a4954eaa6cf0a5b6620",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        },
+        {
+          "bytes": 10485760,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2621440,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkFeatures",
+          "sha256": "f363567f9b4f5da18f8449a578170e99ca6b0a1046604aed47111c0af1369776",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1310720,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 655360,
+            "maximum": 2.240234375,
+            "minimum": -2.716796875,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkHead",
+          "sha256": "9387f9627b69c91696ce47fbb1dd34ad15eba3d12321d3a6c1654e443fc8b087",
+          "shape": [
+            1,
+            320,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008918806910514832,
+            "nonfiniteScalars": 0
+          },
+          "name": "postprocessedSDR",
+          "sha256": "b3540620ad4b754f90f6bd194292b6df811ba5e048c237c4aac214fd78bf18f2",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 5242880,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 2621440,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "preparedFeatures",
+          "sha256": "e52786f9602c80ddb15acd0b53dd03d8d694d8641246e61f440f0585e52cf502",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        }
+      ],
+      "replay1": [
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "color",
+          "sha256": "d3b66f3cf93ebfbf5053546a1df459c16e23af2febba46f90eb8a433ccc6d90b",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "confidence",
+          "sha256": "f51c91d28bb8a48d0e651aca1de8a95c7268a7256186755cc1f593a8daf1e727",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "depth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 1.0570383071899414,
+            "minimum": -0.010508771054446697,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionModel",
+          "sha256": "1554915c7ce7ed1b64ab4750373d0848c195bf7810bbab4635ad728b2ffad17c",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 0.9999999403953552,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionProxy",
+          "sha256": "15e9e92059e12c6b8e29c23bc016fc24726cd3a68db3f160100a2d1409aff722",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 0.9950332641601562,
+            "minimum": 0.015838749706745148,
+            "nonfiniteScalars": 0
+          },
+          "name": "incomingHistory",
+          "sha256": "09e747ebe39c60fa878cb1e51c4bad9d5571cd81dbb29e55fc118cc42527be1d",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 9437184,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2359296,
+            "maximum": 4.2890625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalFeatures",
+          "sha256": "e6fcb6c85510564c084575ae3bcf93fa36e283378818b946cea4848a9c639166",
+          "shape": [
+            1,
+            288,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 589824,
+            "maximum": 2.322265625,
+            "minimum": -3.69921875,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalHead",
+          "sha256": "dbf72749e78729bee94d074754d9dcaede37ca7d16f1f464033bf8d327fa0a4b",
+          "shape": [
+            1,
+            288,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0024115152191370726,
+            "minimum": -0.0022151381708681583,
+            "nonfiniteScalars": 0
+          },
+          "name": "motion",
+          "sha256": "e08d642195483e5877337e4b00bafb8ba1e9e00210ca6a4954eaa6cf0a5b6620",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        },
+        {
+          "bytes": 10485760,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2621440,
+            "maximum": 4.5390625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkFeatures",
+          "sha256": "0a9fa6e7346386f66ba0ca307ae0513a7a296b57f3f7d2c7cd5e0bc97337a26f",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1310720,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 655360,
+            "maximum": 2.322265625,
+            "minimum": -3.69921875,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkHead",
+          "sha256": "71f7215a9797a5f19df3e4b4608699142f6470cf5c88edaaead4a5f59bb5bb2b",
+          "shape": [
+            1,
+            320,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 0.9874649047851562,
+            "minimum": 0.013990206643939018,
+            "nonfiniteScalars": 0
+          },
+          "name": "postprocessedSDR",
+          "sha256": "8f21a6d5fd7811d43115cc780d525aca7d579e3552613c8489491608fbd080de",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 5242880,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 2621440,
+            "maximum": 4.5390625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "preparedFeatures",
+          "sha256": "35ea4f5676797fceee90a41eeb44c8c3bcf48f074a6413ce56b4aa2435ce28af",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        }
+      ],
+      "replay2": [
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "color",
+          "sha256": "d3b66f3cf93ebfbf5053546a1df459c16e23af2febba46f90eb8a433ccc6d90b",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "confidence",
+          "sha256": "f51c91d28bb8a48d0e651aca1de8a95c7268a7256186755cc1f593a8daf1e727",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "depth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 1.0713717937469482,
+            "minimum": -0.014024116098880768,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionModel",
+          "sha256": "55080950bdbd4bf65d8b22b24e99cd1be20da2523dffaf253851e3767ca93612",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 0.9999999403953552,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionProxy",
+          "sha256": "15e9e92059e12c6b8e29c23bc016fc24726cd3a68db3f160100a2d1409aff722",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008918806910514832,
+            "nonfiniteScalars": 0
+          },
+          "name": "incomingHistory",
+          "sha256": "b3540620ad4b754f90f6bd194292b6df811ba5e048c237c4aac214fd78bf18f2",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 9437184,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2359296,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalFeatures",
+          "sha256": "e451ff4a56959ad419c8fc3cf63e9197055b7e2ae3a2a03671cd82cdf311675e",
+          "shape": [
+            1,
+            288,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 589824,
+            "maximum": 2.01171875,
+            "minimum": -3.5390625,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalHead",
+          "sha256": "a3202835ee6b87dffff6fab285ac3e709aa9d7486de9cf929c2fc99303bdebed",
+          "shape": [
+            1,
+            288,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0024115152191370726,
+            "minimum": -0.0022151381708681583,
+            "nonfiniteScalars": 0
+          },
+          "name": "motion",
+          "sha256": "e08d642195483e5877337e4b00bafb8ba1e9e00210ca6a4954eaa6cf0a5b6620",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        },
+        {
+          "bytes": 10485760,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2621440,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkFeatures",
+          "sha256": "e818847de298a89009250469d8d4f37e830d00ec8853c93a8b9985c1e0f43a33",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1310720,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 655360,
+            "maximum": 2.01171875,
+            "minimum": -3.5390625,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkHead",
+          "sha256": "2b5ff42bcd7079a852e7ffbd54a4e0d14415064e8c122b81f8a571ef28bd540a",
+          "shape": [
+            1,
+            320,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.0072861164808273315,
+            "nonfiniteScalars": 0
+          },
+          "name": "postprocessedSDR",
+          "sha256": "650426f4de3fb84e6fbf6e72917b0af237527eb5fd1feb513c0758e1073956e8",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 5242880,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 2621440,
+            "maximum": 4.5703125,
+            "minimum": -4.83984375,
+            "nonfiniteScalars": 0
+          },
+          "name": "preparedFeatures",
+          "sha256": "8a11db96ded5f5eaa02290a7becb34e758ccdf026bbf5b225221ffe37caf5307",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        }
+      ],
+      "replay3": [
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "color",
+          "sha256": "d3b66f3cf93ebfbf5053546a1df459c16e23af2febba46f90eb8a433ccc6d90b",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "confidence",
+          "sha256": "f51c91d28bb8a48d0e651aca1de8a95c7268a7256186755cc1f593a8daf1e727",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 589824,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 147456,
+            "maximum": 1.0,
+            "minimum": 1.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "depth",
+          "sha256": "ffcaf79cd731afb703849d9bbda978a6b7478ac2d719ccba895f2e7007e91439",
+          "shape": [
+            1,
+            288,
+            512,
+            1
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 1.058652400970459,
+            "minimum": -0.013503829017281532,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionModel",
+          "sha256": "6438e99da25f1eed08bba556aaba62d10edc7a1b2c164770dc7dcd74df3982d6",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 6220800,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 1555200,
+            "maximum": 0.9999999403953552,
+            "minimum": 0.0,
+            "nonfiniteScalars": 0
+          },
+          "name": "fullResolutionProxy",
+          "sha256": "15e9e92059e12c6b8e29c23bc016fc24726cd3a68db3f160100a2d1409aff722",
+          "shape": [
+            1,
+            540,
+            960,
+            3
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 1.0,
+            "minimum": 0.008918806910514832,
+            "nonfiniteScalars": 0
+          },
+          "name": "incomingHistory",
+          "sha256": "b3540620ad4b754f90f6bd194292b6df811ba5e048c237c4aac214fd78bf18f2",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 9437184,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2359296,
+            "maximum": 4.2890625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalFeatures",
+          "sha256": "350c64f3996a6dd5616e04c686f00f9d42fcf14a04f6d2265350d3b9b0dc309a",
+          "shape": [
+            1,
+            288,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 589824,
+            "maximum": 2.248046875,
+            "minimum": -3.283203125,
+            "nonfiniteScalars": 0
+          },
+          "name": "logicalHead",
+          "sha256": "c738d5bccdad3fff9892d56965beab9a4af56556f31d8f61c1a37794a39c4b68",
+          "shape": [
+            1,
+            288,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1179648,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 294912,
+            "maximum": 0.0024115152191370726,
+            "minimum": -0.0022151381708681583,
+            "nonfiniteScalars": 0
+          },
+          "name": "motion",
+          "sha256": "e08d642195483e5877337e4b00bafb8ba1e9e00210ca6a4954eaa6cf0a5b6620",
+          "shape": [
+            1,
+            288,
+            512,
+            2
+          ]
+        },
+        {
+          "bytes": 10485760,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 2621440,
+            "maximum": 4.5390625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkFeatures",
+          "sha256": "7bd69224422bce84555596db27473e2769bf66be885d278f6aefa2a566413e05",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        },
+        {
+          "bytes": 1310720,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 655360,
+            "maximum": 2.248046875,
+            "minimum": -3.283203125,
+            "nonfiniteScalars": 0
+          },
+          "name": "networkHead",
+          "sha256": "6dc91abb7344665f23b962e11644ad71c17dc7c7f353b896879e64018af371b6",
+          "shape": [
+            1,
+            320,
+            512,
+            4
+          ]
+        },
+        {
+          "bytes": 1769472,
+          "dtype": "float32",
+          "independentRange": {
+            "dtype": "float32",
+            "elements": 442368,
+            "maximum": 0.9951553344726562,
+            "minimum": 0.011632951907813549,
+            "nonfiniteScalars": 0
+          },
+          "name": "postprocessedSDR",
+          "sha256": "306c88adaaa2e9fb956e9f0dc7eecc3aa8f732f48ccf1f0162c9342fd035d0f2",
+          "shape": [
+            1,
+            288,
+            512,
+            3
+          ]
+        },
+        {
+          "bytes": 5242880,
+          "dtype": "float16",
+          "independentRange": {
+            "dtype": "float16",
+            "elements": 2621440,
+            "maximum": 4.5390625,
+            "minimum": -4.7890625,
+            "nonfiniteScalars": 0
+          },
+          "name": "preparedFeatures",
+          "sha256": "654c9cec152d7c7724d7e72aa3b9ff038f9c2c0e75c59e9e25f69e45229c3ba7",
+          "shape": [
+            1,
+            320,
+            512,
+            16
+          ]
+        }
+      ]
+    },
+    "verifiedFiles": 842
+  },
+  "interactionDefinition": "E(noise46,history46)-E(noise46,history45)-E(noise45,history46)+E(noise45,history45), component nits; describes nonadditivity of this matrix only.",
+  "jointMinusAdditiveSingleInterventions": {
+    "maximumAbsolute": 344.0848388671875,
+    "meanAbsolute": 0.9508217858687465,
+    "rms": 11.258241945331589,
+    "signedMean": 0.9088894664562954
+  },
+  "limitations": [
+    "The baseline harness saves every mismatch but does not save every matching reproduced frame. Successful baseline actual hashes/finite status are reported observations, cross-checked against independently verified prior bytes.",
+    "The four interventions fix frame45 color/motion/confidence/depth/proxy while selecting captured noise/incoming history. Actual frame46 is compared separately; fixed guides are not silently assumed to equal frame46.",
+    "Noise/history interaction is descriptive algebra for this fixed-input four-case matrix, not an identified production defect or sole cause of natural temporal variation.",
+    "Reported state equality covers the dumped temporal state, lifecycle description and guide/index tensors; it is not a global allocator/driver-state proof.",
+    "No perceptual acceptance, ghost-free, physical HDR/A/V, native playback or throughput qualification follows.",
+    "These controls concern frames45/46 only; they do not explain moving-frame extrema or all temporal behaviour.",
+    "The natural noise schedule and history policy are unchanged. Fixed noise or reset tuning is not proposed by this result.",
+    "The fixture and model files must be supplied separately; this evidence does not publish model weights or raw tensor payloads."
+  ],
+  "matrix": [
+    {
+      "baseSourceFrameIndex": 45,
+      "enhancedVersusActual46": {
+        "actualBytes": 6220800,
+        "actualSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+        "bytesEqual": false,
+        "differentBytes": 4553089,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+        "numericDifference": {
+          "maximumAbsolute": 275.5301513671875,
+          "meanAbsolute": 0.6997588416960829,
+          "rms": 8.381745200364385,
+          "signedMean": 0.5945667782478711
+        }
+      },
+      "enhancedVersusCaptured45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+        "bytesEqual": true,
+        "differentBytes": 0,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+        "numericDifference": {
+          "maximumAbsolute": 0.0,
+          "meanAbsolute": 0.0,
+          "rms": 0.0,
+          "signedMean": 0.0
+        }
+      },
+      "enhancementResidualVersusOriginal45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+        "bytesEqual": false,
+        "differentBytes": 4805427,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "1ed07bcafe6eb647226266a7e922e747b3e36498f573c08b707d4a27d6c41aeb",
+        "numericDifference": {
+          "maximumAbsolute": 1924.1632080078125,
+          "meanAbsolute": 4.819828910202585,
+          "rms": 42.09958044973424,
+          "signedMean": -4.150740479511703
+        }
+      },
+      "incomingHistoryCapturedAtFrame": 45,
+      "incomingHistoryProducedByFrame": 44,
+      "label": "original-state",
+      "noiseFrameIndex": 45,
+      "ordinal": 0,
+      "originalCombinationExact": true,
+      "stateUnchanged": true
+    },
+    {
+      "baseSourceFrameIndex": 45,
+      "enhancedVersusActual46": {
+        "actualBytes": 6220800,
+        "actualSHA256": "6401974b691f4066ea06a0170978e5743f22b4d34bc087370deeb518eb5efa20",
+        "bytesEqual": false,
+        "differentBytes": 4340726,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+        "numericDifference": {
+          "maximumAbsolute": 128.1029052734375,
+          "meanAbsolute": 0.29502089879458165,
+          "rms": 2.8763583729640314,
+          "signedMean": -0.2513256423282085
+        }
+      },
+      "enhancedVersusCaptured45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "6401974b691f4066ea06a0170978e5743f22b4d34bc087370deeb518eb5efa20",
+        "bytesEqual": false,
+        "differentBytes": 4300029,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+        "numericDifference": {
+          "maximumAbsolute": 336.314453125,
+          "meanAbsolute": 0.8971093370476325,
+          "rms": 10.750322105700919,
+          "signedMean": -0.8458924205760795
+        }
+      },
+      "enhancementResidualVersusOriginal45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "6401974b691f4066ea06a0170978e5743f22b4d34bc087370deeb518eb5efa20",
+        "bytesEqual": false,
+        "differentBytes": 4808873,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "1ed07bcafe6eb647226266a7e922e747b3e36498f573c08b707d4a27d6c41aeb",
+        "numericDifference": {
+          "maximumAbsolute": 1966.8743896484375,
+          "meanAbsolute": 5.683195811454497,
+          "rms": 51.87974063338745,
+          "signedMean": -4.996632900087782
+        }
+      },
+      "incomingHistoryCapturedAtFrame": 45,
+      "incomingHistoryProducedByFrame": 44,
+      "label": "noise-only",
+      "noiseFrameIndex": 46,
+      "ordinal": 1,
+      "originalCombinationExact": null,
+      "stateUnchanged": true
+    },
+    {
+      "baseSourceFrameIndex": 45,
+      "enhancedVersusActual46": {
+        "actualBytes": 6220800,
+        "actualSHA256": "40e93df00cd7e8f08fae52898b76d8ada6143b26654d1c8bcfb90b9c26edc673",
+        "bytesEqual": false,
+        "differentBytes": 4298770,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+        "numericDifference": {
+          "maximumAbsolute": 132.3765869140625,
+          "meanAbsolute": 0.2351475048186835,
+          "rms": 2.0437495683948455,
+          "signedMean": -0.06299704588021592
+        }
+      },
+      "enhancedVersusCaptured45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "40e93df00cd7e8f08fae52898b76d8ada6143b26654d1c8bcfb90b9c26edc673",
+        "bytesEqual": false,
+        "differentBytes": 4389958,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+        "numericDifference": {
+          "maximumAbsolute": 294.0015869140625,
+          "meanAbsolute": 0.7300136171661903,
+          "rms": 8.770974010412841,
+          "signedMean": -0.657563824128087
+        }
+      },
+      "enhancementResidualVersusOriginal45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "40e93df00cd7e8f08fae52898b76d8ada6143b26654d1c8bcfb90b9c26edc673",
+        "bytesEqual": false,
+        "differentBytes": 4810716,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "1ed07bcafe6eb647226266a7e922e747b3e36498f573c08b707d4a27d6c41aeb",
+        "numericDifference": {
+          "maximumAbsolute": 1957.6126098632812,
+          "meanAbsolute": 5.511242493710173,
+          "rms": 49.8836229726654,
+          "signedMean": -4.8083043036397894
+        }
+      },
+      "incomingHistoryCapturedAtFrame": 46,
+      "incomingHistoryProducedByFrame": 45,
+      "label": "incoming-history-only",
+      "noiseFrameIndex": 45,
+      "ordinal": 2,
+      "originalCombinationExact": null,
+      "stateUnchanged": true
+    },
+    {
+      "baseSourceFrameIndex": 45,
+      "enhancedVersusActual46": {
+        "actualBytes": 6220800,
+        "actualSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+        "bytesEqual": true,
+        "differentBytes": 0,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+        "numericDifference": {
+          "maximumAbsolute": 0.0,
+          "meanAbsolute": 0.0,
+          "rms": 0.0,
+          "signedMean": 0.0
+        }
+      },
+      "enhancedVersusCaptured45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+        "bytesEqual": false,
+        "differentBytes": 4553089,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "475a5d0c82a64f1a2bf877a38a052dbbb0523c6ec6b0c5e5dfceb884fdce6338",
+        "numericDifference": {
+          "maximumAbsolute": 275.5301513671875,
+          "meanAbsolute": 0.6997588416960829,
+          "rms": 8.381745200364385,
+          "signedMean": -0.5945667782478711
+        }
+      },
+      "enhancementResidualVersusOriginal45": {
+        "actualBytes": 6220800,
+        "actualSHA256": "95391140dcf1786acb18a0adb7d1253b4f0f53c0d7b018667333126fb21e3fcb",
+        "bytesEqual": false,
+        "differentBytes": 4811967,
+        "expectedBytes": 6220800,
+        "expectedSHA256": "1ed07bcafe6eb647226266a7e922e747b3e36498f573c08b707d4a27d6c41aeb",
+        "numericDifference": {
+          "maximumAbsolute": 1960.7716674804688,
+          "meanAbsolute": 5.4763064146052995,
+          "rms": 49.5571660695599,
+          "signedMean": -4.745307257759574
+        }
+      },
+      "incomingHistoryCapturedAtFrame": 46,
+      "incomingHistoryProducedByFrame": 45,
+      "label": "joint",
+      "noiseFrameIndex": 46,
+      "ordinal": 3,
+      "originalCombinationExact": null,
+      "stateUnchanged": true
+    }
+  ],
+  "measuredState": {
+    "actual45And46TensorEquality": {
+      "color": true,
+      "confidence": true,
+      "depth": true,
+      "fullResolutionModel": false,
+      "fullResolutionProxy": true,
+      "incomingHistory": false,
+      "logicalFeatures": false,
+      "logicalHead": false,
+      "motion": true,
+      "networkFeatures": false,
+      "networkHead": false,
+      "postprocessedSDR": false,
+      "preparedFeatures": false
+    },
+    "capturedNoiseIndices": {
+      "45": 45,
+      "46": 46
+    },
+    "controls": "Base45 colour, motion, confidence, depth and full-resolution proxy remain fixed. No control mask is present.",
+    "matrixNoiseIndexBeforeAndAfter": 48,
+    "stateEqualityScope": "Incoming history, cached extension indices, native guides, lifecycle description, noise index and composition options; no global allocator/driver-state claim."
+  },
+  "metricScope": "Equal-weight RGB component nits only for full linear HDR outputs. Intermediate units are their native tensor domains; no luminance weighting or perceptual threshold.",
+  "retainedEvidence": [
+    {
+      "bytes": 618650,
+      "path": "artifacts/occlusion-state-diagnostic-1/replay-1/report.json",
+      "sha256": "5df9674e81d8f37223c663ef5e9a92944fa49b247c0f9c57c790e6d9dc78f87c"
+    },
+    {
+      "bytes": 902,
+      "path": "artifacts/occlusion-state-diagnostic-1/replay-1.log",
+      "sha256": "9ae1ee583a6a8ae384dac104a68f6c6e019507eda4d9d7dfad62415b050534ba"
+    },
+    {
+      "bytes": 648918,
+      "path": "artifacts/occlusion-state-diagnostic-1/wrapper-run-1.json",
+      "sha256": "4bf6c23c0a38b04f9ec223e6438c6884e9ec2728034baf857e87b236f22e5315"
+    },
+    {
+      "bytes": 327087,
+      "path": "artifacts/occlusion-state-diagnostic-1/runtime-before.json",
+      "sha256": "b6c4f4482c5029e5e7895c0caded1a51a6806d76fa4437b8694a47e31ada17a5"
+    },
+    {
+      "bytes": 608637,
+      "path": "artifacts/occlusion-state-diagnostic-1/independent-audit.json",
+      "sha256": "5cd8edcc6543d8171e3de1e82ae5ab19e5e55c16386cc8af1361abd691fd4743"
+    },
+    {
+      "bytes": 31379,
+      "path": "artifacts/occlusion-state-diagnostic-1/audit-replay.py",
+      "sha256": "9ad457f5510484923c37a4ef4b759a48956cd6bf06e07296d00f3473bb3785ed"
+    },
+    {
+      "bytes": 19366,
+      "path": "artifacts/occlusion-state-diagnostic-1/run-watched.py",
+      "sha256": "f2509f72d5bd926c820ba00c40ea3bd3e3c5cca4c2b97c45bddffebdbd3d3cf3"
+    },
+    {
+      "bytes": 4763,
+      "path": "artifacts/occlusion-state-diagnostic-1/wrapper-config.json",
+      "sha256": "d2100717c9f2500bda79f97becb7b538cdc056442aa4984d74fea3d8dde103ea"
+    },
+    {
+      "bytes": 26464,
+      "path": "artifacts/occlusion-state-diagnostic-1/full-build-3.json",
+      "sha256": "57777c5fa40108e7fd1ef039bf7cfc3ff404913d7de3c3fe5144fbb1dc7cad03"
+    },
+    {
+      "bytes": 26239,
+      "path": "artifacts/occlusion-state-diagnostic-1/full-build-3-before.json",
+      "sha256": "e593a3634330e7d3f553aaaa2de1fd0d4a61519291fa27fe2bfae23fa54e70af"
+    },
+    {
+      "bytes": 732,
+      "path": "artifacts/occlusion-state-diagnostic-1/filter-skip-control.json",
+      "sha256": "946c7af8cba0512996efa5299251bd3efd5e9ed6ef4bf19117f0e9fb26c1035c"
+    },
+    {
+      "bytes": 6572,
+      "path": "artifacts/occlusion-state-diagnostic-1/static-seam-audit-1.json",
+      "sha256": "a56cb226bca1ebf3487b1efbdb52ec7807edb33e79a02d5544fcca2b528afe8e"
+    },
+    {
+      "bytes": 7509,
+      "path": "artifacts/occlusion-state-diagnostic-1/static-seam-audit.py",
+      "sha256": "4e69d35a6bb8fc463932c20844375f7382282668d5726c3851537b5c1f4c459c"
+    },
+    {
+      "bytes": 10120,
+      "path": "artifacts/occlusion-state-diagnostic-1/export-evidence.py",
+      "sha256": "2eaa8ba46ce92afff277c28a4a2b1b0ef474f94eec7c89a57c95818792969d4a"
+    }
+  ],
+  "runtime": {
+    "metallib": {
+      "bytes": 107392404,
+      "path": "artifacts/occlusion-state-checkout/.build/arm64-apple-macosx/release/MLXDLSSPackageTests.xctest/Contents/MacOS/mlx.metallib",
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+    },
+    "modelFiles": [
+      {
+        "bytes": 101028,
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
+        "sha256": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32"
+      },
+      {
+        "bytes": 291576650,
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors",
+        "sha256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+      }
+    ],
+    "parentProtectionPins": [
+      {
+        "bytes": 50590720,
+        "path": ".build/debug/hdr-benchmark",
+        "sha256": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83"
+      },
+      {
+        "bytes": 50161944,
+        "path": ".build/debug/libFrameEngineShared.dylib",
+        "sha256": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18"
+      },
+      {
+        "bytes": 107392404,
+        "path": ".build/debug/mlx.metallib",
+        "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      },
+      {
+        "bytes": 2090592,
+        "path": "artifacts/HDR Player.app/Contents/MacOS/HDRPlayer",
+        "sha256": "e2c028bb134367873fe5a1c467dd908206554a57507e5e2ec3f4ab6bb432e445"
+      },
+      {
+        "bytes": 9083,
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/manifest.json",
+        "sha256": "39a3bf5ce98d58098c629039c1f57acbbca5360bf97a7d2e0d5fb4b8d44d7ae0"
+      }
+    ],
+    "testExecutable": {
+      "bytes": 35628624,
+      "path": "artifacts/occlusion-state-checkout/.build/arm64-apple-macosx/release/MLXDLSSPackageTests.xctest/Contents/MacOS/MLXDLSSPackageTests",
+      "sha256": "bda86a3137d05f18247ca9b7ba4332f377419e196ba833e19b75be34d0be4807"
+    }
+  },
+  "schemaVersion": 1,
+  "scope": "One M3 replay of a retained synthetic static-frame pair; no production policy change.",
+  "settings": {
+    "colourStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "mlxCacheBytes": 268435456,
+    "modelInputRange": "bounded-sRGB-after-resample",
+    "motionRequested": "automatic",
+    "precision": "float16",
+    "processingHeight": 288,
+    "processingWidth": 512,
+    "referenceWhiteNits": 203,
+    "sceneCutThreshold": 0.3,
+    "strength": 1,
+    "temporal": true
+  },
+  "source": {
+    "buildCommand": [
+      "swift",
+      "build",
+      "-c",
+      "release",
+      "--build-tests",
+      "--jobs",
+      "2",
+      "-Xswiftc",
+      "-DMLXDLSS_TEMPORAL_DIAGNOSTICS",
+      "-Xswiftc",
+      "-enable-testing"
+    ],
+    "defaultDisabledProductionSourceByteExact": true,
+    "diagnosticFlag": "MLXDLSS_TEMPORAL_DIAGNOSTICS",
+    "diagnosticPullRequest": "https://github.com/ScriptType/MLX-DLSS/pull/1",
+    "mlxBaseRevision": "465783af9cc1e763089589db801e6a118f8c107a",
+    "mlxDiagnosticRevision": "7529fd460bfc90624205a8cec4e2cc6d88a7be7a",
+    "parentEvidenceBase": "9118e81bc4c1bd7eecdf9114f47870b57e6e0a13",
+    "sourceSHA256": {
+      "Sources/DLSSMLX/MLXNeuralRenderingDeviceTemporalBackend.swift": "7d1963acc6c48d39dc55860e7145a50bad08ab76396bdec95f612d0e7ac53879",
+      "Sources/DLSSMLX/MLXTemporalDiagnostics.swift": "891e3440f0ce6f7455a384550b78e8c9967d54ccc725e6d258a2361a661a78ca",
+      "Sources/DLSSMedia/NativeHDRProcessor.swift": "e237a8e8ead7b983bbad3063c76dda51600dee201e6aee906e1b81932ea1e6f4",
+      "Tests/DLSSMediaTests/NativeHDRTemporalStateReplayTests.swift": "9300f9dbfa5d50708fc0a1030c4ad4a7b3d84e4154bb5c20afff18a53557fc6b"
+    },
+    "testFilter": "DLSSMediaTests.NativeHDRTemporalStateReplayTests/testCapturedOcclusionStateReplay"
+  },
+  "status": "local controlled diagnostic passed",
+  "subtractionDirection": "Named actual case minus named reference; all full HDR comparisons use equally weighted RGB components."
+}
