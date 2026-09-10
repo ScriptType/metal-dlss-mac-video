@@ -87,6 +87,29 @@ uv run --frozen python scripts/review-reference-sequence.py --self-test
 
 These checks cover raw-value preservation, malformed timing, corruption, length mismatch, directory/symlink escape, nonfinite data, fixed mapping, proxy transfer handling and complete/incomplete review publication. They use synthetic CPU data and do not substitute for a real neural sequence capture.
 
+## Controlled pan and occlusion input
+
+`scripts/prepare-occlusion-reference.py` creates a synthetic working-image sequence for testing temporal behavior where source motion and visibility are known. It generates pixels on the CPU, with no media decoder, model or display. Grain and flashes are excluded so they cannot confound the pan/occlusion case.
+
+```sh
+uv run --frozen python scripts/prepare-occlusion-reference.py \
+  --output artifacts/occlusion-reference-input
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/occlusion-reference-input/manifest.json
+```
+
+The canonical sequence contains 48 frames at exact 30-fps timestamps. Default geometry is 960 × 540; `--scale 1` produces a smaller 160 × 90 input for CPU checks. Frames 0–7 are static. Frames 8–35 pan across a deterministic background while an opaque foreground object moves independently. The object is fully outside the viewport at frame 35; frames 36–47 hold the revealed background still. Direct linear BT.2020 Float32 values include dark gradients, coloured detail and HDR highlights in cd/m². These are defined working-image values, not a mastered HDR10/HLG source or a physical colour reference.
+
+At the default scale, the background moves six pixels left and the foreground moves 24 pixels right per moving frame. A current background pixel corresponds to the previous image at `x + 6`; a current foreground pixel corresponds at `x - 24`. Saved masks distinguish foreground/background ownership, valid previous-frame correspondence, object disocclusion and pixels entering at the viewport edge. A background pixel is newly revealed by the object only when its previous background-material coordinate was in bounds and occupied by the foreground. Subtracting foreground masks at the same screen coordinates would give a different, incorrect reveal region.
+
+The manifest pins the generator, recipe, exact timing, RGB payloads and auxiliary masks. Its RGB frames use the existing reference input contract; masks describe the source scene and are not supplied to the neural processor as optical flow or history hints. The first frame has no previous-frame correspondence. Static RGB/ownership can remain identical while transition-derived masks change, including between frames 35 and 36.
+
+Use a new output directory. Incomplete preparation is retained on failure; the final input manifest is published only after the payload checks complete. The default RGB input occupies 298,598,400 bytes, plus masks and metadata. A later four-view capture requires another 1,194,393,600 bytes plus metadata and fits the existing default capture allowance. Use the normal reference capture/review commands above, keeping their model/runtime provenance.
+
+The [M3 input validation](evidence/m3-occlusion-reference-input.json) accepted all 48 frames through the existing CPU preflight. An independent audit checked 240 masks and 72,014,184 corresponding Float32 components with no differences, including 19 exact static comparisons. A deliberately incorrect same-screen reveal mask was rejected with 2,088 missed pixels. Two small-scale generations reproduced their complete manifests exactly in the same pinned runtime; existing output and dangling-symlink controls preserved the prior evidence. The raw input, audit source and reports are retained locally at the paths and hashes recorded in the evidence. No neural capture has run for this sequence.
+
+Preparation and exact source correspondence do not establish neural motion estimation, absence of ghosting, accepted temporal quality or native playback. Those require a subsequent capture and review. The natural animation and live-action references below retain their separate content and provenance.
+
 ## M3 natural-sequence observation
 
 The [48-frame capture](evidence/m3-temporal-reference.json) processed Cosmos Laundromat source frames 10000–10047 at 320 × 134, using 160 × 96 neural processing and the declared 2997/125 derivative frame rate. All 48 originals matched the input Float32 bytes exactly, and every view remained finite. Identity reconstruction differed by at most 0.0009765625 nit. The process completed in 10.225 seconds, including diagnostic work; this is not a playback benchmark.

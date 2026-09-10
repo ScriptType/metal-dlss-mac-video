@@ -1,0 +1,230 @@
+{
+  "acceptanceCriteriaClosed": [],
+  "artifactPolicy": "Large generated RGB/masks and raw audit reports are retained locally at the pinned paths; generate a fresh directory to reproduce the source input.",
+  "cpuControls": {
+    "canonicalManifestSHA256": "08790dec58ec181e927072400d9defcffd6b974b26e51b816d9558a2cdbb6262",
+    "checks": [
+      "Two independent scale1 runs reproduce every input/recipe/environment/source payload and the complete manifest exactly",
+      "Existing canonical output refused before changing its files or complete preparation record",
+      "Dangling output symlink refused without creating its target"
+    ],
+    "generatorSHA256": "65f6a63c3e722b5babcc8bf5dc2b529ee03bfe82e807087c0e6a018dc58613cf",
+    "passed": true,
+    "report": {
+      "bytes": 741,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/cpu-controls/report.json",
+      "sha256": "624dd541a0f44c7103447a8c54957e978e60be19da8d656e1788300317472832"
+    },
+    "reproductionLimit": "Byte-identical manifests verified between two scale1 runs in the same pinned runtime. Runtime file paths and platform metadata mean manifest identity is not promised across installations.",
+    "scale1ManifestSHA256": "69dc5226e628edbd79732a5369e4696cbbae453094faff72172f0d236fa4c779",
+    "scope": "CPU reproducibility and output preservation only; no model/GPU/native window run",
+    "wallSeconds": 0.7563688331283629
+  },
+  "existingInputPreflight": {
+    "benchmarkSHA256": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83",
+    "command": [
+      ".build/debug/hdr-benchmark",
+      "--reference-sequence-validate",
+      "INPUT/manifest.json"
+    ],
+    "exitCode": 0,
+    "log": {
+      "bytes": 197,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/preflight.log",
+      "sha256": "9f9b4b48df513acf6a74ab005c0df31599e20031fc4aae7460965c297f99ea6d"
+    },
+    "parentRuntimePinsUnchanged": true,
+    "report": {
+      "bytes": 684,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/preflight-run.json",
+      "sha256": "d6cc6dc40d581a058af7f6b8bf1ce15fae84233856bfeceac07955826d13d2c3"
+    },
+    "scope": "Existing CPU reference input preflight only; no model or GPU work",
+    "wallSeconds": 11.084599624853581
+  },
+  "generation": {
+    "exitCode": 0,
+    "log": {
+      "bytes": 128,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/prepare.log",
+      "sha256": "1835b737202f65b460f0a366208c7f67ecba0c3b27b6b262dcfd39f31a115a64"
+    },
+    "parentRuntimePinsUnchanged": true,
+    "report": {
+      "bytes": 2432,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/prepare-run.json",
+      "sha256": "79bb91d271501f50dc021ceecdc6d6d8ca19db82f8a6c068636430352a69e98b"
+    },
+    "wallSeconds": 2.3701112079434097
+  },
+  "generator": {
+    "repositoryPath": "scripts/prepare-occlusion-reference.py",
+    "sha256": "65f6a63c3e722b5babcc8bf5dc2b529ee03bfe82e807087c0e6a018dc58613cf"
+  },
+  "independentGeometryAudit": {
+    "execution": {
+      "bytes": 1041,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/geometry-audit/execution.json",
+      "sha256": "e9d58d0b8a0102060bf0250cae8b0dfe67d2dc6b284cd8f70946456fadb098bc"
+    },
+    "limitations": [
+      "Correspondence checks compare existing saved pixels, not a second implementation of the RGB generator.",
+      "Background and foreground exactness applies only where the same surface is visible in both images and the prior coordinate is in bounds.",
+      "Newly revealed background has no visible same-material sample in the previous frame; its mask is checked geometrically, without treating hidden pixels as neural-flow ground truth.",
+      "Frame35 RGB/ownership already match final static frames, but its final reveal mask is nonzero; frame36 onward has zero transition reveal.",
+      "This verifies synthetic input construction only. No neural output, motion estimator, reset decision, temporal quality, source-rate playback, decoded HDR stream, grain/flash corpus, or physical presentation is assessed."
+    ],
+    "negativeControls": [
+      {
+        "constraintRejected": true,
+        "correctTruePixels": 10440,
+        "differentPixels": 2088,
+        "failure": "Negative control: same-screen reveal: 2088 differing elements",
+        "falseNegativePixels": 2088,
+        "falsePositivePixels": 0,
+        "firstMismatchXY": [
+          282,
+          96
+        ],
+        "sourceFrameIndex": 8,
+        "sourcePayloadsModified": false,
+        "type": "same-screen foreground subtraction instead of background-coordinate mapping",
+        "wrongMaskSHA256": "0bce91549ce155642cef643551f51afa03cd3f7cdbae8985fbf8b1840ae95fdc",
+        "wrongTruePixels": 8352
+      }
+    ],
+    "passed": true,
+    "report": {
+      "bytes": 225017,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/geometry-audit/report.json",
+      "sha256": "7f890e5eb875419320b400dcfe9f8d1517ae18833a1195893e89197ed6996771"
+    },
+    "scope": "CPU saved Float32-bit and geometric-mask verification only; no generator import, pixel rerender, model, GPU, decoder, window, or estimated-flow evaluation.",
+    "source": {
+      "bytes": 19594,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/geometry-audit/audit.py",
+      "sha256": "f33337aff4b0c4a8ca4a69c10938db565951f7ddcff503e85e46345ab717a23e"
+    },
+    "summary": {
+      "all48RevealAndViewportMasksChecked": true,
+      "allInputSourceAndRuntimePinsUnchanged": true,
+      "allRGBFiniteAndPositive": true,
+      "backgroundComparedPixels": 21540888,
+      "backgroundCorrespondencePairs": 47,
+      "comparedFloat32Scalars": 72014184,
+      "differentFloat32Scalars": 0,
+      "enteringViewportBackgroundPixelsAcrossTransitions": 69840,
+      "exactTimingAndGeometryFrames": 48,
+      "foregroundComparedPixels": 2463840,
+      "foregroundPositiveSupportPairs": 34,
+      "frames": 48,
+      "maskPayloads": 240,
+      "movingBackgroundPairs": 28,
+      "movingForegroundPositiveSupportPairs": 27,
+      "negativeControlRejected": true,
+      "newlyRevealedPixelsAcrossTransitions": 290232,
+      "payloadBytesIncludingMasks": 423014400,
+      "referencedInputFiles": 295,
+      "rgbMaximumNits": [
+        1200.0,
+        1500.0,
+        2500.0
+      ],
+      "rgbMinimumNits": [
+        0.1875,
+        0.390625,
+        0.59375
+      ],
+      "rgbPayloads": 48,
+      "rgbScalarCount": 74649600,
+      "staticRGBAndOwnershipComparisons": 19
+    },
+    "wallSeconds": 2.738341959
+  },
+  "input": {
+    "environment": {
+      "bytes": 1752,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/input/environment.json",
+      "sha256": "8d8a90bd6a06370c99462a623c15c76bd4b9a1e3464b39d93ada1780c257b1fd"
+    },
+    "expectedFourViewCaptureBytes": 1194393600,
+    "fps": {
+      "timescale": 1,
+      "value": 30
+    },
+    "frames": 48,
+    "height": 540,
+    "layout": "RGB float32 little-endian top-to-bottom",
+    "manifest": {
+      "bytes": 120572,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/input/manifest.json",
+      "sha256": "08790dec58ec181e927072400d9defcffd6b974b26e51b816d9558a2cdbb6262"
+    },
+    "maskLayout": "One UInt8 byte per pixel, exactly 0 or 1; tightly packed top-to-bottom HxW at the RGB source dimensions.",
+    "maskMeaning": {
+      "background": "Current visible background; complement of foreground.",
+      "backgroundPreviousInBounds": "Current background-world point maps inside prior viewport; may also be true on foreground. False at frame0.",
+      "foreground": "Current opaque foreground ownership, clipped to viewport.",
+      "newViewportBackground": "Current background with no previous in-bounds background-world coordinate. False at frame0; excluded from newly revealed mask.",
+      "newlyRevealedBackground": "Current background AND previous coordinate in bounds AND previous foreground at (x+cameraDelta,y). Not same-screen occupancy subtraction."
+    },
+    "masksSuppliedToNeuralProcessor": false,
+    "movingBackgroundCurrentToPreviousPixels": [
+      6,
+      0
+    ],
+    "movingForegroundCurrentToPreviousPixels": [
+      -24,
+      0
+    ],
+    "payloadBytesIncludingMasks": 423014400,
+    "phasesInclusive": {
+      "panAndOcclusion": [
+        8,
+        35
+      ],
+      "revealedSettle": [
+        36,
+        47
+      ],
+      "staticPreroll": [
+        0,
+        7
+      ]
+    },
+    "primaries": "BT.2020",
+    "recipe": {
+      "bytes": 3376,
+      "retainedArtifact": "artifacts/temporal-occlusion-reference-1/input/recipe.json",
+      "sha256": "1e9a306b4dbbe9bc1765e2eec972df18cb44597fdf4024931c2d94042328f57d"
+    },
+    "rgbBytes": 298598400,
+    "transfer": "linear",
+    "units": "cd/m2",
+    "width": 960
+  },
+  "limitations": [
+    "Generation/audit durations are CPU preparation timings, not neural throughput measurements.",
+    "Exact correspondence applies only to the same visible surface inside both viewports; revealed pixels are classified geometrically.",
+    "Synthetic linear BT.2020 working values are not a decoded or mastered HDR10/HLG source or a physical colour reference.",
+    "No motion estimator, neural output, reset behavior, temporal quality, source-rate Live, audio/video synchronization, native window or physical display was evaluated.",
+    "Grain and global flash are separate remaining corpus cases. Natural animation/live-action evidence keeps its own provenance."
+  ],
+  "machine": "Apple M3, 16 GB",
+  "neuralCapturePerformed": false,
+  "recordedUTC": "2026-09-10T15:51:38.664891+00:00",
+  "reproduce": [
+    "uv run --frozen python scripts/prepare-occlusion-reference.py --output artifacts/NEW_INPUT",
+    ".build/debug/hdr-benchmark --reference-sequence-validate artifacts/NEW_INPUT/manifest.json"
+  ],
+  "runtime": {
+    "byteorder": "little",
+    "machine": "arm64",
+    "numpy": "2.5.3",
+    "platform": "macOS-26.5-arm64-arm-64bit",
+    "python": "3.12.14 (main, Aug 14 2026, 15:24:41) [Clang 22.1.3 ]"
+  },
+  "schemaVersion": 1,
+  "scope": "CPU preparation and independent saved-pixel geometry audit of a synthetic temporal-reference input; no neural capture or playback qualification.",
+  "sourceBaseCommit": "bb56015106c80e71da5a7a5b725048be78268247"
+}
