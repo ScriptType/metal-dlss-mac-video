@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-09-10",
+  "hardware": {
+    "chip": "Apple M3",
+    "memoryGiB": 16,
+    "os": "26.5"
+  },
+  "scope": "Shift-arrow JavaScript consistency, packaged WebKit command dispatch and existing ordinary-app controls/lifecycle regression; external keyboard focus remains inconclusive.",
+  "captureBaseRevision": "1a252ab2ff51a51cc5463a074b9da8e034bcc9c8",
+  "change": {
+    "ordinarySeekSeconds": 5,
+    "shiftSeekSecondsBefore": {
+      "native": 60,
+      "web": 30
+    },
+    "shiftSeekSecondsAfter": {
+      "native": 60,
+      "web": 60
+    },
+    "changedSource": {
+      "path": "apps/controls/src/controls.js",
+      "bytes": 12951,
+      "sha256": "508d449d2646e11349d2055a8ec5d47201ecd0dc4d060e5d04c0400fa9e5c49d"
+    },
+    "unchangedNativeSource": {
+      "path": "apps/macos/Sources/main.swift",
+      "bytes": 16454,
+      "sha256": "895718e100ce6e848a84c608928c6602a174f0dc85b04e4b5c2dfde8ab8783e1"
+    }
+  },
+  "validation": {
+    "controlsSyntaxCheckExitCode": 0,
+    "developmentBundleBuildExitCode": 0,
+    "strictBundleSignatureCheckPassed": true,
+    "ordinaryApp": {
+      "passed": true,
+      "domChecksPassed": 23,
+      "exactTimestampSnapshots": 58,
+      "exitCode": 0,
+      "binariesUnchanged": true
+    },
+    "isolatedWebKit": {
+      "passed": true,
+      "cases": 22,
+      "observedSeekMessages": 8,
+      "scope": "Isolated offscreen WKWebView loading actual bundled controls; synthetic untrusted DOM KeyboardEvents and actual player script-message interception. No external keyboard, native focus, player core or video playback qualification.",
+      "ordinaryAndShiftBothDirections": true,
+      "ZeroAndDurationClamps": true,
+      "inputSelectButtonTextareaGuards": true,
+      "commandControlOptionGuards": true,
+      "wholeBundleUnchanged": true,
+      "exitCode": 0
+    },
+    "externalKeyboard": {
+      "status": "inconclusive",
+      "attempts": 10,
+      "seekCasesQualified": 0,
+      "scope": "Automation failures and unresolved AX focus preconditions; no product focus defect inferred.",
+      "allProcessesExitCodeZero": true,
+      "binariesAndSourcesUnchanged": true,
+      "completePreferencesRestored": true,
+      "initialRestorationCorrection": "Initial defaults import merged keys; immediately corrected by replacing the stopped app domain and importing the exact snapshot. Later attempts use replacement restoration. Raw preferences remain private local artifacts."
+    }
+  },
+  "artifactPins": [
+    {
+      "path": "artifacts/player-keyboard-seek-build-1/controls-check.log",
+      "bytes": 239,
+      "sha256": "5865b58299120eb55a872f3caa172bfc663f9aee214d781262bc92902f9442f2"
+    },
+    {
+      "path": "artifacts/player-keyboard-seek-build-1/build.log",
+      "bytes": 2630,
+      "sha256": "1b50b78d4be5133ef7bfeed1332eaba7f36916b6aec2668f56e7308d059bafe2"
+    },
+    {
+      "path": "artifacts/player-keyboard-seek-build-1/source-pins.json",
+      "bytes": 379,
+      "sha256": "3f9b34822c46738c7c013e237ab528363383a3fbdeb652fa813caed37e26a9f4"
+    },
+    {
+      "path": "artifacts/player-keyboard-seek-bundle-1/report.json",
+      "bytes": 1620,
+      "sha256": "54ba8b9c0e455a54e99510f0fd62bb3f28ffe1f5f858e33ddfbf4f113c2af780"
+    },
+    {
+      "path": "artifacts/player-keyboard-seek-bundle-1/dom.json",
+      "bytes": 115670,
+      "sha256": "7fcf33fba946746b40763a4a487f027ad3119d55608a22c1df2913add4a208a7"
+    },
+    {
+      "path": "artifacts/player-keyboard-seek-bundle-1/lifecycle.jsonl",
+      "bytes": 56588,
+      "sha256": "cfc1a111e2f6afbf1698e0c220f9cd9c7c50cc48c818913be69680b74356444e"
+    },
+    {
+      "path": "artifacts/player-keyboard-webkit-1/report.json",
+      "bytes": 15037,
+      "sha256": "6531f632427f73ee66a4c1a61aed4596cb11ac33b7f9b29415593f849a7ce7a3"
+    },
+    {
+      "path": "artifacts/player-keyboard-webkit-1/provenance.json",
+      "bytes": 10591,
+      "sha256": "6193cac8b9ea372901111f0575d4356d91a0c37cf8cec50c02a1217a0c464654"
+    },
+    {
+      "path": "artifacts/player-keyboard-webkit-1/KeyboardProbe.swift",
+      "bytes": 8648,
+      "sha256": "2c387e2232815e383259d7515ae58dfc6540ef2dc6e81a24bf0a53565d84130e"
+    },
+    {
+      "path": "artifacts/player-keyboard-seek-1/external-attempt-audit.json",
+      "bytes": 13637,
+      "sha256": "830721ec6f6a1617098662d472c1d1fda17732fcaf1650ab5e2cbaf138ae8eb4"
+    }
+  ],
+  "remainingGates": [
+    "Actual external native/WebKit focus and seek routes are not qualified by this check.",
+    "Physical sleep/wake, VoiceOver speech, display migration and HDR/UI brightness remain open under issue16."
+  ]
+}

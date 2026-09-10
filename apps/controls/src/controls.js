@@ -204,8 +204,8 @@ window.addEventListener('keydown', event => {
   if (event.metaKey || event.ctrlKey || event.altKey || event.target.matches('input, select, button, textarea')) return;
   const actions = {
     ' ': () => send('togglePause'),
-    ArrowLeft: () => send('seek', Math.max(0, state.position - (event.shiftKey ? 30 : 5))),
-    ArrowRight: () => send('seek', Math.min(state.duration, state.position + (event.shiftKey ? 30 : 5))),
+    ArrowLeft: () => send('seek', Math.max(0, state.position - (event.shiftKey ? 60 : 5))),
+    ArrowRight: () => send('seek', Math.min(state.duration, state.position + (event.shiftKey ? 60 : 5))),
     m: () => send('mute', !state.muted),
     f: () => send('fullscreen', !state.fullscreen),
     '.': () => send('frameStep', 1),

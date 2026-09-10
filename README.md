@@ -4,7 +4,7 @@ Development workspace for a native macOS HDR player with experimental MLX/Metal 
 
 **Status: implementation in progress.** Native NV12/P010 HDR import, retained-original neural reconstruction, an asynchronous C-compatible frame engine and both native playback adapters are implemented. The AppKit/WKWebView player uses provisional mpv with native video, audio, subtitles and chapters. Shared-clock Adaptive playback and persistent Prepared playback are integrated; the measured M3 Prepared case sustains source cadence.
 
-An [opt-in PiP consumer](docs/picture-in-picture.md) passes native lifecycle, cached-playback and quality-change checks. Physical HDR, sustained presented A/V, actual system PiP controls and final M5 performance retain their acceptance gates. The [original plan](mac-hdr-player-plan.md) and [implementation status](docs/implementation-status.md) track the remaining work.
+The [experimental PiP consumer](docs/picture-in-picture.md) is deferred: Apple DTS identifies the tested sample-buffer route as unsupported on macOS. Lifecycle and system-control checks pass, but captured output retains a crop/brightness discrepancy; PiP stays disabled in ordinary playback. Physical HDR, sustained presented A/V and final M5 performance retain their acceptance gates. The [original plan](mac-hdr-player-plan.md) and [implementation status](docs/implementation-status.md) track the remaining work.
 
 ## Start here
 
