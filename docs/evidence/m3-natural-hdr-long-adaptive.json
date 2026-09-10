@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "recordedUTC": "2026-09-10T07:09:49.755207+00:00",
+  "scope": "Visible continuous Adaptive playback through the remaining natural HDR10+ clip on M3; exact completed-source coverage and scheduled clocks, not physical frame presentation or source-rate Live",
+  "rootRevision": "17711b309676546f94607a8b079e94e25c5c3436",
+  "mpvRevision": "0b9bae001c14b8ab496e6ae2e9ac90dd6ee65788",
+  "command": [
+    "python3",
+    "scripts/test-mpv-policy.py",
+    "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+    "--model",
+    "models/neural-rendering/NeuralRendering.dlssmodel",
+    "--width",
+    "160",
+    "--height",
+    "96",
+    "--seconds",
+    "600",
+    "--require-visible",
+    "--report",
+    "artifacts/natural-adaptive-long-1/report.json"
+  ],
+  "configuration": {
+    "settingsJSON": "{\"strength\": 1, \"colourStrength\": 1, \"referenceWhiteNits\": 203, \"maximumLuminanceRatio\": 2, \"policy\": \"adaptive\"}",
+    "sourceFPS": 23.976023976023978,
+    "adapter": "mpv-metal-hdr-policy",
+    "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "source": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "warmupFrames": 3,
+    "sourceHeight": 1080,
+    "powerConfiguration": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=22741091)\t100%; charged; 0:00 remaining present: true",
+    "processingWidth": 160,
+    "displayConfiguration": "gpu-next/macvk; requested drawable960x496 verified against OSD dimensions or native Vulkan swapchain log; physical calibration and brightness unreported",
+    "processingHeight": 96,
+    "displayHeight": 496,
+    "displayWidth": 960,
+    "sourceWidth": 1920
+  },
+  "passed": true,
+  "exitCode": 0,
+  "actualPlaybackWallSeconds": 376.87621829204727,
+  "requestedMaximumWallSeconds": 600.0,
+  "source": {
+    "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+    "inventoryFrames": 2360,
+    "firstFileFrameIndex": 16,
+    "lastFileFrameIndex": 2359,
+    "firstFilePTS": {
+      "value": 257017,
+      "timescale": 24000
+    },
+    "lastFilePTS": {
+      "value": 65059,
+      "timescale": 600
+    },
+    "exactDisplayedSourceProgress": {
+      "value": 781781,
+      "timescale": 8000
+    },
+    "exactDisplayedSourceProgressSeconds": 97.722625,
+    "playerPositionProgressSeconds": 97.742958,
+    "timelineMapping": {
+      "nativeDemuxerStartSeconds": 9.956,
+      "rebaseStartTime": true,
+      "packetOffset": {
+        "value": -2489,
+        "timescale": 250
+      },
+      "decoderToPlayerSeconds": 0,
+      "heldFirstFilePTS": {
+        "value": 241001,
+        "timescale": 24000
+      },
+      "heldFirstDecoderPTS": {
+        "value": 2057,
+        "timescale": 24000
+      },
+      "heldFirstPlayerSeconds": 0.085708,
+      "nativeVersion": "mpv v0.41.0-1052-g0b9bae001",
+      "nativeDurationSeconds": 98.517375,
+      "clockValidation": "restart_complete bracket; three held paused decoder/time-pos pairs over at least100ms; zero decoder-to-player offset validated within1us, not estimated"
+    }
+  },
+  "completionCoverage": {
+    "continuousFinalGenerationFrames": 2344,
+    "exactOrderedInventoryMatch": true,
+    "engineSummary": {
+      "completedTotal": 2345,
+      "warmedSamples": 2341,
+      "completedThroughputFPS": 6.220530421964666,
+      "retainedSamples": 2345
+    },
+    "uniqueIPCObservedFileFrames": 2343,
+    "IPCObservationGaps": [
+      {
+        "fileFrameIndex": 2355,
+        "completed": true,
+        "observationBracket": [
+          {
+            "elapsed": 376.3709377089981,
+            "fileFrameIndex": 2354
+          },
+          {
+            "elapsed": 376.398005458992,
+            "fileFrameIndex": 2356
+          }
+        ]
+      }
+    ],
+    "timestampDecreases": 0,
+    "allFramePresentationVerified": false,
+    "nativeAudioAndVideoEOFLogged": true,
+    "pendingAtEOF": 0,
+    "unpausedUntilFinalEOFObservation": true
+  },
+  "clocks": {
+    "steadySampleCount": 11610,
+    "steadyMaximumAbsoluteAVOffsetSeconds": 0.003667,
+    "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+    "steadyMedianAVOffsetSeconds": -0.0,
+    "steadyFirstQuarterMedianAVOffsetSeconds": -0.0,
+    "steadyLastQuarterMedianAVOffsetSeconds": -0.0,
+    "steadyMedianAVDriftSeconds": 0.0,
+    "synchronisation20msTargetMet": true,
+    "adaptiveBufferEpisodes": 2341,
+    "adaptiveBufferedSeconds": 282.747701,
+    "playbackCounterDeltas": {
+      "frame-drop-count": 0,
+      "decoder-frame-drop-count": 0,
+      "vo-delayed-frame-count": 0
+    },
+    "staleGenerationObservations": 0,
+    "unpausedSteadySamples": 11609,
+    "unpausedSteadyMaximumAbsoluteAVOffsetSeconds": 0.003667
+  },
+  "seekAndComparison": {
+    "fileFrameIndex": 16,
+    "originalPreviewSeconds": 0.08403608400840312,
+    "enhancedPairSeconds": 1.0560124169569463,
+    "retainedComparisons": 6,
+    "identityAndSubmissionUnchanged": true
+  },
+  "visibility": {
+    "completedWork": {
+      "eligible": true,
+      "startHostSeconds": 1037770.9075521253,
+      "endHostSeconds": 1038147.4511835002,
+      "durationSeconds": 376.5436313749524,
+      "nativeObservationCount": 1507,
+      "maximumAllowedObservationGapSeconds": 1.5,
+      "maximumObservationGapSeconds": 0.2520050833700225,
+      "observedVisibleSeconds": 376.5436313749524,
+      "observedInactiveSeconds": 0.0,
+      "ineligibleObservations": [],
+      "reasons": [],
+      "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+    },
+    "playbackClock": {
+      "eligible": true,
+      "startHostSeconds": 1037770.607461666,
+      "endHostSeconds": 1038147.483679958,
+      "durationSeconds": 376.87621829204727,
+      "nativeObservationCount": 1508,
+      "maximumAllowedObservationGapSeconds": 1.5,
+      "maximumObservationGapSeconds": 0.2520050833700225,
+      "observedVisibleSeconds": 376.87621829204727,
+      "observedInactiveSeconds": 0.0,
+      "ineligibleObservations": [],
+      "reasons": [],
+      "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+    },
+    "eligible": true
+  },
+  "memory": {
+    "peakSampledResidentBytes": 617906176,
+    "peakRetainedBytes": 146635328,
+    "maximumQueueSlots": 2,
+    "maximumSampledPending": 2,
+    "maximumAllocatorBytes": {
+      "resident_model_payload": 291576650,
+      "runtime_mlx_cache_policy": 268435456,
+      "mlx_active": 402175784,
+      "mlx_cache": 292932280,
+      "mlx_peak_active": 700325396
+    },
+    "warmedResidentBytes": {
+      "samples": 2341,
+      "minimum": 506937344,
+      "maximum": 617906176,
+      "quarterMedians": [
+        600113152,
+        598704128,
+        512196608,
+        511410176.0
+      ]
+    },
+    "warmedRetainedBytes": {
+      "samples": 2341,
+      "minimum": 73317664,
+      "maximum": 146635328,
+      "quarterMedians": [
+        146635328,
+        146635328,
+        146635328,
+        146635328.0
+      ]
+    },
+    "warmedAllocatorBytes": {
+      "resident_model_payload": {
+        "samples": 2341,
+        "minimum": 291576650,
+        "maximum": 291576650,
+        "quarterMedians": [
+          291576650,
+          291576650,
+          291576650,
+          291576650.0
+        ]
+      },
+      "runtime_mlx_cache_policy": {
+        "samples": 2341,
+        "minimum": 268435456,
+        "maximum": 268435456,
+        "quarterMedians": [
+          268435456,
+          268435456,
+          268435456,
+          268435456.0
+        ]
+      },
+      "mlx_active": {
+        "samples": 2341,
+        "minimum": 402159400,
+        "maximum": 402175784,
+        "quarterMedians": [
+          402159400,
+          402159400,
+          402159400,
+          402159400.0
+        ]
+      },
+      "mlx_cache": {
+        "samples": 2341,
+        "minimum": 268438692,
+        "maximum": 292932280,
+        "quarterMedians": [
+          276926110,
+          276892836,
+          276844198,
+          276860080.0
+        ]
+      },
+      "mlx_peak_active": {
+        "samples": 2341,
+        "minimum": 700325396,
+        "maximum": 700325396,
+        "quarterMedians": [
+          700325396,
+          700325396,
+          700325396,
+          700325396.0
+        ]
+      }
+    },
+    "nativeSessionPeakSlotsIncludingLifecycle": 3,
+    "nativeSessionPeakRetainedBytesIncludingLifecycle": 219952992
+  },
+  "unchanged": {
+    "binaries": true,
+    "source": true,
+    "model": true,
+    "coreSources": true
+  },
+  "limitations": [
+    "160x96 processing is below the 320x192 Live eligibility minimum; measured 6.22 FPS is below the 24000/1001 source rate. Live remains unqualified.",
+    "Only source frames 16 through 2359 are covered by continuous playback; the first 16 source frames are not part of this interval.",
+    "Frame 2355 completed with the exact timestamp but was not observed between adjacent IPC polls. Zero decoder/VO drop counters do not prove every frame was physically presented.",
+    "Raw scheduled avsync can be zero by construction for queued video. These samples do not independently establish acoustic/display synchronization or physical scanout.",
+    "The final keep-open EOF observation is paused and remains included in the raw post-two-second clock summary. The separate unpaused summary retains the same maximum; no failing sample was removed.",
+    "MLX cache policy is soft and can temporarily exceed 256 MiB; sampled process memory and retained-byte observations are not hard instantaneous limits.",
+    "This 97.723-second source interval is longer than prior probes but does not establish hour-scale playback, other audio outputs, physical HDR quality, accepted temporal quality or M5 performance."
+  ],
+  "artifacts": {
+    "artifacts/natural-adaptive-long-1/analyze.py": {
+      "bytes": 8736,
+      "sha256": "de484e29beb6e614f47d2fbde4d91f79f56d9d639559abf5c25d0de67c99cd2a"
+    },
+    "artifacts/natural-adaptive-long-1/report.configuration.json": {
+      "bytes": 3926,
+      "sha256": "69ed31d916f3a7691a6cbd59488a9ab638e1d319c12f6e86af4c5d096e279b51"
+    },
+    "artifacts/natural-adaptive-long-1/report.engine.json": {
+      "bytes": 1773881,
+      "sha256": "79c737637442391f49f0420687b7ff1f0d60b5bc06aaebcf2cc905fa03816420"
+    },
+    "artifacts/natural-adaptive-long-1/report.json": {
+      "bytes": 17726716,
+      "sha256": "ec7268e866e80e31f61776b7a69037c13031709ee3cc8608eeedbef6f05329e8"
+    },
+    "artifacts/natural-adaptive-long-1/report.log": {
+      "bytes": 1401428,
+      "sha256": "265d11626df68a6c37368be2f91cc162ed94d416bf307f2eef4e0add95748aaf"
+    },
+    "artifacts/natural-adaptive-long-1/report.native.log": {
+      "bytes": 853848,
+      "sha256": "97016bad8e71c0d55bec03214993729efd8e26e723bfcc6b8d8a73d4cffae527"
+    },
+    "artifacts/natural-adaptive-long-1/report.source-timing.json": {
+      "bytes": 142514,
+      "sha256": "7ff1caad4aece902e1b2cd3bc697aa2fe7f3d835514fb1fedfdfdcd23c22225e"
+    },
+    "artifacts/natural-adaptive-long-1/report.visibility.json": {
+      "bytes": 1219,
+      "sha256": "36733c070ccb11216040ea8aebcec3a4a1775fd7cea75a54a7d92e747b7d51be"
+    },
+    "artifacts/natural-adaptive-long-1/runner.log": {
+      "bytes": 10116,
+      "sha256": "ed39b29509641a9347810a0ad0e99a769d871f784a2c6b3e72dd84e8875b9754"
+    },
+    "scripts/test-mpv-policy.py": {
+      "bytes": 32135,
+      "sha256": "0f3c304d29bedd6f1fd774de1951683a2294c92fb3cc10628fc6442a523a15aa"
+    },
+    "scripts/adapter_visibility.py": {
+      "bytes": 5587,
+      "sha256": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
+    }
+  },
+  "coreSources": {
+    "demux/demux_lavf.c": {
+      "bytes": 71907,
+      "sha256": "85062faec38b4b1b506ed1400f01bec8588e31b4cb93f7410acd618c9604c686"
+    },
+    "demux/lavf_timing.h": {
+      "bytes": 2736,
+      "sha256": "8d8298739252e62babc273ec68f72e7dc71055f33fb8142e8d5a489d0a071cca"
+    },
+    "player/video.c": {
+      "bytes": 56142,
+      "sha256": "4e838b8250cf96bac8fb235a3cb1776c513380aa2caaaf81f38f1d7083f0829a"
+    },
+    "player/command.c": {
+      "bytes": 301819,
+      "sha256": "542ea23f481648a991a0dca7f0929f7d389100e7b19d007a3d2941ab09fbfb77"
+    },
+    "video/filter/vf_metal_hdr.m": {
+      "bytes": 50032,
+      "sha256": "cf176874aa84c5650224a61a4d6c9073f6e4ec3db800fa8fd19722e08e636a30"
+    },
+    "video/filter/metal_hdr_live_policy.h": {
+      "bytes": 4744,
+      "sha256": "35b6fe475fcf225ca98d46f4b08a2591a0357a0338d3918afe80d1c98208564d"
+    },
+    "audio/out/buffer.c": {
+      "bytes": 22513,
+      "sha256": "436368b478776b9ca86804f631758342b209dddfb9eb0e047f8061074104b53d"
+    },
+    "audio/out/ao_coreaudio.c": {
+      "bytes": 17515,
+      "sha256": "895d72d5608c4674e31232c932cb6975348cefc13c85bae811425720f9779da4"
+    },
+    "video/out/vo.c": {
+      "bytes": 51891,
+      "sha256": "f0c98e1fc495fe1aa42d1badae7ec79e8d3ae6c1cf2e8dfcf11f412f2a05f620"
+    },
+    "video/out/mac_common.swift": {
+      "bytes": 12122,
+      "sha256": "03dcbbc362bf3750b4210a97f948c639f27522b0301d11ee7221ee26161840dd"
+    },
+    "video/out/mac/common.swift": {
+      "bytes": 31308,
+      "sha256": "25eb3a9d25ace5182902ba2e410f99dce9d9570f23044f6fbff81720bc30a9e4"
+    },
+    "video/out/mac/metal_layer.swift": {
+      "bytes": 3917,
+      "sha256": "3f85199e87f5a09895854149667f4a13f1dd5708d71aaab234544b14219af0d3"
+    },
+    "video/out/vulkan/context_mac.m": {
+      "bytes": 9513,
+      "sha256": "d27c20adc80a2ea5bc52b7359a53edb28a839a1c76a5500196ca6a2e2038ec4c"
+    }
+  },
+  "binaries": {
+    "artifacts/mpv-build/mpv": {
+      "sha256": "ab296b8994ff58be5db0d2a0b3589dc0d7f0931127fe3437725b922c7a934c9f",
+      "bytes": 5598144,
+      "modifiedNanoseconds": 1789023144238353110
+    },
+    "artifacts/mpv-build/libmpv.2.dylib": {
+      "sha256": "8c3979d3924e9bffae1832d41a8b78d0c947ac09d5b7dfc260b8fe6a22304e2d",
+      "bytes": 5597664,
+      "modifiedNanoseconds": 1789023144238350401
+    },
+    ".build/debug/libFrameEngineShared.dylib": {
+      "sha256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+      "bytes": 50139368,
+      "modifiedNanoseconds": 1789001404872626604
+    },
+    ".build/debug/mlx.metallib": {
+      "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+      "bytes": 107392404,
+      "modifiedNanoseconds": 1789023199489724775
+    }
+  }
+}

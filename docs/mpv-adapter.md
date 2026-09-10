@@ -257,3 +257,19 @@ python3 scripts/test-mpv-policy.py \
   --width 160 --height 96 --seconds 30 --file-seek-target 1742501/24000 \
   --require-visible --report artifacts/mpv-policy-apple-hdr10plus-new/report.json
 ```
+
+### Continuous natural HDR10+ playback
+
+The [longer M3 run](evidence/m3-natural-hdr-long-adaptive.json) uses mpv `0b9bae001`, the same Apple HDR10+ source with AAC, 160×96 neural processing and 1920×1080 output. Continuous playback covers source frames 16–2359: all 2,344 frames complete in exact timestamp order, reaching the final file frame with zero pending work and clean shutdown. The 97.722625-second displayed-source span takes 376.876 seconds of wall time. There are 2,341 warmed completions at 6.22 FPS and 282.748 seconds of shared buffering; Live remains unavailable.
+
+All 11,610 post-startup scheduled A/V samples stay within 3.667 ms, with zero first/last-quarter median drift. The final keep-open EOF sample is paused; the 11,609 unpaused samples retain the same maximum. No decoder/VO drops or stale generations are reported. IPC observes 2,343 unique source frames: frame 2355 completes correctly but falls between adjacent observations, so this does not prove every frame was physically presented. Native visibility covers the entire interval. Sampled RSS peaks at 617,906,176 bytes and its quarter medians decrease; warmed MLX active memory remains approximately 402.16 MB and cache medians remain approximately 276.9 MB. The cache's 292,932,280-byte maximum is consistent with its documented soft limit. These are bounded scheduled-clock and memory observations, with physical A/V, longer-duration playback, other audio outputs and temporal/HDR quality still unqualified.
+
+```sh
+python3 scripts/test-mpv-policy.py \
+  artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4 \
+  --model models/neural-rendering/NeuralRendering.dlssmodel \
+  --width 160 --height 96 --seconds 600 --require-visible \
+  --report artifacts/natural-adaptive-long-new/report.json
+```
+
+The 600-second argument is a wall-time ceiling; this run exits earlier after native audio/video EOF. Player clock position and exact displayed-source progress are reported separately.
