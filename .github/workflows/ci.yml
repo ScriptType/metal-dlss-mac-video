@@ -14,7 +14,7 @@ jobs:
         with:
           persist-credentials: false
       - run: git submodule update --init vendor/MLX-DLSS vendor/mpv
-      - run: brew install cmake ninja
+      - run: brew install cmake ninja uv
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: '24'
@@ -44,3 +44,5 @@ jobs:
           python3 -m unittest discover -s scripts -p test_mpv_policy_timing.py
           python3 scripts/audit-public-tree.py
           git diff --check
+      - name: Check HDR reference preparation (CPU only)
+        run: uv run --frozen python scripts/test_apple_hdr_reference.py

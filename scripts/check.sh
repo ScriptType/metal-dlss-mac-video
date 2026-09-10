@@ -19,6 +19,7 @@ swift test --skip-build --jobs "$BUILD_JOBS"
 .build/debug/hdr-benchmark --reference-sequence-self-test
 bash scripts/test-frame-api.sh
 uv run --frozen python scripts/test_hdr_capture.py
+uv run --frozen python scripts/test_apple_hdr_reference.py
 uv run --frozen python scripts/review-reference-sequence.py --self-test
 uv run --frozen pytest -q vendor/MLX-DLSS/python/tests/test_vsr_weights.py \
   vendor/MLX-DLSS/Tests/ToolsTests/test_extract_dlssnr_weights.py \
