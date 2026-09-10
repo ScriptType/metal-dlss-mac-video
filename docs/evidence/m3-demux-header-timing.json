@@ -1,0 +1,920 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-09-10",
+  "hardware": "Apple M3, 16 GiB",
+  "scope": "Missing libavformat aggregate-origin and known end-span correction, exact timing identities and Prepared cache interpretation. No compositor, physical-color or scanout qualification.",
+  "mpvRevision": "a9466025dcf459f82f591f42dc12a517a50e7efa",
+  "buildScope": "Four-file timing fix committed and pushed before final clean core relink; final binary embeds this revision. Shared runtime unchanged. Earlier candidate reports retain their own hashes.",
+  "coreSources": [
+    {
+      "path": "vendor/mpv/demux/demux_lavf.c",
+      "sha256": "85062faec38b4b1b506ed1400f01bec8588e31b4cb93f7410acd618c9604c686",
+      "bytes": 71907
+    },
+    {
+      "path": "vendor/mpv/demux/lavf_timing.h",
+      "sha256": "8d8298739252e62babc273ec68f72e7dc71055f33fb8142e8d5a489d0a071cca",
+      "bytes": 2736
+    },
+    {
+      "path": "vendor/mpv/test/meson.build",
+      "sha256": "6068dba1b63cd5d05d0afdddb6a9ec5ba69915ada17a4591760c92dad8d1433d",
+      "bytes": 9010
+    },
+    {
+      "path": "vendor/mpv/test/lavf_timing.c",
+      "sha256": "77597a111825210610dacb42c2d6b618aec598fc45347ca84dd6915ff16b818c",
+      "bytes": 4264
+    }
+  ],
+  "buildLogs": [
+    {
+      "path": "artifacts/avformat-timing-probe/final-build.log",
+      "sha256": "956bfa46c213377059609a74e2caf63b211c4b02481c3fa9f18a73b25cd9c287",
+      "bytes": 26368
+    },
+    {
+      "path": "artifacts/avformat-timing-probe/final-tests.log",
+      "sha256": "0352291724140c45bf614ab64310f5f8812244b4e1ea9ac894b41644e9ccd5f5",
+      "bytes": 222
+    }
+  ],
+  "cpu": {
+    "passed": true,
+    "deterministicChecks": 18,
+    "unitTest": "meson test -C artifacts/mpv-build --no-rebuild lavf-timing --print-errorlogs",
+    "comparison": {
+      "path": "artifacts/avformat-timing-probe/comparison-final-precision.json",
+      "sha256": "bdd407b370cf936ed1f01d0dc4ef8ce9f12a5b85156f9b2b9c165d3ea4c1e853",
+      "bytes": 81551
+    },
+    "probeSource": {
+      "path": "artifacts/avformat-timing-probe/probe.c",
+      "sha256": "5cbe1458345f1dc6469e77368b285778b9ddc0d67ab5c716c1b827ecbbb8c0e9",
+      "bytes": 4477
+    },
+    "probeBinary": {
+      "path": "artifacts/avformat-timing-probe/probe",
+      "sha256": "d88117ac039057891fd3f6923ea25b5056b7befdb0b9119a50f0342dbecbb7bb",
+      "bytes": 34952
+    },
+    "comparisonScript": {
+      "path": "artifacts/avformat-timing-probe/run-final-precision.py",
+      "sha256": "935212de4f1c06d8a47f06e3d33cdd4b6f6153be19409a23a66954e8c3378c71",
+      "bytes": 3327
+    },
+    "editListAudit": {
+      "path": "artifacts/avformat-timing-probe/editlists.json",
+      "sha256": "2e0cb59f81c4da54c77c10aa90df1f99e78cbdbfd0d449bf9d6391f9a0f2c673",
+      "bytes": 3360
+    },
+    "fixtureCount": 7,
+    "cases": [
+      {
+        "id": "apple-p5",
+        "source": {
+          "path": "artifacts/public-hdr-source-audit/apple-advanced-dolby-profile5-aac.mp4",
+          "sha256": "69bbb93355cb91d69eefe7f24f6525e61670aa3ae25bbfb4a546a19a0358e110",
+          "bytes": 42855591
+        },
+        "sourceUnchanged": true,
+        "formatStartAfterOpen": -9223372036854775808,
+        "formatDurationAfterOpen": -9223372036854775808,
+        "formatStartAfterPacketInventory": -9223372036854775808,
+        "streamHeaders": [
+          {
+            "index": 0,
+            "type": "video",
+            "timeBase": [
+              1,
+              24000
+            ],
+            "start": 240000,
+            "startKnown": true,
+            "duration": 2362360,
+            "frames": 2360
+          },
+          {
+            "index": 1,
+            "type": "audio",
+            "timeBase": [
+              1,
+              48000
+            ],
+            "start": 477888,
+            "startKnown": true,
+            "duration": 4726832,
+            "frames": 4617
+          }
+        ],
+        "resolvedStartUS": 9956000,
+        "resolvedDurationSeconds": 98.475666667,
+        "probedAggregateStartUS": 9956000,
+        "probedAggregateDurationUS": 98475667,
+        "originMatchesProbed": true,
+        "durationMatchesConservativePolicy": true,
+        "packetTimingAndPayloadUnchanged": true,
+        "packetTimingSHA256": "3dfc4fdcc76f54b957772ffc2362a30c211d80630c8a1868f7959558ba31ad28",
+        "packetTimingAndPayloadSHA256": "a51ac59cc2f0c2f7796ee3630a3ca3ac2934f1945adf71d30f821195539b991b",
+        "hashEncoding": "read order; 6 little-endian int64 fields (stream,pts,dts,duration,size,flags), then payload for combined digest",
+        "rawRuns": [
+          {
+            "path": "artifacts/avformat-timing-probe/apple-p5-final-helper-quantized-probe0.jsonl",
+            "sha256": "ae95edee409058e05a97edb9cfa21f34b252962e656c0741a499156be935bb50",
+            "bytes": 1913
+          },
+          {
+            "path": "artifacts/avformat-timing-probe/apple-p5-final-helper-quantized-probe1.jsonl",
+            "sha256": "c933458ddad9499da009ee42f8fa657ea1cc1cfa35cb9027a66477ab81da88d2",
+            "bytes": 2472
+          }
+        ],
+        "actualLoadedAvformat": {
+          "path": "/opt/homebrew/Cellar/ffmpeg/9.0.1_1/lib/libavformat.63.1.101.dylib",
+          "sha256": "ad5852a3387d1961607a28a7d41036ae159b604be33791f8c8dc22704eb2986c"
+        }
+      },
+      {
+        "id": "apple-hdr10plus",
+        "source": {
+          "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+          "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5",
+          "bytes": 41784502
+        },
+        "sourceUnchanged": true,
+        "formatStartAfterOpen": -9223372036854775808,
+        "formatDurationAfterOpen": -9223372036854775808,
+        "formatStartAfterPacketInventory": -9223372036854775808,
+        "streamHeaders": [
+          {
+            "index": 0,
+            "type": "video",
+            "timeBase": [
+              1,
+              24000
+            ],
+            "start": 241001,
+            "startKnown": true,
+            "duration": 2362360,
+            "frames": 2360
+          },
+          {
+            "index": 1,
+            "type": "audio",
+            "timeBase": [
+              1,
+              48000
+            ],
+            "start": 477888,
+            "startKnown": true,
+            "duration": 4726832,
+            "frames": 4617
+          }
+        ],
+        "resolvedStartUS": 9956000,
+        "resolvedDurationSeconds": 98.517375,
+        "probedAggregateStartUS": 9956000,
+        "probedAggregateDurationUS": 98517375,
+        "originMatchesProbed": true,
+        "durationMatchesConservativePolicy": true,
+        "packetTimingAndPayloadUnchanged": true,
+        "packetTimingSHA256": "470cb343f3488fba5592adced0eba2c98e83c0779b1afa35db23345622c5a3da",
+        "packetTimingAndPayloadSHA256": "682616f586b9d486fcc0c953b0c1996ac6099bede535439f0af79465b85b9bde",
+        "hashEncoding": "read order; 6 little-endian int64 fields (stream,pts,dts,duration,size,flags), then payload for combined digest",
+        "rawRuns": [
+          {
+            "path": "artifacts/avformat-timing-probe/apple-hdr10plus-final-helper-quantized-probe0.jsonl",
+            "sha256": "d02cad86bbd30125572619553ae66726b6d36caf112d84003389b7cf80848c4d",
+            "bytes": 1913
+          },
+          {
+            "path": "artifacts/avformat-timing-probe/apple-hdr10plus-final-helper-quantized-probe1.jsonl",
+            "sha256": "5e85738e4e790067f82c9698e50150f5cc28cffffe63f6ac8e2b146e2daa7fe2",
+            "bytes": 2472
+          }
+        ],
+        "actualLoadedAvformat": {
+          "path": "/opt/homebrew/Cellar/ffmpeg/9.0.1_1/lib/libavformat.63.1.101.dylib",
+          "sha256": "ad5852a3387d1961607a28a7d41036ae159b604be33791f8c8dc22704eb2986c"
+        }
+      },
+      {
+        "id": "fate-p5",
+        "source": {
+          "path": "assets/test-clips/dolbyvision/dovi-p5.mp4",
+          "sha256": "11fe599fd77e31e26fbf855bae1cd9931df9f261a0a7b1dce9fad9b236677c4b",
+          "bytes": 4182
+        },
+        "sourceUnchanged": true,
+        "formatStartAfterOpen": -9223372036854775808,
+        "formatDurationAfterOpen": -9223372036854775808,
+        "formatStartAfterPacketInventory": -9223372036854775808,
+        "streamHeaders": [
+          {
+            "index": 0,
+            "type": "video",
+            "timeBase": [
+              1,
+              12288
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 5120,
+            "frames": 10
+          }
+        ],
+        "resolvedStartUS": 0,
+        "resolvedDurationSeconds": 0.416666667,
+        "probedAggregateStartUS": 0,
+        "probedAggregateDurationUS": 416667,
+        "originMatchesProbed": true,
+        "durationMatchesConservativePolicy": true,
+        "packetTimingAndPayloadUnchanged": true,
+        "packetTimingSHA256": "9567869cb0407a283135dd8f2844c0f1b91a36355cccc413b6c094c7ab2eb1da",
+        "packetTimingAndPayloadSHA256": "f3f4ba27c7cabe85540395494b289c11cf5893fe2df1f3fec159da195550308e",
+        "hashEncoding": "read order; 6 little-endian int64 fields (stream,pts,dts,duration,size,flags), then payload for combined digest",
+        "rawRuns": [
+          {
+            "path": "artifacts/avformat-timing-probe/fate-p5-final-helper-quantized-probe0.jsonl",
+            "sha256": "c936fc4a36a0b731efcfc2366bc71b87f94d84b71509af267da81a17de5c649f",
+            "bytes": 1527
+          },
+          {
+            "path": "artifacts/avformat-timing-probe/fate-p5-final-helper-quantized-probe1.jsonl",
+            "sha256": "e3f21f6ed7c7f80910626cf043a81514bf1e597e8c8c27ee5079c4c577294073",
+            "bytes": 1928
+          }
+        ],
+        "actualLoadedAvformat": {
+          "path": "/opt/homebrew/Cellar/ffmpeg/9.0.1_1/lib/libavformat.63.1.101.dylib",
+          "sha256": "ad5852a3387d1961607a28a7d41036ae159b604be33791f8c8dc22704eb2986c"
+        }
+      },
+      {
+        "id": "fate-p84",
+        "source": {
+          "path": "assets/test-clips/dolbyvision/dv84.mov",
+          "sha256": "aaa9289a9755eaebd9962204f24a6acf8a19ff104657a3a79b6b1fa672993721",
+          "bytes": 3621742
+        },
+        "sourceUnchanged": true,
+        "formatStartAfterOpen": -9223372036854775808,
+        "formatDurationAfterOpen": -9223372036854775808,
+        "formatStartAfterPacketInventory": -9223372036854775808,
+        "streamHeaders": [
+          {
+            "index": 0,
+            "type": "video",
+            "timeBase": [
+              1,
+              600
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 2000,
+            "frames": 100
+          },
+          {
+            "index": 1,
+            "type": "audio",
+            "timeBase": [
+              1,
+              44100
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 147000,
+            "frames": 146
+          },
+          {
+            "index": 2,
+            "type": "data",
+            "timeBase": [
+              1,
+              600
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 2000,
+            "frames": 1
+          },
+          {
+            "index": 3,
+            "type": "data",
+            "timeBase": [
+              1,
+              600
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 2000,
+            "frames": 1
+          },
+          {
+            "index": 4,
+            "type": "data",
+            "timeBase": [
+              1,
+              600
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 2000,
+            "frames": 100
+          }
+        ],
+        "resolvedStartUS": 0,
+        "resolvedDurationSeconds": 3.333333333,
+        "probedAggregateStartUS": 0,
+        "probedAggregateDurationUS": 3333333,
+        "originMatchesProbed": true,
+        "durationMatchesConservativePolicy": true,
+        "packetTimingAndPayloadUnchanged": true,
+        "packetTimingSHA256": "df4ab221992472ff85b748810f9a22e878fe36eef9be15ab879cf1a5bf988d68",
+        "packetTimingAndPayloadSHA256": "eca80fce331eb65c76318ca065f2db1c590a8ab4821faa44e04ba20142eef8ed",
+        "hashEncoding": "read order; 6 little-endian int64 fields (stream,pts,dts,duration,size,flags), then payload for combined digest",
+        "rawRuns": [
+          {
+            "path": "artifacts/avformat-timing-probe/fate-p84-final-helper-quantized-probe0.jsonl",
+            "sha256": "259d488e42be2b89cefe71423b9d79b64ad1b90b7dffedaab9bd19070a7d2abc",
+            "bytes": 2660
+          },
+          {
+            "path": "artifacts/avformat-timing-probe/fate-p84-final-helper-quantized-probe1.jsonl",
+            "sha256": "d14246adbd3168f9b5859109be6b03a16cca269174e1052b51fe3fcf8b113659",
+            "bytes": 3474
+          }
+        ],
+        "actualLoadedAvformat": {
+          "path": "/opt/homebrew/Cellar/ffmpeg/9.0.1_1/lib/libavformat.63.1.101.dylib",
+          "sha256": "ad5852a3387d1961607a28a7d41036ae159b604be33791f8c8dc22704eb2986c"
+        }
+      },
+      {
+        "id": "pq-mp4",
+        "source": {
+          "path": "assets/test-clips/playback/pq-30-30s.mp4",
+          "sha256": "01415432561bbd5387eb0de7e3584a7e27b0cd4e50525b777a3296e282d67111",
+          "bytes": 2320925
+        },
+        "sourceUnchanged": true,
+        "formatStartAfterOpen": -9223372036854775808,
+        "formatDurationAfterOpen": -9223372036854775808,
+        "formatStartAfterPacketInventory": -9223372036854775808,
+        "streamHeaders": [
+          {
+            "index": 0,
+            "type": "video",
+            "timeBase": [
+              1,
+              16000
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 480000,
+            "frames": 900
+          },
+          {
+            "index": 1,
+            "type": "data",
+            "timeBase": [
+              1,
+              1000
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 30000,
+            "frames": 3
+          }
+        ],
+        "resolvedStartUS": 0,
+        "resolvedDurationSeconds": 30.0,
+        "probedAggregateStartUS": 0,
+        "probedAggregateDurationUS": 30000000,
+        "originMatchesProbed": true,
+        "durationMatchesConservativePolicy": true,
+        "packetTimingAndPayloadUnchanged": true,
+        "packetTimingSHA256": "3ac3dd73254e1f0189ac81e718804c32149a0970adf560c09eeabb583bfb19e9",
+        "packetTimingAndPayloadSHA256": "6d952a4ba820cdd7e29aaf6ff31e5f025c4b0b8440e52c748053ba5a782de243",
+        "hashEncoding": "read order; 6 little-endian int64 fields (stream,pts,dts,duration,size,flags), then payload for combined digest",
+        "rawRuns": [
+          {
+            "path": "artifacts/avformat-timing-probe/pq-mp4-final-helper-quantized-probe0.jsonl",
+            "sha256": "70d8895c6a67eaf4717155e79edea8b24fcf04d19062fe0d73e6bbf9eb4290d9",
+            "bytes": 1863
+          },
+          {
+            "path": "artifacts/avformat-timing-probe/pq-mp4-final-helper-quantized-probe1.jsonl",
+            "sha256": "8a5f269012aff9e6a61841e6b7b1a77e71256eea3e35e24ef138549b9b0724c2",
+            "bytes": 2379
+          }
+        ],
+        "actualLoadedAvformat": {
+          "path": "/opt/homebrew/Cellar/ffmpeg/9.0.1_1/lib/libavformat.63.1.101.dylib",
+          "sha256": "ad5852a3387d1961607a28a7d41036ae159b604be33791f8c8dc22704eb2986c"
+        }
+      },
+      {
+        "id": "sdr-mp4",
+        "source": {
+          "path": "assets/test-clips/sdr-24.mp4",
+          "sha256": "48ea103f9aa58125723540800976bd3357ed5fe0d56c9dd14a774e0a414f1f25",
+          "bytes": 310191
+        },
+        "sourceUnchanged": true,
+        "formatStartAfterOpen": -9223372036854775808,
+        "formatDurationAfterOpen": -9223372036854775808,
+        "formatStartAfterPacketInventory": -9223372036854775808,
+        "streamHeaders": [
+          {
+            "index": 0,
+            "type": "video",
+            "timeBase": [
+              1,
+              12288
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 24576,
+            "frames": 48
+          },
+          {
+            "index": 1,
+            "type": "audio",
+            "timeBase": [
+              1,
+              48000
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 96000,
+            "frames": 95
+          }
+        ],
+        "resolvedStartUS": 0,
+        "resolvedDurationSeconds": 2.0,
+        "probedAggregateStartUS": 0,
+        "probedAggregateDurationUS": 2000000,
+        "originMatchesProbed": true,
+        "durationMatchesConservativePolicy": true,
+        "packetTimingAndPayloadUnchanged": true,
+        "packetTimingSHA256": "e42b4f0376525ead21fbc36bb83bcebc18e7c10758c9b7384856ea1cc2c162db",
+        "packetTimingAndPayloadSHA256": "d8698c43803538e2162c7e922cf4f4e90596e6d4f96175c95e2bf8982ff50cfa",
+        "hashEncoding": "read order; 6 little-endian int64 fields (stream,pts,dts,duration,size,flags), then payload for combined digest",
+        "rawRuns": [
+          {
+            "path": "artifacts/avformat-timing-probe/sdr-mp4-final-helper-quantized-probe0.jsonl",
+            "sha256": "19c8c7481ec31d79c81b075857e79179aa66d155541d10d10e5c34bcd43c4b5b",
+            "bytes": 1829
+          },
+          {
+            "path": "artifacts/avformat-timing-probe/sdr-mp4-final-helper-quantized-probe1.jsonl",
+            "sha256": "e679f129f4808afec01393d9112a6d166c2c0a5617ecc99964cb5fc8ed83f1c5",
+            "bytes": 2340
+          }
+        ],
+        "actualLoadedAvformat": {
+          "path": "/opt/homebrew/Cellar/ffmpeg/9.0.1_1/lib/libavformat.63.1.101.dylib",
+          "sha256": "ad5852a3387d1961607a28a7d41036ae159b604be33791f8c8dc22704eb2986c"
+        }
+      },
+      {
+        "id": "hlg-mp4",
+        "source": {
+          "path": "assets/test-clips/hlg-60.mp4",
+          "sha256": "8ec456e22000ae698a2ce3505278eea6462ee09106e179e3a8e25f35cf5dd097",
+          "bytes": 322982
+        },
+        "sourceUnchanged": true,
+        "formatStartAfterOpen": -9223372036854775808,
+        "formatDurationAfterOpen": -9223372036854775808,
+        "formatStartAfterPacketInventory": -9223372036854775808,
+        "streamHeaders": [
+          {
+            "index": 0,
+            "type": "video",
+            "timeBase": [
+              1,
+              15360
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 30720,
+            "frames": 120
+          },
+          {
+            "index": 1,
+            "type": "audio",
+            "timeBase": [
+              1,
+              48000
+            ],
+            "start": 0,
+            "startKnown": true,
+            "duration": 96000,
+            "frames": 95
+          }
+        ],
+        "resolvedStartUS": 0,
+        "resolvedDurationSeconds": 2.0,
+        "probedAggregateStartUS": 0,
+        "probedAggregateDurationUS": 2000000,
+        "originMatchesProbed": true,
+        "durationMatchesConservativePolicy": true,
+        "packetTimingAndPayloadUnchanged": true,
+        "packetTimingSHA256": "7084b74730f3daf81c31f9b4894f70ab428ba947a62e08dbd647fdc051efffbc",
+        "packetTimingAndPayloadSHA256": "1015382adbd4e2074a8c5a2969959d3810216e68f1e68b6f7d5db5ccecae9b75",
+        "hashEncoding": "read order; 6 little-endian int64 fields (stream,pts,dts,duration,size,flags), then payload for combined digest",
+        "rawRuns": [
+          {
+            "path": "artifacts/avformat-timing-probe/hlg-mp4-final-helper-quantized-probe0.jsonl",
+            "sha256": "1043969ad1838020ca2caaa5e09d82ef00e786049defe928f4228a6bfb25cda1",
+            "bytes": 1832
+          },
+          {
+            "path": "artifacts/avformat-timing-probe/hlg-mp4-final-helper-quantized-probe1.jsonl",
+            "sha256": "8ae8e857fa6fc50358732c74fd9c42e08c1ba7f1e1eeeab92a0268016f82a347",
+            "bytes": 2344
+          }
+        ],
+        "actualLoadedAvformat": {
+          "path": "/opt/homebrew/Cellar/ffmpeg/9.0.1_1/lib/libavformat.63.1.101.dylib",
+          "sha256": "ad5852a3387d1961607a28a7d41036ae159b604be33791f8c8dc22704eb2986c"
+        }
+      }
+    ]
+  },
+  "implementation": {
+    "origin": "Use earliest valid known nonattached A/V header start only when AVFormatContext.start_time is AV_NOPTS_VALUE; preserve supplied aggregate origin.",
+    "duration": "Retain existing estimate unless a checked known A/V end minus chosen origin exceeds ceil(existingDuration * AV_TIME_BASE). Add start+duration in original ticks before one endpoint rescale.",
+    "precision": "Enclosing-microsecond comparison preserves existing precise Double durations; no artificial rounded sub-microsecond tail. HDR10+ real 41.708333ms extension remains.",
+    "exclusions": "Subtitle/data/attached-picture streams, invalid timebase, unknown start, nonpositive/unknown duration and arithmetic/rescale overflow cannot invent a span. This intentionally differs from full FFmpeg aggregate inference.",
+    "packetTiming": "Product patch changes aggregate origin/range only. Existing player rebase applies its offset before decoding; source file packet timing/content is not rewritten.",
+    "preparedIdentity": "Independent provider applies active source_timestamp_offset once. Identifier contains mpv revision, demuxer, timestamp offset, decoder/timing policy and color settings; former zero-offset keys are distinct."
+  },
+  "timeline": {
+    "offsetSeconds": -9.956,
+    "offsetVideoTicks": [
+      -238944,
+      24000
+    ],
+    "p5First": {
+      "originalFile": [
+        240000,
+        24000
+      ],
+      "decoderAfterOffset": [
+        1056,
+        24000
+      ],
+      "expectedSettledPlayerSeconds": 0.044
+    },
+    "hdr10plusFirst": {
+      "originalFile": [
+        241001,
+        24000
+      ],
+      "decoderAfterOffset": [
+        2057,
+        24000
+      ],
+      "expectedSettledPlayerSeconds": 0.08570833333333333
+    },
+    "initialNativePropertyCaveat": "The first native snapshots have time-pos=0, so that check establishes original-file\u2194decoder identity only. Initial player property is unsettled. Last-frame player mapping is checked; app/Prepared held observations supply settled mapping."
+  },
+  "finalNative": {
+    "path": "artifacts/avformat-timing-probe/native-default-final/report.json",
+    "sha256": "ab86c402a086222489a6e61284921808676ed3ce5cdcf2d7fd9b83b8940c7ad1",
+    "bytes": 9283,
+    "harness": {
+      "path": "artifacts/avformat-timing-probe/test-native-final.py",
+      "sha256": "9e5e838c5b1b4f861a2099fd742b03e9841d6ab3335f2c9e1e8ad149b1e33a8f",
+      "bytes": 4553
+    },
+    "passed": true,
+    "binariesUnchanged": true,
+    "cases": [
+      {
+        "id": "p5",
+        "passed": true,
+        "exitCode": 0,
+        "probeInfo": "auto",
+        "rebase": true,
+        "startSeconds": 9.956,
+        "durationSeconds": 98.475667,
+        "first": {
+          "originalFilePTS": "10",
+          "decoderPTS": "11/250",
+          "playerSeconds": 0.0
+        },
+        "firstPlayerMappingChecked": false,
+        "last": {
+          "originalFilePTS": "2601359/24000",
+          "decoderPTS": "472483/4800",
+          "playerSeconds": 98.433958
+        },
+        "lastPlayerTarget": "472483/4800",
+        "lastPlayerMappingChecked": true,
+        "submittedFrames": 0,
+        "log": {
+          "path": "artifacts/avformat-timing-probe/native-default-final/p5.log",
+          "sha256": "37efe9a7793374882a2521034ce1c41016be1ef5830a5041638111557e3a46b7",
+          "bytes": 79410
+        }
+      },
+      {
+        "id": "hdr10plus",
+        "passed": true,
+        "exitCode": 0,
+        "probeInfo": "auto",
+        "rebase": true,
+        "startSeconds": 9.956,
+        "durationSeconds": 98.517375,
+        "first": {
+          "originalFilePTS": "241001/24000",
+          "decoderPTS": "2057/24000",
+          "playerSeconds": 0.0
+        },
+        "firstPlayerMappingChecked": false,
+        "last": {
+          "originalFilePTS": "65059/600",
+          "decoderPTS": "295427/3000",
+          "playerSeconds": 98.475667
+        },
+        "lastPlayerTarget": "295427/3000",
+        "lastPlayerMappingChecked": true,
+        "submittedFrames": 0,
+        "log": {
+          "path": "artifacts/avformat-timing-probe/native-default-final/hdr10plus.log",
+          "sha256": "c3c6b6b3c40d96ec10ddf6312207fa47d76b9d6a009f78f532f9a2380437ee8c",
+          "bytes": 131261
+        }
+      }
+    ],
+    "binaries": [
+      {
+        "path": "artifacts/mpv-build/mpv",
+        "sha256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef",
+        "bytes": 5597584,
+        "beforeSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef",
+        "afterSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef"
+      },
+      {
+        "path": "artifacts/mpv-build/libmpv.2.dylib",
+        "sha256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf",
+        "bytes": 5597136,
+        "beforeSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf",
+        "afterSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf"
+      },
+      {
+        "path": ".build/debug/libFrameEngineShared.dylib",
+        "sha256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "bytes": 50139368,
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      }
+    ]
+  },
+  "historicalReports": [
+    {
+      "path": "artifacts/dovi-apple-profile5-near-end/report.json",
+      "sha256": "79a2acd3ab538b964a3d39a1c87932af225218876795f99e9806beff9a03a160",
+      "bytes": 19501,
+      "scope": "Original failing near-end range; retained failure, not final source.",
+      "passed": false,
+      "binariesUnchanged": true,
+      "failure": "AssertionError: Native duration/DOM maximum 98.475667s clips source near-end 107.88945833333334s, although the direct native bridge selects its exact source PTS"
+    },
+    {
+      "path": "artifacts/dovi-apple-profile5-probe-control-2/report.json",
+      "sha256": "07491d3978b1b433b627297ef5daced6c477ea458b03f0636113e7c2acec7b9f",
+      "bytes": 21692,
+      "scope": "Full stream-probing diagnostic control on former core; production default unchanged.",
+      "passed": true,
+      "binariesUnchanged": true,
+      "app": {
+        "passed": true,
+        "exitCode": 0,
+        "nativeCoreDestroyed": true,
+        "checkCount": 21
+      }
+    },
+    {
+      "path": "artifacts/avformat-timing-probe/native-default/report.json",
+      "sha256": "e152a546c2a13a66a774e0bfc9e6d78a22f3ed391d93abb865031fe822614f79",
+      "bytes": 9271,
+      "scope": "Initial helper before conservative duration-precision refinement.",
+      "passed": true,
+      "binariesUnchanged": true
+    },
+    {
+      "path": "artifacts/dovi-apple-profile5-default-final/report.json",
+      "sha256": "389abb1f0ce4265fe13d22b7fab679bbc3da0457adaa2e17d311e1c1693d5856",
+      "bytes": 22764,
+      "scope": "Pre-refinement candidate app22/native pass; not final published binary.",
+      "passed": true,
+      "binariesUnchanged": true,
+      "app": {
+        "passed": true,
+        "exitCode": 0,
+        "nativeCoreDestroyed": true,
+        "checkCount": 22
+      }
+    },
+    {
+      "path": "artifacts/dovi-apple-default-fate5-final/report.json",
+      "sha256": "db63f010ccc9605b194356b1ad7718b338358c5214e2f94423b06c1e5e135661",
+      "bytes": 8314,
+      "scope": "Pre-refinement FATE5 app7/native/rejection pass; precise CPU controls subsequently rerun.",
+      "passed": true,
+      "binariesUnchanged": true,
+      "app": {
+        "passed": true,
+        "exitCode": 0,
+        "nativeCoreDestroyed": true,
+        "checkCount": 7
+      }
+    },
+    {
+      "path": "artifacts/dovi-apple-default-fate84-final/report.json",
+      "sha256": "abef668c99fa45c4952a8541b258f0e6d60b5950b84a776f4d88949775f4049b",
+      "bytes": 16053,
+      "scope": "Pre-refinement FATE8.4 app7/native/HLG-base/rejection pass; precise CPU controls subsequently rerun.",
+      "passed": true,
+      "binariesUnchanged": true,
+      "app": {
+        "passed": true,
+        "exitCode": 0,
+        "nativeCoreDestroyed": true,
+        "checkCount": 7
+      }
+    },
+    {
+      "path": "artifacts/dovi-apple-profile5-default-refined/report.json",
+      "sha256": "aab53234db59691df128eadffa88d70a1ea668db56252b9ee91f79c5f05bf32b",
+      "bytes": 21340,
+      "scope": "Final published core: native three representative frames/screenshots/progression and near-end passed; app short progression sample failed. Cause not established; retained failure.",
+      "passed": false,
+      "binariesUnchanged": true,
+      "failure": "AssertionError: Representative native frames did not progress"
+    }
+  ],
+  "pendingGates": [
+    "Final published-revision nonzero-origin real NR Prepared hit/miss/reuse gate; provider contract above is source-audited, not this pending runtime acceptance."
+  ],
+  "primarySource": "https://github.com/FFmpeg/FFmpeg/blob/n9.0.1/libavformat/demux.c",
+  "retainedDiagnosticIterations": {
+    "initialPacketComparisons": {
+      "path": "artifacts/avformat-timing-probe/comparison.json",
+      "sha256": "9025ca4744d727067610e8ad1e1669e2cf05c53295d1aef261cf634decb60548",
+      "bytes": 76059
+    },
+    "preRefinementHelperComparisons": {
+      "path": "artifacts/avformat-timing-probe/comparison-final-helper.json",
+      "sha256": "8d46a75f60d2478b7a0a72b680bcaff0e02eb6f8f50aca888eefbcdf6e63ead1",
+      "bytes": 81504
+    },
+    "scope": "Early strict comparison against a rounded aggregate duration failed by sub-microsecond precision; corrected reference preserves longer precise track values. Partial raw files with final-helper-probe prefixes remain. Initial nonexistent source-path attempts produced empty logs and are not playback evidence."
+  },
+  "finalApp": {
+    "path": "artifacts/dovi-apple-profile5-default-refined-observed/report.json",
+    "sha256": "9e4fbff7955e7ea5a3e25b4feb40a53c1a32dc8c74d81201a22757b9f0be2ac9",
+    "bytes": 22925,
+    "scope": "Final published core/default options; app-only diagnostic sample fields added before this repeat, same 1.2-second/at-least-six-PTS progression threshold.",
+    "passed": true,
+    "binariesUnchanged": true,
+    "app": {
+      "passed": true,
+      "exitCode": 0,
+      "nativeCoreDestroyed": true,
+      "checkCount": 22
+    },
+    "revision": "a9466025dcf459f82f591f42dc12a517a50e7efa",
+    "sourceHashesUnchanged": true,
+    "dom": {
+      "path": "artifacts/dovi-apple-profile5-default-refined-observed/dom.json",
+      "sha256": "47779060c88c5bef4855864884016f844588a10e9447a4c210b1bef25adee697",
+      "bytes": 132618
+    },
+    "lifecycle": {
+      "path": "artifacts/dovi-apple-profile5-default-refined-observed/lifecycle.jsonl",
+      "sha256": "5bbee220ed5df8391a85a6cb8294d72dfa87ac3db90f7da2bc6a0d2f36f6e3cf",
+      "bytes": 28268
+    },
+    "inventories": [
+      {
+        "path": "artifacts/dovi-apple-profile5-default-refined-observed/packet-inventory.json",
+        "sha256": "5924257d9dec8745bd932c38626eab904882946bc54de870519d2a96c708d1e4",
+        "bytes": 2606916
+      },
+      {
+        "path": "artifacts/dovi-apple-profile5-default-refined-observed/seek-inventory.json",
+        "sha256": "8adf34143ca43204d9b9d7b71d61cdbfc9946a96aa0fd6d485c3f0e6beae3633",
+        "bytes": 136546
+      },
+      {
+        "path": "artifacts/dovi-apple-profile5-default-refined-observed/decoded-metadata.json",
+        "sha256": "20a289b5ff0086ccb8e21765809594d525154f630dc0e2a6803bf71d016aba05",
+        "bytes": 20119
+      }
+    ],
+    "interpretedScreenshots": [
+      {
+        "path": "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-1.png",
+        "sha256": "5f6220cd858a63d307ee857eaf34b465296d77a96ac8ea7a9fbb96cfbb335b6d",
+        "bytes": 4272408
+      },
+      {
+        "path": "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-2.png",
+        "sha256": "c152fa793ae78c1ca3ccd8fea39fa5f919d2c7c1c5f43f1d82af827d5cb8cb7a",
+        "bytes": 10769914
+      },
+      {
+        "path": "artifacts/dovi-apple-profile5-default-refined-observed/interpreted-source-3.png",
+        "sha256": "6ab155cb3846c7b95df094daea0c5924ec7f8193b8ced02bbda95ea9d4acf66b",
+        "bytes": 7223484
+      }
+    ],
+    "progressionObservations": [
+      {
+        "sourcePTS": [
+          533293,
+          536296,
+          539299,
+          543303,
+          546306,
+          549309,
+          552312,
+          555315,
+          558318,
+          561321
+        ],
+        "distinctOriginalPTSCount": 10,
+        "elapsedSeconds": 1.2626812083180994,
+        "sampleCount": 12,
+        "allAppActiveOnActiveSpaceAndOcclusionVisible": true,
+        "allUnpausedAndNotBuffering": true
+      },
+      {
+        "sourcePTS": [
+          1254013,
+          1257016,
+          1261020,
+          1264023,
+          1267026,
+          1270029,
+          1273032,
+          1276035,
+          1279038
+        ],
+        "distinctOriginalPTSCount": 9,
+        "elapsedSeconds": 1.24895912501961,
+        "sampleCount": 12,
+        "allAppActiveOnActiveSpaceAndOcclusionVisible": true,
+        "allUnpausedAndNotBuffering": true
+      },
+      {
+        "sourcePTS": [
+          1970729,
+          1973732,
+          1976735,
+          1979738,
+          1983742,
+          1986745,
+          1989748,
+          1992751,
+          1995754,
+          1998757
+        ],
+        "distinctOriginalPTSCount": 10,
+        "elapsedSeconds": 1.2600525832967833,
+        "sampleCount": 12,
+        "allAppActiveOnActiveSpaceAndOcclusionVisible": true,
+        "allUnpausedAndNotBuffering": true
+      }
+    ],
+    "runtimeBinariesAtCapture": {
+      "mpv": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/mpv",
+        "beforeSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef",
+        "afterSHA256": "65d11cdbb117862fccbd9955465f638a7feb1e3ac0d5b5dc46552087ece397ef"
+      },
+      "FrameEngineShared": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      },
+      "HDRPlayer": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+        "beforeSHA256": "39dd31e66a9db38da34e176b8d00ef6021e04f592fe845776798caa0c6fe76ee",
+        "afterSHA256": "39dd31e66a9db38da34e176b8d00ef6021e04f592fe845776798caa0c6fe76ee"
+      },
+      "libmpv": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+        "beforeSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf",
+        "afterSHA256": "f6228d7e6182b58dd866de88b2a03cc841c445ac58d526578d58ada93b66bedf"
+      }
+    },
+    "retainedFailure": "artifacts/dovi-apple-profile5-default-refined/report.json failed a short app progression observation; cause remains unresolved. Its native targets/screenshots/near-end checks passed. No production change or lowered threshold in the repeat."
+  }
+}
