@@ -1,0 +1,86 @@
+{
+  "activeGrowthToleranceBytes": 67108864,
+  "device": "Apple M3",
+  "elapsedSeconds": 21.820626258850098,
+  "engineSourceManifestSHA256": "9a3c3b009997b5624db1f22c88a2b302c06d88b09a8c973769e655f32339036f",
+  "modes": [
+    {
+      "allDrainedModelCountsZero": true,
+      "allDrainedModelPayloadBytesZero": true,
+      "cancelledFrames": 12,
+      "completedFrames": 48,
+      "cycles": 12,
+      "drainedActiveValuesBytes": [
+        0
+      ],
+      "drainedCacheMaximumBytes": 737280,
+      "drainedResidentRangeBytes": [
+        51642368,
+        51986432
+      ],
+      "maximumCloseConsumerDrainSeconds": 0.003720875014550984,
+      "maximumResetGPUDrainSeconds": 0.0022880833130329847,
+      "maximumSlots": 3,
+      "maximumSubmissionSeconds": 2.979172859340906e-05,
+      "measuredCycles": 9,
+      "mlxReportedPeakActiveBytes": 1474560,
+      "mode": "original",
+      "peakReservedFrameBytes": 8665536,
+      "redrawChecks": 384,
+      "sampledDrainedActiveMedianGrowthBytes": 0,
+      "sampledDrainedResidentMedianGrowthBytes": 147456,
+      "sampledHeldResidentPeakBytes": 52723712
+    },
+    {
+      "allDrainedModelCountsZero": true,
+      "allDrainedModelPayloadBytesZero": true,
+      "cancelledFrames": 12,
+      "completedFrames": 48,
+      "cycles": 12,
+      "drainedActiveValuesBytes": [
+        768
+      ],
+      "drainedCacheMaximumBytes": 274793010,
+      "drainedResidentRangeBytes": [
+        98238464,
+        103874560
+      ],
+      "maximumCloseConsumerDrainSeconds": 0.01104958332143724,
+      "maximumResetGPUDrainSeconds": 0.2243644166737795,
+      "maximumSlots": 3,
+      "maximumSubmissionSeconds": 3.287498839199543e-05,
+      "measuredCycles": 9,
+      "mlxReportedPeakActiveBytes": 682825818,
+      "mode": "neural",
+      "peakReservedFrameBytes": 8665536,
+      "redrawChecks": 384,
+      "sampledDrainedActiveMedianGrowthBytes": 0,
+      "sampledDrainedResidentMedianGrowthBytes": -884736,
+      "sampledHeldResidentPeakBytes": 394657792
+    }
+  ],
+  "osVersion": "Version 26.5 (Build 25F71)",
+  "passed": true,
+  "physicalMemoryBytes": 17179869184,
+  "processingHeight": 96,
+  "processingWidth": 160,
+  "provenance": {
+    "alternateVideoSHA256": "8ec456e22000ae698a2ce3505278eea6462ee09106e179e3a8e25f35cf5dd097",
+    "benchmarkSHA256": "6306bf3df776bc92802409a7c2c944b1d790c523618524576b6e4fb2d043bba1",
+    "binaryUnchanged": true,
+    "metallibSHA256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "mlxRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+    "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "rootRevision": "d8c8fbafa3ed38cfe8832dace313a2073b0abc00",
+    "sourceTreeClean": false,
+    "sourcesUnchanged": true,
+    "videoSHA256": "8ae84e52bfa515b432d2a78d66811be987fd5a4e1bd668c9064af0a555a58924"
+  },
+  "residentGrowthToleranceBytes": 134217728,
+  "schemaVersion": 1,
+  "scope": "Bounded offscreen lifecycle and sampled allocator stress; no presentation, physical-memory hard cap or sustained FPS claim",
+  "sourceHeight": 192,
+  "sourceWidth": 320,
+  "violations": [],
+  "warmupCyclesPerMode": 3
+}

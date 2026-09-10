@@ -18,7 +18,7 @@ let package = Package(
         .systemLibrary(name: "CMpv", path: "packages/CMpv"),
         .target(name: "FrameEngine", dependencies: ["CFrameEngine", .product(name: "DLSSMedia", package: "MLX-DLSS"), .product(name: "DLSSMLX", package: "MLX-DLSS")], path: "packages/FrameEngine/Sources"),
         .executableTarget(name: "HDRProbe", dependencies: ["FrameEngine"], path: "tools/HDRProbe"),
-        .executableTarget(name: "FrameBenchmark", dependencies: ["FrameEngine", "CFrameEngine", .product(name: "DLSSMedia", package: "MLX-DLSS")], path: "tools/FrameBenchmark"),
+        .executableTarget(name: "FrameBenchmark", dependencies: ["FrameEngine", "CFrameEngine", .product(name: "DLSSMedia", package: "MLX-DLSS"), .product(name: "DLSSMLX", package: "MLX-DLSS")], path: "tools/FrameBenchmark"),
         .executableTarget(name: "HDRPlayer", dependencies: ["CMpv"],
                           path: "apps/macos/Sources", resources: [.copy("Resources/Controls")]),
         .executableTarget(name: "HDRHarness", dependencies: ["FrameEngine", .product(name: "DLSSMedia", package: "MLX-DLSS"), .product(name: "DLSSMLX", package: "MLX-DLSS")],
