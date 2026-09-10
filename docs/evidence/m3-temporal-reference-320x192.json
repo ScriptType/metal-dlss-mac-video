@@ -1,0 +1,282 @@
+{
+  "afterSHA256": {
+    ".build/debug/hdr-benchmark": "7c27d54aaf7c42d986d9e442cb16df65145e43c0e526850be3342acb273cef30",
+    ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+    "artifacts/cosmos-reference-cut-input/manifest.json": "565a0423611721a0cc2530338f0db34cfe38066ef52b447388d540580ca1a2bd",
+    "artifacts/cosmos-reference-input-box/manifest.json": "30b621693df68abf31f44df64b9d08fc6075fac75e2f0fad37caabfbe9c394fd",
+    "artifacts/mpv-build/libmpv.2.dylib": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+    "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+  },
+  "beforeSHA256": {
+    ".build/debug/hdr-benchmark": "7c27d54aaf7c42d986d9e442cb16df65145e43c0e526850be3342acb273cef30",
+    ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+    "artifacts/cosmos-reference-cut-input/manifest.json": "565a0423611721a0cc2530338f0db34cfe38066ef52b447388d540580ca1a2bd",
+    "artifacts/cosmos-reference-input-box/manifest.json": "30b621693df68abf31f44df64b9d08fc6075fac75e2f0fad37caabfbe9c394fd",
+    "artifacts/mpv-build/libmpv.2.dylib": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+    "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+  },
+  "binariesModelAndInputsUnchanged": true,
+  "captureRuntime": {
+    "arguments": [
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/debug/hdr-benchmark",
+      "--reference-sequence",
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/cosmos-reference-input-box/manifest.json",
+      "--output",
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/cosmos-reference-capture-320x192",
+      "--model",
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel",
+      "--width",
+      "320",
+      "--height",
+      "192"
+    ],
+    "binary": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/hdr-benchmark",
+    "binarySHA256": "7c27d54aaf7c42d986d9e442cb16df65145e43c0e526850be3342acb273cef30",
+    "diffSHA256": "36f767f6e01a68d52d74a175bca5188ea8c7919878855e84e3a3dd155af5c93b",
+    "mlxDLSSRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+    "mpvRevision": "904d1e05dfa9be551acd95fe562722c0e3b26e33",
+    "os": "Version 26.5 (Build 25F71)",
+    "rootRevision": "1a03a092db1a00ea3799286a88d1e873266fe27e",
+    "rootStatus": " M apps/macos/Sources/PictureInPictureController.swift\n M docs/hdr-compositor-capture.md\n M docs/implementation-handoff.md\n M docs/implementation-status.md\n M docs/open-content-reference.md\n M docs/picture-in-picture.md\n?? apps/macos/Sources/PiPBufferSnapshot.swift\n?? docs/evidence/cosmos-publisher-metadata.json\n?? docs/evidence/m3-pip-compositor-isolation.json\n?? scripts/verify-pip-buffer-snapshot.py",
+    "sourceSHA256": {
+      "tools/FrameBenchmark/FrameBenchmarkCommand.swift": "fb3a2d88965cf0528270891b105265406d72c7bfaceaf88107e47030a8368a36",
+      "tools/FrameBenchmark/FrameReferenceSequence.swift": "d3c5cf856a87faee21077d2cfa68f37b9f7734addcd0a6c62339ea161628773c",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift": "6eeacf6699f1f0978b121811970a0ad77e53378ac197c33fde17681510685389",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift": "93e6b12dd7f4338e286af12eb90a9286f01658d17a9ede944fd39b0d851e4749",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+    }
+  },
+  "continuous": {
+    "allOriginalBytesMatchInput": true,
+    "allViewsFinite": true,
+    "captureWallSeconds": 10.503669917,
+    "finalMLXBytes": {
+      "active": 305301920,
+      "cache": 268576502,
+      "peakActive": 608415948
+    },
+    "firstPTS": {
+      "timescale": 1,
+      "value": 0
+    },
+    "frames": 48,
+    "historyResetOrdinals": [
+      0,
+      2
+    ],
+    "identityMaximumAbsoluteErrorNits": 0.0009765625,
+    "lastPTS": {
+      "timescale": 2997,
+      "value": 5875
+    },
+    "peakMLXActiveBytes": 608415948,
+    "processWallSeconds": 11.65635816694703,
+    "sourceDimensions": [
+      320,
+      134
+    ],
+    "sourceFrameIndices": [
+      10000,
+      10047
+    ]
+  },
+  "device": {
+    "name": "Apple M3",
+    "registryID": 4294968507,
+    "unifiedMemory": true
+  },
+  "freshCut": {
+    "captureWallSeconds": 1.293700792,
+    "comparison": {
+      "enhanced": {
+        "byteIdentical": true,
+        "components": 128640,
+        "continuousPath": "artifacts/cosmos-reference-capture-320x192/frame-0002/enhanced.rgb32f",
+        "continuousSHA256": "1f64d2ed94c57dfba5af9d867cb8c146c98d5bf80f74041ee4c1994f27d6b949",
+        "differentComponents": 0,
+        "freshPath": "artifacts/cosmos-reference-cut-cold-320x192/frame-0000/enhanced.rgb32f",
+        "freshSHA256": "1f64d2ed94c57dfba5af9d867cb8c146c98d5bf80f74041ee4c1994f27d6b949",
+        "maximumAbsoluteDifference": 0.0,
+        "rmsDifference": 0.0
+      },
+      "identity": {
+        "byteIdentical": true,
+        "components": 128640,
+        "continuousPath": "artifacts/cosmos-reference-capture-320x192/frame-0002/identity.rgb32f",
+        "continuousSHA256": "6c18b1d6661c953c0456692e585da95e5bd423fa1bbe1a827a3e968310f2bd89",
+        "differentComponents": 0,
+        "freshPath": "artifacts/cosmos-reference-cut-cold-320x192/frame-0000/identity.rgb32f",
+        "freshSHA256": "6c18b1d6661c953c0456692e585da95e5bd423fa1bbe1a827a3e968310f2bd89",
+        "maximumAbsoluteDifference": 0.0,
+        "rmsDifference": 0.0
+      },
+      "original": {
+        "byteIdentical": true,
+        "components": 128640,
+        "continuousPath": "artifacts/cosmos-reference-capture-320x192/frame-0002/original.rgb32f",
+        "continuousSHA256": "4b18a12de99d4f0fceeceb7bf1f56c841f9a806af5368bae2c373a516397ae72",
+        "differentComponents": 0,
+        "freshPath": "artifacts/cosmos-reference-cut-cold-320x192/frame-0000/original.rgb32f",
+        "freshSHA256": "4b18a12de99d4f0fceeceb7bf1f56c841f9a806af5368bae2c373a516397ae72",
+        "maximumAbsoluteDifference": 0.0,
+        "rmsDifference": 0.0
+      },
+      "proxy": {
+        "byteIdentical": true,
+        "components": 128640,
+        "continuousPath": "artifacts/cosmos-reference-capture-320x192/frame-0002/proxy.rgb32f",
+        "continuousSHA256": "bde664f3435538ca69fe7c8d3a37a541f52b48b167db8a5a93ee456c1ddb0f6f",
+        "differentComponents": 0,
+        "freshPath": "artifacts/cosmos-reference-cut-cold-320x192/frame-0000/proxy.rgb32f",
+        "freshSHA256": "bde664f3435538ca69fe7c8d3a37a541f52b48b167db8a5a93ee456c1ddb0f6f",
+        "maximumAbsoluteDifference": 0.0,
+        "rmsDifference": 0.0
+      }
+    },
+    "conclusion": "All four complete RGB32F views are byte-identical at the cut to an independently started processor on the same exact frame; this is evidence for this cut/configuration only",
+    "duration": {
+      "timescale": 2997,
+      "value": 125
+    },
+    "historyReset": true,
+    "inputSHA256": "4b18a12de99d4f0fceeceb7bf1f56c841f9a806af5368bae2c373a516397ae72",
+    "knownInputDiscontinuities": [
+      "cold-start"
+    ],
+    "processWallSeconds": 1.593686499982141,
+    "pts": {
+      "timescale": 2997,
+      "value": 250
+    },
+    "sameModelAndSettings": true,
+    "sourceFrameIndex": 10002
+  },
+  "inputManifestSHA256": "30b621693df68abf31f44df64b9d08fc6075fac75e2f0fad37caabfbe9c394fd",
+  "limitations": [
+    "Source is the same320\u00d7134 floatBOX derivative, with the original extendedPQ/colour-assumption provenance retained; supplemental publisherD65 evidence is separate",
+    "Only one visible cut is compared to fresh history; later flow-state equivalence and broad motion/occlusion quality are not established",
+    "Processing320\u00d7192 alone does not establish the other Live admission criteria or source-rate throughput",
+    "Direct processor capture includes setup/readback/disk work and bypasses native decode, FrameSession admission, RGBA16F packing and presentation",
+    "FixedSDR previews and stationary-coordinate residual deltas are inspection aids, not calibratedHDR or physicalA/V evidence",
+    "MLX allocation counters do not prove a hard process-memory cap"
+  ],
+  "model": {
+    "files": {
+      "manifest.json": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32",
+      "weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+    },
+    "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel"
+  },
+  "passed": true,
+  "rawFiles": {
+    "artifacts/cosmos-reference-320x192-run.json": "1258f809e3ffa23221c5bbae93335431f6f225114e10510ad47a88183d6011f5",
+    "artifacts/cosmos-reference-capture-320x192.log": "d96f54a4a91c76f5c4153dfa67a97de3946f1c78e365a9279a2e409ee6589e9c",
+    "artifacts/cosmos-reference-capture-320x192/manifest.json": "82b3c1221a7a434d1b5271349ccd5cf5ae9abbf3711d594d332a4b9c6de87a13",
+    "artifacts/cosmos-reference-cut-cold-320x192.log": "afa234a1e18b8520deabbe6fb0ebbc71c246320f3738163243b33f7b7a60f483",
+    "artifacts/cosmos-reference-cut-cold-320x192/manifest.json": "af6c1b2788e15e5b6a4353b908e59667dc4d94a3991272a64ddb427278564625",
+    "artifacts/cosmos-reference-cut-input/manifest.json": "565a0423611721a0cc2530338f0db34cfe38066ef52b447388d540580ca1a2bd",
+    "artifacts/cosmos-reference-review-320x192/index.html": "e6bbba56faf84cdbf4e9292bf988b567970e94dac5f68b9e02187947f71aa682",
+    "artifacts/cosmos-reference-review-320x192/review.json": "2e88d3e4f1d9dba24e89d8a70d95273d9034533483113c6c802fa189c6b47fa5"
+  },
+  "recordedUTC": "2026-09-10T02:06:03.694404+00:00",
+  "review": {
+    "frames": 48,
+    "index": "artifacts/cosmos-reference-review-320x192/index.html",
+    "mappedFrameSHA256": {
+      "frame-0000.png": "3ea9333b20fdb823a77db1cf4f0a4217f32f7d4478b67736651582a87efcbce4",
+      "frame-0001.png": "bb2f49fe3959041c91ae069e22bb179758e38e1bf0843d12afb90e3d7b1f1dff",
+      "frame-0002.png": "907030eda12f24083f1a050220df95696fb53b82fc19fe96d48ac2fdad8c447b",
+      "frame-0003.png": "378d30fb63d4bf06a745eb86daf11cbbbdafbd258b67e24bef3cc9bf3cd3fcdc",
+      "frame-0004.png": "6287264ae1d8284b1d1ea7199a9717ffa88dfbd5bc7e3a9fc253a4ff8ef31759",
+      "frame-0005.png": "496853fc31b35f5f2692642b31e72ea6a9b268e647648d5c903bd7200fa0ac6c",
+      "frame-0006.png": "2e3204542c23036b6fa363c7c4e94978a73ac38ed18732f623203d4a9f707774",
+      "frame-0007.png": "952330af6a509af3e0e4e1feada6a8fd82ec6694ab2c69f57e8f6c310b33d328",
+      "frame-0008.png": "a2e85f6db475a758a2f0e44063572fc6c38a14a92df7623d30008c5a71b02fbc",
+      "frame-0009.png": "4f2ab9b4e932ea5e3731f6cc5dcac8007304bbb404af2b36975a899262d4c255",
+      "frame-0010.png": "c8c67d4483e0e610880178109a98f08c1fe4f782343e5a8c43f618ca66b1ec6c",
+      "frame-0011.png": "5e2cbb2c0f5becdbe719df0c42897b52e4250c3f0d27208bddf4ef4ecc01901b",
+      "frame-0012.png": "5cd5ee2bbf2c9d75dbeffa12507d9526342e6f95c3b86d3885b04536be8a04a3",
+      "frame-0013.png": "85a50d0c91f1b859f3fca9671c450bcb47ad3f6ef3f9511980dfa54a8e7c02b5",
+      "frame-0014.png": "cf297d7c7eb0503d8bb2a4891cc2f0a362a6da9abdf30595cb41381514eef205",
+      "frame-0015.png": "67a7efd753ce4e21608d7c1582fb3f1a5db0a34500668a204666fec1075d4ca0",
+      "frame-0016.png": "cc8024d31151b4863f4f7bf1364f775aed9e15523d77ca8f32dfe6350c30a65e",
+      "frame-0017.png": "a7cdbb6118ee160faf165a53e8cbe134f336dea2df699a1a33998b6b94b7ce5c",
+      "frame-0018.png": "8d9e07cada9efdde35a3abf3ba29776446345ddf6f7a173253daddde7a3397dd",
+      "frame-0019.png": "b0a448df8c5b7b404bf00486d2e55e960bce8f1591b3543abe8e3462ae50b565",
+      "frame-0020.png": "ffe42b8d0a92eecbf76cb492052ac94d1addc6fe91c0fcdc15b0adf92261eef1",
+      "frame-0021.png": "1bb735b31fc1700276f5c25f4d33a7d26dc6adface08de49e059baf4e82a8e16",
+      "frame-0022.png": "1b1054b7a1f23dc020d5794956afd4ad51c7846650883c4a4424d068cbc28b7c",
+      "frame-0023.png": "71230ab1d3c8f163e1bb5e5c35ee1ab39c7c5c5a20ce2c6a9bb9c841d8af8566",
+      "frame-0024.png": "36c701157b051b906166e953f7dd40d37a92b5235c1366ae14342db2da9ceff2",
+      "frame-0025.png": "81bab42eb9f5c500bca31f082b72b8151702c5c82b2aceed1abb92dadbe16e35",
+      "frame-0026.png": "fbc9fe05f181e2a240897416a2e188bbd267eb059cebc7fdc809b41e89905122",
+      "frame-0027.png": "8530bd271efd37297fa55cc1b4002b9a0cb96143ef42d5821e099a21bff9b7f1",
+      "frame-0028.png": "de581e73c131ee259fa84b223d9ca6ae4860d18d60bb17f9eab269c0e0488454",
+      "frame-0029.png": "01739db5739730f5a5d6eefa97476deaf5eba688e28aa19affe990109d4ee079",
+      "frame-0030.png": "30578a6939e0f088d71b5c3cf375877e5988a267acc93501d26e40f6fe7f1e70",
+      "frame-0031.png": "b4953e614eddd13438c17afda95c5bdff024541a6c214a554e7c236fe735c1b1",
+      "frame-0032.png": "79fcef297f62eca7842813e0f01c133a6175ca13ab67c974d6e1410f9e6737ef",
+      "frame-0033.png": "4b77a36b39bb4d9fc560dab0931ca67a01802467b8fd637cd23c36d4873e5c6d",
+      "frame-0034.png": "974275cb7331f41cd320efea69e34b99b932d9173a65fb3e5d53e8e14195758c",
+      "frame-0035.png": "fc2bfc840266bbe1a515c422b3cc30f034f625bc03412c5914ac8a57b5848f51",
+      "frame-0036.png": "df61903e9c2957a9ae19f91984c363fea4e0c1bc9297ca9bd6af4f3296f9d9a8",
+      "frame-0037.png": "dd995d318db78859a5e7aa2dccaacda2e85a7ee7ee2d6d34fe48640d47e95ef4",
+      "frame-0038.png": "cb307a8ae96876284e56a195a014ef58382fffd70659b5a8f261b8d29186d77c",
+      "frame-0039.png": "38ecd55631fa72c05178781a01aecd4b3ee159ec6482987ee45a58a67ab2e547",
+      "frame-0040.png": "b571e8285022e34ffa2fa8c7e9d6988ace88ad70ef8d89a3783d7eb295ed1b23",
+      "frame-0041.png": "2faf61c761e559fd2ec29d31db13bba8f06186a438211ce5b7436a3b4b0b73d9",
+      "frame-0042.png": "c3a48219b0f69ca0e4e3ddb1f38cb0ef5817ed4e956af7375080d1f9532fdf0b",
+      "frame-0043.png": "c4778e4aa490f733d30b6a49691d8a1fe41f6278a60c2a10ef8046a4c9982b92",
+      "frame-0044.png": "a3619cc8e30a21c15fa23635297a3a208f3da09e1df13eee13db557ddf09a857",
+      "frame-0045.png": "8c317e525efbfcbbd4be50c835df463c840e9695332e8abe3f9264cbf572b0fe",
+      "frame-0046.png": "909646e095405b0f6627a301e4cd3f2347e108844137591988dc51238736e533",
+      "frame-0047.png": "5e3cca9e7f726e788eaf85fb1b1a4d41b6bb77205f932d2f6261fbd84b28c715"
+    },
+    "mapping": {
+      "BT2020toBT709": [
+        [
+          1.660491,
+          -0.5876411,
+          -0.0728499
+        ],
+        [
+          -0.1245505,
+          1.1328999,
+          -0.0083494
+        ],
+        [
+          -0.0181508,
+          -0.1005789,
+          1.1187297
+        ]
+      ],
+      "encoding": "sRGB piecewise OETF, threshold0.0031308; round to nearest8-bit code; embedded sRGB ICC",
+      "gamut": "clip mapped BT709 components to0...1 before sRGB encoding",
+      "luminance709": [
+        0.2126,
+        0.7152,
+        0.0722
+      ],
+      "name": "fixed SDR inspection, codec-equivalent v1",
+      "negativeSourceClamp": "max(component,0) for review only",
+      "proxy": "already bounded encoded sRGB; only8-bit quantization",
+      "referenceWhiteNits": 203.0,
+      "rolloff": "Y>0.75: Y'=0.75+0.25*(1-exp(-(Y-0.75)/0.25)); scale RGB by Y'/Y"
+    }
+  },
+  "schemaVersion": 1,
+  "scope": "Larger processing-shape natural sequence plus exact cut-frame fresh-state equivalence; no Live or general temporal-quality acceptance",
+  "settings": {
+    "colourStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "mlxCacheBytes": 268435456,
+    "motionRequested": "automatic",
+    "precision": "float16",
+    "processingHeight": 192,
+    "processingWidth": 320,
+    "referenceWhiteNits": 203,
+    "sceneCutThreshold": 0.3,
+    "strength": 1,
+    "temporal": true
+  }
+}

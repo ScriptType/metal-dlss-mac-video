@@ -3,7 +3,7 @@
     "All48 legacy source EXRs match the size and MD5 of the corresponding frame-index entries in the publisher checksum list for the explicitly documented P3-D65 VDM",
     "This supplies source-specific publisher support for D65; historical derived/capture manifests retain their earlier assumption labels and original hashes",
     "The README does not describe negative or above-one PQ codes or authorize the selected signed/analytic extension",
-    "A4000nit mastering display does not establish calibrated luminance for the diagnostic extended-domain derivative"
+    "The documented4000nit mastering level does not establish calibrated luminance for the diagnostic extended-domain derivative"
   ],
   "frameTiming": {
     "derivativeDuration": {
@@ -488,8 +488,8 @@
     "channels": "RGB",
     "codingRange": "full",
     "colourPrimariesAndWhite": "P3-D65",
+    "masteringMaximumNits": 4000,
     "nominalFrameRate": 24,
-    "referenceDisplayMaximumNits": 4000,
     "referenceDomain": "output-referred",
     "storage": "16-bit floating-point EXR",
     "transfer": "PQ"

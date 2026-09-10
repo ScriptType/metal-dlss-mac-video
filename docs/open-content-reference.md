@@ -17,7 +17,7 @@ The temporal fixture instead uses 48 original RGB HALF EXR files from Cosmos Lau
 
 ## Publisher metadata match
 
-Netflix's [asset README](https://s3.amazonaws.com/download.opencontent.netflix.com/TechblogAssets/README.txt), linked from its [production article](https://netflixtechblog.com/engineers-making-movies-aka-open-source-test-content-f21363ea3781), identifies the Cosmos Video Display Master as output-referred RGB with P3-D65 primaries, PQ transfer and full-range half-float EXR storage, mastered on a 4,000-cd/m² reference display. This documentation points to a separate VDM directory rather than the older download paths used by the fixture.
+Netflix's [asset README](https://s3.amazonaws.com/download.opencontent.netflix.com/TechblogAssets/README.txt), linked from its [production article](https://netflixtechblog.com/engineers-making-movies-aka-open-source-test-content-f21363ea3781), identifies the 4,000-cd/m² Cosmos Video Display Master as output-referred RGB with P3-D65 primaries, PQ transfer and full-range half-float EXR storage. This documentation points to a separate VDM directory rather than the older download paths used by the fixture.
 
 The [metadata verification](evidence/cosmos-publisher-metadata.json) matches all 48 pinned legacy files against that VDM directory's publisher checksum list: each corresponding frame index has the same size and MD5, and each local SHA256 still matches the source catalog. The evidence retains the README and checksum-list URLs, bytes and SHA256 values. This is a match to publisher checksum metadata, not an independent download of the second image sequence or display calibration.
 
