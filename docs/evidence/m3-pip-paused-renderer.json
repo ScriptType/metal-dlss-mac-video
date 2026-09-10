@@ -1,0 +1,114 @@
+{
+  "afterFlush": {
+    "available": true,
+    "firstPixelBits": [
+      0,
+      0,
+      15360,
+      15360
+    ],
+    "height": 48,
+    "pixelFormat": 1380411457,
+    "width": 64
+  },
+  "observations": [
+    {
+      "afterSelectedAnchor": {
+        "available": true,
+        "firstPixelBits": [
+          15360,
+          0,
+          0,
+          15360
+        ],
+        "height": 48,
+        "pixelFormat": 1380411457,
+        "width": 64
+      },
+      "beforeSelectedAnchor": {
+        "available": true,
+        "firstPixelBits": [
+          15360,
+          0,
+          0,
+          15360
+        ],
+        "height": 48,
+        "pixelFormat": 1380411457,
+        "width": 64
+      },
+      "expectedPixelBits": [
+        15360,
+        0,
+        0,
+        15360
+      ],
+      "heldClockSeconds": 0.98,
+      "sampleAheadSeconds": 0.02,
+      "sourcePTS": {
+        "timescale": 1,
+        "value": 1
+      }
+    },
+    {
+      "afterSelectedAnchor": {
+        "available": true,
+        "firstPixelBits": [
+          0,
+          0,
+          15360,
+          15360
+        ],
+        "height": 48,
+        "pixelFormat": 1380411457,
+        "width": 64
+      },
+      "beforeSelectedAnchor": {
+        "available": true,
+        "firstPixelBits": [
+          0,
+          0,
+          15360,
+          15360
+        ],
+        "height": 48,
+        "pixelFormat": 1380411457,
+        "width": 64
+      },
+      "expectedPixelBits": [
+        0,
+        0,
+        15360,
+        15360
+      ],
+      "heldClockSeconds": 1.995,
+      "sampleAheadSeconds": 0.005,
+      "sourcePTS": {
+        "timescale": 1,
+        "value": 2
+      }
+    }
+  ],
+  "osVersion": "Version 26.5 (Build 25F71)",
+  "passed": true,
+  "schemaVersion": 1,
+  "scope": "Public AVSampleBufferVideoRenderer paused scheduling and copied displayed pixel identity; synthetic linear BT.2020 float, no PiP window/physical HDR or A/V qualification",
+  "device": "Apple M3",
+  "processExitCode": 0,
+  "provenance": {
+    "rootRevision": "af73ae6d8febd5364daf1aa3388080745b8719f4",
+    "captureBaseRevision": "e5c09f311f285cd996e24337862f82b1f6d7c3f4",
+    "sourceTreeClean": false,
+    "report": "artifacts/pip-paused-renderer/report.json",
+    "reportSHA256": "0a782204ab7c981f75808b8ebf57ce8439e7ad69402f50104f137413c7abaea9",
+    "sourceSHA256": "90df0b3d010b0d3057a3de0b43abc1093636aed2eaa994fedbbbcfa4880ca20e",
+    "binary": "artifacts/pip-paused-renderer/PausedRenderer",
+    "binarySHA256": "fb461055c29d661826ae151d8fd3af241abe188da33a5674ac221611cf222483",
+    "buildLog": "artifacts/pip-paused-renderer/build.log"
+  },
+  "interpretation": {
+    "futureSampleFailureReproduced": false,
+    "pausedClockChangedInApp": false,
+    "note": "Both expected float images were returned before selecting their exact PTS as the timebase anchor. The public getter also returned the last image immediately after completed removal flush; this probe makes no final retention or physical scanout claim."
+  }
+}
