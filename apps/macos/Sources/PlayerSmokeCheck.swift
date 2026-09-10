@@ -123,6 +123,52 @@ final class PlayerSmokeCheck {
               state()["error"] == nil else { throw Failure(message: "PiP ownership bound or native playback health failed") }
         checks.append("three export leases, one pending/submitted sample and six producer surfaces stay bounded")
     }
+    private func runSystemPictureInPicture() async throws {
+        guard let path = ProcessInfo.processInfo.environment["HDRPLAYER_SYSTEM_PIP_DIRECTORY"] else {
+            throw Failure(message: "System PiP inspection requires an explicit diagnostic directory")
+        }
+        let directory = URL(fileURLWithPath: path, isDirectory: true)
+        let finish = directory.appendingPathComponent("finish")
+        guard !FileManager.default.fileExists(atPath: finish.path) else {
+            throw Failure(message: "Use a new system PiP diagnostic directory without a stale finish marker")
+        }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        func pip() -> [String: Any] { state()["pip"] as? [String: Any] ?? [:] }
+        try await wait("system PiP source and diagnostic controls initialized", seconds: 20) {
+            pip()["diagnosticEnabled"] as? Bool == true && self.number("duration") > 40 && !self.webView.isLoading
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("system PiP setup pauses the native core") { self.state()["paused"] as? Bool == true }
+        if state()["muted"] as? Bool != true { try await click("mute") }
+        try await change("sub", value: "no")
+        try await change("timeline", value: "20")
+        if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true { try await click("enhancement") }
+        try await wait("system PiP setup receives the paused float frame", seconds: 25) {
+            pip()["available"] as? Bool == true && abs(self.number("position") - 20) < 0.05 && self.state()["paused"] as? Bool == true
+        }
+        try await click("pip")
+        try await wait("system PiP owner ready for external Accessibility inspection", seconds: 12) { pip()["active"] as? Bool == true }
+        let deadline = Date().addingTimeInterval(120)
+        var minimizedByRequest = false
+        while !FileManager.default.fileExists(atPath: finish.path) {
+            guard Date() < deadline else { throw Failure(message: "External system PiP inspection timed out") }
+            if !minimizedByRequest && FileManager.default.fileExists(atPath: directory.appendingPathComponent("minimize").path) {
+                minimizedByRequest = true
+                window.miniaturize(nil)
+            }
+            let value: [String: Any] = ["version": 1, "ready": true, "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                "playerPID": ProcessInfo.processInfo.processIdentifier, "state": state(),
+                "sourceWindow": ["minimized": window.isMiniaturized, "visible": window.isVisible,
+                    "key": window.isKeyWindow, "appActive": NSApp.isActive,
+                    "frontmostIsPlayer": NSWorkspace.shared.frontmostApplication?.processIdentifier == ProcessInfo.processInfo.processIdentifier],
+                "scope": "Waiting for external system AX controls; setup never invokes an AVKit playback delegate"]
+            try JSONSerialization.data(withJSONObject: value, options: [.prettyPrinted, .sortedKeys])
+                .write(to: directory.appendingPathComponent("live.json"), options: .atomic)
+            if let error = state()["error"] as? String { throw Failure(message: error) }
+            try await Task.sleep(for: .milliseconds(200))
+        }
+        checks.append("external system PiP inspection requested orderly teardown")
+    }
     private func runReconfigurationPictureInPicture() async throws {
         func pip() -> [String: Any] { state()["pip"] as? [String: Any] ?? [:] }
         func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
@@ -391,7 +437,9 @@ final class PlayerSmokeCheck {
     private func run() async {
         var failure: String?
         do {
-            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-prepared" {
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-system" {
+                try await runSystemPictureInPicture()
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-prepared" {
                 try await runPreparedPictureInPicture()
             } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-reconfigure" {
                 try await runReconfigurationPictureInPicture()

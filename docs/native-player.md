@@ -16,6 +16,8 @@ The build creates a local arm64 development bundle for macOS 26. It includes bot
 
 An installed `models/neural-rendering/NeuralRendering.dlssmodel` is included by default. `MLXDLSS_NEURAL_RENDERING_PACKAGE` selects a different package; `BUNDLE_NEURAL_MODEL=0` omits it. The app looks for a model in that environment variable, its bundled `Resources/Models` directory, then the development checkout. Original playback remains available when no model is installed. `METAL_DLSS_MPV_LIBRARY` overrides the selected native library for diagnostics. `Resources/NativeRuntime.json` records staged source hashes, architecture and bundled model/driver locations.
 
+The [M3 ordinary-app regression](evidence/m3-normal-bundle.json) passed all 23 controls and lifecycle checks in both the current bundle and a copy launched outside the checkout. With `HDRPLAYER_ENABLE_PIP` unset, PiP state was absent and its capability was false. The relocated app found its own model and runtime without overrides; the main-process loader log contained one shared engine, one libmpv, no harness and no non-system images outside the bundle. Both copies retained valid strict signatures and unchanged binaries after playback. This verifies the development artifact at `artifacts/HDR Player.app`; it does not establish notarized distribution, calibrated HDR or sustained physical A/V timing.
+
 ## Controls and state
 
 The file-only, main-frame bridge accepts:

@@ -1,0 +1,783 @@
+{
+  "schemaVersion": 1,
+  "scope": "Actual system PiP AX controls, callbacks and native state; no physical HDR, acoustic A/V or presented-cadence qualification",
+  "recordedUTC": "2026-09-10T01:36:48Z",
+  "passed": true,
+  "systemAXOperations": 7,
+  "actionStateChecks": 8,
+  "independentCorrelationChecks": 6,
+  "hardware": "Apple M3",
+  "source": {
+    "path": "assets/test-clips/playback/pq-30-60s.mkv",
+    "sha256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+    "width": 320,
+    "height": 192,
+    "nominalFPS": 30,
+    "durationSeconds": 60,
+    "initialPositionSeconds": 20
+  },
+  "processing": {
+    "model": "models/neural-rendering/NeuralRendering.dlssmodel",
+    "width": 32,
+    "height": 24,
+    "strength": 1,
+    "colourStrength": 1,
+    "policy": "adaptive",
+    "muted": true,
+    "subtitlesEnabled": false
+  },
+  "binariesUnchanged": true,
+  "exitCode": 0,
+  "binaries": {
+    "HDRPlayer": {
+      "path": ".build/arm64-apple-macosx/debug/HDRPlayer",
+      "beforeSHA256": "2d28322efc2cab43473e4010985384ef0af173ebecd9a4f8ad0cbd45f59e4ef0",
+      "afterSHA256": "2d28322efc2cab43473e4010985384ef0af173ebecd9a4f8ad0cbd45f59e4ef0"
+    },
+    "libmpv": {
+      "path": "artifacts/mpv-build/libmpv.2.dylib",
+      "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+      "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a"
+    },
+    "FrameEngineShared": {
+      "path": ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+      "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+      "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+    },
+    "AXHelper": {
+      "path": "artifacts/pip-accessibility/SystemPiPAccessibility",
+      "beforeSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b",
+      "afterSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b"
+    }
+  },
+  "sourceFileSHA256AtEvidenceAssembly": {
+    "apps/macos/Sources/PlayerSmokeCheck.swift": "3d8ed5fb2c44e065c0c246a0f191d8d022e54282d03b09edab4c05c8d7e80a3d",
+    "scripts/build-system-pip-accessibility.sh": "1f0b69d9475378705a1677c9264e7786c1053461f5ebf571a93575973b78fc15",
+    "scripts/system-pip-accessibility.swift": "b03718175ed13c778f048c34774aa37f2fdfecf8b15dae0472a4b86af2f75cbf",
+    "scripts/start-system-pip-check.py": "dfb5d858d31ada2dd8a8f3be8ffba9d1199f17734b77e53b1bb08dad4e3c81b7",
+    "scripts/exercise-system-pip-controls.py": "9498eb34d041ab139a67b2fb33806a8d77600280db8426f85139d0a042e0bd3e",
+    "scripts/verify-system-pip-controls.py": "21feaf8747b41da5780cab7486ce296ee2ef38c1752d61d33eca17257422608a"
+  },
+  "accessibility": {
+    "trusted": true,
+    "requestsPermission": false,
+    "changesOSPreferences": false,
+    "launchesApplications": false,
+    "ownerBundle": "com.apple.PIPAgent",
+    "ownerPID": 10915,
+    "windowCount": 1,
+    "omitsWindowTitlesAndStaticContent": true,
+    "initialNodes": [
+      {
+        "actions": [
+          "AXRaise"
+        ],
+        "identifier": "picture-in-picture",
+        "path": "w0",
+        "positionSettable": true,
+        "role": "AXWindow",
+        "size": [
+          444,
+          245
+        ],
+        "sizeSettable": true,
+        "subrole": "AXSystemFloatingWindow"
+      },
+      {
+        "actions": [
+          "AXPress"
+        ],
+        "description": "Close Picture in Picture",
+        "enabled": true,
+        "identifier": "close",
+        "path": "w0/0",
+        "positionSettable": false,
+        "role": "AXButton",
+        "size": [
+          34,
+          34
+        ],
+        "sizeSettable": false,
+        "subrole": "AXCloseButton"
+      },
+      {
+        "actions": [
+          "AXPress"
+        ],
+        "description": "Restore",
+        "enabled": true,
+        "identifier": "restore",
+        "path": "w0/1",
+        "positionSettable": false,
+        "role": "AXButton",
+        "size": [
+          34,
+          34
+        ],
+        "sizeSettable": false
+      },
+      {
+        "actions": [
+          "AXPress"
+        ],
+        "description": "Skip back 10 seconds",
+        "enabled": true,
+        "identifier": "skip-back",
+        "path": "w0/2",
+        "positionSettable": false,
+        "role": "AXButton",
+        "size": [
+          48,
+          48
+        ],
+        "sizeSettable": false
+      },
+      {
+        "actions": [
+          "AXPress"
+        ],
+        "description": "Play",
+        "enabled": true,
+        "identifier": "play",
+        "path": "w0/3",
+        "positionSettable": false,
+        "role": "AXButton",
+        "size": [
+          64,
+          64
+        ],
+        "sizeSettable": false
+      },
+      {
+        "actions": [
+          "AXPress"
+        ],
+        "description": "Skip forward 10 seconds",
+        "enabled": true,
+        "identifier": "skip-forward",
+        "path": "w0/4",
+        "positionSettable": false,
+        "role": "AXButton",
+        "size": [
+          48,
+          48
+        ],
+        "sizeSettable": false
+      },
+      {
+        "actions": [],
+        "enabled": true,
+        "path": "w0/5",
+        "positionSettable": false,
+        "role": "AXUnknown",
+        "size": [
+          380,
+          34
+        ],
+        "sizeSettable": false
+      }
+    ],
+    "dynamicPlayButtonIdentifier": "play becomes pause during playback",
+    "helperRefusalChecks": [
+      {
+        "arguments": [
+          "--press"
+        ],
+        "exitCode": 2,
+        "error": "An action requires explicit owner PID/bundle, node path and fresh SHA256 token",
+        "actionsPerformed": false
+      },
+      {
+        "arguments": [
+          "--owner-pid",
+          "-1",
+          "--owner-bundle",
+          "com.apple.PIPAgent"
+        ],
+        "exitCode": 2,
+        "error": "Owner PID must be a positive Int32",
+        "actionsPerformed": false
+      },
+      {
+        "arguments": [
+          "--resize",
+          "nanx100"
+        ],
+        "exitCode": 2,
+        "error": "Resize must be finite WIDTHxHEIGHT within 64...2048 by 36...2048",
+        "actionsPerformed": false
+      },
+      {
+        "arguments": [
+          "--owner-pid",
+          "1",
+          "--owner-bundle",
+          "com.apple.PIPAgent",
+          "--node",
+          "w0",
+          "--token",
+          "0000000000000000000000000000000000000000000000000000000000000000",
+          "--press"
+        ],
+        "exitCode": 4,
+        "error": "The explicit PID/bundle does not match a running discovered Apple PiP owner",
+        "actionsPerformed": false
+      }
+    ]
+  },
+  "operations": [
+    {
+      "name": "01-play",
+      "ownerPID": 10915,
+      "ownerBundle": "com.apple.PIPAgent",
+      "actionStartedHostSeconds": 1018415.119480625,
+      "actionReturnedHostSeconds": 1018415.1197326668,
+      "axStatus": 0,
+      "actionsPerformed": true
+    },
+    {
+      "name": "02-pause",
+      "ownerPID": 10915,
+      "ownerBundle": "com.apple.PIPAgent",
+      "actionStartedHostSeconds": 1018415.7983762084,
+      "actionReturnedHostSeconds": 1018415.7999487501,
+      "axStatus": 0,
+      "actionsPerformed": true
+    },
+    {
+      "name": "03-back",
+      "ownerPID": 10915,
+      "ownerBundle": "com.apple.PIPAgent",
+      "actionStartedHostSeconds": 1018416.2841127501,
+      "actionReturnedHostSeconds": 1018416.2855288334,
+      "axStatus": 0,
+      "actionsPerformed": true
+    },
+    {
+      "name": "04-forward",
+      "ownerPID": 10915,
+      "ownerBundle": "com.apple.PIPAgent",
+      "actionStartedHostSeconds": 1018417.1672930834,
+      "actionReturnedHostSeconds": 1018417.1685945,
+      "axStatus": 0,
+      "actionsPerformed": true
+    },
+    {
+      "name": "05-resize",
+      "ownerPID": 10915,
+      "ownerBundle": "com.apple.PIPAgent",
+      "actionStartedHostSeconds": 1018418.3722690417,
+      "actionReturnedHostSeconds": 1018418.3755644584,
+      "axStatus": 0,
+      "actionsPerformed": true,
+      "requestedSize": [
+        564,
+        325
+      ]
+    },
+    {
+      "name": "06-restore-size",
+      "ownerPID": 10915,
+      "ownerBundle": "com.apple.PIPAgent",
+      "actionStartedHostSeconds": 1018419.4083966668,
+      "actionReturnedHostSeconds": 1018419.4086188751,
+      "axStatus": 0,
+      "actionsPerformed": true,
+      "requestedSize": [
+        444,
+        245
+      ]
+    },
+    {
+      "name": "07-restore-window",
+      "ownerPID": 10915,
+      "ownerBundle": "com.apple.PIPAgent",
+      "actionStartedHostSeconds": 1018420.7961173333,
+      "actionReturnedHostSeconds": 1018420.7961987917,
+      "axStatus": 0,
+      "actionsPerformed": true
+    }
+  ],
+  "observations": [
+    {
+      "check": "system Play resumes native transport",
+      "positionSeconds": 20.033,
+      "paused": false,
+      "pipActive": true,
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 20000000
+      },
+      "samplePTS": {
+        "rounded": false,
+        "timescale": 1000000,
+        "value": 20000000
+      },
+      "generation": 3,
+      "nativeSubmittedFrames": 4,
+      "sourceWindow": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": true,
+        "minimized": false,
+        "visible": true
+      }
+    },
+    {
+      "check": "system Pause holds native transport",
+      "positionSeconds": 20.067,
+      "paused": true,
+      "pipActive": true,
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 20067000
+      },
+      "samplePTS": {
+        "rounded": false,
+        "timescale": 1000000,
+        "value": 20067000
+      },
+      "generation": 3,
+      "nativeSubmittedFrames": 5,
+      "sourceWindow": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": true,
+        "minimized": false,
+        "visible": true
+      }
+    },
+    {
+      "check": "system backward skip reaches a new supported paused generation",
+      "positionSeconds": 10.1,
+      "paused": true,
+      "pipActive": true,
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 10100000
+      },
+      "samplePTS": {
+        "rounded": false,
+        "timescale": 1000000,
+        "value": 10100000
+      },
+      "generation": 4,
+      "nativeSubmittedFrames": 6,
+      "sourceWindow": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": true,
+        "minimized": false,
+        "visible": true
+      }
+    },
+    {
+      "check": "system forward skip reaches a new supported paused generation",
+      "positionSeconds": 20.1,
+      "paused": true,
+      "pipActive": true,
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "samplePTS": {
+        "rounded": true,
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "generation": 5,
+      "nativeSubmittedFrames": 7,
+      "sourceWindow": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": true,
+        "minimized": false,
+        "visible": true
+      }
+    },
+    {
+      "check": "system PiP window resized while paused identity and inference count stayed unchanged",
+      "positionSeconds": 20.1,
+      "paused": true,
+      "pipActive": true,
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "samplePTS": {
+        "rounded": true,
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "generation": 5,
+      "nativeSubmittedFrames": 7,
+      "sourceWindow": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": true,
+        "minimized": false,
+        "visible": true
+      },
+      "beforeSize": [
+        444,
+        245
+      ],
+      "afterSize": [
+        576,
+        325
+      ]
+    },
+    {
+      "check": "system PiP accepted the original-size request with its own aspect constraints",
+      "requestedSize": [
+        444,
+        245
+      ],
+      "observedSize": [
+        442,
+        245
+      ],
+      "exactSizeRestored": false
+    },
+    {
+      "check": "source window is actually minimized before system Restore",
+      "positionSeconds": 20.1,
+      "paused": true,
+      "pipActive": true,
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "samplePTS": {
+        "rounded": true,
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "generation": 5,
+      "nativeSubmittedFrames": 7,
+      "sourceWindow": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": false,
+        "minimized": true,
+        "visible": false
+      }
+    },
+    {
+      "check": "system Restore returns from PiP to the visible active source window",
+      "positionSeconds": 20.1,
+      "paused": true,
+      "pipActive": false,
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "samplePTS": {
+        "rounded": true,
+        "timescale": 1000000,
+        "value": 20100000
+      },
+      "generation": 5,
+      "nativeSubmittedFrames": 7,
+      "sourceWindow": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": true,
+        "minimized": false,
+        "visible": true
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "checks": [
+      "Seven explicit AX operations matched the inspected system PiP owner without permission or OS-setting changes",
+      "Actual system Play/Pause produced matching AVKit delegates and native transport changes",
+      "Both actual ten-second skip controls established matching exact native/PiP source identity in new paused generations",
+      "Actual system PiP window bounds changed and returned under AVKit constraints without frame/model resubmission",
+      "Actual system Restore invoked the delegate and returned the minimized source window to visible/key/active state",
+      "Renderer flush and bounded consumer lease release preceded native core destruction"
+    ],
+    "callbacks": [
+      {
+        "action": "01-play",
+        "actionStartedHostSeconds": 1018415.119480625,
+        "actionReturnedHostSeconds": 1018415.1197326668,
+        "delegate": {
+          "enqueuedFrames": 1,
+          "epoch": 12,
+          "event": "play-request",
+          "generation": 3,
+          "hostSeconds": 1018415.1197847084,
+          "playing": true,
+          "revision": 13
+        }
+      },
+      {
+        "action": "02-pause",
+        "actionStartedHostSeconds": 1018415.7983762084,
+        "actionReturnedHostSeconds": 1018415.7999487501,
+        "delegate": {
+          "enqueuedFrames": 3,
+          "epoch": 12,
+          "event": "play-request",
+          "generation": 3,
+          "hostSeconds": 1018415.8001143334,
+          "playing": false,
+          "revision": 15
+        }
+      },
+      {
+        "action": "03-back",
+        "actionStartedHostSeconds": 1018416.2841127501,
+        "actionReturnedHostSeconds": 1018416.2855288334,
+        "delegate": {
+          "enqueuedFrames": 3,
+          "epoch": 12,
+          "event": "skip-request",
+          "generation": 3,
+          "hostSeconds": 1018416.2842498334,
+          "revision": 15,
+          "targetSeconds": 10.0853125
+        },
+        "generationEstablished": {
+          "enqueuedFrames": 4,
+          "epoch": 22,
+          "event": "skip-generation-established",
+          "generation": 4,
+          "hostSeconds": 1018416.7029867084,
+          "revision": 25
+        },
+        "exactSourcePTS": {
+          "timescale": 1000000,
+          "value": 10100000
+        }
+      },
+      {
+        "action": "04-forward",
+        "actionStartedHostSeconds": 1018417.1672930834,
+        "actionReturnedHostSeconds": 1018417.1685945,
+        "delegate": {
+          "enqueuedFrames": 4,
+          "epoch": 22,
+          "event": "skip-request",
+          "generation": 4,
+          "hostSeconds": 1018417.1673962917,
+          "revision": 25,
+          "targetSeconds": 20.099999998999998
+        },
+        "generationEstablished": {
+          "enqueuedFrames": 5,
+          "epoch": 32,
+          "event": "skip-generation-established",
+          "generation": 5,
+          "hostSeconds": 1018417.4827305,
+          "revision": 35
+        },
+        "exactSourcePTS": {
+          "timescale": 1000000,
+          "value": 20100000
+        }
+      },
+      {
+        "action": "07-restore-window",
+        "actionStartedHostSeconds": 1018420.7961173333,
+        "actionReturnedHostSeconds": 1018420.7961987917,
+        "delegate": {
+          "enqueuedFrames": 5,
+          "epoch": 32,
+          "event": "restore-interface",
+          "generation": 5,
+          "hostSeconds": 1018421.4232045001,
+          "revision": 35
+        }
+      },
+      {
+        "action": "07-restore-window",
+        "actionStartedHostSeconds": 1018420.7961173333,
+        "actionReturnedHostSeconds": 1018420.7961987917,
+        "delegate": {
+          "enqueuedFrames": 5,
+          "epoch": 32,
+          "event": "did-stop",
+          "generation": 5,
+          "hostSeconds": 1018422.0016950418,
+          "revision": 35
+        }
+      }
+    ],
+    "scope": "Actual system PiP AX controls, callbacks and native state; no physical HDR, acoustic A/V or presented-cadence qualification",
+    "resize": {
+      "before": [
+        444,
+        245
+      ],
+      "requested": [
+        564,
+        325
+      ],
+      "observed": [
+        576,
+        325
+      ],
+      "restore": {
+        "check": "system PiP accepted the original-size request with its own aspect constraints",
+        "requestedSize": [
+          444,
+          245
+        ],
+        "observedSize": [
+          442,
+          245
+        ],
+        "exactSizeRestored": false
+      },
+      "renderSizeDelegateEvents": [
+        {
+          "enqueuedFrames": 1,
+          "epoch": 12,
+          "event": "render-size",
+          "generation": 3,
+          "height": 524,
+          "hostSeconds": 1018397.7404613334,
+          "revision": 13,
+          "width": 873
+        }
+      ]
+    },
+    "sourceWindowRestore": {
+      "before": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": false,
+        "minimized": true,
+        "visible": false
+      },
+      "after": {
+        "appActive": true,
+        "frontmostIsPlayer": true,
+        "key": true,
+        "minimized": false,
+        "visible": true
+      }
+    }
+  },
+  "retention": {
+    "enqueuedFrames": 5,
+    "maximumObservedExportLeases": 2,
+    "exportLeaseLimit": 3,
+    "producerPoolCapacity": 6,
+    "pendingFrames": 0,
+    "submittedLeases": 0
+  },
+  "teardown": {
+    "rendererFlushedHostSeconds": 1018422.2752534584,
+    "nativeCoreDestroyedHostSeconds": 1018422.3171647501,
+    "nativeChildrenAfterDestroy": 0
+  },
+  "clock": {
+    "scope": "Core timebase anchoring; not AVKit physical presentation or acoustic synchronization",
+    "updates": 2117,
+    "holdUpdates": 2108,
+    "receivedSnapshots": 2126,
+    "maximumAnchorCorrectionSeconds": 0.021203581666647153,
+    "maximumSteadyCorrectionSeconds": 0.021203581666647153,
+    "maximumInterSnapshotReceiptGapSeconds": 0.348237042,
+    "maximumSnapshotAgeSeconds": 0.000355958,
+    "maximumValidSnapshotHostGapSeconds": 0.348242875,
+    "snapshotGaps": [
+      {
+        "buffering": 0,
+        "corePaused": 0,
+        "epoch": 3,
+        "generation": 1,
+        "nativeHostTicks": 24441507987824,
+        "rateBefore": null,
+        "receiptGapSeconds": 0.194571667,
+        "receiptHostTicks": 24441507988121,
+        "reportedRate": 0,
+        "revision": 2,
+        "supported": 0,
+        "userPaused": 0,
+        "validHostGapSeconds": null,
+        "validHostSample": false
+      },
+      {
+        "buffering": 0,
+        "corePaused": 0,
+        "epoch": 4,
+        "generation": 1,
+        "nativeHostTicks": 24441513464962,
+        "rateBefore": null,
+        "receiptGapSeconds": 0.228223875,
+        "receiptHostTicks": 24441513465494,
+        "reportedRate": 0,
+        "revision": 4,
+        "supported": 0,
+        "userPaused": 0,
+        "validHostGapSeconds": null,
+        "validHostSample": false
+      },
+      {
+        "buffering": 1,
+        "corePaused": 1,
+        "epoch": 32,
+        "generation": 5,
+        "nativeHostTicks": 24442114382166,
+        "rateBefore": 0,
+        "receiptGapSeconds": 0.348237042,
+        "receiptHostTicks": 24442114382618,
+        "reportedRate": 0,
+        "revision": 35,
+        "supported": 1,
+        "userPaused": 1,
+        "validHostGapSeconds": 0.348242875,
+        "validHostSample": true
+      }
+    ]
+  },
+  "limitations": [
+    "Actual system controls were exercised on this one PiPAgent implementation; other OS versions, audio devices and external displays remain unverified.",
+    "Only the initial render-size delegate occurred; PiP resize is established by actual system-window AX bounds.",
+    "Source PTS is exact; the final sample conversion reports rounded=true for the player timeline.",
+    "These checks do not measure physical HDR/reference-white mapping, acoustic A/V synchronization or sustained presented cadence.",
+    "No VoiceOver announcements, physical sleep/wake, OS preference changes or new permission prompts were involved.",
+    "The launcher session controlEffectsQualified=false means setup alone does not qualify control effects; verification.json performs the independent causal checks."
+  ],
+  "retainedHarnessAssumptions": [
+    {
+      "path": "artifacts/player-pip-system-inspect",
+      "result": "Actual Play succeeded, then the driver refused a missing play identifier because the live button had changed to pause. No incorrect target was pressed."
+    },
+    {
+      "path": "artifacts/player-pip-system-controls",
+      "result": "Five checks passed before an overly strict original-size tolerance rejected AVKit returning 442x245 for a 444x245 request. The final capture accepts and reports system size constraints."
+    }
+  ],
+  "artifacts": {
+    "session.json": {
+      "path": "artifacts/player-pip-system-final/session.json",
+      "sha256": "479d9a382a7699fbc786fa5db94e6ad451161f1596346d5cca43d3ef8045c420"
+    },
+    "discovery.json": {
+      "path": "artifacts/player-pip-system-final/discovery.json",
+      "sha256": "558a3dc99b23db660aeefa6b2f9c997142a225eb17ca5f80f58d7ee370e099c2"
+    },
+    "action-checks.json": {
+      "path": "artifacts/player-pip-system-final/action-checks.json",
+      "sha256": "a9560cf2f67154c4eeddad4c72640b9ac00c8f8cd0e3de17e42dbaf200ad09e3"
+    },
+    "verification.json": {
+      "path": "artifacts/player-pip-system-final/verification.json",
+      "sha256": "ad713ccd6f9165a63dc707273c6a9a1da835cafadd96fd9cf51d0aa28119c9dc"
+    },
+    "pip.json": {
+      "path": "artifacts/player-pip-system-final/pip.json",
+      "sha256": "6ae4d863247e7bec1bffba39fff63399d3c66180447deb1095d2622b225659e3"
+    },
+    "lifecycle.jsonl": {
+      "path": "artifacts/player-pip-system-final/lifecycle.jsonl",
+      "sha256": "738e76ef4c62ca9f5003dc5d3da1797a1079f511c219be2f353cd1d166b71a5f"
+    }
+  }
+}

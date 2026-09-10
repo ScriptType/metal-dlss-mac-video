@@ -137,7 +137,7 @@ python3 scripts/test-player-lifecycle-playback.py \
 
 The two quality changes exposed completed worker receipt gaps of 106.172 ms and 124.398 ms, with valid-host gaps of 106.178 ms and 124.405 ms. The second interval followed a running timebase sample and ended at an unsupported-frame snapshot, when the existing consumer policy held the timebase. No intermediate sample establishes what AVKit physically displayed during that interval. The largest receipt gap, 196.019 ms, occurred during startup, while maximum snapshot age stayed below 0.270 ms. Maximum anchor correction was 20.689 ms before either quality change. These measurements establish why freshness, delivery cadence and clock correction must remain separate; they do not qualify uninterrupted presented A/V synchronization. No clock policy changed for this capture.
 
-Keep #17 open until actual system PiP play/skip controls, PiP-window resizing, sustained presented A/V behavior, audio-device changes, physical HDR/reference-white mapping and external-display transitions are verified. The current test uses DOM transport controls while PiP is active; those are not evidence that the system PiP buttons were exercised. The standalone float numeric-preservation check and exporter bounds remain separate evidence from these unmeasured presentation properties.
+Keep #17 open until sustained presented A/V behavior, audio-device changes, physical HDR/reference-white mapping and external-display transitions are verified. The earlier consumer and reconfiguration tests use DOM transport controls; the separate system-control check below exercises actual PiP buttons and the PiP window. Float numeric preservation and exporter bounds remain separate evidence from the unmeasured presentation properties.
 
 ### Prepared cache transitions
 
@@ -161,3 +161,35 @@ The [Prepared PiP evidence](evidence/m3-pip-prepared.json) records 12 passed app
 The app enqueued 42 frames; exporter leases peaked at two, consumer pending/submitted leases stayed bounded at one each, and final renderer flush released both before native teardown. The seed produced 180 frames in 17.05 seconds; that preparation duration is separate from playback. The final clock metrics were 19.018 ms maximum anchor correction, 0.056 ms maximum sample age, 172.551 ms maximum receipt gap during startup and 35.259 ms maximum valid-native-host gap. These are observed clock-binding intervals, not physical PiP presentation or acoustic synchronization.
 
 The evidence retains the initial incorrect test expectation that a cache miss would exit PiP. Valid float Original fallback required no product restriction. It also retains the old-seed rejection after the compiled core version changed; one new seed was then prepared against the current provider. Raw P010 Original comparison still exercises the separate unsupported-format path in the 18-check consumer scenario. The lifecycle-hardened app reran those 18 checks successfully before this Prepared capture; both reports remain bound to their measured binaries.
+
+### System PiP controls and window resize
+
+The [M3 system-control evidence](evidence/m3-pip-system-controls.json) records seven actual Accessibility operations on the running `com.apple.PIPAgent`: Play, Pause, both ten-second skip buttons, two window-size requests and Restore. Eight action/state checks and six independent callback/teardown checks passed. The app exited 0, and the app, helper, libmpv and shared-engine hashes stayed unchanged during capture. This is a bounded functional check on the local system PiP implementation.
+
+Build the helper and app before starting the capture; keep playback binaries unchanged until it exits:
+
+```sh
+source scripts/env.sh
+bash scripts/build-system-pip-accessibility.sh
+swift build --product HDRPlayer --jobs 2
+
+# Terminal 1: sets up paused PiP at 20 seconds in the 60-second fixture.
+python3 scripts/start-system-pip-check.py \
+  --output artifacts/player-pip-system-run
+
+# Terminal 2, after READY: inspect each target afresh and exercise its AX action.
+python3 scripts/exercise-system-pip-controls.py \
+  --session artifacts/player-pip-system-run
+
+# After Terminal 1 exits, correlate actions with recorded native callbacks/state.
+python3 scripts/verify-system-pip-controls.py \
+  --session artifacts/player-pip-system-run
+```
+
+`SystemPiPAccessibility` is read-only unless given an explicit owner PID/bundle, node path, current match token and action. It uses the existing Accessibility permission, never requests consent or changes OS preferences, and reports only discovered Apple PiP owners. Window titles, static text and unrelated application content are omitted. Inspection records public AX roles, identifiers, supported actions, bounds and whether bounds are settable. Every mutation revalidates the target and requires a single PiP window. The action driver uses identifiers observed in the actual tree, including the Play button's change from `play` to `pause`; an unexpected or ambiguous tree fails explicitly. The helper uses Apple's public [action discovery API](https://developer.apple.com/documentation/applicationservices/1462053-axuielementcopyactionnames?language=objc) and [existing-trust query](https://developer.apple.com/documentation/applicationservices/1460720-axisprocesstrusted?preferredLanguage=occ).
+
+The opt-in `pip-system` setup writes an atomic state snapshot every 200 ms and waits at most 120 seconds for an explicit finish marker. It never invokes a playback delegate to simulate a system control. Actual AX Play/Pause produced matching AVKit requests and native pause changes. Backward and forward skip requests established generations 4 and 5 in about 419 ms and 315 ms, respectively. Their PiP source PTS matched the native selected frame exactly at 10100000/1000000 and 20100000/1000000. These intervals end at replacement-frame delivery, not physical presentation or audible output.
+
+The system PiP window changed from 444×245 points to 576×325 after a 564×325 request. Requesting the original size returned 442×245: AVKit applies its own constraints, so the check records requested and actual bounds rather than asserting exact size restoration. Resize kept the paused source PTS, generation and inference submission count unchanged. Only the initial render-size delegate was observed; the actual resize evidence comes from the scoped system window's AX bounds.
+
+Before pressing the actual system Restore button, the diagnostic hook minimized the source window and verified it was no longer visible. Restore invoked the real interface-restoration delegate, stopped PiP and returned the source window to visible, key, active and frontmost state. Renderer flush released the remaining consumer leases before native core destruction. Five frames were enqueued, exported leases peaked at two, and pending/submitted consumer references were zero after flush. The largest completed worker receipt gap was 348.237 ms during a paused hold around restoration; maximum anchor correction was 21.204 ms. These diagnostics do not establish continuous presentation, physical HDR brightness, acoustic A/V synchronization, VoiceOver announcements or behavior on other displays.
