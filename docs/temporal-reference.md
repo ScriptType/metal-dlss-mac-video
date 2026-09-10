@@ -163,6 +163,56 @@ These interval values pool squared component residuals before taking the square 
 
 The [standalone PDF](evidence/m3-global-flash.pdf) contains the same complete series. The figure uses equal-weight RGB component RMS throughout, with no frame filtering or luminance conversion.
 
+## Synthetic grain-like contrast input
+
+`scripts/generate-grain-reference.py` prepares one 48-frame input at exact 30 fps using the same static canonical scene as the flash control. Frames 0–23 and 36–47 retain the clean scene bytes. Frames 24–35 apply a new deterministic sign field at each ordinal: every 2 × 2 source-pixel cell selects a nominal achromatic multiplier of `31/32` or `33/32`. The source operation is Float32 multiplication without clipping. Supported scales are 1, 2 and 4; default scale 4 is 640 × 360. This is a synthetic grain-like contrast stimulus, not a natural film-grain model.
+
+```sh
+uv run --frozen python scripts/generate-grain-reference.py \
+  --output artifacts/grain-input
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/grain-input/manifest.json
+```
+
+For each active ordinal, the field concatenates SHA256 digests of the ASCII seed `hdr-grain-reference-v1`, followed by the ordinal and block counter as UInt32 little-endian values. Digest bytes are read least-significant bit first into row-major cells; bits 0 and 1 select signs −1 and +1. The saved source-sized Int8 fields, source RGB files, event timing and generator/environment pins make that construction inspectable. Signs are not rebalanced: each realized mean is recorded, with no exact zero-mean claim. The two factors are exactly representable, while any Float32 product rounding is measured and retained. Event metadata does not force a history reset or input discontinuity.
+
+At 640 × 360 the input contains 132,710,400 RGB bytes and 2,764,800 sign-field bytes, plus metadata. A four-view 48-frame capture adds 530,841,600 bytes. The generator requires a fresh output path, including rejection of dangling symlinks, and checks space for its payloads plus 4 MiB metadata. A capture runner must separately enforce its runtime and remaining-space limits.
+
+Compare the grain capture with the existing clean control from the paired flash fixture, using all 48 matching ordinals and a fresh persistent processor for each arm. Require the same source geometry, model/runtime and settings: 512 × 288 neural processing, Float16, strength/colour strength 1, ratio 2, white 203 nits, temporal processing and automatic motion. Keep normal noise/history progression and automatic reset decisions. Before interpretation, all four view pairs at ordinals 0–23 must be byte-identical; a failure rejects the comparison rather than shortening the prefix.
+
+### Grain input, output and residual analysis
+
+Run the analysis after both complete captures are available:
+
+```sh
+uv run --frozen python scripts/analyze-grain-reference.py \
+  --grain-input artifacts/grain-input/manifest.json \
+  --control-input artifacts/global-flash-input/control/manifest.json \
+  --control artifacts/global-flash-control-capture/manifest.json \
+  --grain artifacts/grain-capture/manifest.json \
+  --output artifacts/grain-analysis
+```
+
+The analyzer verifies both complete captures, exact input/timing/runtime pairing, all source and four-view payload hashes, and finite components. It independently reconstructs the SHA256 sign stream, checks the saved 2 × 2 fields and Float32 source products, and verifies clean source bytes outside frames 24–35. Define the following fields at the same source pixel and ordinal, converting RGB components to Float64 before subtraction:
+
+| Field | Definition | Observation |
+| --- | --- | --- |
+| C | E_control − O_control | Control enhancement residual |
+| R | E_grain − O_grain | Grain-arm enhancement residual |
+| G | O_grain − O_control | Actual source-input difference |
+| Q | E_grain − E_control | Paired enhanced-output difference |
+| D | R − C = Q − G | Paired residual difference |
+
+Whole-frame signed mean, mean absolute, RMS and maximum absolute component values retain all 48 ordinals. Source and output differences remain separate so the deliberately added contrast is not mistaken for an enhancement residual. Once the clean input returns at frame 36, G is zero and D equals Q. No output/input gain ratio or grain-retention threshold is prescribed.
+
+Adjacent observations retain all 47 pairs using `ΔG_i = G_i − G_(i−1)`, and likewise ΔQ and ΔD. These are differences of component arrays before aggregation, not differences of frame RMS values. Summaries keep prefix pairs 1–23, onset pair 23→24, active interior pairs 25–35, removal pair 35→36 and returned-input interior pairs 37–47 separate. Pooled RMS comes from total squared components and component counts, not mean frame RMS. A successful analysis produces a 381-row CSV with 240 frame records and 141 adjacent records.
+
+All metrics weight RGB components equally; they are not luminance or perceptual scores. Matched-control differences retain the control's natural temporal variation and do not independently attribute results to noise, history, estimated flow or reconstruction. Public reset/model/motion-request fields remain observations, without implying a selected flow backend, reset cause, visual acceptance or source-rate qualification.
+
+The 640 × 360 source preparation has passed the independent saved-input audit and the benchmark's CPU reference-sequence preflight. Three analyzer CPU controls also pass, using fabricated captures to check known input/output/residual fields, pooled and adjacent metrics, and rejection of resealed prefix or deterministic-field mismatches. They can be reproduced with `uv run --frozen python scripts/test_grain_reference_analysis.py`; they do not execute a model.
+
+The actual grain capture and result analysis remain pending AC power. The retained runner report records an AC-policy refusal before launch, zero model processes and unchanged frozen inputs/runtime pins. No grain model output, result figure or paired-result acceptance is claimed. Preparation and refusal records are retained under `artifacts/grain-reference-1/` as `input-audit-1.json`, `preflight-1.json`, `grain-process-1.json` and `prelaunch-refusal-followup-2.json`.
+
 ## Motion-aligned occlusion analysis
 
 The controlled source has exact integer motion. After capturing its complete 48 frames, compare neural residuals at the corresponding material coordinates:
