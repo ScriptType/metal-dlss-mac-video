@@ -378,8 +378,7 @@ public actor HDRSegmentCache {
         }
         guard frame.timing.duration.value > 0, timingValid,
               frame.rgba.count == (try stage.identity.frameByteCount) / 4,
-              frame.rgba.allSatisfy(\.isFinite),
-              stride(from: 3, to: frame.rgba.count, by: 4).allSatisfy({ (0...1).contains(frame.rgba[$0]) }) else {
+              frame.rgba.withUnsafeBytes({ HDRCachePixels.valid($0) }) else {
             throw HDRCacheError.invalidFrame("Pixels, alpha, or exact rational timing are invalid")
         }
         let data = frame.rgba.withUnsafeBufferPointer { buffer in
@@ -461,10 +460,7 @@ public actor HDRSegmentCache {
         }
         let record = lease.manifest.frames[frameIndex]
         let data = try readVerified(record, from: completedDirectory.appendingPathComponent(lease.manifest.key))
-        let rgba = data.withUnsafeBytes { raw in
-            stride(from: 0, to: raw.count, by: 4).map { Float(bitPattern: UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: $0, as: UInt32.self))) }
-        }
-        guard rgba.allSatisfy(\.isFinite) else { throw HDRCacheError.corruptSegment("Nonfinite float pixels") }
+        let rgba = try HDRCachePixels.decode(data)
         return HDRCacheFloatFrame(timing: record.timing, rgba: rgba)
     }
 
@@ -555,12 +551,7 @@ public actor HDRSegmentCache {
                 throw HDRCacheError.corruptSegment("Invalid frame inventory or timing")
             }
             let pixels = try readVerified(frame, from: directory)
-            let valid = pixels.withUnsafeBytes { raw in
-                stride(from: 0, to: raw.count, by: 4).allSatisfy { offset in
-                    let value = Float(bitPattern: UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: offset, as: UInt32.self)))
-                    return value.isFinite && (offset % 16 != 12 || (0...1).contains(value))
-                }
-            }
+            let valid = pixels.withUnsafeBytes { HDRCachePixels.valid($0) }
             guard valid else { throw HDRCacheError.corruptSegment("Invalid float payload") }
         }
         let names = Set(try fm.contentsOfDirectory(atPath: directory.path))

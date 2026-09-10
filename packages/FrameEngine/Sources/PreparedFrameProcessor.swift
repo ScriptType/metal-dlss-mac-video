@@ -406,15 +406,8 @@ public actor PreparedFrameProcessor: FrameProcessor {
         }
         defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
         guard let address = CVPixelBufferGetBaseAddress(buffer) else { throw FrameEngineError.invalid("Prepared buffer has no storage") }
-        let stride = CVPixelBufferGetBytesPerRow(buffer)
-        for y in 0..<height {
-            let row = address.advanced(by: y * stride).assumingMemoryBound(to: Float16.self)
-            for x in 0..<(width * 4) {
-                let value = Float16(rgba[y * width * 4 + x])
-                guard value.isFinite else { throw HDRCacheError.invalidFrame("Prepared float cannot be represented in RGBA16F") }
-                row[x] = value
-            }
-        }
+        try HDRCachePixels.pack(rgba, width: width, height: height,
+            to: address, rowBytes: CVPixelBufferGetBytesPerRow(buffer))
         CVBufferSetAttachment(buffer, kCVImageBufferColorPrimariesKey, kCVImageBufferColorPrimaries_ITU_R_2020, .shouldPropagate)
         CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_Linear, .shouldPropagate)
         return buffer

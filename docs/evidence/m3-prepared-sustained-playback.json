@@ -1,0 +1,348 @@
+{
+  "schemaVersion": 1,
+  "scope": "Apple M3 development workload: source-clock Prepared HDR playback and shared completed-output timing; physical scanout unavailable",
+  "workload": {
+    "source": "pq-30-60s.mkv",
+    "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+    "sourceDimensions": [
+      320,
+      192
+    ],
+    "sourceFPS": 30,
+    "displayDimensions": [
+      960,
+      496
+    ],
+    "processingDimensions": [
+      160,
+      96
+    ],
+    "model": "Neural Rendering",
+    "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "strength": 1,
+    "maximumLuminanceRatio": 2,
+    "referenceWhiteNits": 203,
+    "preparedFrames": 180,
+    "segmentFrames": 60,
+    "prerollFrames": 8,
+    "playbackWallSeconds": 30,
+    "cacheCapacityBytes": 536870912,
+    "sessionFrameSlots": 3,
+    "sessionFrameBudgetBytes": 536870912
+  },
+  "comparisonLimits": [
+    "Both shared engines are Swift debug builds; modified root source trees and exact binaries are identified below.",
+    "Optimized mpv also contains the scoped CoreAudio pause-tail change. End-to-end results are not a cache-only controlled comparison; completed cache read/pack wall stages expose the CPU change.",
+    "The 20 ms criterion uses samples after a two-second startup interval. Startup offsets are reported separately.",
+    "Two-second per-segment ratios use quantized sampled media-clock endpoints and are diagnostic, not independent 0.97 acceptance checks.",
+    "RSS and allocator samples do not prove a hard transient process-memory cap. The model payload budget, frame reservations, disk capacity and MLX cache policy measure different ownership layers."
+  ],
+  "cpuValidation": {
+    "testsPassed": 18,
+    "halfConversion": "All 63,488 finite binary16 encodings plus midpoint neighbours, subnormal underflow, negative zero and overflow; scalar Float16 bit equivalence",
+    "cacheValidation": "Unaligned input, all-channel NaN/Inf, invalid alpha, corruption, exact Float32 bit round-trip, capacity/pinned leases, schema1/2 timing"
+  },
+  "runs": {
+    "baseline": {
+      "recordedUTC": "2026-09-10T00:41:39.255973+00:00",
+      "localReport": "artifacts/mpv-prepared-sustained-baseline.json",
+      "reportSHA256": "e345b681e58528b90db935f0aeae49353accca20f1ef95a7d91fba8fd726aa2d",
+      "rootRevision": {
+        "commit": "6513f36af7a8c7b8e9119f8ec454059ca033564b",
+        "dirty": true,
+        "trackedDiffSHA256": "89cca33d8c01e01e96d325ad1a60e4c3b1bc5e2441f55bffb325570247b2c315"
+      },
+      "untrackedEngineSourceSHA256": {},
+      "mpvRevision": {
+        "commit": "0805fb6da583bfafade44fa061657b0b5e35877d",
+        "dirty": true,
+        "trackedDiffSHA256": "284d5f0f38a68f3991fcf6871c13b2f1cb0afed2bd1c7703841ccca949c86324"
+      },
+      "mlxRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+      "binaries": {
+        "artifacts/mpv-build/mpv": {
+          "sha256": "6bced249bef8d25ba412f9a526116beb6da99da08c52f16927631224e6abe5ac",
+          "bytes": 5565136
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "sha256": "edf4c21506b439823c246d31e8779b81fac112e0c3e8cd4a3652a29b0d44131d",
+          "bytes": 5564656
+        },
+        ".build/debug/libFrameEngineShared.dylib": {
+          "sha256": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a",
+          "bytes": 50138200
+        },
+        ".build/debug/mlx.metallib": {
+          "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+          "bytes": 107392404
+        }
+      },
+      "scriptSHA256": "278b2af673b7fb82f2057aef770eb50d8a22848ac79c11b3bc203af333f6c43a",
+      "binaryHashesUnchanged": true,
+      "sourceHashUnchanged": true,
+      "functionalPassed": true,
+      "acceptanceTargetsMet": false,
+      "preparationSeconds": 19.241643207962625,
+      "sourceRate": {
+        "mediaSeconds": 23.533,
+        "wallSeconds": 29.97647087497171,
+        "ratio": 0.7850490505754777,
+        "minimumRatio": 0.97,
+        "maximumRatio": 1.03
+      },
+      "steadyAV": {
+        "samples": 852,
+        "maximumAbsoluteSeconds": 0.009667,
+        "p95AbsoluteSeconds": 0.006333,
+        "medianSeconds": 1.2e-05,
+        "firstQuarterMedianSeconds": 0.003,
+        "lastQuarterMedianSeconds": 9e-06,
+        "medianDriftSeconds": -0.002991
+      },
+      "startupMaximumAbsoluteAVSeconds": 0.029698,
+      "cacheReadSeconds": {
+        "count": 177,
+        "minimum": 0.036538499989546835,
+        "p99": 0.20949588662479712,
+        "p50": 0.037931416649371386,
+        "maximum": 0.7471375834429637,
+        "p95": 0.03933655002620071
+      },
+      "halfPackSeconds": {
+        "count": 177,
+        "minimum": 0.022654916625469923,
+        "p99": 0.024172715032473206,
+        "p50": 0.023282041656784713,
+        "maximum": 0.024481208296492696,
+        "p95": 0.02396228336729109
+      },
+      "playbackSpans": {
+        "prepared-segment-0": {
+          "samples": 142,
+          "wallSeconds": 4.371667625033297,
+          "mediaSeconds": 1.967,
+          "sourceRateRatio": 0.44994271493478843,
+          "maximumAbsoluteAVSeconds": 0.029698,
+          "sampledBufferingSeconds": 2.3549292078241706
+        },
+        "prepared-segment-1": {
+          "samples": 142,
+          "wallSeconds": 4.3532699580537155,
+          "mediaSeconds": 1.967,
+          "sourceRateRatio": 0.45184425017359076,
+          "maximumAbsoluteAVSeconds": 0.009667,
+          "sampledBufferingSeconds": 2.190557085094042
+        },
+        "prepared-segment-2": {
+          "samples": 118,
+          "wallSeconds": 3.611558625008911,
+          "mediaSeconds": 1.9669999999999996,
+          "sourceRateRatio": 0.5446401967225843,
+          "maximumAbsoluteAVSeconds": 0.009,
+          "sampledBufferingSeconds": 1.7707650429802015
+        },
+        "uncached-original": {
+          "samples": 515,
+          "wallSeconds": 17.546382874948904,
+          "mediaSeconds": 17.533,
+          "sourceRateRatio": 0.9992372858244186,
+          "maximumAbsoluteAVSeconds": 7.2e-05,
+          "sampledBufferingSeconds": 0
+        }
+      },
+      "resources": {
+        "maximumFrameSlots": 3,
+        "peakReservedFrameBytes": 8665536,
+        "cacheBytes": 176995284,
+        "preparationSampledRSSPeak": 780615680,
+        "completedPlaybackSampledRSSPeak": 632225792,
+        "allocatorMaxima": {
+          "mlx_cache": 262488602,
+          "mlx_peak_active": 599119444,
+          "resident_model_payload": 291576650,
+          "runtime_mlx_cache_policy": 268435456,
+          "mlx_active": 304689000
+        }
+      },
+      "boundarySeeks": {
+        "count": 9,
+        "allExactPTSPairs": true,
+        "minimumSeconds": 0.06386850005947053,
+        "maximumSeconds": 0.8436137919779867
+      },
+      "completedInventoryThroughLastDisplayed": null,
+      "counterDeltas": {
+        "frame-drop-count": 0,
+        "decoder-frame-drop-count": 0,
+        "vo-delayed-frame-count": 0
+      },
+      "restart": {
+        "reusedSegments": 3,
+        "processedFrames": 0,
+        "payloadsAndManifestsUnchanged": true
+      }
+    },
+    "optimized": {
+      "recordedUTC": "2026-09-10T00:50:29.219482+00:00",
+      "localReport": "artifacts/mpv-prepared-sustained-optimized.json",
+      "reportSHA256": "2dfd24cd5a2a432e33444fbae127f042f451859c7d8ce0ce35904c0203361df9",
+      "rootRevision": {
+        "commit": "ac886f06ca821a40ed8ebe46ad58fb7184d5d859",
+        "dirty": true,
+        "trackedDiffSHA256": "28fd8a4ff90f264ed9e751c0ef13e5801aa167933f9720ccc6c8497db875a517"
+      },
+      "untrackedEngineSourceSHA256": {
+        "packages/CFrameEngine/hdr_cache_pixels.c": "62b65d806f06dc8cd7276980cf0d0577e28c6e15d17a062a9080db37431671ae",
+        "packages/CFrameEngine/include/hdr_cache_pixels.h": "1301a7bc28a84493a9941a0f8817393f83f039b522a397ef0791bce6e96d1330",
+        "packages/FrameEngine/Sources/HDRCachePixels.swift": "c8ea33dc51fd3ce2619dd57c4780c5999b4e05dd319f8178ff37abc9c829858a"
+      },
+      "mpvRevision": {
+        "commit": "25d149f51ae51bc83241e779a6b258ea873186bd",
+        "dirty": false,
+        "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "mlxRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+      "binaries": {
+        "artifacts/mpv-build/mpv": {
+          "sha256": "3af09c0efb22dea3f169696ab75eb06ac7ba5da74215c62c2b4b0925a3f98cb8",
+          "bytes": 5565344
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "sha256": "9f76b1189cbed35e6b92449a06f8aedb6b1c527726cbf6d1abdad34655345e4b",
+          "bytes": 5564896
+        },
+        ".build/debug/libFrameEngineShared.dylib": {
+          "sha256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "bytes": 50139368
+        },
+        ".build/debug/mlx.metallib": {
+          "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+          "bytes": 107392404
+        }
+      },
+      "scriptSHA256": "0dae8cbed39e826f4a90f808040d1095eb34f8ddbfee52491612f3fa6fcbbe3f",
+      "binaryHashesUnchanged": true,
+      "sourceHashUnchanged": true,
+      "functionalPassed": true,
+      "acceptanceTargetsMet": true,
+      "preparationSeconds": 22.21067366702482,
+      "sourceRate": {
+        "mediaSeconds": 29.9,
+        "wallSeconds": 29.995259167044424,
+        "ratio": 0.9968241925661011,
+        "minimumRatio": 0.97,
+        "maximumRatio": 1.03
+      },
+      "steadyAV": {
+        "samples": 792,
+        "maximumAbsoluteSeconds": 0.0089,
+        "p95AbsoluteSeconds": 1.8e-05,
+        "medianSeconds": 9e-06,
+        "firstQuarterMedianSeconds": 5e-06,
+        "lastQuarterMedianSeconds": 1e-05,
+        "medianDriftSeconds": 5e-06
+      },
+      "startupMaximumAbsoluteAVSeconds": 0.0297,
+      "cacheReadSeconds": {
+        "p99": 0.02234526004176654,
+        "maximum": 0.08135533332824707,
+        "count": 177,
+        "minimum": 0.0011289583053439856,
+        "p50": 0.0025224999990314245,
+        "p95": 0.003421208355575799
+      },
+      "halfPackSeconds": {
+        "p99": 0.0013795550074428326,
+        "maximum": 0.0017595416866242886,
+        "count": 177,
+        "minimum": 0.00040583335794508457,
+        "p50": 0.0008387083653360605,
+        "p95": 0.001300533302128315
+      },
+      "playbackSpans": {
+        "prepared-segment-0": {
+          "samples": 62,
+          "wallSeconds": 2.0438139169709757,
+          "mediaSeconds": 1.967,
+          "sourceRateRatio": 0.962416384225029,
+          "maximumAbsoluteAVSeconds": 0.0297,
+          "sampledBufferingSeconds": 0.032303832937031984
+        },
+        "prepared-segment-1": {
+          "samples": 62,
+          "wallSeconds": 1.9990290839923546,
+          "mediaSeconds": 1.9340000000000002,
+          "sourceRateRatio": 0.9674696658927634,
+          "maximumAbsoluteAVSeconds": 5.7e-05,
+          "sampledBufferingSeconds": 0
+        },
+        "prepared-segment-2": {
+          "samples": 60,
+          "wallSeconds": 1.9477274169912562,
+          "mediaSeconds": 1.9669999999999996,
+          "sourceRateRatio": 1.009894907696332,
+          "maximumAbsoluteAVSeconds": 2.3e-05,
+          "sampledBufferingSeconds": 0
+        },
+        "uncached-original": {
+          "samples": 668,
+          "wallSeconds": 23.9034941670252,
+          "mediaSeconds": 23.9,
+          "sourceRateRatio": 0.9998538219140354,
+          "maximumAbsoluteAVSeconds": 0.0089,
+          "sampledBufferingSeconds": 0
+        }
+      },
+      "resources": {
+        "maximumFrameSlots": 3,
+        "peakReservedFrameBytes": 8665536,
+        "cacheBytes": 176995284,
+        "preparationSampledRSSPeak": 787267584,
+        "completedPlaybackSampledRSSPeak": 657965056,
+        "allocatorMaxima": {
+          "resident_model_payload": 291576650,
+          "mlx_cache": 262455834,
+          "mlx_peak_active": 595088980,
+          "runtime_mlx_cache_policy": 268435456,
+          "mlx_active": 304689000
+        }
+      },
+      "boundarySeeks": {
+        "count": 9,
+        "allExactPTSPairs": true,
+        "minimumSeconds": 0.06173583306372166,
+        "maximumSeconds": 0.1295595420524478
+      },
+      "completedInventoryThroughLastDisplayed": {
+        "frames": 898,
+        "exact": true,
+        "lastPTS": {
+          "value": 299,
+          "timescale": 10
+        },
+        "scope": "completed shared outputs; physical scanout unavailable"
+      },
+      "counterDeltas": {
+        "frame-drop-count": 0,
+        "decoder-frame-drop-count": 0,
+        "vo-delayed-frame-count": 0
+      },
+      "restart": {
+        "reusedSegments": 3,
+        "processedFrames": 0,
+        "payloadsAndManifestsUnchanged": true
+      }
+    }
+  },
+  "fullRootValidation": {
+    "log": "artifacts/implementation-checks-cache-current.log",
+    "swiftTestsPassed": 39,
+    "pythonTestsPassed": 25,
+    "otherPassed": [
+      "plain C GPU consumer",
+      "controls/assets",
+      "SDR/PQ/HLG probes",
+      "public tree audit"
+    ]
+  }
+}

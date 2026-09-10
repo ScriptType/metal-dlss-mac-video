@@ -1,6 +1,7 @@
 #ifndef HDR_FRAME_ENGINE_H
 #define HDR_FRAME_ENGINE_H
 #include <stdint.h>
+#include "hdr_cache_pixels.h"
 #include <stddef.h>
 #ifdef __cplusplus
 extern "C" {
