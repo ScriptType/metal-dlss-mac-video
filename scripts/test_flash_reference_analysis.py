@@ -1,4 +1,4 @@
-"""Three CPU controls using fabricated outputs; no model, native runtime or GPU."""
+"""Four CPU controls using fabricated outputs; no model, native runtime or GPU."""
 import argparse
 import contextlib
 import hashlib
@@ -171,6 +171,61 @@ class FlashReferenceAnalysisTests(unittest.TestCase):
         self.assertEqual(len(failed["prefixComparisons"]), 96)
         self.assertEqual(sum(not row["bytesEqual"] for row in failed["prefixComparisons"]), 1)
         OBSERVATIONS.append({"case": "resealed changed prefix", "ordinaryCaptureValidationPassed": True, "pairRejected": True})
+
+    def test_resealed_pair_requires_typed_canonical_settings(self):
+        cases = (("non-temporal", {"temporal": False}, True, False),
+                 ("boolean-strength", {"strength": True}, True, False),
+                 ("boolean-colour", {"colourStrength": True}, True, False),
+                 ("capture-only-boolean-strength", {"strength": True}, False, False),
+                 ("numeric-equivalents", {"strength": 1.0, "colourStrength": 1.0}, True, True))
+        for label, altered, change_recipe, accepted in cases:
+            with self.subTest(case=label):
+                directory = self.directory / label
+                directory.mkdir()
+                source = directory / "input"
+                shutil.copytree(self.input, source)
+                pair, captures = read(source / "pair.json"), {}
+                for arm in analysis.ARMS:
+                    target = directory / arm
+                    shutil.copytree(self.captures[arm].parent, target)
+                    source_path = source / arm / "manifest.json"
+                    incoming, outgoing = read(source_path), read(target / "manifest.json")
+                    recipe_path = source_path.parent / incoming["provenance"]["recipe"]["path"]
+                    recipe = read(recipe_path)
+                    if change_recipe:
+                        recipe["intendedCaptureSettings"].update(altered)
+                        write(recipe_path, recipe)
+                    incoming["provenance"]["recipe"].update({key: pin(recipe_path)[key] for key in ("bytes", "sha256")})
+                    write(source_path, incoming)
+                    pair["arms"][arm].update({key: pin(source_path)[key] for key in ("bytes", "sha256")})
+                    shutil.copyfile(source_path, target / "input-manifest.json")
+                    outgoing["settings"].update(altered)
+                    outgoing.update(inputManifestPath=str(source_path), inputManifestSHA256=pin(source_path)["sha256"],
+                        sourceIdentity="sha256:" + pin(source_path)["sha256"], provenance=incoming["provenance"])
+                    write(target / "manifest.json", outgoing)
+                    helper.validate_capture(target / "manifest.json")
+                    # All cases pass the former recipe-led predicate, including True == 1.
+                    self.assertEqual(outgoing["settings"]["modelInputRange"], "bounded-sRGB-after-resample")
+                    self.assertTrue(all(outgoing["settings"][key] == value for key, value in recipe["intendedCaptureSettings"].items()))
+                    captures[arm] = target / "manifest.json"
+                write(source / "pair.json", pair)
+                self.assertEqual(read(captures["control"])["settings"], read(captures["flash"])["settings"])
+                output = directory / "analysis"
+                if accepted:
+                    result = analysis.analyze(source / "pair.json", captures["control"], captures["flash"], output)
+                    self.assertTrue(result["complete"] and result["pairedInterpretationAdmitted"])
+                    self.assertEqual(result["csv"]["rows"], 144)
+                else:
+                    boundary = "Recipe" if change_recipe else "Capture"
+                    with self.assertRaisesRegex(ValueError, boundary + " settings.*canonical temporal capture contract"):
+                        analysis.analyze(source / "pair.json", captures["control"], captures["flash"], output)
+                    result = read(output / "report.json")
+                    self.assertFalse(result["complete"] or result["pairedInterpretationAdmitted"])
+                    self.assertEqual(result["frames"], [])
+                OBSERVATIONS.append({"case": label, "alteredSettings": altered, "recipesResealed": change_recipe,
+                    "bothCaptureCopiesAndPairResealed": True, "ordinaryCapturesValid": 2,
+                    "formerRecipeBasedSettingsPredicateAccepted": True, "canonicalContractAccepted": accepted,
+                    "capturesFabricated": True})
 
     def test_resealed_misplaced_source_flash_reaches_pixel_rejection(self):
         source, capture_path = self.directory / "misplaced-input", self.directory / "misplaced-capture"
