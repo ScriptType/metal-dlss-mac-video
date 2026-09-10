@@ -36,6 +36,20 @@ def require(condition, message):
         raise ValueError(message)
 
 
+def canonical_settings_match(observed, expected):
+    """Match JSON primitive kinds, allowing equivalent integer/float numbers."""
+    if type(observed) is not dict or observed.keys() != expected.keys():
+        return False
+    for key, value in expected.items():
+        actual = observed[key]
+        if type(value) in (int, float):
+            if type(actual) not in (int, float) or actual != value:
+                return False
+        elif type(actual) is not type(value) or actual != value:
+            return False
+    return True
+
+
 def module(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
     value = importlib.util.module_from_spec(spec)
@@ -127,8 +141,7 @@ def analyze(grain_input, control_input, control_manifest, grain_manifest, output
             provenance = source["provenance"]
             require(provenance["arm"] == arm, "Source arm identity differs")
             recipes[arm] = read(use(path.parent, provenance["recipe"]))
-            require(recipes[arm]["intendedCaptureSettings"] == CANONICAL_RECIPE_SETTINGS and
-                    recipes[arm]["intendedCaptureSettings"]["temporal"] is True,
+            require(canonical_settings_match(recipes[arm]["intendedCaptureSettings"], CANONICAL_RECIPE_SETTINGS),
                     "Recipe settings differ from canonical temporal capture contract")
             truths[arm] = read(use(path.parent, provenance["eventGroundTruth"]))
             environment = read(use(path.parent, provenance["environment"]))
@@ -189,7 +202,7 @@ def analyze(grain_input, control_input, control_manifest, grain_manifest, output
             require(copied.read_bytes() == source_paths[arm].read_bytes() and capture["inputManifestSHA256"] == pins[str(source_paths[arm])]["sha256"] and
                     capture["sourceIdentity"] == "sha256:" + capture["inputManifestSHA256"], "Exact capture/source identity differs")
             require(capture["rawPayloadBytes"] == width * height * 48 * 48 and
-                    capture["settings"] == CANONICAL_CAPTURE_SETTINGS and capture["settings"]["temporal"] is True,
+                    canonical_settings_match(capture["settings"], CANONICAL_CAPTURE_SETTINGS),
                     "Capture settings/inventory differ from canonical temporal capture contract")
             runtime, model = capture["runtime"], capture["model"]
             require(sha(runtime["binarySHA256"]) and runtime["sourceSHA256"] and all(sha(x) for x in runtime["sourceSHA256"].values()), "Missing runtime hash identity")

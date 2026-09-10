@@ -180,41 +180,52 @@ class GrainReferenceAnalysisTests(unittest.TestCase):
         self.assertEqual(sum(not row["bytesEqual"] for row in failed["prefixComparisons"]), 1)
         OBSERVATIONS.append({"case": "resealed enhanced prefix", "ordinaryCaptureValid": True, "pairRejected": True})
 
-    def test_resealed_recipes_and_both_captures_reject_non_temporal_settings(self):
-        sources, captures = {}, {}
-        for arm, original in (("control", self.control), ("grain", self.grain)):
-            source = self.directory / (arm + "-non-temporal-input")
-            target = self.directory / (arm + "-non-temporal-capture")
-            shutil.copytree(original, source)
-            shutil.copytree(self.captures[arm].parent, target)
-            incoming, outgoing = read(source / "manifest.json"), read(target / "manifest.json")
-            recipe_path = source / incoming["provenance"]["recipe"]["path"]
-            recipe = read(recipe_path); recipe["intendedCaptureSettings"]["temporal"] = False
-            write(recipe_path, recipe)
-            incoming["provenance"]["recipe"].update({key: pin(recipe_path)[key] for key in ("bytes", "sha256")})
-            write(source / "manifest.json", incoming)
-            shutil.copyfile(source / "manifest.json", target / "input-manifest.json")
-            outgoing["settings"]["temporal"] = False
-            outgoing.update(inputManifestSHA256=pin(source / "manifest.json")["sha256"],
-                inputManifestPath=str(source / "manifest.json"),
-                sourceIdentity="sha256:" + pin(source / "manifest.json")["sha256"], provenance=incoming["provenance"])
-            write(target / "manifest.json", outgoing)
-            helper.validate_capture(target / "manifest.json")
-            # The former recipe-led settings predicate admits both resealed arms.
-            self.assertEqual(outgoing["settings"]["modelInputRange"], "bounded-sRGB-after-resample")
-            self.assertTrue(all(outgoing["settings"][key] == value for key, value in recipe["intendedCaptureSettings"].items()))
-            sources[arm], captures[arm] = source / "manifest.json", target / "manifest.json"
-        self.assertEqual(read(captures["control"])["settings"], read(captures["grain"])["settings"])
-        output = self.directory / "non-temporal-analysis"
-        with self.assertRaisesRegex(ValueError, "canonical temporal capture contract"):
-            analysis.analyze(sources["grain"], sources["control"], captures["control"], captures["grain"], output)
-        failed = read(output / "report.json")
-        self.assertFalse(failed["complete"] or failed["pairedInterpretationAdmitted"])
-        self.assertEqual(failed["frames"], [])
-        OBSERVATIONS.append({"case": "resealed recipes and both captures disable temporal processing",
-            "ordinaryCapturesValid": 2, "formerRecipeBasedSettingsPredicateAccepted": True,
-            "bothSourcesAndCaptureCopiesResealed": True, "canonicalContractRejected": True,
-            "capturesFabricated": True})
+    def test_resealed_recipes_and_both_captures_reject_noncanonical_settings(self):
+        numeric_equivalents = {key: float(value) if type(value) in (int, float) else value
+                               for key, value in analysis.CANONICAL_CAPTURE_SETTINGS.items()}
+        self.assertTrue(analysis.canonical_settings_match(numeric_equivalents, analysis.CANONICAL_CAPTURE_SETTINGS))
+        for setting, altered in (("temporal", False), ("strength", True), ("colourStrength", True)):
+            with self.subTest(setting=setting, altered=altered):
+                sources, captures = {}, {}
+                for arm, original in (("control", self.control), ("grain", self.grain)):
+                    source = self.directory / (arm + "-" + setting + "-input")
+                    target = self.directory / (arm + "-" + setting + "-capture")
+                    shutil.copytree(original, source)
+                    shutil.copytree(self.captures[arm].parent, target)
+                    incoming, outgoing = read(source / "manifest.json"), read(target / "manifest.json")
+                    recipe_path = source / incoming["provenance"]["recipe"]["path"]
+                    recipe = read(recipe_path); recipe["intendedCaptureSettings"][setting] = altered
+                    write(recipe_path, recipe)
+                    incoming["provenance"]["recipe"].update({key: pin(recipe_path)[key] for key in ("bytes", "sha256")})
+                    write(source / "manifest.json", incoming)
+                    shutil.copyfile(source / "manifest.json", target / "input-manifest.json")
+                    outgoing["settings"][setting] = altered
+                    outgoing.update(inputManifestSHA256=pin(source / "manifest.json")["sha256"],
+                        inputManifestPath=str(source / "manifest.json"),
+                        sourceIdentity="sha256:" + pin(source / "manifest.json")["sha256"], provenance=incoming["provenance"])
+                    write(target / "manifest.json", outgoing)
+                    helper.validate_capture(target / "manifest.json")
+                    # The former recipe-led settings predicate admits all three cases.
+                    self.assertEqual(outgoing["settings"]["modelInputRange"], "bounded-sRGB-after-resample")
+                    self.assertTrue(all(outgoing["settings"][key] == value for key, value in recipe["intendedCaptureSettings"].items()))
+                    if setting != "temporal":
+                        # Ordinary Python dictionary equality also accepts True == 1.
+                        self.assertEqual(outgoing["settings"], analysis.CANONICAL_CAPTURE_SETTINGS)
+                        self.assertEqual(recipe["intendedCaptureSettings"], analysis.CANONICAL_RECIPE_SETTINGS)
+                    sources[arm], captures[arm] = source / "manifest.json", target / "manifest.json"
+                self.assertEqual(read(captures["control"])["settings"], read(captures["grain"])["settings"])
+                output = self.directory / (setting + "-analysis")
+                with self.assertRaisesRegex(ValueError, "canonical temporal capture contract"):
+                    analysis.analyze(sources["grain"], sources["control"], captures["control"], captures["grain"], output)
+                failed = read(output / "report.json")
+                self.assertFalse(failed["complete"] or failed["pairedInterpretationAdmitted"])
+                self.assertEqual(failed["frames"], [])
+                OBSERVATIONS.append({"case": "resealed recipes and both captures alter canonical setting",
+                    "setting": setting, "alteredValue": altered, "ordinaryCapturesValid": 2,
+                    "formerRecipeBasedSettingsPredicateAccepted": True,
+                    "ordinaryCanonicalDictionaryEqualityAccepted": setting != "temporal",
+                    "bothSourcesAndCaptureCopiesResealed": True, "canonicalContractRejected": True,
+                    "equivalentIntFloatSettingsAccepted": True, "capturesFabricated": True})
 
     def test_resealed_field_and_matching_float32_pixels_reject_wrong_sha_stream(self):
         source, target = self.directory / "bad-field-input", self.directory / "bad-field-capture"
