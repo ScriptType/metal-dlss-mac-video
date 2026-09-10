@@ -22,6 +22,13 @@ STATISTICS = HERE / "analyze-flash-reference.py"
 STATISTICS_SHA256 = "f190e964198a872898fa68b67fa88dc15c5dc8987c0fe244e9f494afaf015098"
 ARMS, SERIES, ADJACENT = ("control", "grain"), ("C", "R", "G", "Q", "D"), ("deltaG", "deltaQ", "deltaD")
 SEED = "hdr-grain-reference-v1"
+CANONICAL_CAPTURE_SETTINGS = {"colourStrength": 1, "maximumLuminanceRatio": 2,
+    "mlxCacheBytes": 268435456, "modelInputRange": "bounded-sRGB-after-resample",
+    "motionRequested": "automatic", "precision": "float16", "processingHeight": 288,
+    "processingWidth": 512, "referenceWhiteNits": 203, "sceneCutThreshold": 0.3,
+    "strength": 1, "temporal": True}
+CANONICAL_RECIPE_SETTINGS = {key: value for key, value in CANONICAL_CAPTURE_SETTINGS.items()
+                             if key not in ("mlxCacheBytes", "modelInputRange")}
 
 
 def require(condition, message):
@@ -120,6 +127,9 @@ def analyze(grain_input, control_input, control_manifest, grain_manifest, output
             provenance = source["provenance"]
             require(provenance["arm"] == arm, "Source arm identity differs")
             recipes[arm] = read(use(path.parent, provenance["recipe"]))
+            require(recipes[arm]["intendedCaptureSettings"] == CANONICAL_RECIPE_SETTINGS and
+                    recipes[arm]["intendedCaptureSettings"]["temporal"] is True,
+                    "Recipe settings differ from canonical temporal capture contract")
             truths[arm] = read(use(path.parent, provenance["eventGroundTruth"]))
             environment = read(use(path.parent, provenance["environment"]))
             for entry in [provenance["generator"], provenance["sceneGenerator"], *environment["sourceFiles"].values()]:
@@ -178,8 +188,9 @@ def analyze(grain_input, control_input, control_manifest, grain_manifest, output
             copied = helper.contained(path.parent, capture["inputManifestCopy"]); remember(copied)
             require(copied.read_bytes() == source_paths[arm].read_bytes() and capture["inputManifestSHA256"] == pins[str(source_paths[arm])]["sha256"] and
                     capture["sourceIdentity"] == "sha256:" + capture["inputManifestSHA256"], "Exact capture/source identity differs")
-            require(capture["rawPayloadBytes"] == width * height * 48 * 48 and capture["settings"]["modelInputRange"] == "bounded-sRGB-after-resample" and
-                    all(capture["settings"][key] == value for key, value in recipe["intendedCaptureSettings"].items()), "Capture settings/inventory differ")
+            require(capture["rawPayloadBytes"] == width * height * 48 * 48 and
+                    capture["settings"] == CANONICAL_CAPTURE_SETTINGS and capture["settings"]["temporal"] is True,
+                    "Capture settings/inventory differ from canonical temporal capture contract")
             runtime, model = capture["runtime"], capture["model"]
             require(sha(runtime["binarySHA256"]) and runtime["sourceSHA256"] and all(sha(x) for x in runtime["sourceSHA256"].values()), "Missing runtime hash identity")
             require({"manifest.json", "weights.safetensors"} <= set(model["files"]) and all(sha(x) for x in model["files"].values()), "Missing model hashes")
