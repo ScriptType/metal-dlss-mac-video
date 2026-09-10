@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "device": "Apple M3",
+  "physicalMemoryBytes": 17179869184,
+  "scope": "Development native Adaptive playback with muted built-in CoreAudio speakers; no competing GPU process. First three runs used an unscoped prototype; final run limits early holds to measured reset-based CoreAudio pull behavior.",
+  "offsetDefinition": "Raw mpv avsync = audioPTS - videoPTS + audioDelay + scheduled-video offset, cached at queue updates. A future frame can therefore report zero by construction; these are scheduling observations, not independent physical A/V measurements.",
+  "clockPatchCommit": "25d149f51",
+  "driver": {
+    "name": "coreaudio",
+    "reportedDevice": "MacBook Pro-Lautsprecher",
+    "deviceBufferSamples": 832,
+    "audioUnitLatencyNanoseconds": 333333,
+    "deviceLatencyNanoseconds": 8333333
+  },
+  "runs": [
+    {
+      "report": "artifacts/mpv-policy-pq30-audio-tail.json",
+      "reportSHA256": "ba4e579d996e72a228cfff39d849dec344bbac9671b709fc9aa79982e91965cc",
+      "phase": "initial prototype",
+      "source": "pq-30-60s.mkv",
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "processingWidth": 160,
+      "processingHeight": 96,
+      "sourceFPS": 30,
+      "drawable": [
+        960,
+        496
+      ],
+      "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t46%; discharging; 2:41 remaining present: true",
+      "provenance": {
+        "mpvCommit": "0805fb6da583bfafade44fa061657b0b5e35877d",
+        "mpvDirty": true,
+        "mpvDiffSHA256": "284d5f0f38a68f3991fcf6871c13b2f1cb0afed2bd1c7703841ccca949c86324",
+        "binaries": {
+          "artifacts/mpv-build/mpv": {
+            "sha256": "57fc08c6c256cafb77104a9d85c4ff78f43a990d2064ebc588bc9bc4aa510367",
+            "bytes": 5565344,
+            "modifiedNanoseconds": 1789000993268169174
+          },
+          "artifacts/mpv-build/libmpv.2.dylib": {
+            "sha256": "3f484cb548b0571a7aab90a73eba11949e2e672b5589d7d99489324bd291c5f4",
+            "bytes": 5564896,
+            "modifiedNanoseconds": 1789000993268138591
+          },
+          ".build/debug/libFrameEngineShared.dylib": {
+            "sha256": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a",
+            "bytes": 50138200,
+            "modifiedNanoseconds": 1788997349392658557
+          },
+          ".build/debug/mlx.metallib": {
+            "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+            "bytes": 107392404,
+            "modifiedNanoseconds": 1788998134027845196
+          }
+        }
+      },
+      "results": {
+        "passed": true,
+        "exitCode": 0,
+        "requestedPlaybackWallSeconds": 30.0,
+        "steadySampleCount": 942,
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.0,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+        "steadyMedianAVDriftSeconds": 0.0,
+        "synchronisation20msTargetMet": true,
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "adaptiveBufferEpisodes": 319,
+        "adaptiveBufferedSeconds": 19.899712,
+        "binaryHashesUnchanged": true
+      },
+      "completedOutputs": 322,
+      "warmedSamples": 318,
+      "completedFPS": 10.762700694496354
+    },
+    {
+      "report": "artifacts/mpv-policy-hlg60-audio-tail.json",
+      "reportSHA256": "7dc71174ea484b637a19d7a751bcad2b1c92ce7e00780e4e9891fb5486ac6c31",
+      "phase": "initial prototype",
+      "source": "hlg-60-30s.mkv",
+      "sourceSHA256": "a18b1244daa205ec9aaf0b2d350843087b1984b51b3d55072f4bbcd1b20e4b09",
+      "processingWidth": 32,
+      "processingHeight": 24,
+      "sourceFPS": 60,
+      "drawable": [
+        960,
+        496
+      ],
+      "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t46%; discharging; 2:31 remaining present: true",
+      "provenance": {
+        "mpvCommit": "0805fb6da583bfafade44fa061657b0b5e35877d",
+        "mpvDirty": true,
+        "mpvDiffSHA256": "284d5f0f38a68f3991fcf6871c13b2f1cb0afed2bd1c7703841ccca949c86324",
+        "binaries": {
+          "artifacts/mpv-build/mpv": {
+            "sha256": "57fc08c6c256cafb77104a9d85c4ff78f43a990d2064ebc588bc9bc4aa510367",
+            "bytes": 5565344,
+            "modifiedNanoseconds": 1789000993268169174
+          },
+          "artifacts/mpv-build/libmpv.2.dylib": {
+            "sha256": "3f484cb548b0571a7aab90a73eba11949e2e672b5589d7d99489324bd291c5f4",
+            "bytes": 5564896,
+            "modifiedNanoseconds": 1789000993268138591
+          },
+          ".build/debug/libFrameEngineShared.dylib": {
+            "sha256": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a",
+            "bytes": 50138200,
+            "modifiedNanoseconds": 1788997349392658557
+          },
+          ".build/debug/mlx.metallib": {
+            "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+            "bytes": 107392404,
+            "modifiedNanoseconds": 1788998134027845196
+          }
+        }
+      },
+      "results": {
+        "passed": true,
+        "exitCode": 0,
+        "requestedPlaybackWallSeconds": 30.0,
+        "steadySampleCount": 934,
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.0,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+        "steadyMedianAVDriftSeconds": 0.0,
+        "synchronisation20msTargetMet": true,
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "adaptiveBufferEpisodes": 296,
+        "adaptiveBufferedSeconds": 25.668854,
+        "binaryHashesUnchanged": true
+      },
+      "completedOutputs": 298,
+      "warmedSamples": 294,
+      "completedFPS": 9.96757766125605
+    },
+    {
+      "report": "artifacts/mpv-policy-pq-vfr-audio-tail.json",
+      "reportSHA256": "1dc6fb4371f67e9b8f363a7197f87eee20f19ea1b5d907bbfe75cca438527cb3",
+      "phase": "initial prototype",
+      "source": "pq-30-vfr-30s.mkv",
+      "sourceSHA256": "9aa4addc720c930aa00df64b3b19fdcba5acc6e73a6efb2ffb3b1263b6494c43",
+      "processingWidth": 32,
+      "processingHeight": 24,
+      "sourceFPS": 30,
+      "drawable": [
+        960,
+        496
+      ],
+      "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t45%; discharging; 2:21 remaining present: true",
+      "provenance": {
+        "mpvCommit": "0805fb6da583bfafade44fa061657b0b5e35877d",
+        "mpvDirty": true,
+        "mpvDiffSHA256": "284d5f0f38a68f3991fcf6871c13b2f1cb0afed2bd1c7703841ccca949c86324",
+        "binaries": {
+          "artifacts/mpv-build/mpv": {
+            "sha256": "57fc08c6c256cafb77104a9d85c4ff78f43a990d2064ebc588bc9bc4aa510367",
+            "bytes": 5565344,
+            "modifiedNanoseconds": 1789000993268169174
+          },
+          "artifacts/mpv-build/libmpv.2.dylib": {
+            "sha256": "3f484cb548b0571a7aab90a73eba11949e2e672b5589d7d99489324bd291c5f4",
+            "bytes": 5564896,
+            "modifiedNanoseconds": 1789000993268138591
+          },
+          ".build/debug/libFrameEngineShared.dylib": {
+            "sha256": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a",
+            "bytes": 50138200,
+            "modifiedNanoseconds": 1788997349392658557
+          },
+          ".build/debug/mlx.metallib": {
+            "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+            "bytes": 107392404,
+            "modifiedNanoseconds": 1788998134027845196
+          }
+        }
+      },
+      "results": {
+        "passed": true,
+        "exitCode": 0,
+        "requestedPlaybackWallSeconds": 30.0,
+        "steadySampleCount": 935,
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.003333,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.000333,
+        "steadyMedianAVDriftSeconds": 0.0,
+        "synchronisation20msTargetMet": true,
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "adaptiveBufferEpisodes": 276,
+        "adaptiveBufferedSeconds": 18.96382,
+        "binaryHashesUnchanged": true
+      },
+      "completedOutputs": 280,
+      "warmedSamples": 276,
+      "completedFPS": 9.37075067072539
+    },
+    {
+      "report": "artifacts/mpv-policy-hlg60-scoped-audio-tail.json",
+      "reportSHA256": "2bf912e7470ead86d9bb15082d1f3e4e9396950122ae3bfd0def4181a6449220",
+      "phase": "final CoreAudio-only scope",
+      "source": "hlg-60-30s.mkv",
+      "sourceSHA256": "a18b1244daa205ec9aaf0b2d350843087b1984b51b3d55072f4bbcd1b20e4b09",
+      "processingWidth": 32,
+      "processingHeight": 24,
+      "sourceFPS": 60,
+      "drawable": [
+        960,
+        496
+      ],
+      "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t45%; discharging; 2:21 remaining present: true",
+      "provenance": {
+        "mpvCommit": "0805fb6da583bfafade44fa061657b0b5e35877d",
+        "mpvDirty": true,
+        "mpvDiffSHA256": "f164b4dc8a1c865a4afe5605dea81928f896d6207fa9b7d0d42335e17975f544",
+        "binaries": {
+          "artifacts/mpv-build/mpv": {
+            "sha256": "3af09c0efb22dea3f169696ab75eb06ac7ba5da74215c62c2b4b0925a3f98cb8",
+            "bytes": 5565344,
+            "modifiedNanoseconds": 1789001190891286650
+          },
+          "artifacts/mpv-build/libmpv.2.dylib": {
+            "sha256": "9f76b1189cbed35e6b92449a06f8aedb6b1c527726cbf6d1abdad34655345e4b",
+            "bytes": 5564896,
+            "modifiedNanoseconds": 1789001190891237150
+          },
+          ".build/debug/libFrameEngineShared.dylib": {
+            "sha256": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a",
+            "bytes": 50138200,
+            "modifiedNanoseconds": 1788997349392658557
+          },
+          ".build/debug/mlx.metallib": {
+            "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+            "bytes": 107392404,
+            "modifiedNanoseconds": 1788998134027845196
+          }
+        }
+      },
+      "results": {
+        "passed": true,
+        "exitCode": 0,
+        "requestedPlaybackWallSeconds": 25.0,
+        "steadySampleCount": 771,
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.0,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+        "steadyMedianAVDriftSeconds": 0.0,
+        "synchronisation20msTargetMet": true,
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "adaptiveBufferEpisodes": 240,
+        "adaptiveBufferedSeconds": 21.549286,
+        "binaryHashesUnchanged": true
+      },
+      "completedOutputs": 242,
+      "warmedSamples": 238,
+      "completedFPS": 9.709621014928786
+    }
+  ],
+  "limits": [
+    "The tail estimate and pause are not atomic; the two-millisecond margin is empirical.",
+    "Other audio outputs, stream-silence, hardware pause and display-sync keep the previous deadline path.",
+    "No source-rate neural Live setting or physical output timing was qualified.",
+    "Earlier 20-millisecond target failures are retained in docs/mpv-adapter.md."
+  ]
+}

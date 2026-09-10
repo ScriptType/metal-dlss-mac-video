@@ -15,6 +15,15 @@ The writer runs on a serial background queue. Periodic snapshots are bounded to 
 
 `termination-requested` precedes worker shutdown. `native-worker-destroyed` is emitted after libmpv destruction returns, followed by the flushed `diagnostic-finish` summary and process exit. Native child-view counts help identify incomplete surface detachment. A recorder-only CPU check does not verify these player teardown hooks.
 
+The existing DOM/media smoke also verifies actual teardown with the recorder enabled:
+
+```sh
+source scripts/env.sh
+python3 scripts/test-player-lifecycle-playback.py
+```
+
+This command uses the native window and GPU; reserve a test window without simultaneous benchmarks or binary rebuilds. It requires the built player, patched libmpv/shared engine, model, and `player-controls.mkv` fixture used by [native player verification](native-player.md). The current M3 run passed all 22 DOM checks, captured 55 exact rational timestamp snapshots, and exited successfully after the native child-view count changed from nonzero to zero and the final log flushed. The source and paused transport state were retained in the termination snapshot. Player, libmpv, and shared-engine SHA-256 hashes were identical before and after the run. Results are written to `artifacts/player-lifecycle-playback/{report.json,dom.json,lifecycle.jsonl,player.log}`. This media-only test observed zero kernel sleep/wake cycles and provides no physical-sleep evidence.
+
 ## Sleep and wake evidence
 
 The app records pause intent before and after its NSWorkspace sleep/wake handlers enqueue transport commands. The recorder separately observes `NSWorkspace.shared.notificationCenter` and installs an IOKit power source on the main run loop. It immediately acknowledges the power callbacks that require acknowledgement. Apple's APIs specify the [workspace sleep notification](https://developer.apple.com/documentation/AppKit/NSWorkspace/willSleepNotification) and the [IOKit acknowledgement requirement](https://developer.apple.com/documentation/iokit/1557064-ioallowpowerchange).

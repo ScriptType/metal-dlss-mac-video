@@ -47,7 +47,7 @@ The tiny 32×24 processing shape validates neural integration on M3. It is not a
 
 ## Playback policy and comparison
 
-`vf-command enhance policy adaptive` enables a shared buffering policy in mpv's playback core. When the displayed video's deadline expires before the next processed frame is available, mpv pauses both its audio output and video clock. The decoder/filter graph continues filling its bounded slots while controls remain responsive. Completed video resumes both clocks. Adaptive disables decoder/render frame dropping; it preserves source timestamps and HDR interpretation while effective playback throughput can be below the source rate. Processing dimensions and effect settings are explicit and independent of the presentation size.
+`vf-command enhance policy adaptive` enables a shared buffering policy in mpv's playback core. When the next processed frame is unavailable, mpv requests a shared audio/video hold at the displayed frame's deadline. The measured CoreAudio pull path starts that hold earlier to account for its clock advancing briefly after a reset-based pause. Other audio outputs retain the ordinary deadline. The decoder/filter graph continues filling its bounded slots while controls remain responsive. Completed video resumes both clocks. Adaptive disables decoder/render frame dropping; it preserves source timestamps and HDR interpretation while effective playback throughput can be below the source rate. Processing dimensions and effect settings are explicit and independent of the presentation size.
 
 `vf-command enhance policy live` succeeds only after this immutable neural session has at least 60 warmed completions, excludes three cold completions, and has p95 completed latency below 80% of the source-frame period. The minimum processing shape is 320×192; tiny instrumentation shapes and strength-zero paths cannot qualify. The qualification belongs to the current model, settings, source dimensions/rate and Metal device. Seeks, source changes and configuration replacement invalidate it. Losing the measured margin switches Live to Adaptive visibly. No current M3 neural configuration has been qualified as Live.
 
@@ -185,3 +185,22 @@ The playback core now keeps both clocks paused until the completed frame's VO re
 All four runs passed exact preview/compare and bounded queue checks, observed no stale generations or decoder/VO drops, exited cleanly and kept their binary hashes unchanged. Reports are `artifacts/mpv-policy-{hlg60-clock-repeat,pq-vfr-clock-repeat,pq60-clock-repeat,hlg60-instrumented}.json` with matching engine/configuration/log files. Run the commands above with the corresponding source/report name; the diagnostic case uses `--seconds 25`, and PQ60 is generated with `--profile pq --rate 60`.
 
 The instrumented HLG run recorded 238 buffering boundaries, a maximum 0.258-ms pause transition and 6.979-ms resume transition, without reproducing a greater-than-20-ms queue offset. It therefore does not explain or erase the earlier one-frame outlier. Clock acceptance, the remaining SDR/PQ/HLG rate combinations and physical presentation timing remain open.
+
+### CoreAudio pause-clock tail
+
+The later 160×96 adapter capture reproduced a 24-ms queue offset. Its trace showed CoreAudio's reported audio position advancing about 19 ms after the logical pause. The reset-based pull path retains a timed `end_time_ns` tail even while callbacks are stopped. Adaptive now uses that estimate and the last queued video frame's host deadline to request its hold earlier, with a 2-ms margin and a core timer in addition to the VO wakeup. Frame timestamps and mpv's A/V calculation are unchanged.
+
+This behavior is an explicit CoreAudio driver opt-in. Unknown/non-running estimates, push outputs, hardware pause, continuous silence, untimed output and display-sync retain the ordinary deadline path. The estimate and pause use separate lock acquisitions, so another callback can occur between them; the margin is empirical. This does not guarantee physical audio drain or qualify another output device.
+
+[M3 development evidence](evidence/m3-coreaudio-buffering.json) records the built-in speakers, muted CoreAudio, exact source and binary hashes, 960×496 drawable, and separate prototype/final-scope runs:
+
+| Case | Processing | Wall interval | Steady scheduled A/V p95 / maximum absolute | Buffer episodes / duration |
+|---|---:|---:|---:|---:|
+| PQ30 | 160×96 | 30 s | 0 / 0 ms | 319 / 19.90 s |
+| HLG60 | 32×24 | 30 s | 0 / 0 ms | 296 / 25.67 s |
+| PQ variable-rate | 32×24 | 30 s | 0.333 / 3.333 ms | 276 / 18.96 s |
+| HLG60, final CoreAudio-only scope | 32×24 | 25 s | 0 / 0 ms | 240 / 21.55 s |
+
+All four runs passed exact preview/comparison, stayed at two pending frames, reported no decoder/VO drops or stale generations, exited cleanly and retained identical binary hashes throughout each capture. Eleven mpv unit checks and the native player DOM/teardown scenario also passed. The first three captures used the broader prototype; the final run verifies the guarded CoreAudio implementation. Earlier failures remain above.
+
+Zero here is a scheduling result: mpv adds the future video deadline offset to the sampled audio-minus-video value. A frame queued early can therefore report zero by construction. These observations establish the reported scheduling target, not independent physical A/V accuracy. Source-rate neural Live playback, additional audio devices and physical presentation remain unqualified.
