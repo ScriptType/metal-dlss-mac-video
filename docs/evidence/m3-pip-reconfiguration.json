@@ -1,0 +1,1077 @@
+{
+  "binariesUnchanged": true,
+  "checkCount": 11,
+  "checks": [
+    "PiP reconfiguration diagnostic and source longer than ten seconds loaded",
+    "pause before reconfiguration setup",
+    "initial completed float frame enables PiP",
+    "actual PiP enters before quality changes",
+    "native playback and PiP progress before reconfiguration",
+    "quality-160x96 creates a supported replacement epoch",
+    "quality-160x96 progresses with the new filter",
+    "quality-32x24 creates a supported replacement epoch",
+    "quality-32x24 progresses with the new filter",
+    "reconfigured PiP follows user pause and current native generation",
+    "quality changes retain bounded leases and expose receipt/valid-host gaps without a physical timing claim"
+  ],
+  "clockGapEventsWithHostConversion": [
+    {
+      "buffering": 0,
+      "corePaused": 0,
+      "epoch": 3,
+      "generation": 1,
+      "nativeHostTicks": 24423645059988,
+      "rateBefore": null,
+      "receiptGapSeconds": 0.080292583,
+      "receiptHostSeconds": 1017651.8775048334,
+      "receiptHostTicks": 24423645060116,
+      "reportedRate": 0,
+      "revision": 2,
+      "supported": 0,
+      "userPaused": 0,
+      "validHostGapSeconds": null,
+      "validHostSample": false
+    },
+    {
+      "buffering": 0,
+      "corePaused": 0,
+      "epoch": 3,
+      "generation": 1,
+      "nativeHostTicks": 24423647214731,
+      "rateBefore": null,
+      "receiptGapSeconds": 0.089793542,
+      "receiptHostSeconds": 1017651.967298375,
+      "receiptHostTicks": 24423647215161,
+      "reportedRate": 0,
+      "revision": 2,
+      "supported": 0,
+      "userPaused": 0,
+      "validHostGapSeconds": null,
+      "validHostSample": false
+    },
+    {
+      "buffering": 0,
+      "corePaused": 0,
+      "epoch": 4,
+      "generation": 1,
+      "nativeHostTicks": 24423651919482,
+      "rateBefore": null,
+      "receiptGapSeconds": 0.19601925,
+      "receiptHostSeconds": 1017652.163317625,
+      "receiptHostTicks": 24423651919623,
+      "reportedRate": 1,
+      "revision": 4,
+      "supported": 0,
+      "userPaused": 0,
+      "validHostGapSeconds": null,
+      "validHostSample": true
+    },
+    {
+      "buffering": 1,
+      "corePaused": 1,
+      "epoch": 20,
+      "generation": 4,
+      "nativeHostTicks": 24423694571066,
+      "rateBefore": 0,
+      "receiptGapSeconds": 0.078541333,
+      "receiptHostSeconds": 1017653.9404814583,
+      "receiptHostTicks": 24423694571555,
+      "reportedRate": 0,
+      "revision": 21,
+      "supported": 1,
+      "userPaused": 1,
+      "validHostGapSeconds": 0.078524583,
+      "validHostSample": true
+    },
+    {
+      "buffering": 0,
+      "corePaused": 0,
+      "epoch": 22,
+      "generation": 1,
+      "nativeHostTicks": 24423723012396,
+      "precedingReconfigurationRequest": "quality-160x96-requested",
+      "rateBefore": 0,
+      "receiptGapSeconds": 0.106171792,
+      "receiptHostSeconds": 1017655.1255220834,
+      "receiptHostTicks": 24423723012530,
+      "reportedRate": 1,
+      "revision": 28,
+      "supported": 0,
+      "userPaused": 0,
+      "validHostGapSeconds": 0.106177834,
+      "validHostSample": true
+    },
+    {
+      "buffering": 0,
+      "corePaused": 0,
+      "epoch": 30,
+      "generation": 1,
+      "nativeHostTicks": 24423765893431,
+      "precedingReconfigurationRequest": "quality-32x24-requested",
+      "rateBefore": 1,
+      "receiptGapSeconds": 0.124398208,
+      "receiptHostSeconds": 1017656.9122309167,
+      "receiptHostTicks": 24423765893542,
+      "reportedRate": 1,
+      "revision": 40,
+      "supported": 0,
+      "userPaused": 0,
+      "validHostGapSeconds": 0.124404625,
+      "validHostSample": true
+    }
+  ],
+  "command": "python3 scripts/test-player-lifecycle-playback.py --scenario pip-reconfigure --source assets/test-clips/playback/pq-30-30s.mkv --output artifacts/player-pip-reconfigure",
+  "configuration": {
+    "audio": "existing native CoreAudio owner",
+    "colourStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "model": "NeuralRendering",
+    "policy": "adaptive",
+    "processingDimensions": [
+      [
+        32,
+        24
+      ],
+      [
+        160,
+        96
+      ],
+      [
+        32,
+        24
+      ]
+    ],
+    "referenceWhiteNits": 203,
+    "source": "assets/test-clips/playback/pq-30-30s.mkv",
+    "sourceDimensions": [
+      320,
+      192
+    ],
+    "strength": 1
+  },
+  "device": "Apple M3",
+  "enqueuedFrames": 17,
+  "events": [
+    {
+      "enqueuedFrames": 0,
+      "epoch": 0,
+      "event": "consumer-created",
+      "generation": 0,
+      "hostSeconds": 1017651.6046935834,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 2,
+      "event": "generation-invalidated",
+      "generation": 0,
+      "hostSeconds": 1017651.860828125,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 2,
+      "event": "stream-unavailable",
+      "generation": 0,
+      "hostSeconds": 1017651.860877875,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 3,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017651.8775513751,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 4,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017652.1658640835,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 4,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017652.1659001667,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 6,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017652.4064392501,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 6,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017652.4065425,
+      "reason": "PiP is waiting for the new seek or stream generation.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 8,
+      "event": "generation-invalidated",
+      "generation": 2,
+      "hostSeconds": 1017652.4073762917,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 8,
+      "event": "stream-unavailable",
+      "generation": 2,
+      "hostSeconds": 1017652.4074052917,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 10,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1017652.4294349584,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 10,
+      "event": "stream-unavailable",
+      "generation": 3,
+      "hostSeconds": 1017652.4294758751,
+      "reason": "PiP is waiting for the new seek or stream generation.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 12,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1017652.4299832501,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 12,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1017652.4300030001,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 14,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1017652.4414740418,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 14,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1017652.4415310001,
+      "reason": "PiP is waiting for the new seek or stream generation.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 16,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1017652.44191325,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 16,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1017652.4419301251,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 18,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1017653.8620439167,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 18,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1017653.8620933751,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 20,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1017653.9406076251,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 20,
+      "event": "frame-enqueued",
+      "generation": 4,
+      "hostSeconds": 1017653.9423482917,
+      "revision": 21
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 20,
+      "event": "start-request",
+      "generation": 4,
+      "hostSeconds": 1017653.9450492917,
+      "revision": 21
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 20,
+      "event": "render-size",
+      "generation": 4,
+      "height": 524,
+      "hostSeconds": 1017653.9622007083,
+      "revision": 21,
+      "width": 873
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 20,
+      "event": "did-start",
+      "generation": 4,
+      "hostSeconds": 1017653.965964625,
+      "revision": 21
+    },
+    {
+      "enqueuedFrames": 2,
+      "epoch": 20,
+      "event": "frame-enqueued",
+      "generation": 4,
+      "hostSeconds": 1017654.3864078334,
+      "revision": 22
+    },
+    {
+      "enqueuedFrames": 3,
+      "epoch": 20,
+      "event": "frame-enqueued",
+      "generation": 4,
+      "hostSeconds": 1017654.5687088751,
+      "revision": 23
+    },
+    {
+      "enqueuedFrames": 4,
+      "epoch": 20,
+      "event": "frame-enqueued",
+      "generation": 4,
+      "hostSeconds": 1017654.7349460417,
+      "revision": 24
+    },
+    {
+      "enqueuedFrames": 5,
+      "epoch": 20,
+      "event": "frame-enqueued",
+      "generation": 4,
+      "hostSeconds": 1017654.8750979167,
+      "revision": 25
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 20,
+      "event": "frame-enqueued",
+      "generation": 4,
+      "hostSeconds": 1017655.00783,
+      "revision": 26
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 22,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017655.1258088334,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 22,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017655.1258781251,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 24,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017655.2736042084,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 24,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017655.2737071668,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 26,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017656.0321539168,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 26,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017656.0322186667,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 28,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017656.05603175,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 7,
+      "epoch": 28,
+      "event": "frame-enqueued",
+      "generation": 1,
+      "hostSeconds": 1017656.0567321667,
+      "revision": 34
+    },
+    {
+      "enqueuedFrames": 8,
+      "epoch": 28,
+      "event": "frame-enqueued",
+      "generation": 1,
+      "hostSeconds": 1017656.3435534583,
+      "revision": 35
+    },
+    {
+      "enqueuedFrames": 9,
+      "epoch": 28,
+      "event": "frame-enqueued",
+      "generation": 1,
+      "hostSeconds": 1017656.4368531668,
+      "revision": 36
+    },
+    {
+      "enqueuedFrames": 10,
+      "epoch": 28,
+      "event": "frame-enqueued",
+      "generation": 1,
+      "hostSeconds": 1017656.5704015418,
+      "revision": 37
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 28,
+      "event": "frame-enqueued",
+      "generation": 1,
+      "hostSeconds": 1017656.677668125,
+      "revision": 38
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 30,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017656.9126535001,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 30,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017656.9127165001,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 32,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017656.9464440001,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 32,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017656.9465235834,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 34,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017657.6347547084,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 34,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1017657.6348472917,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 36,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1017657.6603789584,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 36,
+      "event": "frame-enqueued",
+      "generation": 1,
+      "hostSeconds": 1017657.6621489167,
+      "revision": 46
+    },
+    {
+      "enqueuedFrames": 17,
+      "epoch": 36,
+      "event": "shutdown-request",
+      "generation": 1,
+      "hostSeconds": 1017658.4532920833,
+      "revision": 51
+    },
+    {
+      "enqueuedFrames": 17,
+      "epoch": 36,
+      "event": "restore-interface",
+      "generation": 1,
+      "hostSeconds": 1017658.4559800418,
+      "revision": 51
+    },
+    {
+      "enqueuedFrames": 17,
+      "epoch": 36,
+      "event": "did-stop",
+      "generation": 1,
+      "hostSeconds": 1017659.0418489584,
+      "revision": 51
+    },
+    {
+      "enqueuedFrames": 17,
+      "epoch": 36,
+      "event": "renderer-flushed-and-leases-released",
+      "generation": 1,
+      "hostSeconds": 1017659.0437135,
+      "revision": 51
+    }
+  ],
+  "exitCode": 0,
+  "finalStateAfterRendererFlush": {
+    "active": false,
+    "available": false,
+    "backpressureObservations": 0,
+    "clock": {
+      "corrections": [
+        {
+          "buffering": 0,
+          "clockSource": 1,
+          "epoch": 20,
+          "generation": 4,
+          "hostAgeSeconds": 1.7417e-05,
+          "nativeMediaSeconds": 0.2917430013333332,
+          "oldMediaSeconds": 0.312449708,
+          "rateAfter": 1,
+          "rateBefore": 1,
+          "revision": 21,
+          "seconds": 0.020689289666666777,
+          "sourcePTS": {
+            "timescale": 1000000,
+            "value": 300000
+          },
+          "userPaused": 0
+        }
+      ],
+      "distinctValidHostSamples": 514,
+      "holdUpdates": 464,
+      "maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "maximumSnapshotAgeSeconds": 0.000269792,
+      "maximumSteadyCorrectionSeconds": 0.020689289666666777,
+      "maximumValidSnapshotHostGapSeconds": 0.124404625,
+      "rate": 0,
+      "receivedSnapshots": 521,
+      "scope": "Core timebase anchoring; not AVKit physical presentation or acoustic synchronization",
+      "snapshotGapDetailLimit": 100,
+      "snapshotGapDetailThresholdSeconds": 0.05,
+      "snapshotGapScope": "Completed receipt intervals and distinct valid native-host intervals; excludes the currently open interval since the last receipt. No physical presentation or automatic clock policy.",
+      "snapshotGaps": [
+        {
+          "buffering": 0,
+          "corePaused": 0,
+          "epoch": 3,
+          "generation": 1,
+          "nativeHostTicks": 24423645059988,
+          "rateBefore": null,
+          "receiptGapSeconds": 0.080292583,
+          "receiptHostTicks": 24423645060116,
+          "reportedRate": 0,
+          "revision": 2,
+          "supported": 0,
+          "userPaused": 0,
+          "validHostGapSeconds": null,
+          "validHostSample": false
+        },
+        {
+          "buffering": 0,
+          "corePaused": 0,
+          "epoch": 3,
+          "generation": 1,
+          "nativeHostTicks": 24423647214731,
+          "rateBefore": null,
+          "receiptGapSeconds": 0.089793542,
+          "receiptHostTicks": 24423647215161,
+          "reportedRate": 0,
+          "revision": 2,
+          "supported": 0,
+          "userPaused": 0,
+          "validHostGapSeconds": null,
+          "validHostSample": false
+        },
+        {
+          "buffering": 0,
+          "corePaused": 0,
+          "epoch": 4,
+          "generation": 1,
+          "nativeHostTicks": 24423651919482,
+          "rateBefore": null,
+          "receiptGapSeconds": 0.19601925,
+          "receiptHostTicks": 24423651919623,
+          "reportedRate": 1,
+          "revision": 4,
+          "supported": 0,
+          "userPaused": 0,
+          "validHostGapSeconds": null,
+          "validHostSample": true
+        },
+        {
+          "buffering": 1,
+          "corePaused": 1,
+          "epoch": 20,
+          "generation": 4,
+          "nativeHostTicks": 24423694571066,
+          "rateBefore": 0,
+          "receiptGapSeconds": 0.078541333,
+          "receiptHostTicks": 24423694571555,
+          "reportedRate": 0,
+          "revision": 21,
+          "supported": 1,
+          "userPaused": 1,
+          "validHostGapSeconds": 0.078524583,
+          "validHostSample": true
+        },
+        {
+          "buffering": 0,
+          "corePaused": 0,
+          "epoch": 22,
+          "generation": 1,
+          "nativeHostTicks": 24423723012396,
+          "rateBefore": 0,
+          "receiptGapSeconds": 0.106171792,
+          "receiptHostTicks": 24423723012530,
+          "reportedRate": 1,
+          "revision": 28,
+          "supported": 0,
+          "userPaused": 0,
+          "validHostGapSeconds": 0.106177834,
+          "validHostSample": true
+        },
+        {
+          "buffering": 0,
+          "corePaused": 0,
+          "epoch": 30,
+          "generation": 1,
+          "nativeHostTicks": 24423765893431,
+          "rateBefore": 1,
+          "receiptGapSeconds": 0.124398208,
+          "receiptHostTicks": 24423765893542,
+          "reportedRate": 1,
+          "revision": 40,
+          "supported": 0,
+          "userPaused": 0,
+          "validHostGapSeconds": 0.124404625,
+          "validHostSample": true
+        }
+      ],
+      "updates": 514
+    },
+    "clockRate": 0,
+    "clockSource": 1,
+    "compatibleStream": true,
+    "contentKind": 2,
+    "diagnosticEnabled": true,
+    "discardedFrames": 0,
+    "enqueuedFrames": 17,
+    "epoch": 36,
+    "exportLeaseLimit": 3,
+    "flushes": 36,
+    "generation": 1,
+    "maximumObservedExportLeases": 2,
+    "pendingFrames": 0,
+    "physicalAVSyncQualified": false,
+    "physicalHDRQualified": false,
+    "producerPoolCapacity": 6,
+    "reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+    "revision": 51,
+    "samplePTS": {
+      "rounded": false,
+      "timescale": 1000000,
+      "value": 1067000
+    },
+    "sourceDuration": {
+      "timescale": 1000000000,
+      "value": 33333333
+    },
+    "sourcePTS": {
+      "timescale": 1000000,
+      "value": 1067000
+    },
+    "submittedLeases": 0,
+    "systemPossible": true
+  },
+  "hostTickTimebaseNanoseconds": {
+    "denominator": 3,
+    "numerator": 125
+  },
+  "interpretation": [
+    "Both processing changes established new supported exporter epochs and continued enqueuing; no PiP stop/re-entry occurred before application teardown.",
+    "The first reconfiguration completed a 106.172 ms receipt interval; the second a 124.398 ms interval. Valid native-host intervals were 106.178 ms and 124.405 ms.",
+    "The second reconfiguration gap began after a running timebase sample and ended with unsupported frame state; the consumer then used its existing rate-zero unsupported-frame policy. There is no intermediate sample proving physical image or audio behavior during that gap.",
+    "The maximum 196.019 ms receipt interval occurred during startup. Maximum snapshot age remained 0.270 ms, demonstrating that sample age alone does not characterize worker delivery continuity.",
+    "Maximum anchor correction 20.689 ms was recorded before either quality change. It is retained without equating a timebase correction to a physical A/V error.",
+    "No clock policy or timestamp scheduling was changed for this test."
+  ],
+  "lifecycleChecks": [
+    "Existing DOM/media smoke passed and the process exited cleanly",
+    "Termination request precedes native view/core destruction and final log flush",
+    "Source, paused transport state and native rational displayed timestamps were recorded",
+    "No physical sleep cycle was inferred during the media-only check",
+    "Actual PiP lifecycle and renderer flush release consumer leases before core destruction"
+  ],
+  "maximumObservedExportLeases": 2,
+  "milestones": [
+    {
+      "clock-holdUpdates": 224,
+      "clock-maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "clock-maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "clock-maximumSnapshotAgeSeconds": 0.000269792,
+      "clock-maximumValidSnapshotHostGapSeconds": 0.078524583,
+      "clock-receivedSnapshots": 245,
+      "configurationID": 1,
+      "hostSeconds": 1017655.007109125,
+      "native-displayed-generation": 4,
+      "native-displayed-source-pts": 433000,
+      "native-displayed-timebase-den": 1000000,
+      "native-displayed-timebase-num": 1,
+      "phase": "quality-160x96-requested",
+      "pip-active": true,
+      "pip-available": true,
+      "pip-clockRate": 0,
+      "pip-contentKind": 2,
+      "pip-enqueuedFrames": 5,
+      "pip-epoch": 20,
+      "pip-generation": 4,
+      "pip-pendingFrames": 0,
+      "pip-reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "pip-revision": 25,
+      "pip-sourcePTS": {
+        "timescale": 1000000,
+        "value": 433000
+      },
+      "pip-submittedLeases": 1,
+      "playerPosition": 0.433,
+      "userPaused": false
+    },
+    {
+      "clock-holdUpdates": 310,
+      "clock-maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "clock-maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "clock-maximumSnapshotAgeSeconds": 0.000269792,
+      "clock-maximumValidSnapshotHostGapSeconds": 0.106177834,
+      "clock-receivedSnapshots": 334,
+      "configurationID": 2,
+      "hostSeconds": 1017656.1586376667,
+      "native-displayed-generation": 1,
+      "native-displayed-source-pts": 600000,
+      "native-displayed-timebase-den": 1000000,
+      "native-displayed-timebase-num": 1,
+      "phase": "quality-160x96-supported-replacement",
+      "pip-active": true,
+      "pip-available": true,
+      "pip-clockRate": 0,
+      "pip-contentKind": 2,
+      "pip-enqueuedFrames": 7,
+      "pip-epoch": 28,
+      "pip-generation": 1,
+      "pip-pendingFrames": 0,
+      "pip-reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "pip-revision": 34,
+      "pip-sourcePTS": {
+        "timescale": 1000000,
+        "value": 600000
+      },
+      "pip-submittedLeases": 1,
+      "playerPosition": 0.6,
+      "userPaused": false
+    },
+    {
+      "clock-holdUpdates": 348,
+      "clock-maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "clock-maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "clock-maximumSnapshotAgeSeconds": 0.000269792,
+      "clock-maximumValidSnapshotHostGapSeconds": 0.106177834,
+      "clock-receivedSnapshots": 388,
+      "configurationID": 2,
+      "hostSeconds": 1017656.7809228334,
+      "native-displayed-generation": 1,
+      "native-displayed-source-pts": 733000,
+      "native-displayed-timebase-den": 1000000,
+      "native-displayed-timebase-num": 1,
+      "phase": "quality-160x96-progressed",
+      "pip-active": true,
+      "pip-available": true,
+      "pip-clockRate": 0,
+      "pip-contentKind": 2,
+      "pip-enqueuedFrames": 11,
+      "pip-epoch": 28,
+      "pip-generation": 1,
+      "pip-pendingFrames": 0,
+      "pip-reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "pip-revision": 38,
+      "pip-sourcePTS": {
+        "timescale": 1000000,
+        "value": 733000
+      },
+      "pip-submittedLeases": 1,
+      "playerPosition": 0.733,
+      "userPaused": false
+    },
+    {
+      "clock-holdUpdates": 348,
+      "clock-maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "clock-maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "clock-maximumSnapshotAgeSeconds": 0.000269792,
+      "clock-maximumValidSnapshotHostGapSeconds": 0.106177834,
+      "clock-receivedSnapshots": 388,
+      "configurationID": 2,
+      "hostSeconds": 1017656.78095475,
+      "native-displayed-generation": 1,
+      "native-displayed-source-pts": 733000,
+      "native-displayed-timebase-den": 1000000,
+      "native-displayed-timebase-num": 1,
+      "phase": "quality-32x24-requested",
+      "pip-active": true,
+      "pip-available": true,
+      "pip-clockRate": 0,
+      "pip-contentKind": 2,
+      "pip-enqueuedFrames": 11,
+      "pip-epoch": 28,
+      "pip-generation": 1,
+      "pip-pendingFrames": 0,
+      "pip-reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "pip-revision": 38,
+      "pip-sourcePTS": {
+        "timescale": 1000000,
+        "value": 733000
+      },
+      "pip-submittedLeases": 1,
+      "playerPosition": 0.733,
+      "userPaused": false
+    },
+    {
+      "clock-holdUpdates": 413,
+      "clock-maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "clock-maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "clock-maximumSnapshotAgeSeconds": 0.000269792,
+      "clock-maximumValidSnapshotHostGapSeconds": 0.124404625,
+      "clock-receivedSnapshots": 455,
+      "configurationID": 3,
+      "hostSeconds": 1017657.7171052084,
+      "native-displayed-generation": 1,
+      "native-displayed-source-pts": 900000,
+      "native-displayed-timebase-den": 1000000,
+      "native-displayed-timebase-num": 1,
+      "phase": "quality-32x24-supported-replacement",
+      "pip-active": true,
+      "pip-available": true,
+      "pip-clockRate": 0,
+      "pip-contentKind": 2,
+      "pip-enqueuedFrames": 12,
+      "pip-epoch": 36,
+      "pip-generation": 1,
+      "pip-pendingFrames": 0,
+      "pip-reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "pip-revision": 46,
+      "pip-sourcePTS": {
+        "timescale": 1000000,
+        "value": 900000
+      },
+      "pip-submittedLeases": 1,
+      "playerPosition": 0.9,
+      "userPaused": false
+    },
+    {
+      "clock-holdUpdates": 455,
+      "clock-maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "clock-maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "clock-maximumSnapshotAgeSeconds": 0.000269792,
+      "clock-maximumValidSnapshotHostGapSeconds": 0.124404625,
+      "clock-receivedSnapshots": 510,
+      "configurationID": 3,
+      "hostSeconds": 1017658.3441184168,
+      "native-displayed-generation": 1,
+      "native-displayed-source-pts": 1033000,
+      "native-displayed-timebase-den": 1000000,
+      "native-displayed-timebase-num": 1,
+      "phase": "quality-32x24-progressed",
+      "pip-active": true,
+      "pip-available": true,
+      "pip-clockRate": 0,
+      "pip-contentKind": 2,
+      "pip-enqueuedFrames": 16,
+      "pip-epoch": 36,
+      "pip-generation": 1,
+      "pip-pendingFrames": 0,
+      "pip-reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "pip-revision": 50,
+      "pip-sourcePTS": {
+        "timescale": 1000000,
+        "value": 1033000
+      },
+      "pip-submittedLeases": 1,
+      "playerPosition": 1.033,
+      "userPaused": false
+    },
+    {
+      "clock-holdUpdates": 463,
+      "clock-maximumAnchorCorrectionSeconds": 0.020689289666666777,
+      "clock-maximumInterSnapshotReceiptGapSeconds": 0.19601925,
+      "clock-maximumSnapshotAgeSeconds": 0.000269792,
+      "clock-maximumValidSnapshotHostGapSeconds": 0.124404625,
+      "clock-receivedSnapshots": 520,
+      "configurationID": 3,
+      "hostSeconds": 1017658.4498727084,
+      "native-displayed-generation": 1,
+      "native-displayed-source-pts": 1067000,
+      "native-displayed-timebase-den": 1000000,
+      "native-displayed-timebase-num": 1,
+      "phase": "reconfiguration-finished-paused",
+      "pip-active": true,
+      "pip-available": true,
+      "pip-clockRate": 0,
+      "pip-contentKind": 2,
+      "pip-enqueuedFrames": 17,
+      "pip-epoch": 36,
+      "pip-generation": 1,
+      "pip-pendingFrames": 0,
+      "pip-reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "pip-revision": 51,
+      "pip-sourcePTS": {
+        "timescale": 1000000,
+        "value": 1067000
+      },
+      "pip-submittedLeases": 1,
+      "playerPosition": 1.067,
+      "userPaused": true
+    }
+  ],
+  "osVersion": "26.5",
+  "passed": true,
+  "piPStayedActiveAtAllRecordedTransitionObservations": true,
+  "provenance": {
+    "binaries": {
+      "FrameEngineShared": {
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib"
+      },
+      "HDRPlayer": {
+        "afterSHA256": "29da1a38ed64bfcfc48f30f10074002fcdcf1e362b1a194784a8438e17ff3c3f",
+        "beforeSHA256": "29da1a38ed64bfcfc48f30f10074002fcdcf1e362b1a194784a8438e17ff3c3f",
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer"
+      },
+      "libmpv": {
+        "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+        "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib"
+      }
+    },
+    "fixtureSHA256": "c9ea81d5b6cf5bd8f6a43556eae17b86b966fe1f684beb3c0087ed6915aeaa40",
+    "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "mpvRevision": "904d1e05dfa9be551acd95fe562722c0e3b26e33",
+    "rawFiles": {
+      "artifacts/player-pip-reconfigure/dom.json": "0aebe39bd997f62b3d953ab8d7bffdc00f58d46a06d34caa85fb15d8d836926d",
+      "artifacts/player-pip-reconfigure/lifecycle.jsonl": "056fa3b337448f48ff359153e1c3c1936f8cbb9ec2f103978b28940161aa5644",
+      "artifacts/player-pip-reconfigure/pip.json": "84e08d143d96327a9bfe4e95bc8d9f1c6065c7e83adfd671ab9a11fd6be556f8",
+      "artifacts/player-pip-reconfigure/player.log": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84",
+      "artifacts/player-pip-reconfigure/report.json": "28a38e28ff2898a83c952706fd4f77bf3f0c1d07196e53c0f2ab1a0cab38bea3"
+    },
+    "rootRevision": "c9ff2fd66cac5e51d1b3637cd3f40c272c82b2e6",
+    "sourceFiles": {
+      "apps/macos/Sources/MPVFrameExport.swift": "7a932af0d1d12e8ad3666c8cf5e4a01a4f439230e21c8a241c7f56eda31e0027",
+      "apps/macos/Sources/MPVPlaybackController.swift": "56d80dfba223ef18521ad9e3254e7f618ade357a6faf7af478f01dc1f62c00ba",
+      "apps/macos/Sources/PiPCoreClock.swift": "82cdc0d055b23eeac195ae3501e01feb552f5d4a7f93d8e548a1cbf132d09123",
+      "apps/macos/Sources/PiPRequestState.swift": "f4e2521cfa8dcf9f06f16e8cb77fe8ccacdd95a136e11f8a5dc5cd3b9a9cfbd0",
+      "apps/macos/Sources/PictureInPictureController.swift": "d306e0455a8c64abea6123f3078905c768ff58e1ff5cee1d7b8ee7189ed6e464",
+      "apps/macos/Sources/PlayerSmokeCheck.swift": "9543b68af0b629c1c56133bd2d463869b8642555f6a79070d329fd9b83667906",
+      "apps/macos/Sources/main.swift": "895718e100ce6e848a84c608928c6602a174f0dc85b04e4b5c2dfde8ab8783e1",
+      "scripts/test-player-lifecycle-playback.py": "0841be56c7a9ba04d5fcaf89759112b789110f13319186e30b9664c6bec34fde"
+    },
+    "sourceTreeClean": false
+  },
+  "schemaVersion": 1,
+  "scope": "Actual opt-in PiP functional filter reconfiguration and worker clock diagnostic intervals. No physical presentation, HDR brightness or acoustic synchronization qualification.",
+  "unqualified": [
+    "Continuous presented frame cadence during blocked native worker intervals",
+    "Physical A/V offset or display scanout",
+    "Actual system PiP play/skip buttons",
+    "Physical HDR/reference-white mapping",
+    "Audio-device and external-display transitions"
+  ]
+}

@@ -1,0 +1,686 @@
+{
+  "artifacts": {
+    "artifacts/player-pip-streaming-final/dom.json": "50ada80d435374d0c84562f80490549bf39318485eb34c6967c95a4bf3eade6a",
+    "artifacts/player-pip-streaming-final/lifecycle.jsonl": "146d4dd35e92969ab366e3a85f714631563ba6028ddcfed9ee118e56d775c7bb",
+    "artifacts/player-pip-streaming-final/pip.json": "5d63fa0ebd9d900ed490aa5f2a9bae4ad49460dd238d1dc52b0a2b988c912aa5",
+    "artifacts/player-pip-streaming-final/report.json": "7a7ec57ac37ead1c65d0ac8d93fa3ff9535ba99b2472b222212e1fb631701ce1"
+  },
+  "binariesUnchanged": true,
+  "binarySHA256": {
+    "FrameEngineShared": {
+      "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+      "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+    },
+    "HDRPlayer": {
+      "afterSHA256": "dcdf99b95e981007f884619ec56678a094ea930a5ad7de35940a589ae05acf2e",
+      "beforeSHA256": "dcdf99b95e981007f884619ec56678a094ea930a5ad7de35940a589ae05acf2e"
+    },
+    "libmpv": {
+      "afterSHA256": "f52b9899c20e201ed8e45dcc8f103fe0f2430e522d49dbc795bd9132653e566e",
+      "beforeSHA256": "f52b9899c20e201ed8e45dcc8f103fe0f2430e522d49dbc795bd9132653e566e"
+    }
+  },
+  "capturedAtUTC": "2026-09-10T01:07:57.291052+00:00",
+  "checks": [
+    "PiP diagnostic opt-in and media loaded",
+    "pause before PiP configuration",
+    "native subtitle colour is opaque neutral gray at 0.6",
+    "completed float stream and public PiP possibility",
+    "public PiP enters from shipped DOM control",
+    "PiP receives progressing frames from existing worker",
+    "PiP keeps receiving selected frames while source window is minimized",
+    "PiP follows native user pause and held clock",
+    "paused retained comparison is ready",
+    "unsupported original comparison exits PiP explicitly",
+    "same-PTS enhanced replacement becomes available without inference",
+    "same-PTS comparison preserved native identity and submission count",
+    "PiP re-enters after supported same-PTS replacement",
+    "paused seek rebinds PiP to a new generation and float frame",
+    "selected subtitles disable and stop uncomposited PiP",
+    "PiP capability recovers after subtitles are disabled",
+    "PiP active before application teardown",
+    "three export leases, one pending/submitted sample and six producer surfaces stay bounded"
+  ],
+  "configuration": {
+    "colourStrength": 1,
+    "exportLeaseLimit": 3,
+    "hardware": "Apple M3",
+    "maximumLuminanceRatio": 2,
+    "policy": "adaptive",
+    "processingHeight": 24,
+    "processingWidth": 32,
+    "producerPoolCapacity": 6,
+    "referenceWhiteNits": 203,
+    "source": "assets/test-clips/player-controls.mkv",
+    "sourceAudio": "existing mpv CoreAudio output",
+    "sourceHeight": 192,
+    "sourceWidth": 320,
+    "sourceWindow": "foreground then minimized then restored",
+    "strength": 1
+  },
+  "events": [
+    {
+      "enqueuedFrames": 0,
+      "epoch": 0,
+      "event": "consumer-created",
+      "generation": 0,
+      "hostSeconds": 1016658.2708937083,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 2,
+      "event": "generation-invalidated",
+      "generation": 0,
+      "hostSeconds": 1016658.55326375,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 2,
+      "event": "stream-unavailable",
+      "generation": 0,
+      "hostSeconds": 1016658.5533099168,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 3,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1016658.8661511667,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 4,
+      "event": "generation-invalidated",
+      "generation": 1,
+      "hostSeconds": 1016659.1010950834,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 4,
+      "event": "stream-unavailable",
+      "generation": 1,
+      "hostSeconds": 1016659.1011757083,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 6,
+      "event": "generation-invalidated",
+      "generation": 2,
+      "hostSeconds": 1016659.4624246667,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 6,
+      "event": "stream-unavailable",
+      "generation": 2,
+      "hostSeconds": 1016659.4624727501,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 7,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1016659.4630192918,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 9,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1016659.4925467501,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 9,
+      "event": "stream-unavailable",
+      "generation": 3,
+      "hostSeconds": 1016659.4926160001,
+      "reason": "PiP is waiting for the new seek or stream generation.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 11,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1016659.4937098334,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 11,
+      "event": "stream-unavailable",
+      "generation": 3,
+      "hostSeconds": 1016659.4937293751,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 13,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1016660.4386602084,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 13,
+      "event": "stream-unavailable",
+      "generation": 3,
+      "hostSeconds": 1016660.438702375,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 0,
+      "epoch": 15,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1016660.4673983334,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016660.4688412084,
+      "revision": 16
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 15,
+      "event": "start-request",
+      "generation": 3,
+      "hostSeconds": 1016660.5050284584,
+      "revision": 16
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 15,
+      "event": "render-size",
+      "generation": 3,
+      "height": 524,
+      "hostSeconds": 1016660.5160776251,
+      "revision": 16,
+      "width": 873
+    },
+    {
+      "enqueuedFrames": 1,
+      "epoch": 15,
+      "event": "did-start",
+      "generation": 3,
+      "hostSeconds": 1016660.6109730001,
+      "revision": 16
+    },
+    {
+      "enqueuedFrames": 2,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016660.804650875,
+      "revision": 17
+    },
+    {
+      "enqueuedFrames": 3,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016660.8543698334,
+      "revision": 18
+    },
+    {
+      "enqueuedFrames": 4,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016660.9693536251,
+      "revision": 19
+    },
+    {
+      "enqueuedFrames": 5,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016661.0668195417,
+      "revision": 20
+    },
+    {
+      "enqueuedFrames": 6,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016661.1665037083,
+      "revision": 21
+    },
+    {
+      "enqueuedFrames": 7,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016661.7764847084,
+      "revision": 27
+    },
+    {
+      "enqueuedFrames": 8,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016661.8685230834,
+      "revision": 28
+    },
+    {
+      "enqueuedFrames": 9,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016661.9632646667,
+      "revision": 29
+    },
+    {
+      "enqueuedFrames": 10,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016662.0417690417,
+      "revision": 30
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 15,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016662.7953720418,
+      "revision": 31
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 16,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1016663.3876305417,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 16,
+      "event": "stream-unavailable",
+      "generation": 3,
+      "hostSeconds": 1016663.3877538751,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 16,
+      "event": "restore-interface",
+      "generation": 3,
+      "hostSeconds": 1016663.4261929584,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 16,
+      "event": "did-stop",
+      "generation": 3,
+      "hostSeconds": 1016664.000113375,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 11,
+      "epoch": 17,
+      "event": "generation-invalidated",
+      "generation": 3,
+      "hostSeconds": 1016664.123781,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 17,
+      "event": "frame-enqueued",
+      "generation": 3,
+      "hostSeconds": 1016664.1246067084,
+      "revision": 35
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 17,
+      "event": "start-request",
+      "generation": 3,
+      "hostSeconds": 1016664.2014724168,
+      "revision": 35
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 17,
+      "event": "did-start",
+      "generation": 3,
+      "hostSeconds": 1016664.2192060834,
+      "revision": 35
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 19,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1016664.3305242917,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 19,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1016664.3306404167,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 21,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1016664.3472079583,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 21,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1016664.3473125417,
+      "reason": "PiP is waiting for the new seek or stream generation.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 23,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1016664.349179625,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 23,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1016664.3492572084,
+      "reason": "PiP currently requires completed float enhancement output.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 25,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1016664.6403963751,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 25,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1016664.6404565001,
+      "reason": "Open a supported video before starting PiP.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 12,
+      "epoch": 27,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1016664.65306525,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 13,
+      "epoch": 28,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1016664.7641023333,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 13,
+      "epoch": 28,
+      "event": "stream-unavailable",
+      "generation": 4,
+      "hostSeconds": 1016664.7642319167,
+      "reason": "Turn subtitles off before using this PiP preview.",
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 13,
+      "epoch": 28,
+      "event": "restore-interface",
+      "generation": 4,
+      "hostSeconds": 1016664.7653540417,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 13,
+      "epoch": 28,
+      "event": "did-stop",
+      "generation": 4,
+      "hostSeconds": 1016665.333037375,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 13,
+      "epoch": 29,
+      "event": "generation-invalidated",
+      "generation": 4,
+      "hostSeconds": 1016665.3981885418,
+      "revision": 0
+    },
+    {
+      "enqueuedFrames": 14,
+      "epoch": 29,
+      "event": "start-request",
+      "generation": 4,
+      "hostSeconds": 1016665.480200625,
+      "revision": 47
+    },
+    {
+      "enqueuedFrames": 14,
+      "epoch": 29,
+      "event": "did-start",
+      "generation": 4,
+      "hostSeconds": 1016665.4924290418,
+      "revision": 47
+    },
+    {
+      "enqueuedFrames": 14,
+      "epoch": 29,
+      "event": "shutdown-request",
+      "generation": 4,
+      "hostSeconds": 1016665.6013359168,
+      "revision": 47
+    },
+    {
+      "enqueuedFrames": 14,
+      "epoch": 29,
+      "event": "restore-interface",
+      "generation": 4,
+      "hostSeconds": 1016665.605163875,
+      "revision": 47
+    },
+    {
+      "enqueuedFrames": 14,
+      "epoch": 29,
+      "event": "did-stop",
+      "generation": 4,
+      "hostSeconds": 1016666.1750252917,
+      "revision": 47
+    },
+    {
+      "enqueuedFrames": 14,
+      "epoch": 29,
+      "event": "renderer-flushed-and-leases-released",
+      "generation": 4,
+      "hostSeconds": 1016666.177341375,
+      "revision": 47
+    }
+  ],
+  "exactTimestampSnapshots": 50,
+  "exitCode": 0,
+  "finalPiPState": {
+    "active": false,
+    "available": false,
+    "backpressureObservations": 0,
+    "clock": {
+      "corrections": [],
+      "holdUpdates": 504,
+      "maximumAnchorCorrectionSeconds": 0.017373708000000376,
+      "maximumSnapshotAgeSeconds": 0.00063625,
+      "maximumSteadyCorrectionSeconds": 0.017373708000000376,
+      "rate": 0,
+      "scope": "Core timebase anchoring; not AVKit physical presentation or acoustic synchronization",
+      "updates": 544
+    },
+    "clockRate": 0,
+    "clockSource": 1,
+    "compatibleStream": true,
+    "contentKind": 2,
+    "diagnosticEnabled": true,
+    "discardedFrames": 1,
+    "enqueuedFrames": 14,
+    "epoch": 29,
+    "exportLeaseLimit": 3,
+    "flushes": 32,
+    "generation": 4,
+    "maximumObservedExportLeases": 3,
+    "pendingFrames": 0,
+    "physicalAVSyncQualified": false,
+    "physicalHDRQualified": false,
+    "producerPoolCapacity": 6,
+    "reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+    "revision": 47,
+    "samplePTS": {
+      "rounded": false,
+      "timescale": 1000000,
+      "value": 1400000
+    },
+    "sourceDuration": {
+      "timescale": 1000000000,
+      "value": 33333333
+    },
+    "sourcePTS": {
+      "timescale": 1000000,
+      "value": 1400000
+    },
+    "submittedLeases": 0,
+    "systemPossible": true
+  },
+  "lifecycleFixRerun": {
+    "artifactDirectory": "artifacts/player-pip-lifecycle-fixed",
+    "binariesUnchanged": true,
+    "binarySHA256": {
+      "FrameEngineShared": {
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      },
+      "HDRPlayer": {
+        "afterSHA256": "54e237c9508ad9dc55a81e32b780467708befd8cdbec10eb1590cf31a610c2ea",
+        "beforeSHA256": "54e237c9508ad9dc55a81e32b780467708befd8cdbec10eb1590cf31a610c2ea"
+      },
+      "libmpv": {
+        "afterSHA256": "ff002bc12bc95df9dce98ccd002798bc1bcfd96f9ee24e06b54e0bccc3d34a27",
+        "beforeSHA256": "ff002bc12bc95df9dce98ccd002798bc1bcfd96f9ee24e06b54e0bccc3d34a27"
+      }
+    },
+    "domChecksPassed": 18,
+    "exitCode": 0,
+    "finalPiPState": {
+      "active": false,
+      "available": false,
+      "backpressureObservations": 0,
+      "clock": {
+        "corrections": [],
+        "holdUpdates": 590,
+        "maximumAnchorCorrectionSeconds": 0.018025873333333498,
+        "maximumSnapshotAgeSeconds": 0.000250125,
+        "maximumSteadyCorrectionSeconds": 0.018025873333333498,
+        "rate": 0,
+        "scope": "Core timebase anchoring; not AVKit physical presentation or acoustic synchronization",
+        "updates": 625
+      },
+      "clockRate": 0,
+      "clockSource": 1,
+      "compatibleStream": true,
+      "contentKind": 2,
+      "diagnosticEnabled": true,
+      "discardedFrames": 0,
+      "enqueuedFrames": 14,
+      "epoch": 29,
+      "exportLeaseLimit": 3,
+      "flushes": 32,
+      "generation": 4,
+      "maximumObservedExportLeases": 2,
+      "pendingFrames": 0,
+      "physicalAVSyncQualified": false,
+      "physicalHDRQualified": false,
+      "producerPoolCapacity": 6,
+      "reason": "Diagnostic PiP preview; HDR brightness and streamed presentation remain unqualified.",
+      "revision": 46,
+      "samplePTS": {
+        "rounded": false,
+        "timescale": 1000000,
+        "value": 1400000
+      },
+      "sourceDuration": {
+        "timescale": 1000000000,
+        "value": 33333333
+      },
+      "sourcePTS": {
+        "timescale": 1000000,
+        "value": 1400000
+      },
+      "submittedLeases": 0,
+      "systemPossible": true
+    },
+    "passed": true,
+    "scope": "Same functional18checks after asynchronous request/shutdown hardening; capture predates additional gap diagnostics"
+  },
+  "limitations": [
+    "AVFoundation internal buffer reference count is not publicly observable; reported counts are consumer/exporter references and producer allocation cap.",
+    "Main-thread enqueue may stall during AppKit animations despite worker-side timebase updates.",
+    "DOM transport controls were tested while PiP was active; system PiP play/skip buttons and actual PiP-window resizing remain untested.",
+    "Physical HDR/reference white, acoustic A/V, sustained presentation cadence, Prepared transitions and audio-device changes remain unqualified."
+  ],
+  "passed": true,
+  "scope": "Actual diagnostic AVKit selected-frame consumer integration; physical HDR, presentation timing and acoustic A/V remain unqualified",
+  "subtitleAssertion": {
+    "observedNativeColour": "#FF999999",
+    "requestedBrightness": 0.6
+  },
+  "teardown": {
+    "leaseReleaseBeforeCoreDestruction": true,
+    "nativeWorkerDestroyedHostSeconds": 1016666.2382569168,
+    "rendererFlushedHostSeconds": 1016666.177341375
+  },
+  "version": 1,
+  "wrapperChecks": [
+    "Existing DOM/media smoke passed and the process exited cleanly",
+    "Termination request precedes native view/core destruction and final log flush",
+    "Source, paused transport state and native rational displayed timestamps were recorded",
+    "No physical sleep cycle was inferred during the media-only check",
+    "Actual PiP lifecycle and renderer flush release consumer leases before core destruction"
+  ]
+}

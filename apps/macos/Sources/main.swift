@@ -36,6 +36,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
     private var pendingOpenURL: URL?
     private var smoke: PlayerSmokeCheck?
     private var lifecycle: PlayerLifecycleDiagnostics?
+    private var pictureInPicture: PlayerPictureInPicture?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         makeMenus()
@@ -76,6 +77,19 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
             controls.loadFileURL(html, allowingReadAccessTo: html.deletingLastPathComponent())
         }
         player = MPVPlaybackController(hostView: video)
+        if player.pictureInPictureDiagnosticEnabled {
+            pictureInPicture = PlayerPictureInPicture(host: video, diagnosticEnabled: true,
+                command: { [weak self] name, value in self?.player.command(name, value: value) },
+                restore: { [weak self] in
+                    self?.window.deminiaturize(nil); self?.window.makeKeyAndOrderFront(nil)
+                    NSApp.activate(ignoringOtherApps: true)
+                })
+            pictureInPicture?.onChange = { [weak self] in
+                guard let self else { return }; self.publish(self.player.state)
+            }
+            player.onPiPSnapshot = { [weak self] snapshot in self?.pictureInPicture?.receive(snapshot) }
+            player.pictureInPictureClock = pictureInPicture?.coreClock
+        }
         player.onState = { [weak self] state in self?.publish(state) }
         player.onStopped = { [weak self] in
             guard let self, self.terminating else { return }
@@ -189,6 +203,13 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         latestState = state
         window.title = (state["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "HDR Player"
         var displayed = state
+        pictureInPicture?.updatePlaybackState(state)
+        if let pictureInPicture {
+            displayed["pip"] = pictureInPicture.state
+            var capabilities = displayed["capabilities"] as? [String: Any] ?? [:]
+            capabilities["pip"] = pictureInPicture.available
+            displayed["capabilities"] = capabilities
+        }
         if let layer = video.subviews.first?.layer as? CAMetalLayer {
             displayed["display"] = ["edr": layer.wantsExtendedDynamicRangeContent,
                 "headroom": window.screen?.maximumExtendedDynamicRangeColorComponentValue ?? 1,
@@ -209,6 +230,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         case "fullscreen":
             let wanted = body["value"] as? Bool ?? !window.styleMask.contains(.fullScreen)
             if wanted != window.styleMask.contains(.fullScreen) { toggleFullscreen() }
+        case "pip": pictureInPicture?.toggle()
         default: player.command(command, value: body["value"])
         }
     }
@@ -219,7 +241,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
     }
     func windowDidEnterFullScreen(_ notification: Notification) { player.fullscreenChanged(true); lifecycle?.record("window-fullscreen-enter") }
     func windowDidExitFullScreen(_ notification: Notification) { player.fullscreenChanged(false); lifecycle?.record("window-fullscreen-exit") }
-    func windowDidResize(_ notification: Notification) { lifecycle?.record("window-resized") }
+    func windowDidResize(_ notification: Notification) { pictureInPicture?.layout(); lifecycle?.record("window-resized") }
     func windowDidChangeScreen(_ notification: Notification) { lifecycle?.record("window-screen-changed") }
     func windowDidBecomeKey(_ notification: Notification) { lifecycle?.record("window-focused") }
     func windowDidResignKey(_ notification: Notification) { lifecycle?.record("window-unfocused") }
@@ -236,7 +258,9 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
         NSWorkspace.shared.notificationCenter.removeObserver(self)
         controls?.configuration.userContentController.removeScriptMessageHandler(forName: "player")
-        player.stop()
+        if let pictureInPicture {
+            pictureInPicture.shutdown { [weak self] in self?.player.stop() }
+        } else { player.stop() }
         // mpv's VO teardown synchronously detaches its NSView on the main
         // queue. Keep the ordinary AppKit loop running until that completes;
         // terminateLater's nested termination loop does not service that work.

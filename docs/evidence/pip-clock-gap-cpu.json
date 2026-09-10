@@ -1,0 +1,52 @@
+{
+  "checksPassed": 9,
+  "command": "source scripts/env.sh; swiftc -swift-version 6 -I packages/CMpv apps/macos/Sources/MPVFrameExport.swift apps/macos/Sources/PiPCoreClock.swift scripts/test-player-pip-clock.swift -o artifacts/player-lifecycle-checks/pip-clock-gap; artifacts/player-lifecycle-checks/pip-clock-gap",
+  "definitions": {
+    "detailThresholdSeconds": 0.05,
+    "maximumDetailRecords": 100,
+    "openInterval": "Not included until the next receipt or valid native host sample.",
+    "policyEffect": "None; measurements only.",
+    "receiptGap": "Monotonic mach_absolute_time ticks captured at worker update entry, including invalid clock snapshots; out-of-order ticks do not move watermark backward.",
+    "validHostGap": "Distinct accepted clock-valid finite native host tick samples; invalid/stale snapshots do not advance watermark."
+  },
+  "exitCode": 0,
+  "newScenarios": [
+    {
+      "assertedMaximumInterSnapshotReceiptGapSeconds": 0.5,
+      "assertedMaximumValidSnapshotHostGapSeconds": 0.51,
+      "assertionToleranceSeconds": 1e-06,
+      "closedClockIgnoresLaterReceipt": true,
+      "distinctValidHostSamples": 3,
+      "name": "Distinct receipt and valid-host gap after invalid/duplicate/stale samples",
+      "receipts": 6
+    },
+    {
+      "assertedMaximumInterSnapshotReceiptGapSeconds": 2,
+      "assertedMaximumValidSnapshotHostGapSeconds": 2,
+      "intervalsOverDetailThreshold": 106,
+      "name": "Bounded detail does not cap measured maxima",
+      "retainedDetailRecords": 100
+    }
+  ],
+  "passed": true,
+  "priorEvidence": "docs/evidence/m3-pip-consumer.json describes its original binary without these gap metrics; no old capture metrics were inferred or replaced.",
+  "provenance": {
+    "files": {
+      "apps/macos/Sources/MPVFrameExport.swift": "7a932af0d1d12e8ad3666c8cf5e4a01a4f439230e21c8a241c7f56eda31e0027",
+      "apps/macos/Sources/PiPCoreClock.swift": "82cdc0d055b23eeac195ae3501e01feb552f5d4a7f93d8e548a1cbf132d09123",
+      "artifacts/player-lifecycle-checks/pip-clock-gap": "19be76a1c3da5a5fb473813d92cae272c117ac0649c719bc82bf2431ccf34f66",
+      "artifacts/player-lifecycle-checks/pip-clock-gap.log": "8bc07d22dda5e68b7b4f424e3b002aa56e0dca675249083c4a23f179580920ac",
+      "scripts/test-player-pip-clock.swift": "4c60c3865f77601570c97bb52fad9f126d440efa977336d4f43c6e15d2327081"
+    },
+    "rootRevision": "af73ae6d8febd5364daf1aa3388080745b8719f4",
+    "sourceTreeClean": false
+  },
+  "schemaVersion": 1,
+  "scope": "CPU-only synthetic clock/mailbox/gap regression; no player, renderer, GPU job, physical clock or A/V qualification",
+  "unqualified": [
+    "Actual worker gaps during active PiP/filter replacement",
+    "AVKit presented frame cadence and A/V offset",
+    "Ongoing stalls without a subsequent snapshot",
+    "Physical HDR/reference-white mapping"
+  ]
+}

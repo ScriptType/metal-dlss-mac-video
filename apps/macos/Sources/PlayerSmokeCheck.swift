@@ -46,6 +46,242 @@ final class PlayerSmokeCheck {
     private func selected(_ type: String, id: Int) -> Bool {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
+    private func runPictureInPicture() async throws {
+        func pip() -> [String: Any] { state()["pip"] as? [String: Any] ?? [:] }
+        func pipNumber(_ key: String) -> Int { (pip()[key] as? NSNumber)?.intValue ?? Int.max }
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        try await wait("PiP diagnostic opt-in and media loaded", seconds: 20) {
+            pip()["diagnosticEnabled"] as? Bool == true && self.number("duration") > 0 && !self.webView.isLoading
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("pause before PiP configuration") { self.state()["paused"] as? Bool == true }
+        try await change("subtitleBrightness", value: "0.6")
+        try await wait("native subtitle colour is opaque neutral gray at 0.6") {
+            (self.state()["nativeSubtitleColor"] as? String)?.uppercased() == "#FF999999"
+        }
+        try await change("sub", value: "no")
+        try await change("timeline", value: "0.3")
+        if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true { try await click("enhancement") }
+        try await wait("completed float stream and public PiP possibility", seconds: 25) {
+            pip()["available"] as? Bool == true && (pip()["enqueuedFrames"] as? Int ?? 0) > 0
+        }
+        try await click("pip")
+        try await wait("public PiP enters from shipped DOM control", seconds: 12) { pip()["active"] as? Bool == true }
+        let firstFrames = pip()["enqueuedFrames"] as? Int ?? 0
+        try await click("play")
+        try await wait("PiP receives progressing frames from existing worker", seconds: 15) {
+            self.state()["paused"] as? Bool == false && (pip()["enqueuedFrames"] as? Int ?? 0) >= firstFrames + 4
+        }
+        window.miniaturize(nil)
+        let hiddenFrames = pip()["enqueuedFrames"] as? Int ?? 0
+        try await wait("PiP keeps receiving selected frames while source window is minimized", seconds: 12) {
+            self.window.isMiniaturized && (pip()["enqueuedFrames"] as? Int ?? 0) >= hiddenFrames + 4
+        }
+        window.deminiaturize(nil); window.makeKeyAndOrderFront(nil)
+        try await click("play")
+        try await wait("PiP follows native user pause and held clock") {
+            self.state()["paused"] as? Bool == true && pip()["clockRate"] as? Double == 0
+        }
+        try await wait("paused retained comparison is ready", seconds: 15) { native()["compare-ready"] as? Bool == true }
+        try await Task.sleep(for: .milliseconds(500))
+        let pts = native()["displayed-source-pts"] as? Int64
+        let submitted = native()["submitted-frames"] as? Int
+        let revision = pip()["revision"] as? UInt64 ?? 0
+        try await click("compare")
+        try await wait("unsupported original comparison exits PiP explicitly") {
+            native()["comparison"] as? String == "original" && pip()["active"] as? Bool == false &&
+            pip()["available"] as? Bool == false && (pip()["reason"] as? String ?? "").contains("float")
+        }
+        try await click("compare")
+        try await wait("same-PTS enhanced replacement becomes available without inference", seconds: 12) {
+            pip()["available"] as? Bool == true && (pip()["revision"] as? UInt64 ?? 0) > revision
+        }
+        guard native()["displayed-source-pts"] as? Int64 == pts,
+              native()["submitted-frames"] as? Int == submitted else { throw Failure(message: "PiP comparison changed exact PTS or submitted new inference") }
+        checks.append("same-PTS comparison preserved native identity and submission count")
+        try await click("pip")
+        try await wait("PiP re-enters after supported same-PTS replacement") { pip()["active"] as? Bool == true }
+        let generation = pip()["generation"] as? UInt64
+        try await change("timeline", value: "1.4")
+        try await wait("paused seek rebinds PiP to a new generation and float frame", seconds: 20) {
+            pip()["generation"] as? UInt64 != generation && pip()["compatibleStream"] as? Bool == true &&
+            abs(self.number("position") - 1.4) < 0.1 && self.state()["paused"] as? Bool == true
+        }
+        try await change("sub", value: "1")
+        try await wait("selected subtitles disable and stop uncomposited PiP") {
+            pip()["active"] as? Bool == false && pip()["available"] as? Bool == false &&
+            (pip()["reason"] as? String ?? "").lowercased().contains("subtitle")
+        }
+        try await change("sub", value: "no")
+        try await wait("PiP capability recovers after subtitles are disabled") { pip()["available"] as? Bool == true }
+        try await click("pip")
+        try await wait("PiP active before application teardown") { pip()["active"] as? Bool == true }
+        guard pipNumber("maximumObservedExportLeases") <= 3,
+              pipNumber("pendingFrames") <= 1,
+              pipNumber("submittedLeases") <= 1,
+              pipNumber("producerPoolCapacity") == 6,
+              state()["error"] == nil else { throw Failure(message: "PiP ownership bound or native playback health failed") }
+        checks.append("three export leases, one pending/submitted sample and six producer surfaces stay bounded")
+    }
+    private func runReconfigurationPictureInPicture() async throws {
+        func pip() -> [String: Any] { state()["pip"] as? [String: Any] ?? [:] }
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func integer(_ values: [String: Any], _ key: String) -> Int64 { (values[key] as? NSNumber)?.int64Value ?? -1 }
+        func observe(_ phase: String) {
+            guard snapshots.count < 512 else { return }
+            let p = pip(), n = native(), clock = p["clock"] as? [String: Any] ?? [:]
+            var sample: [String: Any] = ["phase": phase, "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                "configurationID": number("configurationID"), "playerPosition": number("position"),
+                "userPaused": state()["paused"] ?? NSNull()]
+            for key in ["active", "available", "epoch", "generation", "revision", "sourcePTS", "contentKind",
+                        "enqueuedFrames", "pendingFrames", "submittedLeases", "clockRate", "reason"] {
+                sample["pip-" + key] = p[key] ?? NSNull()
+            }
+            for key in ["displayed-generation", "displayed-source-pts", "displayed-timebase-num", "displayed-timebase-den"] {
+                sample["native-" + key] = n[key] ?? NSNull()
+            }
+            for key in ["receivedSnapshots", "holdUpdates", "maximumInterSnapshotReceiptGapSeconds",
+                        "maximumValidSnapshotHostGapSeconds", "maximumSnapshotAgeSeconds", "maximumAnchorCorrectionSeconds"] {
+                sample["clock-" + key] = clock[key] ?? NSNull()
+            }
+            snapshots.append(sample)
+        }
+        try await wait("PiP reconfiguration diagnostic and source longer than ten seconds loaded", seconds: 20) {
+            pip()["diagnosticEnabled"] as? Bool == true && self.number("duration") > 10 && !self.webView.isLoading
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("pause before reconfiguration setup") { self.state()["paused"] as? Bool == true }
+        try await change("sub", value: "no")
+        try await change("quality", value: "32x24")
+        try await change("timeline", value: "0.3")
+        if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true { try await click("enhancement") }
+        try await wait("initial completed float frame enables PiP", seconds: 25) { pip()["available"] as? Bool == true }
+        try await click("pip")
+        try await wait("actual PiP enters before quality changes") { pip()["active"] as? Bool == true }
+        let initialFrames = integer(pip(), "enqueuedFrames")
+        try await click("play")
+        try await wait("native playback and PiP progress before reconfiguration", seconds: 20) {
+            self.state()["paused"] as? Bool == false && integer(pip(), "enqueuedFrames") >= initialFrames + 4
+        }
+        for (width, height) in [(160, 96), (32, 24)] {
+            let beforeConfiguration = number("configurationID"), beforeEpoch = integer(pip(), "epoch")
+            let phase = "quality-\(width)x\(height)"
+            observe(phase + "-requested")
+            try await change("quality", value: "\(width)x\(height)")
+            let deadline = ProcessInfo.processInfo.systemUptime + 25
+            var recovered = false
+            repeat {
+                observe(phase + "-waiting")
+                let processing = state()["processing"] as? [String: Any] ?? [:]
+                recovered = number("configurationID") > beforeConfiguration && integer(processing, "width") == Int64(width) &&
+                    integer(processing, "height") == Int64(height) && integer(pip(), "epoch") > beforeEpoch && pip()["available"] as? Bool == true
+                if recovered { break }
+                try await Task.sleep(for: .milliseconds(100))
+            } while ProcessInfo.processInfo.systemUptime < deadline
+            guard recovered else { throw Failure(message: "No supported replacement epoch after " + phase) }
+            observe(phase + "-supported-replacement")
+            checks.append(phase + " creates a supported replacement epoch")
+            // Record any stop instead of treating automatic PiP continuity as
+            // established. This regression requires a recoverable new frame.
+            if pip()["active"] as? Bool != true {
+                try await click("pip")
+                try await wait(phase + " PiP re-entry after recorded stop") { pip()["active"] as? Bool == true }
+            }
+            let frames = integer(pip(), "enqueuedFrames")
+            try await wait(phase + " progresses with the new filter", seconds: 20) {
+                integer(pip(), "enqueuedFrames") >= frames + 4 && self.state()["paused"] as? Bool == false
+            }
+            observe(phase + "-progressed")
+        }
+        try await click("play")
+        try await wait("reconfigured PiP follows user pause and current native generation") {
+            self.state()["paused"] as? Bool == true && (pip()["clockRate"] as? NSNumber)?.doubleValue == 0 &&
+                integer(pip(), "generation") == integer(native(), "displayed-generation") && integer(pip(), "generation") > 0
+        }
+        observe("reconfiguration-finished-paused")
+        let clock = pip()["clock"] as? [String: Any] ?? [:]
+        guard clock["maximumInterSnapshotReceiptGapSeconds"] is NSNumber,
+              clock["maximumValidSnapshotHostGapSeconds"] is NSNumber,
+              (0...3).contains(integer(pip(), "maximumObservedExportLeases")),
+              (0...1).contains(integer(pip(), "pendingFrames")), (0...1).contains(integer(pip(), "submittedLeases")),
+              state()["error"] == nil else { throw Failure(message: "Missing gap diagnostics, unbounded leases or native error after quality changes") }
+        checks.append("quality changes retain bounded leases and expose receipt/valid-host gaps without a physical timing claim")
+    }
+    private func runPreparedPictureInPicture() async throws {
+        func pip() -> [String: Any] { state()["pip"] as? [String: Any] ?? [:] }
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func progress() -> [String: Any] { state()["prepared"] as? [String: Any] ?? [:] }
+        func integer(_ values: [String: Any], _ key: String) -> Int64 { (values[key] as? NSNumber)?.int64Value ?? -1 }
+        func exactIdentity() -> [Int64] {
+            ["displayed-source-pts", "displayed-timebase-num", "displayed-timebase-den"].map { integer(native(), $0) }
+        }
+        func pipMatchesNativePTS() -> Bool {
+            let time = pip()["sourcePTS"] as? [String: Any] ?? [:]
+            let identity = exactIdentity(), scale = integer(time, "timescale")
+            guard identity[1] > 0, identity[2] > 0, scale > 0 else { return false }
+            // The requested one/eight-second frames keep these products in Int64.
+            return integer(time, "value") * identity[2] == identity[0] * identity[1] * scale &&
+                integer(pip(), "generation") == integer(native(), "displayed-generation")
+        }
+        try await wait("Prepared PiP diagnostic and source initialized", seconds: 20) {
+            pip()["diagnosticEnabled"] as? Bool == true && self.number("duration") > 10 &&
+            (self.state()["capabilities"] as? [String: Any])?["prepared"] as? Bool == true && !self.webView.isLoading
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("pause before loading existing Prepared cache") { self.state()["paused"] as? Bool == true }
+        if state()["muted"] as? Bool != true { try await click("mute") }
+        try await change("sub", value: "no")
+        try await change("quality", value: "160x96")
+        try await change("cacheCapacityGiB", value: "1")
+        try await change("mode", value: "prepared")
+        try await wait("filter-owned Prepared context opens seeded cache", seconds: 25) {
+            progress()["configurationState"] as? String == "ready" &&
+            !(progress()["availableRanges"] as? [[String: Any]] ?? []).isEmpty
+        }
+        if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true { try await click("enhancement") }
+        try await change("timeline", value: "1")
+        try await wait("cached float at one second becomes PiP available", seconds: 20) {
+            native()["displayed-content-kind"] as? String == "prepared-enhanced" &&
+            abs(self.number("position") - 1) < 0.02 && pip()["available"] as? Bool == true && pipMatchesNativePTS()
+        }
+        let cachedIdentity = exactIdentity()
+        guard cachedIdentity[1] > 0, cachedIdentity[2] > 0 else { throw Failure(message: "Cached frame has no exact source identity") }
+        try await click("pip")
+        try await wait("cached float enters public PiP", seconds: 12) { pip()["active"] as? Bool == true }
+        let initialFrames = integer(pip(), "enqueuedFrames")
+        try await click("play")
+        try await wait("Prepared PiP streams across the two-second segment boundary", seconds: 15) {
+            self.state()["paused"] as? Bool == false && self.number("position") >= 2.2 && self.number("position") < 6 &&
+            pip()["active"] as? Bool == true && integer(pip(), "enqueuedFrames") >= initialFrames + 20 &&
+            native()["displayed-content-kind"] as? String == "prepared-enhanced"
+        }
+        try await click("play")
+        try await wait("Prepared PiP pauses with the native clock") {
+            self.state()["paused"] as? Bool == true && (pip()["clockRate"] as? NSNumber)?.doubleValue == 0
+        }
+        let generation = integer(pip(), "generation")
+        try await change("timeline", value: "8")
+        try await wait("uncached float Original stays in PiP with exact native source identity", seconds: 15) {
+            abs(self.number("position") - 8) < 0.02 && native()["displayed-content-kind"] as? String == "original" &&
+            self.state()["paused"] as? Bool == true && pip()["active"] as? Bool == true && pip()["available"] as? Bool == true &&
+            integer(pip(), "contentKind") == 1 && integer(progress(), "cacheMisses") > 0 && pipMatchesNativePTS()
+        }
+        try await change("timeline", value: "1")
+        try await wait("return to the same cached PTS recovers a new PiP generation", seconds: 20) {
+            exactIdentity() == cachedIdentity && native()["displayed-content-kind"] as? String == "prepared-enhanced" &&
+            pip()["active"] as? Bool == true && pip()["available"] as? Bool == true && integer(pip(), "contentKind") == 4 &&
+            integer(pip(), "generation") > generation && pipMatchesNativePTS()
+        }
+        guard integer(progress(), "processedFrames") == 0 else { throw Failure(message: "PiP cache playback unexpectedly prepared new frames") }
+        checks.append("cached PiP playback reused existing segments without a preparation job")
+        try await wait("recovered cached PiP remains active for teardown") { pip()["active"] as? Bool == true }
+        guard (0...3).contains(integer(pip(), "maximumObservedExportLeases")),
+              (0...1).contains(integer(pip(), "pendingFrames")), (0...1).contains(integer(pip(), "submittedLeases")),
+              integer(pip(), "producerPoolCapacity") == 6, state()["error"] == nil else {
+            throw Failure(message: "Prepared PiP ownership or native playback health failed")
+        }
+        checks.append("Prepared PiP keeps bounded consumer leases and producer capacity")
+    }
     private func runDolbyVision() async throws {
         func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
         try await wait("real Dolby Vision frame reaches the native surface", seconds: 20) {
@@ -155,7 +391,13 @@ final class PlayerSmokeCheck {
     private func run() async {
         var failure: String?
         do {
-            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "dolby-vision" {
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-prepared" {
+                try await runPreparedPictureInPicture()
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip-reconfigure" {
+                try await runReconfigurationPictureInPicture()
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "pip" {
+                try await runPictureInPicture()
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "dolby-vision" {
                 try await runDolbyVision()
             } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "prepared" {
                 try await runPrepared()

@@ -1,6 +1,6 @@
 # Processed HDR picture-in-picture
 
-The public AVKit sample-buffer path accepts a completed neural RGBA16F frame and enters, exits and restores its source window on the tested Apple M3 with macOS 26.5. This establishes a viable float presentation route for further integration. It does not qualify streamed playback or physical HDR brightness. Roadmap #17 remains open and the app's PiP capability remains disabled.
+The native app has an opt-in diagnostic PiP consumer of completed RGBA16F frames on the tested Apple M3 with macOS 26.5. It reuses the existing mpv decoder, enhancement, audio and selected presentation surfaces. Actual AVKit entry, streamed delivery, minimized-window progress, pause, seek, comparison, subtitle rejection and teardown pass the bounded integration check below. Roadmap #17 remains open: physical HDR brightness and sustained presented A/V synchronization are unqualified, so ordinary app PiP stays hidden and disabled.
 
 Apple provides the sample-buffer content-source initializer and playback delegate on macOS 12 and later. This standalone probe requires macOS 26 because it uses the current asynchronous asset-reader API. It uses [AVPictureInPictureController](https://developer.apple.com/documentation/avkit/avpictureinpicturecontroller) with [AVSampleBufferDisplayLayer](https://developer.apple.com/documentation/avfoundation/avsamplebufferdisplaylayer); no private PiP API or display capture is involved.
 
@@ -37,20 +37,127 @@ Both cases produced a single 640×384 render-size delegate value. Actual PiP-win
 
 A subsequent float rerun also passed after teardown hardening: renderer flush completed before engine destruction, idle was observed, occupied engine slots reached zero and close/drain took 35.8 microseconds. Its separate report and compiled-input hashes are retained in the same evidence file.
 
-## Proposed integration boundary
+## Optional libmpv frame export
 
-The following work is proposed, not implemented. Keep libmpv as the sole decoder, audio output and playback-policy owner. AVKit receives the selected presentation frames; it does not create a second player or rerun enhancement.
+The fork now implements the optional versioned interface in `vendor/mpv/include/mpv/hdr_frame.h`. Resolve `mpv_hdr_export_open`, `mpv_hdr_export_poll`, `mpv_hdr_frame_get`, `mpv_hdr_frame_is_current`, `mpv_hdr_frame_release` and `mpv_hdr_export_close` from the loaded libmpv. This is separate from the ordinary upstream client ABI. The header defines all ownership, status and structure-version requirements.
 
-1. **Export selected frames and clock state.** Add a versioned, explicitly optional extension in `vendor/mpv/include/mpv/hdr_frame.h`, implemented beside `player/client.c`. Export retained frame leases, source rational PTS/duration, source-to-player timeline offset, generation, content kind and a monotonically increasing presentation revision. Use `video/out/vo.c` at selection of a current frame and at `run_replace_current`, including same-PTS original/enhanced replacement. A completion in `vf_metal_hdr.m` is too early: it may be buffered, superseded or dropped before presentation. Publish through a bounded queue and a wakeup; never call AppKit while holding core/VO locks. Do not expose raw pointers through JSON properties.
+One exporter per core polls a single selected frame. At most three leases may remain outstanding across exporter reopen; callers may request a smaller bound. Only successful VO draw/flip selection publishes a revision, including paused same-PTS replacement; this boundary is not a physical scanout timestamp. Selection remains active when the host is minimized. Seeking, generation changes, capability changes, exporter close and VO destruction invalidate stale leases. Retained buffers remain readable after core destruction; release every lease before unloading libmpv.
 
-2. **Reuse completed float surfaces.** `vf_metal_hdr.m` already creates GPU-complete IOSurface RGBA16F buffers in a six-buffer pool, normalizing absolute nits to libplacebo's 203-nit linear domain without clipping. `mp_image` retains those buffers. A PiP lease can retain that surface and a format description after completion, with linear BT.2020/extended-linear colour tags. No full-frame CPU readback or P010 conversion is necessary. Do not mutate attachment metadata while another renderer consumes the same surface; establish stable tags at publication or use independent format-description extensions. If AVKit requires a different proven unity mapping, add one bounded Metal normalization pass into a PiP pool and measure it.
+Every poll returns clock/state even when the frame is unchanged, unsupported or the lease budget is full. Native `mach_absolute_time` ticks anchor the measured CoreAudio media time; `clock_sample_span_ticks` reports sampling uncertainty. Convert ticks with `CMClockMakeHostTimeFromSystemUnits`, not mpv's offset `mp_time_ns` epoch. The snapshot distinguishes exact source PTS/duration from player PTS and source-to-player offset, and records user pause, actual core pause and enhancement/cache buffering. Paused video without audio uses its selected PTS at rate zero. A progressing video-only clock remains unsupported.
 
-3. **Keep retention bounded through actual AVFoundation ownership.** Add `apps/macos/Sources/PictureInPictureController.swift` and a small native bridge in `packages/CMpv`. Retain the CVPixelBuffer independently of the engine output lease; the existing normalization completion has already released the engine slot. Use renderer backpressure and an explicit cap on outstanding exported surfaces. An enqueue return is not a display/GPU completion signal. Pool allocation thresholds and retained CVPixelBuffer ownership must prevent recycling while AVFoundation holds a surface. Flush/cancel/drain on seek, generation change, renderer failure and exit, including queued old-generation samples. Measure contention with the existing six-buffer mpv pool before choosing whether PiP needs a separate capped pool.
+Normalized float buffers receive immutable linear BT.2020 and extended-linear colour-space tags before publication. The export has no full-frame CPU readback or additional normalization copy. Its lease count does not measure references retained internally by AVFoundation after enqueue: consumers must separately bound that retention, and the existing six-buffer producer pool can stall until those references drain. Original P010 previews, raw Dolby Vision, enabled subtitles and nontrivial geometry return explicit unsupported status. The exporter does not silently composite or reinterpret those frames.
 
-4. **Bind the media timebase to the core clock.** Extend the native bridge with a snapshot from `player/video.c`/audio state: media time, corresponding monotonic host time, effective playback rate, seek generation, requested pause and actual enhancement-buffering hold. Preserve exact source timing separately from the normalized player timeline. The layer timebase must follow audio and Adaptive holds even when the host is obscured. The public display-layer contract supports a timebase sourced from a `CMAudioDeviceClock`; evaluate the current CoreAudio device clock where available, with explicit host/media anchors for seeks and offsets. A 100-ms JSON position poll or cached `avsync` is insufficient. Keep mpv audio active and invalidate/rebind clock state on device changes; do not start an independent audio renderer. Modern [receiver enqueue](https://developer.apple.com/documentation/avfoundation/avsamplebuffervideorenderer/receiver/enqueue(_:)) provides backpressure when a render synchronizer is chosen; resolve that ownership against the existing mpv audio-clock path before implementation.
+The standalone ABI smoke is `vendor/mpv/TOOLS/hdr-export-probe.swift`. With the shared engine and adapter already built:
 
-5. **Route controls through the existing native command worker.** In `MPVPlaybackController.swift`, map PiP `setPlaying` to the same pause-intent commands used by the app, and map skip requests to an exact seek. Complete a skip only once the new generation's timebase/preview is established, including failure completion. Report the real playable range and invalidate AVKit playback state after pause, duration, rate and buffering changes. Retained paused comparison must flush/re-enqueue the chosen same-PTS revision without model resubmission. `main.swift` owns only native window restoration and the availability binding; the web interface sends enter/exit intents. Neither source-host resizing nor PiP resizing should reload the model.
+```sh
+source scripts/env.sh
+mkdir -p artifacts/mpv-host
+swiftc -swift-version 5 -O \
+  -import-objc-header vendor/mpv/include/mpv/hdr_frame.h \
+  vendor/mpv/TOOLS/hdr-export-probe.swift -o artifacts/mpv-host/HDRExportProbe \
+  -L "$PROJECT_ROOT/artifacts/mpv-build" -lmpv \
+  -Xlinker -rpath -Xlinker "$PROJECT_ROOT/artifacts/mpv-build" \
+  -Xlinker -rpath -Xlinker "$PROJECT_ROOT/.build/debug" \
+  -framework AppKit -framework AVFoundation -framework CoreVideo -framework QuartzCore
+cp .build/debug/mlx.metallib artifacts/mpv-host/mlx.metallib
+artifacts/mpv-host/HDRExportProbe \
+  "$PROJECT_ROOT/assets/test-clips/playback/pq-30-30s.mkv" \
+  "$PROJECT_ROOT/models/neural-rendering/NeuralRendering.dlssmodel" \
+  "$PROJECT_ROOT/artifacts/mpv-hdr-export-probe.json"
+```
 
-6. **Qualify activation and unsupported paths.** Keep public availability false until the current format, colour/units policy, clock bridge and retained-frame exporter pass their checks and AVKit reports possible. Report entry failures and return to the existing renderer with the correct generation/PTS. Initial integration can explicitly exclude Dolby Vision, because the float filter output does not include gpu-next's native DV reshaping. A pre-composition frame export also omits mpv subtitles/OSD; either expose that limitation before entry or add a separately measured float composition pass in `vo_gpu_next.c`. Do not call raw DV/P010 transport an enhanced float path. Verify foreground/background/minimized source-window operation, restoration, real PiP resize, repeated entry/exit, paused seeks/compare, Adaptive holds, Prepared cache transitions and audio-device changes before enabling #17 in the app.
+The [M3 ABI smoke evidence](evidence/m3-pip-exporter.json) records retained float metadata, exact paused comparison without additional inference, seek invalidation, subtitle capability invalidation/resume, a two-lease limit across reopen and buffer lifetime after core destruction. During three seconds with the native window minimized it observed 24 new selected neural frames, 495 audio-clock snapshots, 0.80935 seconds of media advancement and at most two pending producer frames. The sampled host-clock anchor was 46.4 microseconds behind the immediate CoreMedia clock check; its sampling interval spanned 1.25 microseconds. These establish the timestamp domain and bounded exporter behavior, not physical presentation timing or streamed AVKit synchronization.
 
-The next bounded prototype should stream the existing completed RGBA16F surfaces with a core-clock snapshot, first using the current SDR/PQ/HLG fixtures and no subtitles/DV. Acceptance requires measured source-PTS/generation correctness, bounded retained surfaces, unchanged temporal submission counts for paused redraw, controls/return behavior and sustained A/V offset within the existing playback target. Numeric float preservation and physical HDR/reference-white validation are separate gates; this held-frame result satisfies neither streamed gate by itself.
+## Diagnostic app consumer
+
+Enable the consumer only for a diagnostic run. The normal app neither creates an exporter nor attaches the AVKit layer. The optional extension is resolved from the already loaded libmpv; an older core reports unavailable without breaking ordinary playback.
+
+```sh
+source scripts/env.sh
+npm --prefix apps/controls run build
+swift build --product HDRPlayer --jobs 2
+HDRPLAYER_ENABLE_PIP=1 .build/debug/HDRPlayer assets/test-clips/player-controls.mkv
+
+# Uses isolated application preferences and the existing built playback binaries.
+python3 scripts/test-player-lifecycle-playback.py \
+  --scenario pip --output artifacts/player-pip-streaming
+```
+
+The runtime and adapter must already be built using the normal repository scripts. The check records the app, libmpv and shared-engine hashes before and after its run and rejects a binary replacement. It enables enhancement at 32×24, disables subtitles before PiP entry and drives the shipped web controls through the existing native worker. It does not build a second decoder, inference session or audio renderer.
+
+`MPVFrameExport.swift` polls the selected-frame interface from the native client worker. Its mailbox coalesces delivery to one latest snapshot and one scheduled main-thread callback; an unchanged clock poll retains an undelivered frame of the same revision. New generations or unsupported formats invalidate it. `PictureInPictureController.swift` retains at most one pending and one submitted lease, checks native lease validity before enqueue, and binds exact source PTS/duration to the player's timeline. A zero source offset preserves the original rational PTS without rescaling; nonzero offset conversion and rounding are reported separately.
+
+The display renderer receives the completed, tagged RGBA16F CVPixelBuffer directly. There is no consumer CPU pixel readback, P010 conversion or normalization pass. Renderer readiness controls enqueue, and each replacement flushes queued media with an asynchronous completion before the previous submitted lease is released. Generation changes and unsupported images clear the displayed image as well. A successful enqueue is not treated as renderer completion. Native CVPixelBuffer retention and the existing six-buffer producer allocation threshold prevent premature reuse; producer allocation can stall rather than grow unbounded. AVFoundation's internal retained-reference count is not exposed by a public API, so the report distinguishes measured exporter/app references from that allocation bound.
+
+`PiPCoreClock.swift` updates the CoreMedia timebase on every worker snapshot before the main-thread mailbox. It uses native host ticks and measured media time, including rate-zero Adaptive holds and user pause, without waiting for the 120-ms JSON state poll. Stale host samples cannot overwrite a newer anchor. The main thread still owns AVKit enqueue and can stall during AppKit animations; a continuing timebase does not guarantee continuing image presentation. Clock correction and snapshot-age metrics therefore describe timebase binding only.
+
+Clock diagnostics also distinguish `maximumInterSnapshotReceiptGapSeconds`, measured between monotonic worker receipt times, from `maximumValidSnapshotHostGapSeconds`, measured between distinct accepted native clock timestamps. A fresh sample can have low age after a long worker stall. Invalid clock samples count as receipts but do not advance the valid-host watermark; stale timestamps never move either watermark backward. These maxima cover completed intervals, not an ongoing stall since the last receipt. At most 100 intervals above 50 ms receive detailed state records; that threshold limits logging and does not change playback policy. The [CPU gap evidence](evidence/pip-clock-gap-cpu.json) validates these definitions with synthetic timestamps. The earlier 18-check app capture predates these metrics and cannot establish its inter-snapshot gaps or qualify continuous PiP synchronization.
+
+PiP playback delegates route play/pause and skip requests through the same native commands as the app. Skip completion waits for a supported replacement generation or a bounded failure timeout. The source window restores through AppKit. Termination stops active PiP, waits for renderer flush, releases consumer leases, closes the exporter, and then destroys the existing mpv core. The lifecycle recorder verifies that order in the actual app process.
+
+Request state preserves a stop requested during asynchronous startup, clears pending requests after startup failure and completes late seek callbacks immediately during shutdown. A failed renderer flushes and keeps PiP unavailable until restart; an unchanged paused frame cannot silently repopulate an emptied renderer because its selected revision was already exported. Six CPU request-ordering scenarios cover these cases, and the hardened app reran the 18-check integration successfully. The separate [paused renderer probe](pip-paused-renderer.md) did not reproduce a missing frame with a held clock 5–20 ms behind its sample, so it prompted no clock-policy change.
+
+### Current stream gate
+
+Diagnostic opt-in alone does not enable entry. The exporter must report a supported current snapshot, its audio/paused clock must be valid, an actual current frame must have been enqueued and AVKit must report PiP possible. A cached system-possible flag cannot enable entry after a generation or subtitle transition without a new frame.
+
+| Input or transition | Diagnostic consumer behavior |
+| --- | --- |
+| Completed normalized RGBA16F with valid exact timing and audio clock | Available after successful enqueue and public AVKit possibility; PQ fixture verified |
+| Paused supported frame | Held timebase, retained same-PTS replacement; verified without additional inference |
+| Seek generation with raw P010 preview | Clear stale imagery and wait for the matching float replacement; verified |
+| Raw P010 Original comparison | Report unsupported and exit PiP; enhanced same-PTS comparison can re-enter |
+| Prepared cache miss returned as normalized RGBA16F Original | Keep PiP active with Original provenance and the same exact native PTS/generation; verified |
+| Enabled subtitles, including secondary subtitles | Report that this export omits subtitles and stop PiP; primary subtitle enable/disable verified |
+| Raw Dolby Vision | Unsupported; native gpu-next playback remains the colour-processing path |
+| Crop, rotation or non-square pixels | Unsupported geometry |
+| Running video without a supported audio clock | Unsupported; a paused selected frame can provide a rate-zero clock |
+| Missing exact duration, unsupported format or failed renderer | Explicit unavailable state; no silent reinterpretation |
+
+The layer is attached behind the existing native video child view, not a web video or display capture. It exports pre-composition video; mpv subtitles and OSD are not included. The interface label and error state remain diagnostic until the outstanding qualification gates pass.
+
+### M3 app evidence and remaining gates
+
+The [compact consumer evidence](evidence/m3-pip-consumer.json) records all 18 passed DOM checks, unchanged binary hashes, native subtitle colour, exact timing, clock metrics, renderer events and teardown order. The actual app enqueued 14 frames, progressed while the source window was minimized, paused, returned from an unsupported Original comparison to the same enhanced source PTS without additional inference, sought to 1.4 seconds in a new generation, stopped for subtitles, recovered after their removal and terminated while PiP was active. The process exited 0. Exporter leases peaked at three, pending/submitted consumer leases stayed at one each and both were zero after final renderer flush, before native core destruction.
+
+The worker timebase recorded 544 updates, including 504 holds, with maximum anchor correction 17.374 ms and maximum snapshot age 0.636 ms. These values do not measure acoustic output, display scanout or AVKit's internal presentation delay. The sample PTS after the paused seek remained exactly 1400000/1000000, without rounding. The test confirms bounded functional delivery and correct source identity; its short clip does not establish sustained PiP cadence or the playback A/V target.
+
+Nine CPU clock/mailbox/gap checks run through `scripts/test-player-lifecycle.sh`, also called by `scripts/check.sh` and CI. They cover pause/seek anchors, unsupported and invalid clocks, stale host samples, 2,000 coalesced worker snapshots while the main actor is blocked, closed-consumer behavior, distinct receipt/native-host gaps and bounded diagnostic storage. They do not create a renderer or qualify a physical clock.
+
+### Active quality changes
+
+The [M3 reconfiguration evidence](evidence/m3-pip-reconfiguration.json) records an actual active PiP run that changed neural processing from 32×24 to 160×96 and back through the shipped controls. All 11 functional checks passed, the binary hashes stayed unchanged, and PiP remained active at every recorded transition observation. The replacements established exporter epochs 20→28→36 and continued delivery, with 17 total enqueues and at most two exported leases. The final paused source PTS was 1067000/1000000; renderer flush released all pending/submitted leases before core destruction.
+
+```sh
+python3 scripts/test-player-lifecycle-playback.py \
+  --scenario pip-reconfigure \
+  --source assets/test-clips/playback/pq-30-30s.mkv \
+  --output artifacts/player-pip-reconfigure
+```
+
+The two quality changes exposed completed worker receipt gaps of 106.172 ms and 124.398 ms, with valid-host gaps of 106.178 ms and 124.405 ms. The second interval followed a running timebase sample and ended at an unsupported-frame snapshot, when the existing consumer policy held the timebase. No intermediate sample establishes what AVKit physically displayed during that interval. The largest receipt gap, 196.019 ms, occurred during startup, while maximum snapshot age stayed below 0.270 ms. Maximum anchor correction was 20.689 ms before either quality change. These measurements establish why freshness, delivery cadence and clock correction must remain separate; they do not qualify uninterrupted presented A/V synchronization. No clock policy changed for this capture.
+
+Keep #17 open until actual system PiP play/skip controls, PiP-window resizing, sustained presented A/V behavior, audio-device changes, physical HDR/reference-white mapping and external-display transitions are verified. The current test uses DOM transport controls while PiP is active; those are not evidence that the system PiP buttons were exercised. The standalone float numeric-preservation check and exporter bounds remain separate evidence from these unmeasured presentation properties.
+
+### Prepared cache transitions
+
+The app consumer also passes a bounded Prepared case using the sustained 320×192, 30 fps PQ source and processing at 160×96. Run with existing stable app/adapter/shared binaries:
+
+```sh
+source scripts/env.sh
+python3 scripts/test-player-pip-prepared.py \
+  --output artifacts/player-pip-prepared-run
+
+# Reuse the retained seed only when its source/provider/model/settings match.
+python3 scripts/test-player-pip-prepared.py --reuse-seed \
+  --cache-directory artifacts/player-pip-prepared-run/cache \
+  --output artifacts/player-pip-prepared-repeat
+```
+
+A fresh run prepares exactly 180 neural frames in three 60-frame segments, covering the first six seconds with eight-frame preroll and a 1 GiB capacity. The seed core closes before the native app opens the same cache. Reuse verifies source hash/size/stream, model, geometry, effect/colour settings, exact timing inventories and every pixel payload checksum; the existing cache-open/hit path checks the current provider and implementation identity. A changed provider version explicitly rejects the old seed. The script never silently rewrites its identity.
+
+The [Prepared PiP evidence](evidence/m3-pip-prepared.json) records 12 passed app checks and unchanged binaries. The app entered PiP at a cached one-second frame, streamed across the two-second segment boundary, paused, sought to an uncached eight-second frame and returned to the same cached one-second PTS. The miss remained valid normalized RGBA16F with **Original** provenance (`contentKind=1`), exact PTS 8000000/1000000 and generation 4. PiP stayed active. Return to cached enhancement produced `contentKind=4`, exact PTS 1000000/1000000 and generation 5. No preparation job ran in the app (`processedFrames=0`), and all cache pixel payloads remained unchanged.
+
+The app enqueued 42 frames; exporter leases peaked at two, consumer pending/submitted leases stayed bounded at one each, and final renderer flush released both before native teardown. The seed produced 180 frames in 17.05 seconds; that preparation duration is separate from playback. The final clock metrics were 19.018 ms maximum anchor correction, 0.056 ms maximum sample age, 172.551 ms maximum receipt gap during startup and 35.259 ms maximum valid-native-host gap. These are observed clock-binding intervals, not physical PiP presentation or acoustic synchronization.
+
+The evidence retains the initial incorrect test expectation that a cache miss would exit PiP. Valid float Original fallback required no product restriction. It also retains the old-seed rejection after the compiled core version changed; one new seed was then prepared against the current provider. Raw P010 Original comparison still exercises the separate unsupported-format path in the 18-check consumer scenario. The lifecycle-hardened app reran those 18 checks successfully before this Prepared capture; both reports remain bound to their measured binaries.

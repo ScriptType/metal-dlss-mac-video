@@ -29,6 +29,7 @@ def main() -> int:
     parser.add_argument("--mpv", type=Path, default=ROOT / "artifacts/mpv-build/libmpv.2.dylib")
     parser.add_argument("--shared", type=Path, default=ROOT / ".build/debug/libFrameEngineShared.dylib")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/player-lifecycle-playback")
+    parser.add_argument("--scenario", choices=("controls", "pip", "pip-prepared", "pip-reconfigure"), default="controls")
     args = parser.parse_args()
     executable, source, mpv, shared = (getattr(args, key).resolve() for key in ("executable", "source", "mpv", "shared"))
     output = args.output.resolve()
@@ -40,8 +41,11 @@ def main() -> int:
     env.update(METAL_DLSS_MPV_LIBRARY=str(mpv), HDRPLAYER_UI_SMOKE_KIND="lifecycle",
                HDRPLAYER_UI_SMOKE_REPORT=str(output / "dom.json"), HDRPLAYER_LIFECYCLE_LOG=str(output / "lifecycle.jsonl"))
     env.pop("HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES", None)
+    if args.scenario.startswith("pip"):
+        env.update(HDRPLAYER_ENABLE_PIP="1", HDRPLAYER_UI_SMOKE_KIND=args.scenario,
+                   HDRPLAYER_PIP_REPORT=str(output / "pip.json"))
     # Avoid accepting stale success after a launch failure.
-    for name in ("dom.json", "lifecycle.jsonl"):
+    for name in ("dom.json", "lifecycle.jsonl", "pip.json"):
         (output / name).unlink(missing_ok=True)
     try:
         with (output / "player.log").open("w") as log:
@@ -74,6 +78,17 @@ def main() -> int:
         report["checks"].append("Source, paused transport state and native rational displayed timestamps were recorded")
         assert all(row["kernelSleepWakeCycles"] == 0 and row["physicalSleepWakeObserved"] is False for row in rows)
         report["checks"].append("No physical sleep cycle was inferred during the media-only check")
+        if args.scenario.startswith("pip"):
+            pip = json.loads((output / "pip.json").read_text())
+            pip_events = [event["event"] for event in pip["events"]]
+            assert "did-start" in pip_events and "did-stop" in pip_events
+            assert pip_events[-1] == "renderer-flushed-and-leases-released"
+            assert pip["state"]["submittedLeases"] == 0 and pip["state"]["pendingFrames"] == 0
+            assert pip["state"]["maximumObservedExportLeases"] <= 3
+            assert pip["state"]["enqueuedFrames"] >= 8
+            assert pip["events"][-1]["hostSeconds"] <= rows[destroyed]["uptimeSeconds"]
+            report["checks"].append("Actual PiP lifecycle and renderer flush release consumer leases before core destruction")
+            report["pipState"] = pip["state"]
         report["passed"] = True
     except (AssertionError, OSError, ValueError, KeyError, subprocess.TimeoutExpired) as error:
         report["failure"] = str(error)

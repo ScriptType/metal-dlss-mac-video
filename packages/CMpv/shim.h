@@ -1,6 +1,7 @@
 // Types only. The provisional mpv backend is loaded explicitly at runtime;
 // importing this module does not link a second FrameEngine/MLX runtime.
 #include "../../vendor/mpv/include/mpv/client.h"
+#include "../../vendor/mpv/include/mpv/hdr_frame.h"
 #include <IOKit/IOMessage.h>
 
 // Swift cannot import the function-like iokit_common_msg macros. Keep these

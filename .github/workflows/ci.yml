@@ -23,7 +23,7 @@ jobs:
       - run: npm --prefix apps/controls ci
       - run: npm --prefix apps/controls run check
       - run: npm --prefix apps/controls run build
-      - name: Check native pause intent and lifecycle recorder (CPU only)
+      - name: Check native pause intent, lifecycle recorder and PiP clock (CPU only)
         run: bash scripts/test-player-lifecycle.sh
       - run: |
           source scripts/env.sh
@@ -35,5 +35,6 @@ jobs:
         run: |
           for script in scripts/*.sh; do bash -n "$script"; done
           python3 -m compileall -q scripts
+          python3 -m unittest discover -s scripts -p test_adapter_visibility.py
           python3 scripts/audit-public-tree.py
           git diff --check
