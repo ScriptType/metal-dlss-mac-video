@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "platform": "Apple M3, 16 GiB, macOS 26.5; native standalone gpu-next/macvk; paused PQ 320x192 source and 960x496 drawable",
+  "scope": "Native CLI window ordering/activation; no physical scanout or synchronized neural qualification",
+  "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+  "mpvRevision": "c51dc1ac894992e306564a91f54f8caaec2a48fe",
+  "mpvTrackedDiffSHA256": "8fdabbd9d85c4ad0b8543f2be42ef5e08060e58728d1750fc06fa212d84cef4c",
+  "sourceFilesSHA256": {
+    "video/out/mac/common.swift": "25eb3a9d25ace5182902ba2e410f99dce9d9570f23044f6fbff81720bc30a9e4",
+    "video/out/mac_common.swift": "698d26dd59888f6a994f5a06774258520e689296a5c5aa809a9d82e5001cb86a"
+  },
+  "binarySHA256": {
+    "artifacts/mpv-build/mpv": "8a96f24962ebbbb41acea2c7c25d1c5c56387bde1fb464f7069103c1a639f902",
+    "artifacts/mpv-build/libmpv.2.dylib": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+    ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+  },
+  "binaryHashesUnchanged": true,
+  "before": {
+    "nativeState": {
+      "appActive": true,
+      "appHidden": false,
+      "backingScale": 2,
+      "contentHeight": 496,
+      "contentWidth": 960,
+      "drawableHeight": 496,
+      "drawableWidth": 960,
+      "embedded": false,
+      "event": "shutdown",
+      "forceRenderRequested": false,
+      "hostSeconds": 1017199.8386516669,
+      "hostTicks": 24412796127644,
+      "isKey": false,
+      "isMain": true,
+      "isMiniaturized": false,
+      "isVisible": true,
+      "occlusionVisible": false,
+      "periodicIntervalSeconds": 0.25,
+      "recordLimit": 4096,
+      "schemaVersion": 1,
+      "screenNumber": 1,
+      "sequence": 12,
+      "windowNumber": 35284
+    },
+    "matchedOnscreenWindow": false,
+    "actualWindow": [
+      {
+        "kCGWindowAlpha": 1,
+        "kCGWindowBounds": {
+          "Height": 248,
+          "Width": 480,
+          "X": 820,
+          "Y": 556
+        },
+        "kCGWindowLayer": 0,
+        "kCGWindowNumber": 35284,
+        "kCGWindowOwnerName": "mpv",
+        "kCGWindowOwnerPID": 848
+      }
+    ],
+    "nativeLogSHA256": "0cbf4afaf86163138de7194e14572198fe81c07acdf8efdff5af505ca94b5da8",
+    "windowMetadataSHA256": "a88d831f4a7321434cac923583d73d9da8cb45c492c3a5163bfea2835ca29d98"
+  },
+  "cases": {
+    "focused": {
+      "exitCode": 0,
+      "nativeObservationCount": 14,
+      "lastNativeState": {
+        "appActive": true,
+        "appHidden": false,
+        "backingScale": 2,
+        "contentHeight": 496,
+        "contentWidth": 960,
+        "drawableHeight": 496,
+        "drawableWidth": 960,
+        "embedded": false,
+        "event": "shutdown",
+        "forceRenderRequested": false,
+        "hostSeconds": 1017457.4922360419,
+        "hostTicks": 24418979813665,
+        "isKey": true,
+        "isMain": true,
+        "isMiniaturized": false,
+        "isVisible": true,
+        "occlusionVisible": true,
+        "onActiveSpace": true,
+        "periodicIntervalSeconds": 0.25,
+        "recordLimit": 4096,
+        "schemaVersion": 1,
+        "screenNumber": 1,
+        "sequence": 15,
+        "windowFrame": "{{820, 365}, {480, 248}}",
+        "windowNumber": 35374
+      },
+      "matchedOnscreenWindow": [
+        {
+          "kCGWindowAlpha": 1,
+          "kCGWindowBounds": {
+            "Height": 248,
+            "Width": 480,
+            "X": 820,
+            "Y": 556
+          },
+          "kCGWindowIsOnscreen": true,
+          "kCGWindowLayer": 0,
+          "kCGWindowNumber": 35374,
+          "kCGWindowOwnerName": "mpv",
+          "kCGWindowOwnerPID": 2632
+        }
+      ],
+      "logSHA256": "51f4a477848d20762dd78cb3a1f906f1687e751271c1cb037a76138896f5e3b4",
+      "windowMetadataSHA256": "315479c69a00e9268bb89163c818077d9a551992c1b8461c284b65d7522f4661"
+    },
+    "focus-never": {
+      "exitCode": 0,
+      "nativeObservationCount": 10,
+      "lastNativeState": {
+        "appActive": false,
+        "appHidden": false,
+        "backingScale": 2,
+        "contentHeight": 496,
+        "contentWidth": 960,
+        "drawableHeight": 496,
+        "drawableWidth": 960,
+        "embedded": false,
+        "event": "shutdown",
+        "forceRenderRequested": false,
+        "hostSeconds": 1017460.4712625418,
+        "hostTicks": 24419051310303,
+        "isKey": false,
+        "isMain": false,
+        "isMiniaturized": false,
+        "isVisible": true,
+        "occlusionVisible": false,
+        "onActiveSpace": false,
+        "periodicIntervalSeconds": 0.25,
+        "recordLimit": 4096,
+        "schemaVersion": 1,
+        "screenNumber": 1,
+        "sequence": 11,
+        "windowFrame": "{{820, 365}, {480, 248}}",
+        "windowNumber": 35390
+      },
+      "matchedOnscreenWindow": [],
+      "logSHA256": "7d9e5becc117da78ab0eb4290cfa1dadef7ea84f241798833916dbbd986d6686",
+      "windowMetadataSHA256": "338241a150e5234949824ce6f1db9df2540b39e431ce724b88ebfa96b220c6b9"
+    },
+    "minimized": {
+      "exitCode": 0,
+      "nativeObservationCount": 11,
+      "lastNativeState": {
+        "appActive": false,
+        "appHidden": false,
+        "backingScale": 2,
+        "contentHeight": 496,
+        "contentWidth": 960,
+        "drawableHeight": 496,
+        "drawableWidth": 960,
+        "embedded": false,
+        "event": "shutdown",
+        "forceRenderRequested": false,
+        "hostSeconds": 1017463.3333961669,
+        "hostTicks": 24419120001512,
+        "isKey": false,
+        "isMain": false,
+        "isMiniaturized": true,
+        "isVisible": false,
+        "occlusionVisible": false,
+        "onActiveSpace": false,
+        "periodicIntervalSeconds": 0.25,
+        "recordLimit": 4096,
+        "schemaVersion": 1,
+        "screenNumber": 1,
+        "sequence": 12,
+        "windowFrame": "{{820, 365}, {480, 248}}",
+        "windowNumber": 35391
+      },
+      "matchedOnscreenWindow": [],
+      "logSHA256": "4fb165cf16445748b8728ca01c0883b14b757ada41c4a6668cfaa8f172dd3a69",
+      "windowMetadataSHA256": "9caa205ce26310578df609a3bcc43d0a3650aa1d5ef38364a9d655921559d342"
+    }
+  },
+  "passed": true,
+  "change": "After existing ordering and activation, request key-and-front together only for focus-on>=open and non-minimized CLI windows. Embedded host returns before this path. No ontop/all-Spaces/force-render setting changed.",
+  "limits": [
+    "Activation/Space behavior tested on the current desktop state; other Spaces/display arrangements need qualification.",
+    "Only bounded paused probes are represented here; matched neural comparison must be rerun with visibility gate.",
+    "Source tree includes the measured uncommitted candidate; per-file and binary hashes identify it."
+  ]
+}

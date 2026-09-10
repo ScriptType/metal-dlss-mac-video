@@ -186,6 +186,27 @@ All four runs passed exact preview/compare and bounded queue checks, observed no
 
 The instrumented HLG run recorded 238 buffering boundaries, a maximum 0.258-ms pause transition and 6.979-ms resume transition, without reproducing a greater-than-20-ms queue offset. It therefore does not explain or erase the earlier one-frame outlier. Clock acceptance, the remaining SDR/PQ/HLG rate combinations and physical presentation timing remain open.
 
+### Native CLI window visibility
+
+Standalone CLI windows honor `--focus-on=open`/`all` by applying key-window status together with front ordering after the activation request. Previously the key request preceded initial ordering; on the measured macOS desktop, the application became active while its window remained non-key and outside the active on-screen stack. The embedded application host owns its window ordering and returns before this CLI path. `--focus-on=never` and initially minimized windows retain their existing behavior. No always-on-top, all-Spaces or force-render option is enabled by the correction.
+
+Opt-in `HDRPLAYER_MPV_VISIBILITY=1` writes `HDRPLAYER_MPV_WINDOW_STATE` JSON records directly to stderr. Records describe the actual presentation window: visibility, occlusion, minimization, key/main state, active Space, frame, native identity and drawable extent. Main-thread native notifications and 250-ms periodic observations are limited to 4,096 records. The [adapter comparison](adapter-comparison.md) checks observation coverage instead of assuming foreground activation establishes visibility.
+
+[M3 window-order evidence](evidence/m3-mpv-cli-window-order.json) records the source SHA256, exact executable/library hashes, source revisions and changed-file hashes. Three paused PQ probes exited cleanly: the default focused window became key and occlusion-visible on the active Space and appeared in `CGWindowList`'s on-screen list; `focus-on=never` stayed inactive; an initially minimized window stayed minimized and invisible. The preceding binary's real playback window had valid bounds and alpha but was absent from that on-screen list. Metadata snapshots omit window titles. These bounded probes establish the correction on the measured desktop; the earlier ineligible four-run comparison remains unchanged.
+
+Reproduce the focused condition with a built native CLI, retain stderr, and close the window after several periodic records:
+
+```sh
+HDRPLAYER_MPV_VISIBILITY=1 artifacts/mpv-build/mpv --no-config \
+  --vo=gpu-next --gpu-api=vulkan --gpu-context=macvk --hwdec=videotoolbox \
+  --pause=yes --keep-open=yes --mute=yes --geometry=960x496 --keepaspect-window=no \
+  --osc=no --input-vo-keyboard=no --input-terminal=no \
+  --focus-on=open assets/test-clips/playback/pq-30-60s.mkv \
+  2> artifacts/mpv-window-focused.log
+```
+
+Repeat with `--focus-on=never`, then with `--window-minimized=yes`, retaining separate logs. Requested settings are controls; actual `isKey`, `appActive`, `onActiveSpace`, `occlusionVisible` and `isMiniaturized` observations determine the result. Other Space/display arrangements and sustained neural presentation remain separate checks.
+
 ### CoreAudio pause-clock tail
 
 The later 160×96 adapter capture reproduced a 24-ms queue offset. Its trace showed CoreAudio's reported audio position advancing about 19 ms after the logical pause. The reset-based pull path retains a timed `end_time_ns` tail even while callbacks are stopped. Adaptive now uses that estimate and the last queued video frame's host deadline to request its hold earlier, with a 2-ms margin and a core timer in addition to the VO wakeup. Frame timestamps and mpv's A/V calculation are unchanged.

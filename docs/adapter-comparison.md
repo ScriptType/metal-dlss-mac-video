@@ -25,7 +25,7 @@ The [machine-readable capture](evidence/m3-adapter-comparison.json) retains stag
 
 ## Repeat with actual window visibility
 
-The [four-run visibility repeat](evidence/m3-adapter-comparison-visibility.json) completed with unchanged binaries and retained all samples. It remains ineligible as a matched presentation comparison: both mpv windows were absent from the visible native stack, while both Erika windows passed continuous native visibility coverage. Requested activation did not establish visibility. A separate metadata-only probe confirmed that the mpv diagnostic selected the actual playback window with valid in-display bounds; CLI window ordering or Space activation requires correction before another matched run.
+The [four-run visibility repeat](evidence/m3-adapter-comparison-visibility.json) completed with unchanged binaries and retained all samples. It remains ineligible as a matched presentation comparison: both mpv windows were absent from the visible native stack, while both Erika windows passed continuous native visibility coverage. Requested activation did not establish visibility. A separate metadata-only probe confirmed that the mpv diagnostic selected the actual playback window with valid in-display bounds. The subsequent [CLI ordering correction](mpv-adapter.md#native-cli-window-visibility) passed bounded probes; another matched run is required to qualify continuous visible playback.
 
 | Adapter / run | Completed / warmed | Completed FPS | Native visibility eligible | Warmed drawable A/V samples |
 |---|---:|---:|---|---:|
