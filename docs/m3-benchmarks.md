@@ -182,3 +182,43 @@ swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
 ```
 
 Preserve the executed XCTest, metallib, source and input pins, and record the power state and process limits with each repeat. Existing root debug binaries serve as contamination controls.
+
+## Separable confidence-erosion candidate
+
+A test-only two-pass Boolean erosion improves the measured natural-mask and complete motion-assessment workloads on M3. [Evidence](evidence/m3-separable-motion-erosion.json) and [all 312 timed calls](evidence/m3-separable-motion-erosion.csv) preserve the two runs separately. Production still uses the original kernel; full `NativeOpticalFlow.prepare` benefit and integration acceptance remain pending.
+
+The candidate computes seven clamped horizontal `input > 0` predicates into a UInt8 mask, then seven vertical predicates. Valid pixels preserve the original Float32 centre bits; invalid pixels become positive zero. This adds one dispatch and a 2,073,600-byte logical intermediate at 1920 × 1080. Both passes remain lazy until the existing evaluation, with no intermediate wait.
+
+| Separate workload | Measured pairs | Original mean | Candidate mean | Change in summed time |
+|---|---:|---:|---:|---:|
+| Isolated, eleven natural masks | 44 | 4.781 ms | 2.373 ms | −50.37% |
+| Isolated, all-positive synthetic | 4 | 6.019 ms | 2.775 ms | −53.90% |
+| Isolated, sparse-zero synthetic | 4 | 5.819 ms | 2.957 ms | −49.19% |
+| Isolated, dense-zero synthetic | 4 | 1.353 ms | 1.740 ms | +28.62% |
+| Complete motion assessment, eleven natural pairs | 44 | 15.175 ms | 12.677 ms | −16.46% |
+
+The isolated run uses fourteen retained masks, eight passes and alternating arm order: 224 calls, including 112 measured calls. All 112 paired outputs match their full-byte references. Twenty preflight controls also preserve candidate/original GPU parity. One 17 × 19 control containing the smallest positive subnormal differs from the CPU oracle at 49 positions: both GPU implementations produce identical positive zeros, while the CPU retains the subnormal centre and 48 ordinary positive centres. The mechanism is unestablished. Normal finite CPU controls agree; no general CPU/IEEE equivalence is claimed.
+
+The complete assessment run restores 22 retained RG16F flow buffers and twelve source RGB frames. All eleven preflight production results reproduce historical vectors, confidence, scalar bits and reset decisions before candidate evaluation. Four balanced passes then measure 88 complete constructors. All 44 pairs are exact, and source/flow owners remain unchanged. This exercises flow import, confidence, erosion, reductions, completed evaluation and scalar readback; it does not estimate new VideoToolbox flow or exercise its session transitions.
+
+The candidate is faster in 42/44 isolated natural pairs and 31/44 complete-assessment pairs. Every measured natural round has a lower summed time in both runs. Regressions remain visible: the isolated candidate has a 10.069-ms outlier, the dense-zero control is slower, complete-assessment pass 2 (the third measured round) has a higher p95, and source pairs 1498 and 1503 have higher candidate means. Repetition of eleven inputs does not establish broad scene coverage.
+
+Both release builds pass the two existing motion tests. The isolated/full-assessment processes take 10.513/13.931 seconds, with peak sampled RSS of 855,638,016/703,643,648 bytes and 22/28 resource samples. Power readings show battery at 92%/89%, respectively, unchanged within each run. Frozen pins remain intact, temporary cache policies are restored, and exact tested sources/executables are archived. Each run has its own preflight and allocation conditions; do not subtract their timings or compare them as equivalent to earlier runs. The production baseline and test-copy assessment also use different Swift modules.
+
+These probes replay the retained cost report (`4bbca008…`), its payloads and the source manifest (`3c376d69…`) at the recorded source revision. Their provenance guards deliberately reject different captures or changed production sources. With those retained inputs available, choose a fresh output directory for each run:
+
+```sh
+source scripts/env.sh
+MLXDLSS_EROSION_COMPARISON_INPUT_REPORT=/absolute/path/to/cost-output/report.json \
+MLXDLSS_EROSION_COMPARISON_OUTPUT=/absolute/path/to/new-isolated-output \
+swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
+  --filter NativeMotionErosionComparisonTests/testMatchedSeparableErosion
+
+MLXDLSS_SEPARABLE_MOTION_INPUT_REPORT=/absolute/path/to/cost-output/report.json \
+MLXDLSS_SEPARABLE_MOTION_INPUTS=/absolute/path/to/inputs.json \
+MLXDLSS_SEPARABLE_MOTION_OUTPUT=/absolute/path/to/new-assessment-output \
+swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
+  --filter NativeSeparableMotionComparisonTests/testMatchedFullMotion
+```
+
+Preserve hashes, power observations and operational bounds. Preflight means neither run establishes cold compilation. Full prepare, player throughput, temporal quality, physical display and M5 acceptance remain separate gates.
