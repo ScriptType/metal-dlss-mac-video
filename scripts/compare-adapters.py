@@ -68,7 +68,7 @@ def main():
         'processingWidth': args.width, 'processingHeight': args.height,
         'drawableWidth': 960, 'drawableHeight': 496, 'runs': [],
         'scope': 'M3 development comparison; same source/model/shape/drawable, actual native visibility gated and app-muted audio; no final M5 selection',
-        'limitations': ['mpv Adaptive buffers both clocks; Erika currently drops unsustainable admissions',
+        'limitations': ['Overload policies differ; inspect each captured adapter\'s admission, hold and clock diagnostics',
             'Navigation harnesses differ: mpv rapid original-first seek/comparison, Erika one scheduled seek',
             'mpv A/V is cached audio-minus-video at queue time; Erika is video-minus-audio estimated at drawable presentation',
             'Physical display luminance, temporal quality, copies and energy remain separate acceptance checks']}
@@ -77,7 +77,7 @@ def main():
             for adapter in ['mpv', 'erika']:
                 path = output/f'{adapter}-{index+1}.json'
                 environment = dict(os.environ)
-                for key in ('ERIKA_ADAPTER_OCCLUDE_AT', 'ERIKA_ADAPTER_REVEAL_AT'):
+                for key in ('ERIKA_ADAPTER_OCCLUDE_AT', 'ERIKA_ADAPTER_REVEAL_AT', 'ERIKA_ADAPTER_ACTIONS'):
                     environment.pop(key, None)
                 if adapter == 'mpv':
                     environment['HDRPLAYER_MPV_VISIBILITY'] = '1'

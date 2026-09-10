@@ -1,6 +1,8 @@
 # Playback-core comparison
 
-mpv remains the provisional application core. The latest M3 comparison passes actual native visibility coverage for all four runs and its measured mpv scheduling-offset target. Erika's visible playback still lags audio under overload. Final selection requires the matched M5 and quality results specified in issue #11.
+mpv remains the provisional application core. The latest matched two-adapter M3 comparison passes actual native visibility coverage for all four runs and its measured mpv scheduling-offset target. The captured Erika build lags audio under overload. Final selection requires the matched M5 and quality results specified in issue #11.
+
+A subsequent [Erika transport candidate](erika-adapter.md#enhancement-hold-validation-on-m3) eliminates admission refusals and passes a bounded activation/audio clock check. Its measured window was occluded, and native lifecycle checks remain pending. That follow-up does not replace the matched visible comparison below.
 
 ## Visible M3 comparison
 
