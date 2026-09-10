@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "scope": "Pinned and explicitly interpreted natural-scene float input; no neural, calibrated HDR, native decode or temporal-quality acceptance claim",
+  "passed": true,
+  "sourceCount": 48,
+  "sourceRange": [
+    10000,
+    10047
+  ],
+  "sourceEncodedDomain": {
+    "negativeComponents": 2067477,
+    "aboveOneComponents": 2642,
+    "nonfiniteComponents": 0
+  },
+  "output": {
+    "width": 320,
+    "height": 134,
+    "layout": "RGB float32 little-endian top-to-bottom",
+    "primaries": "BT.2020",
+    "transfer": "linear",
+    "units": "cd/m2",
+    "bytes": 24698880,
+    "minimum": -0.04921898618340492,
+    "maximum": 13333.181640625,
+    "negativeComponents": 20902,
+    "above10000Components": 34,
+    "firstPTS": {
+      "value": 0,
+      "timescale": 1
+    },
+    "lastPTS": {
+      "value": 5875,
+      "timescale": 2997
+    },
+    "durationPerFrame": {
+      "value": 125,
+      "timescale": 2997
+    }
+  },
+  "provenance": {
+    "asset": "cosmos-exr-dial",
+    "title": "Cosmos Laundromat (2016 HDR grade), source frames10000\u201310047",
+    "attribution": "Blender Foundation; directed by Mathieu Auvray; HDR re-grade by Netflix and Fotokem Keep Me Posted",
+    "catalogSource": "https://sites.google.com/netflix.com/opencontent/home",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceCatalogSHA256": "db5f35d1341c112f2eb7f8882caa80bfdb67c6c3f182cf95ea43d0c7224479de",
+    "converterSHA256": "aaebfe49fea26e6ddf23a3e400c39cb80e4901f281ee020d0491c1a3695e9285",
+    "openEXRVersion": "3.4.15",
+    "numpyVersion": "2.5.3",
+    "pillowVersion": "12.3.0",
+    "sourceGeometry": [
+      2048,
+      858
+    ],
+    "sourceStorage": "RGB HALF EXR, read without colour conversion",
+    "selectedInterpretation": "Publisher-declared P3/PQ RGB with explicitly assumed D65 white; no embedded chromaticities or transfer",
+    "p3D65ToBT2020LinearMatrix": [
+      [
+        0.7538330343617217,
+        0.19859736905261646,
+        0.04756959658566183
+      ],
+      [
+        0.04574384896535829,
+        0.9417772198116936,
+        0.012478931222948119
+      ],
+      [
+        -0.0012103403545183202,
+        0.017601717301090006,
+        0.9836086230534281
+      ]
+    ],
+    "conversion": "PQ inverse to nits, linear P3-D65 to BT.2020-D65, channel-wise floating-point box-average resize; no component clipping",
+    "extendedCodePolicy": "Explicit diagnostic odd symmetry below0 and analytic inverse above1; counted, not a standard-range mastering or physical luminance claim",
+    "timing": "Assigned relative derivative PTS from source frame index and exact EXR framesPerSecond2997/125; no audio or preview-MP4 timing borrowed",
+    "preroll": "None; first frame is a cold temporal start",
+    "scope": "Explicitly interpreted and resized natural-scene temporal input; not a calibrated colour reference or native decoder test"
+  },
+  "manifest": {
+    "path": "artifacts/cosmos-reference-input-box/manifest.json",
+    "sha256": "30b621693df68abf31f44df64b9d08fc6075fac75e2f0fad37caabfbe9c394fd"
+  },
+  "frameSHA256": {
+    "frame-10000.rgb32f": "cf0ff5ad3a722c9a19041b0ea3e654ed95e5861e150c229f1ee1405bf7d9fbc9",
+    "frame-10001.rgb32f": "9e8991b94c36648b49f571546cd147db58c6f1464e9a5506e925fe6945554553",
+    "frame-10002.rgb32f": "4b18a12de99d4f0fceeceb7bf1f56c841f9a806af5368bae2c373a516397ae72",
+    "frame-10003.rgb32f": "0d3c6f3f4a0977cd926ca55a63217d009cbb1baba58aece855feca9528e4a701",
+    "frame-10004.rgb32f": "054053d9fd8779d0e4f7b7ce5926c340331c135d98b30a19fa8e6ce065c3d6ee",
+    "frame-10005.rgb32f": "004efd0358bbd7adae8139afd31a67a01cf4a63636b409dbe8d5009e2b3665ea",
+    "frame-10006.rgb32f": "6a8f5faded32ea0de3b5e02a4ef47bb716ea25e2f011c34f03d2cae907eb4ace",
+    "frame-10007.rgb32f": "6f0fd7f822d98a42a84a813a62fc5a0721722d76456afeacadfaaa6ad8478d7d",
+    "frame-10008.rgb32f": "f9cb47bb00e19c84ece78321f39591a3e0742b8e1338b7af49c1da53fa0e3853",
+    "frame-10009.rgb32f": "4504661ed89c2e5414f93679ee310b4f3eb0bea9007250bf01569a0e628a5518",
+    "frame-10010.rgb32f": "44d2172f9240ee052fc668bfc9f714a93b789ad60b40d8e927363b99cee2f991",
+    "frame-10011.rgb32f": "9cb35d96ea9dfd2a056702cecf7cb197c3a4c92d724f80285cebecc48c1cd448",
+    "frame-10012.rgb32f": "9f48624badfb28ad727f790dc84436e91ac9c0d1b5f74fa3a373b5085640c4f3",
+    "frame-10013.rgb32f": "c6e0bc7c821b1ed8943c0c5eda99d3eeb7f5fbb0ded318de9681197a516a6fc6",
+    "frame-10014.rgb32f": "49c56252f62cd6aa781c108c2eee35787cb78b1433a896f3177323c1ab35a916",
+    "frame-10015.rgb32f": "278185b594f42e7b542a54a03ed4ab4af4218a68c105996a63c2068611368f57",
+    "frame-10016.rgb32f": "9a412ce37688c8149ac75dd3d9fc101e2585d9a193b4dfa5dcc7e1849c31e05e",
+    "frame-10017.rgb32f": "7362144598cde51a9531690b7802164050d83d4e01068fd96d1e1374697d1467",
+    "frame-10018.rgb32f": "568734467dbe3682b56d5b48675f978bfa3541527922ca95baafb74dccaad75a",
+    "frame-10019.rgb32f": "88f201dd948a9547251e224d16ba1b61020aef457516dbcbf1ea52ef0fa6e356",
+    "frame-10020.rgb32f": "6050863a4178f84ccec1b824d974ee9f1bc843eb695cab9f0e93c7cf3ad6d141",
+    "frame-10021.rgb32f": "a9ae3e5b3370113071e8a6594db08be05c8a3c2129f28afa5a2e7322266f6e6a",
+    "frame-10022.rgb32f": "7b944dd0b7abc9fa26a67a35b51696d352bf894326857d63da6648f247628fe0",
+    "frame-10023.rgb32f": "d59cad134bcb748a1cbdc9547118362ed7462f4a188a37e53cd6e8f06b4ccec6",
+    "frame-10024.rgb32f": "da3877ca0a37919a0f9ac744bd2247c8d67f37361925372028b660e4585d7d5d",
+    "frame-10025.rgb32f": "8831b8533f554a515d72358a5241a58caee3b065988fbb96ebab655f3ca9106a",
+    "frame-10026.rgb32f": "6631647e1ce6686091339891d0311f5a788adaa414e8fa39cd80b75c684caa53",
+    "frame-10027.rgb32f": "4f809ce4ae75433d5078d654f96f1098336158a9e2ed8c2cc124951b346d99ff",
+    "frame-10028.rgb32f": "5c0519bde5196c5c6f827dbcf3464037c2c2a21e121cf99220d603e722f69909",
+    "frame-10029.rgb32f": "96197e0fffb422621fe9c27d8225a879f3360eca93b9186099f1d606065cba23",
+    "frame-10030.rgb32f": "1b9780aa6738445209351fdc610d12f412d080f54e6b08605d8d7ab25b83ae9f",
+    "frame-10031.rgb32f": "ba6f5619a0caf46d5c5296e094cc04b5f4eeefce9971701fd9eacede2a1fd709",
+    "frame-10032.rgb32f": "10d26c2970c8c65b1ac1db92463135ba6842cf078c95f04f6e6ae30fa2d2af59",
+    "frame-10033.rgb32f": "441e6fa2c89a376c23020d8d3b27bf637949b503e87df5e11440b72663814e3e",
+    "frame-10034.rgb32f": "f1b1e756f18a635667bddae81eb0a386c07e9c600ca68061d456c4a73c21fbc9",
+    "frame-10035.rgb32f": "3207a5123e91bca7a9c174cff9bd8320664b7d1e5629f1ffe08bf42e991e8ba3",
+    "frame-10036.rgb32f": "b796b6548d89701cb22c583ca166be2eb357cfb3a20cc90d9073fdc18778cc34",
+    "frame-10037.rgb32f": "0650d5c924113808787606dd8cc18986a3b21197b8b6e232397562d1a0c31ba4",
+    "frame-10038.rgb32f": "fa2a52f5feb4f455a10c6c85979466c89753d56c49b648f8598a28ec55ab7295",
+    "frame-10039.rgb32f": "2774676a21aa33c64428d16bf0247cf80077fa691231f88a232660c3dbae85c8",
+    "frame-10040.rgb32f": "70239a1dc98619fd17e25f23cda48fb096b335d28187e31d1d94768b68a9bd08",
+    "frame-10041.rgb32f": "2804294d54fea0b694d3c8b418d29e8006253253d903a8d69694b9ff4096a29e",
+    "frame-10042.rgb32f": "308a82a8e39dd739138ae5978f35dcd6eaf8e6f8ce9b4d732a23ed53c212bd38",
+    "frame-10043.rgb32f": "2ea4d0df5d0cd0179fa2cc7c8b9a1350fd38c74fe24c68246d7122eb753f3664",
+    "frame-10044.rgb32f": "aa5a4cd946c7b67ff74a4ac63d4b6dcb8a94e26339c1301f8ef26b7cbeb9ffc3",
+    "frame-10045.rgb32f": "11ead67db3fb8f62e3db0a82c85eae160899e1d3a64ae642082fb77ac6cac360",
+    "frame-10046.rgb32f": "209c522844beb932f347db1befcee3c99198f811d0ef6db64e47d98c39e98d5f",
+    "frame-10047.rgb32f": "beb455e8579c0d6c5e6555a7c17075701e8588afb760626c627f1ad4837d0eac"
+  },
+  "decoderComparison": {
+    "sourceSHA256": "7cf82605d003206aac3f035a0321773f10a006c83ef59a297b617d45d0c7b82b",
+    "openEXRVersion": "3.4.15",
+    "sourceShape": [
+      858,
+      2048,
+      3
+    ],
+    "sourceMinimum": 0.0090789794921875,
+    "sourceMaximum": 1.037109375,
+    "sourceComponentsAboveOne": 1066,
+    "conversions": [
+      {
+        "pixelFormat": "gbrpf16le",
+        "minimum": 0.0090789794921875,
+        "maximum": 1.037109375,
+        "componentsAboveOne": 1066,
+        "differentComponents": 0,
+        "maximumAbsoluteDifference": 0.0,
+        "command": [
+          "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg",
+          "-v",
+          "error",
+          "-threads",
+          "1",
+          "-i",
+          "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10000.exr",
+          "-frames:v",
+          "1",
+          "-pix_fmt",
+          "gbrpf16le",
+          "-f",
+          "rawvideo",
+          "-threads",
+          "1",
+          "pipe:1"
+        ]
+      },
+      {
+        "pixelFormat": "gbrpf32le",
+        "minimum": 0.009063858538866043,
+        "maximum": 1.0,
+        "componentsAboveOne": 0,
+        "differentComponents": 5271552,
+        "maximumAbsoluteDifference": 0.0371551513671875,
+        "command": [
+          "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg",
+          "-v",
+          "error",
+          "-threads",
+          "1",
+          "-i",
+          "assets/test-clips/open-content/cosmos-exr-dial/CosmosLaundromat_2k24p_HDR_P3PQ_10000.exr",
+          "-frames:v",
+          "1",
+          "-pix_fmt",
+          "gbrpf32le",
+          "-f",
+          "rawvideo",
+          "-threads",
+          "1",
+          "pipe:1"
+        ]
+      }
+    ],
+    "scope": "Offline decoder/format-conversion comparison against publisher HALF samples; no transfer/gamut conversion or display claim",
+    "ffmpegSHA256AtEvidenceAssembly": "88ee71aa98cbc36b7c78595200743e0b78f33218f7a887f9b520e34555accda3",
+    "ffmpegVersionAtEvidenceAssembly": "ffmpeg version 9.0.1 Copyright (c) 2000-2026 the FFmpeg developers"
+  },
+  "sourcePaths": {
+    "catalog": "config/open-content.json",
+    "converter": "scripts/prepare-cosmos-reference.py",
+    "downloader": "scripts/fetch-open-content.py"
+  },
+  "sourceSHA256": {
+    "config/open-content.json": "db5f35d1341c112f2eb7f8882caa80bfdb67c6c3f182cf95ea43d0c7224479de",
+    "scripts/prepare-cosmos-reference.py": "aaebfe49fea26e6ddf23a3e400c39cb80e4901f281ee020d0491c1a3695e9285",
+    "scripts/fetch-open-content.py": "545b4355eafc918c1c9783b26f1c8db435ecf65945c45d17882093045c5006db",
+    "pyproject.toml": "1d7bdcd308791e170727ac8babdb5d813f4254ad7e1dc556f37a65da27b18734",
+    "uv.lock": "ca023bda0edaed334a9d0ecbca19b5bf80db5b606560dd7185b6d19e74f85d43"
+  },
+  "preservedExperiments": [
+    {
+      "path": "artifacts/cosmos-reference-input",
+      "result": "Initial converter rejected negative encoded components at frame10002 after writing two frames; no completion manifest was published."
+    },
+    {
+      "path": "artifacts/cosmos-reference-input-extended/manifest.json",
+      "result": "Explicit signed PQ conversion with Lanczos resizing completed, but introduced negative ringing down to\u2212981.52 nits around sparse highlights; box averaging selected for final temporal input."
+    }
+  ],
+  "rawEvidence": {
+    "artifacts/open-content-reference/exr-decoder-comparison.json": "7a8d72076cef9ec6073a5ce440ab4588e81ae3e2dd723f140dd2fc721ba23992",
+    "artifacts/open-content-reference/exr-domain.json": "05e0794d10d196abf67b3b40b3bf3bd2232d07ca0080469b7d832419fb0006c8",
+    "assets/test-clips/open-content/Meridian_UHD4k5994_HDR_P3PQ.probe.json": "c8feb1a43a46e4b7741cd3cb63340a17701b5b7bf57ab6c55640e064502d940e",
+    "assets/test-clips/open-content/CosmosLaundromat_2k24p_HDR_P3PQ.probe.json": "0ad0ef72818e81372df04e31f118eb3d133115d4b33de7ecf0f72c4fdebe4773"
+  },
+  "validation": [
+    "Pinned source sizes and SHA256 verified before conversion",
+    "PQ inverse reference anchors0,100,10000nits passed",
+    "Diagnostic signed/above-one domain handling and default rejection passed",
+    "P3-D65 to BT2020-D65 matrix preserves neutral white",
+    "All48derived frame hashes, byte lengths and finite values verified"
+  ]
+}

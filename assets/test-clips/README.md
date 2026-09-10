@@ -5,3 +5,5 @@ Run `uv run --frozen scripts/generate-fixtures.py`. This creates two-second 320Ã
 `smoke.png` is a small synthetic gradient. `linear-bt2020-nits.npy` contains float32 RGB values in absolute nits, including a grey ramp, saturated BT.2020 primaries, and a 10000-nit edge. Its JSON sidecar defines layout and units. It is a numeric fixture, not a display-ready image.
 
 These files are generated locally and excluded from Git. They are initial diagnostics; passing them does not demonstrate full HDR accuracy or temporal quality on real video.
+
+Optional [natural-scene references](../../docs/open-content-reference.md) pin publisher EXR frames and produce explicitly interpreted RGB Float32 inputs for temporal tests. They are downloaded separately and retain their source attribution, hashes and colour/timing assumptions.

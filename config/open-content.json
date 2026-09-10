@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 1,
+  "catalogSource": "https://sites.google.com/netflix.com/opencontent/home",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "assets": {
+    "meridian-preview": {
+      "title": "Meridian (2016)",
+      "attribution": "Netflix",
+      "filename": "Meridian_UHD4k5994_HDR_P3PQ.mp4",
+      "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/Meridian/Meridian_UHD4k5994_HDR_P3PQ.mp4",
+      "bytes": 850587087,
+      "etag": "\"959e3cc54e2b941ca7de8c0d8b95236b-102\"",
+      "sha256": "e14ff5ab8ce4cc90269e8ed45babcf6e25d7a073b71438b3e7ffee5901a7177e",
+      "advertisedGrade": "P3/PQ HDR",
+      "observedEncoding": "3840x2160 H.264 High, 8-bit 4:2:0, 60000/1001 fps, no audio",
+      "observedColourTags": null,
+      "hdrQualificationEligible": false,
+      "limitation": "No transfer, primaries or YCbCr matrix metadata. The filename and catalog grade do not establish the encoded YCbCr interpretation. Do not auto-tag this file or use default SDR interpretation as HDR evidence."
+    },
+    "cosmos-preview": {
+      "title": "Cosmos Laundromat (2016 HDR grade)",
+      "attribution": "Blender Foundation; directed by Mathieu Auvray; HDR re-grade by Netflix and Fotokem Keep Me Posted",
+      "filename": "CosmosLaundromat_2k24p_HDR_P3PQ.mp4",
+      "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/CosmosLaundromat_2k24p_HDR_P3PQ.mp4",
+      "bytes": 729482878,
+      "etag": "\"0ecf875fd2c1cc92eab29282a99376e8-87\"",
+      "sha256": "4762d0d77ce6c09371032e0c6b4dbda8ad781237b5264829857eefeed7a3b40a",
+      "advertisedGrade": "P3/PQ HDR",
+      "observedEncoding": "2048x858 H.264 High, 8-bit 4:2:0, 24000/1001 fps, no audio",
+      "observedColourTags": null,
+      "hdrQualificationEligible": false,
+      "limitation": "No transfer, primaries or YCbCr matrix metadata. The filename and catalog grade do not establish the encoded YCbCr interpretation. Do not auto-tag this file or use default SDR interpretation as HDR evidence."
+    },
+    "cosmos-exr-dial": {
+      "title": "Cosmos Laundromat (2016 HDR grade), source frames10000\u201310047",
+      "attribution": "Blender Foundation; directed by Mathieu Auvray; HDR re-grade by Netflix and Fotokem Keep Me Posted",
+      "directory": "cosmos-exr-dial",
+      "advertisedGrade": "P3/PQ HDR RGB",
+      "embeddedChromaticities": null,
+      "embeddedTransfer": null,
+      "embeddedFramesPerSecond": {
+        "value": 2997,
+        "timescale": 125
+      },
+      "members": [
+        {
+          "sourceFrameIndex": 10000,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10000.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10000.exr",
+          "bytes": 10567680,
+          "etag": "\"71ebb9ba686309c7b89b7f1e4c5fff68-2\"",
+          "sha256": "7cf82605d003206aac3f035a0321773f10a006c83ef59a297b617d45d0c7b82b"
+        },
+        {
+          "sourceFrameIndex": 10001,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10001.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10001.exr",
+          "bytes": 10567680,
+          "etag": "\"595a311be8f1a9f13f2ea48a683271f8-2\"",
+          "sha256": "c16b5af9c6334966985f7612fc89df90d2a5eab0ab6e427efde51bf973dbc32b"
+        },
+        {
+          "sourceFrameIndex": 10002,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10002.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10002.exr",
+          "bytes": 10567680,
+          "etag": "\"1b707f24f4fd557773d9da37d3e4bd82-2\"",
+          "sha256": "e4124fba48582874394b00b544fb7eb801e90cc0c7929d9db240fae77e9de4e3"
+        },
+        {
+          "sourceFrameIndex": 10003,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10003.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10003.exr",
+          "bytes": 10567680,
+          "etag": "\"f7ca3a14e1ad0c35fd473d20b588e1e7-2\"",
+          "sha256": "789871556e70cfaded604e561346bb4f1cd3ea4b00dbead6408c254f6627df12"
+        },
+        {
+          "sourceFrameIndex": 10004,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10004.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10004.exr",
+          "bytes": 10567680,
+          "etag": "\"4406057242957973e7c9ce984999a12e-2\"",
+          "sha256": "e9d81e430499bd0f3828e24b480d0e439a47bbf2690d6c63b743bbd99ffbc7e1"
+        },
+        {
+          "sourceFrameIndex": 10005,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10005.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10005.exr",
+          "bytes": 10567680,
+          "etag": "\"aa90fbb97131118d98def3e1f189144a-2\"",
+          "sha256": "7d20a8e93a2ce334a3acd26118c45bded16df5f186b5a3900101453af1fce4d9"
+        },
+        {
+          "sourceFrameIndex": 10006,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10006.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10006.exr",
+          "bytes": 10567680,
+          "etag": "\"de4a9686b01c95f8fcf95e136664d90d-2\"",
+          "sha256": "f7a27bef06797ce6921deb86f9bedc8afcba2c6c030404f4f68cfce5dc86e013"
+        },
+        {
+          "sourceFrameIndex": 10007,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10007.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10007.exr",
+          "bytes": 10567680,
+          "etag": "\"cd1ea7be1ee0f9bf6e6594b736bbe024-2\"",
+          "sha256": "9c6e1734f798e514b9378a12f53bc0f83657fae6b75a74077097e06cf815deca"
+        },
+        {
+          "sourceFrameIndex": 10008,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10008.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10008.exr",
+          "bytes": 10567680,
+          "etag": "\"64843f46305641b64bdb6b02e5f3181d-2\"",
+          "sha256": "637d32ff8cf65cd4c6a695578b78ae6f9cef8f2e326aa37166fdde743fe44b71"
+        },
+        {
+          "sourceFrameIndex": 10009,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10009.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10009.exr",
+          "bytes": 10567680,
+          "etag": "\"bd944e3ddb152b61956756160c99fa41-2\"",
+          "sha256": "1e00dc09c2dd25980df56b8bebd1c579264a52778896119218795852a263a245"
+        },
+        {
+          "sourceFrameIndex": 10010,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10010.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10010.exr",
+          "bytes": 10567680,
+          "etag": "\"c4fa5b55146edaa058f7a6643c21fce5-2\"",
+          "sha256": "ef02aa68b99f9a5c418ea4826d41e9dedbcacd340bde52efe7bcc48c79c25c0f"
+        },
+        {
+          "sourceFrameIndex": 10011,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10011.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10011.exr",
+          "bytes": 10567680,
+          "etag": "\"432f08595b566655b117da352188d7ca-2\"",
+          "sha256": "cac3706ce978beece815b5317aa940336a1295e22743f3919137a7a758d36d96"
+        },
+        {
+          "sourceFrameIndex": 10012,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10012.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10012.exr",
+          "bytes": 10567680,
+          "etag": "\"79865f6da1aa461dbe9b95f1acecdff8-2\"",
+          "sha256": "71fd7b3615f66cdcc37d7e068fed3f462893fda18c6a014c393e235bcde23dc6"
+        },
+        {
+          "sourceFrameIndex": 10013,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10013.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10013.exr",
+          "bytes": 10567680,
+          "etag": "\"7b149962c4221e491838accceacf3216-2\"",
+          "sha256": "fc551c37fc932f0e26c99d7416dd656694410257060098f67d01ac57a4438c26"
+        },
+        {
+          "sourceFrameIndex": 10014,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10014.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10014.exr",
+          "bytes": 10567680,
+          "etag": "\"bd40cf2958a424da9de7531181b6578a-2\"",
+          "sha256": "9107ef57c7deaf60c32cdc546ede92006913e985201830ed7a3f5a2d402f1245"
+        },
+        {
+          "sourceFrameIndex": 10015,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10015.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10015.exr",
+          "bytes": 10567680,
+          "etag": "\"4ab3ea3f12f605a7c8bd72df77374b48-2\"",
+          "sha256": "949a6dc9383a66bc42e805a66c249a9ad47a62ef33889222fc142973f1567e91"
+        },
+        {
+          "sourceFrameIndex": 10016,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10016.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10016.exr",
+          "bytes": 10567680,
+          "etag": "\"390e36944bd67bcb836b711ff7136d1f-2\"",
+          "sha256": "cdc10955e0bd988d543358fe55763d70d4ecfd8c7ab7b774079cb26978dfc47e"
+        },
+        {
+          "sourceFrameIndex": 10017,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10017.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10017.exr",
+          "bytes": 10567680,
+          "etag": "\"bba2e8ee8164e1b35ddffa4fa39e1f44-2\"",
+          "sha256": "799b839ad79dd3730f4d145f29d1c6eb081f3f7cfd2616433b24446842adb1e2"
+        },
+        {
+          "sourceFrameIndex": 10018,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10018.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10018.exr",
+          "bytes": 10567680,
+          "etag": "\"445e7bf6a0da5d71768874a8d9cd8784-2\"",
+          "sha256": "a9008faa4717ca73457df3c8d339d856943b588e7f8f2b8af4bd92b8b578f712"
+        },
+        {
+          "sourceFrameIndex": 10019,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10019.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10019.exr",
+          "bytes": 10567680,
+          "etag": "\"ed10633524e0ab0de13fcabdb0277237-2\"",
+          "sha256": "16170d03f8ffa90cd49fc039bab5bc5886e9d2412169d6bbee77918731f44c31"
+        },
+        {
+          "sourceFrameIndex": 10020,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10020.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10020.exr",
+          "bytes": 10567680,
+          "etag": "\"b1cc16f875e937494ffdb8c667007e50-2\"",
+          "sha256": "5864361684320b25e93ab0314c73ca831ea2adb3ada2b3a3b304b4593dfb8c87"
+        },
+        {
+          "sourceFrameIndex": 10021,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10021.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10021.exr",
+          "bytes": 10567680,
+          "etag": "\"219eae19e49e034d7e76162179e281a0-2\"",
+          "sha256": "78981fb6a9fd4b082c83e46d955edf92e8ccad164b6a7cabfc3bba523647a7bb"
+        },
+        {
+          "sourceFrameIndex": 10022,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10022.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10022.exr",
+          "bytes": 10567680,
+          "etag": "\"1705b9c3ec3c733c595676893ba344e5-2\"",
+          "sha256": "b4da7b81ae98e27ac7054b9457ac0e692692d0257056077d19b272e8a24f268a"
+        },
+        {
+          "sourceFrameIndex": 10023,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10023.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10023.exr",
+          "bytes": 10567680,
+          "etag": "\"917a2e65226cfe2d36ffc06574473fe5-2\"",
+          "sha256": "7768e278271463fc71fff673022ed0456e5ffa4cf139930bde981e8f2d104703"
+        },
+        {
+          "sourceFrameIndex": 10024,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10024.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10024.exr",
+          "bytes": 10567680,
+          "etag": "\"0ffff48ec7c6fb2f8a7831ee3d17dd05-2\"",
+          "sha256": "09e9b54ae1803c90d94bd9bf5bafe2fa41fd78f7b17968adb1ec2007bbf30e65"
+        },
+        {
+          "sourceFrameIndex": 10025,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10025.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10025.exr",
+          "bytes": 10567680,
+          "etag": "\"ef5ad583e0e12e19a64a1e30898a00b6-2\"",
+          "sha256": "b36e220ce208b53e709c269e54f611dfa4474fcd067eb0bede620a825e49276f"
+        },
+        {
+          "sourceFrameIndex": 10026,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10026.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10026.exr",
+          "bytes": 10567680,
+          "etag": "\"c8359c72b337ce82bec37351e865e4ec-2\"",
+          "sha256": "c215bc6935c62df13fc59cc7729a86e22b61cd12e8d92a905f4e0d1640d64d5f"
+        },
+        {
+          "sourceFrameIndex": 10027,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10027.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10027.exr",
+          "bytes": 10567680,
+          "etag": "\"4ee89c1f640fdc6cbb180922b736a760-2\"",
+          "sha256": "6b26090ea227dd77c2271a056c751b26f4a9297af7d04fa8402d71a9907210e6"
+        },
+        {
+          "sourceFrameIndex": 10028,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10028.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10028.exr",
+          "bytes": 10567680,
+          "etag": "\"57aa72babc1dcab9a15c696d86a37e03-2\"",
+          "sha256": "d32473b2307cb0d5fcf2da4b71eb1c14a87459d9b6c62bf102389dff2ec49cb2"
+        },
+        {
+          "sourceFrameIndex": 10029,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10029.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10029.exr",
+          "bytes": 10567680,
+          "etag": "\"067fd1bfa7279f37820728d07dcd8f50-2\"",
+          "sha256": "12d2a862f904b18accff8c4d493d0bfc7d2a3ff46a900cff5d3b5f4951e56e7e"
+        },
+        {
+          "sourceFrameIndex": 10030,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10030.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10030.exr",
+          "bytes": 10567680,
+          "etag": "\"be74275d44e0df926695ab5727bb7fe7-2\"",
+          "sha256": "c9cb72b6821ba930d6de56eed0bb4b0a233299caefb4421a39c8e2d622454b61"
+        },
+        {
+          "sourceFrameIndex": 10031,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10031.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10031.exr",
+          "bytes": 10567680,
+          "etag": "\"bd95eeb58a98010832de8a60e639c149-2\"",
+          "sha256": "4c6de139c364d791e183d05b0f9cfef55fee346a9605e50ca80d7570693d197e"
+        },
+        {
+          "sourceFrameIndex": 10032,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10032.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10032.exr",
+          "bytes": 10567680,
+          "etag": "\"1b266a8e820d93e76d4cde068bc7a604-2\"",
+          "sha256": "2d667fd14beefd784be4aa82edf222e14eb605c9230a39c837dcd3b1c8af804b"
+        },
+        {
+          "sourceFrameIndex": 10033,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10033.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10033.exr",
+          "bytes": 10567680,
+          "etag": "\"d31eab86cc9e6594644ab0af66576e45-2\"",
+          "sha256": "80516150dc23b8585b561222a71ab69a473ecf6b8750b0f8efa07a601d43d98f"
+        },
+        {
+          "sourceFrameIndex": 10034,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10034.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10034.exr",
+          "bytes": 10567680,
+          "etag": "\"d60c2435c118968d12518fdc0829215e-2\"",
+          "sha256": "70089b70239677e562b179209b9eff8532c6c1018c574b6beeebcce2a6ab579b"
+        },
+        {
+          "sourceFrameIndex": 10035,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10035.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10035.exr",
+          "bytes": 10567680,
+          "etag": "\"ac45d55b3341b01e7eb50c8ebda08fe4-2\"",
+          "sha256": "fe3f0cbec27fb4b681ae55e7916604c61bd078e5d0f5417eb6f62f26408ed1bc"
+        },
+        {
+          "sourceFrameIndex": 10036,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10036.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10036.exr",
+          "bytes": 10567680,
+          "etag": "\"df428a3d445ade2da5d844f2f255e037-2\"",
+          "sha256": "d9c35b215d91d410f5902bc5195aab971eb379211a4fa3453c06d054d5b63a63"
+        },
+        {
+          "sourceFrameIndex": 10037,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10037.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10037.exr",
+          "bytes": 10567680,
+          "etag": "\"8554d8aac5f29782942c4bba278e077c-2\"",
+          "sha256": "828539f43b667ff2dd2eaa48de02ae94d308c4ea311a9e16f3804b92ab872a02"
+        },
+        {
+          "sourceFrameIndex": 10038,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10038.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10038.exr",
+          "bytes": 10567680,
+          "etag": "\"43a1bc96d47896bdc58f7dffb297e56e-2\"",
+          "sha256": "89bda901c4face48bc8a4662e5f0e71c136d3ceb5b6598f00406a22c60fd8230"
+        },
+        {
+          "sourceFrameIndex": 10039,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10039.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10039.exr",
+          "bytes": 10567680,
+          "etag": "\"74959afa54354c8e614721f7b867cf44-2\"",
+          "sha256": "1684424e40b71cedcff8cfc1bde26cc5effa9f2120fa30aaab39545d5f1cd989"
+        },
+        {
+          "sourceFrameIndex": 10040,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10040.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10040.exr",
+          "bytes": 10567680,
+          "etag": "\"bed4b6eb4b9ca3e22966fba8d76f6c88-2\"",
+          "sha256": "cdb34fc6a0371581500cd5e5d9b9488d0192b43748c6f1d1345f501ad8981a65"
+        },
+        {
+          "sourceFrameIndex": 10041,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10041.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10041.exr",
+          "bytes": 10567680,
+          "etag": "\"44ff325e3de475070b789f16159d228a-2\"",
+          "sha256": "8b73365e337e3e67ff64963c20874b127e7c3b90acd2aed0fe53ffc57ca763a5"
+        },
+        {
+          "sourceFrameIndex": 10042,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10042.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10042.exr",
+          "bytes": 10567680,
+          "etag": "\"8941a4c4696b5acc1b10038abbcfecea-2\"",
+          "sha256": "b83e3475a198ca4339b824028146e9b9bdfe945b0cbe4b9974dd20fc1263b0a2"
+        },
+        {
+          "sourceFrameIndex": 10043,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10043.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10043.exr",
+          "bytes": 10567680,
+          "etag": "\"8d1253bd16dc0a29e8c62cd319a5bd57-2\"",
+          "sha256": "504fd0ad2125f489dcdddc4b93f373222c57fb8c82ec3db06e26308ad5e608b8"
+        },
+        {
+          "sourceFrameIndex": 10044,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10044.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10044.exr",
+          "bytes": 10567680,
+          "etag": "\"9c8ab5c52fb82b6b5cfd289472454395-2\"",
+          "sha256": "3aab92748175982e2cc9057f4d7b7ebbfb16c15d0498d764c6255cc9e4f73641"
+        },
+        {
+          "sourceFrameIndex": 10045,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10045.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10045.exr",
+          "bytes": 10567680,
+          "etag": "\"e09d4e52e68b6352815712e081700a52-2\"",
+          "sha256": "68ef8b6a5b925bcdb303e762512c1827907713f63ad3f99251ba27fb3e5211e3"
+        },
+        {
+          "sourceFrameIndex": 10046,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10046.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10046.exr",
+          "bytes": 10567680,
+          "etag": "\"fe51bdcdcc8be265274f1d948512c7c7-2\"",
+          "sha256": "e898f6056f2b24f2e7d39a1bf1db65c12af58c376f012a9441850e0584c2941b"
+        },
+        {
+          "sourceFrameIndex": 10047,
+          "filename": "CosmosLaundromat_2k24p_HDR_P3PQ_10047.exr",
+          "url": "https://s3.amazonaws.com/download.opencontent.netflix.com/CosmosLaundromat/exr/CosmosLaundromat_2k24p_HDR_P3PQ_10047.exr",
+          "bytes": 10567680,
+          "etag": "\"082668c16e1088d534fcd57faf566478-2\"",
+          "sha256": "5134df56e1a73b0c3928a471dd911ca0b5b93e7fccb7da6c61780a27d2f45c95"
+        }
+      ],
+      "scope": "Unmodified publisher RGB HALF EXR; selected interpretation and derivative mapping are recorded separately"
+    }
+  }
+}
