@@ -5,6 +5,13 @@ workspace player or `com.apple.PIPAgent` window. It supports relative compositor
 diagnostics. It does not measure panel luminance, physical scanout or acoustic
 synchronization, and successful capture does not qualify HDR playback.
 
+The sample-buffer PiP experiment is unsupported on macOS. In June 2026, Apple
+Developer Technical Support stated that `AVSampleBufferDisplayLayer` to
+`AVPictureInPictureController` is supported only on iOS and that the availability
+annotations for other platforms are inaccurate. The successful macOS entry,
+transport and lifecycle probes do not override that support boundary.
+[Apple DTS clarification](https://developer.apple.com/forums/thread/830764)
+
 ## Capture contract
 
 Build with `bash scripts/build-hdr-capture-probe.sh`. The helper links only system
@@ -121,5 +128,39 @@ rejected before pixel capture and remain in the evidence. All raw captures,
 metadata and clipped review previews are retained under
 `artifacts/sck-hdr-compositor-*`. Preview PNGs are convenience views of encoded
 values; they are not HDR reference images. Native/PiP geometry and color
-equivalence remain unqualified pending pre-compositor buffer isolation and
-matched content/geometry tests.
+equivalence remain unqualified; the following buffer isolation narrows the cause.
+
+## Buffer and layer isolation
+
+[Three subsequent controlled sessions](evidence/m3-pip-compositor-isolation.json)
+captured the retained export, the public renderer's `displayedPixelBuffer()`,
+their format descriptions, and the same paused native/PiP windows. All exported
+and displayed pixel payloads were byte-identical: 320×192 RGhA, 2560-byte stride,
+full clean aperture and presentation dimensions, linear BT.2020 tags. Their RGB
+maxima were `[8.984375, 5.1328125, 10.140625]`; the producer contract is relative
+linear light with `1 = 203` source nits. This is not a measured panel luminance.
+
+The PiP compositor capture still contained only an enlarged red/green region,
+while the native window contained the full dark fixture. Two separate diagnostic
+controls—setting the source layer's contents scale to the actual backing scale
+of 2, and preserving its layout while PiP starts or is active—left the PiP HDR
+capture byte-identical to baseline. The source layer retained full 1060×524
+bounds, full contents rectangle and identity transforms. These failed controls
+and all three clean exits are preserved in the report. They justify no rendering
+workaround.
+
+The mpv source audit found a fresh normalized float pool, no inherited P010 crop
+or pixel-aspect attachments, and a retained export of that same buffer. Native
+libplacebo accepts the normalized linear input without a second transfer decode.
+This isolates the observed crop beyond the exported pixel payload and its clean
+aperture. The two SCK filter variants share OS media-capture machinery, so their
+agreement alone still does not distinguish physical display behavior from a
+capture-specific video-plane transform.
+
+A separate developer report describes the same lower-left clipping on macOS
+26.4. It corroborates the symptom; its explanations and private view-hierarchy
+workarounds were not adopted as verified causes or supported implementation.
+Further sample-buffer PiP probes stopped after the Apple support clarification.
+Native renderer brightness remains a separate investigation, and a supported
+macOS PiP architecture remains open.
+[macOS clipping report](https://developer.apple.com/forums/thread/821582)

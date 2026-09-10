@@ -1,8 +1,8 @@
 # Processed HDR picture-in-picture
 
-The native app has an opt-in diagnostic PiP consumer of completed RGBA16F frames on the tested Apple M3 with macOS 26.5. It reuses the existing mpv decoder, enhancement, audio and selected presentation surfaces. Actual AVKit entry, streamed delivery, minimized-window progress, pause, seek, comparison, subtitle rejection and teardown pass the bounded integration check below. Roadmap #17 remains open: physical HDR brightness and sustained presented A/V synchronization are unqualified, so ordinary app PiP stays hidden and disabled.
+The native app has an opt-in diagnostic PiP consumer of completed RGBA16F frames on the tested Apple M3 with macOS 26.5. It reuses the existing mpv decoder, enhancement, audio and selected presentation surfaces. Actual AVKit entry, frame delivery, controls and teardown pass the bounded checks below, but compositor captures show a cropped, brighter image. Roadmap #17 remains open and ordinary app PiP stays hidden and disabled: this sample-buffer PiP path is unsupported on macOS according to Apple DTS, and its geometry, HDR brightness and sustained presented A/V behavior are unqualified.
 
-Apple provides the sample-buffer content-source initializer and playback delegate on macOS 12 and later. This standalone probe requires macOS 26 because it uses the current asynchronous asset-reader API. It uses [AVPictureInPictureController](https://developer.apple.com/documentation/avkit/avpictureinpicturecontroller) with [AVSampleBufferDisplayLayer](https://developer.apple.com/documentation/avfoundation/avsamplebufferdisplaylayer); no private PiP API or display capture is involved.
+The SDK annotates the sample-buffer content-source initializer for macOS 12 and later, but Apple's Developer Technical Support clarified in June 2026 that this path is supported only on iOS and that the other platform annotations are inaccurate. That [DTS clarification](https://developer.apple.com/forums/thread/830764), checked September 10, 2026, supersedes the earlier support assumption based on compilation and successful entry. The standalone probe requires macOS 26 for its asynchronous asset-reader API. Both probes use public [AVPictureInPictureController](https://developer.apple.com/documentation/avkit/avpictureinpicturecontroller) and [AVSampleBufferDisplayLayer](https://developer.apple.com/documentation/avfoundation/avsamplebufferdisplaylayer) as diagnostic reproductions.
 
 ## Run the standalone probe
 
@@ -28,8 +28,8 @@ The [compact evidence](evidence/m3-pip-held-frame.json) preserves exact source t
 
 | Presentation surface | Public PiP lifecycle | Maximum / mean / RMS numeric error, nits | Interpretation |
 | --- | --- | --- | --- |
-| RGBA16F, linear BT.2020, values divided by 203 | Supported, possible, start, stop, restore; renderer rendering | 0.77344 / 0.05853 / 0.09226 | Float normalization round trip only; AVKit physical reference-white mapping is unverified |
-| P010, PQ, limited range, BT.2020 NCL, 4:2:0 | Supported, possible, start, stop, restore; renderer rendering | 1112.93874 / 7.25421 / 25.62027 | Decode of the actual quantized/subsampled surface against the clipped input domain; includes chroma loss and 10-bit quantization |
+| RGBA16F, linear BT.2020, values divided by 203 | API flags true; start, stop, restore; renderer rendering | 0.77344 / 0.05853 / 0.09226 | Float normalization round trip only; AVKit physical reference-white mapping is unverified |
+| P010, PQ, limited range, BT.2020 NCL, 4:2:0 | API flags true; start, stop, restore; renderer rendering | 1112.93874 / 7.25421 / 25.62027 | Decode of the actual quantized/subsampled surface against the clipped input domain; includes chroma loss and 10-bit quantization |
 
 Input RGB components ranged from 0.50684 to 2492 nits. Neither case contained negative or above-10000-nit components; PQ clipped zero components. PQ clamps those domains explicitly when present. Each experiment performs one full-frame CPU readback and one CPU surface write; framework-internal copies are unmeasured. These are probe costs, not the proposed production path.
 
@@ -194,6 +194,31 @@ The system PiP window changed from 444×245 points to 576×325 after a 564×325 
 
 Before pressing the actual system Restore button, the diagnostic hook minimized the source window and verified it was no longer visible. Restore invoked the real interface-restoration delegate, stopped PiP and returned the source window to visible, key, active and frontmost state. Renderer flush released the remaining consumer leases before native core destruction. Five frames were enqueued, exported leases peaked at two, and pending/submitted consumer references were zero after flush. The largest completed worker receipt gap was 348.237 ms during a paused hold around restoration; maximum anchor correction was 21.204 ms. These diagnostics do not establish continuous presentation, physical HDR brightness, acoustic A/V synchronization, VoiceOver announcements or behavior on other displays.
 
+### Retained-buffer and compositor isolation
+
+The [three-session isolation evidence](evidence/m3-pip-compositor-isolation.json) separates the exported source, the public renderer's displayed pixel buffer and same-process system-window captures. Each run held source PTS 20000000/1000000, generation 3, revision 14. The two full 320×192 RGBA16F buffers were byte-identical within and across all runs: stride 2560, full clean aperture and presentation dimensions, opaque alpha, finite components and matching linear BT.2020 attachments. Their RGB maxima were approximately 8.984, 5.133 and 10.141 in the export's 1=203-nit units. These source values survived the public renderer buffer unchanged.
+
+The system PiP image still showed the enlarged lower-left region. Setting the source layer's `contentsScale` from 1 to the host's backing scale 2 left every captured PiP HDR byte unchanged. Separately suppressing source-frame layout writes while PiP was starting or active also left the capture unchanged. The latter snapshot showed both model and presentation bounds at 1060×524, full `contentsRect`, identity transforms and the original host as the layer's parent. These negative controls locate the discrepancy after the intact source/displayed buffers, but do not establish the exact internal compositing or brightness conversion.
+
+The opt-in hook retains no additional pixel lease outside its synchronous snapshot call. It copies at most two bounded buffers, zeroes row padding and preserves component bytes, attachments and the actual enqueued format description. Readback adds CPU synchronization, so this is not a timing benchmark. With stable app/core/shared binaries:
+
+```sh
+# Terminal 1: start the usual paused diagnostic with buffer capture enabled.
+HDRPLAYER_PIP_BUFFER_SNAPSHOT=1 python3 scripts/start-system-pip-check.py \
+  --output artifacts/pip-buffer-run
+
+# Terminal 2, after READY: request one buffer snapshot, then capture system windows
+# using docs/hdr-compositor-capture.md while the same frame remains paused.
+touch artifacts/pip-buffer-run/buffer-snapshot-request
+# After the optional same-process SCK captures finish:
+touch artifacts/pip-buffer-run/finish
+
+# After Terminal 1 exits: five CPU identity/layout/payload checks.
+python3 scripts/verify-pip-buffer-snapshot.py artifacts/pip-buffer-run
+```
+
+The two controls require the same snapshot opt-in plus, separately, `HDRPLAYER_PIP_LAYER_SCALE=backing` or `HDRPLAYER_PIP_PRESERVE_ACTIVE_LAYOUT=1` at launch. Neither changes default playback. All three sessions exited 0 with unchanged measured binary hashes and passed five buffer-identity checks each. The [compositor capture documentation](hdr-compositor-capture.md) preserves the SCK formats, ICC data, display-edge controls and numeric limitations. An independent developer's [macOS 26.4 report](https://developer.apple.com/forums/thread/821582) describes a similar lower-left crop; its private-hierarchy explanation is not an independently verified implementation fact. No private hierarchy changes or source-window resizing workaround is implemented. The public transport and controls evidence remains useful, while this macOS presentation path stays a diagnostic reproduction rather than a shipping PiP feature.
+
 ### Compositor image discrepancy
 
-The separate [ScreenCaptureKit investigation](hdr-compositor-capture.md) captured only explicitly identified native and system PiP windows. At the same paused enhanced source identity, PiP appeared brighter and enlarged to a cropped red/green region of the fixture. Fifteen HDR/SDR and geometry-control captures preserved that discrepancy, including a target-only display capture. Row-stride handling, the scaling flag and the independent-window filter do not explain it alone. Producer, inline renderer and system PiP buffer isolation remains necessary before a colour or geometry fix. Successful controls and teardown do not resolve this image discrepancy; ordinary PiP remains disabled.
+The [ScreenCaptureKit investigation](hdr-compositor-capture.md) preserves the brighter, cropped PiP image across HDR/SDR and target-only display controls. The completed [buffer isolation](#retained-buffer-and-compositor-isolation) establishes intact, identical exported and public displayed buffers; neither backing-scale nor active-layout controls changed the captured discrepancy. These are captured-compositor findings, not physical display measurements. With Apple DTS identifying the macOS sample-buffer route as unsupported, ordinary PiP remains disabled pending a supported presentation route; successful controls and teardown do not qualify the current image path.

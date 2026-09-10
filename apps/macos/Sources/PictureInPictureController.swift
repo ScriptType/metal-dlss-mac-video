@@ -36,6 +36,9 @@ final class PlayerPictureInPicture: NSObject, AVPictureInPictureControllerDelega
     private var snapshot: NativePiPSnapshot?
     private var pending: NativePiPFrame?
     private var submitted: NativePiPFrame?
+    private let bufferSnapshotEnabled = ProcessInfo.processInfo.environment["HDRPLAYER_PIP_BUFFER_SNAPSHOT"] == "1"
+    private var submittedDescription: CMVideoFormatDescription?
+    private var bufferSnapshotTaken = false
     private var epoch: UInt64 = 0, generation: UInt64 = 0
     private var lastEnqueuedRevision: UInt64 = 0
     private var lastSamplePTS = CMTime.invalid
@@ -102,7 +105,13 @@ final class PlayerPictureInPicture: NSObject, AVPictureInPictureControllerDelega
     var available: Bool { diagnosticEnabled && compatible && possible && requests.acceptsFrames && submitted != nil && lastEnqueuedRevision > 0 }
 
     func layout() {
-        guard let host, displayLayer.frame != host.bounds else { return }
+        guard let host else { return }
+        if bufferSnapshotEnabled && ProcessInfo.processInfo.environment["HDRPLAYER_PIP_PRESERVE_ACTIVE_LAYOUT"] == "1" &&
+            (controller?.isPictureInPictureActive == true || startRequested) { return }
+        if bufferSnapshotEnabled && ProcessInfo.processInfo.environment["HDRPLAYER_PIP_LAYER_SCALE"] == "backing" {
+            displayLayer.contentsScale = host.window?.backingScaleFactor ?? 1
+        }
+        guard displayLayer.frame != host.bounds else { return }
         CATransaction.begin(); CATransaction.setDisableActions(true)
         displayLayer.frame = host.bounds
         CATransaction.commit()
@@ -167,6 +176,7 @@ final class PlayerPictureInPicture: NSObject, AVPictureInPictureControllerDelega
             let sample = try Self.sample(frame)
             guard frame.isCurrent else { pending = nil; discarded += 1; return }
             renderer.enqueue(sample)
+            if bufferSnapshotEnabled { submittedDescription = CMSampleBufferGetFormatDescription(sample) }
             lastSamplePTS = CMSampleBufferGetPresentationTimeStamp(sample)
             submitted = frame; pending = nil; lastEnqueuedRevision = frame.state.revision; enqueued += 1
             if enqueued <= 12 || enqueued % 60 == 0 { event("frame-enqueued") }
@@ -182,7 +192,7 @@ final class PlayerPictureInPicture: NSObject, AVPictureInPictureControllerDelega
         displayLayer.sampleBufferRenderer.flush(removingDisplayedImage: removingImage) { [weak self] in
             DispatchQueue.main.async {
                 guard let self else { return }
-                self.submitted = nil; self.flushing = false; self.flushed += 1
+                self.submitted = nil; self.submittedDescription = nil; self.flushing = false; self.flushed += 1
                 if self.clearAfterFlush {
                     self.clearAfterFlush = false; self.flush(removingImage: true)
                 } else if self.closing { self.finishShutdown() }
@@ -221,6 +231,51 @@ final class PlayerPictureInPicture: NSObject, AVPictureInPictureControllerDelega
             event("skip-timeout"); reason = "PiP seek did not establish a supported frame in time."; finishSkip(); onChange?()
         }
         drain()
+        captureRequestedBuffers()
+    }
+    private func captureRequestedBuffers() {
+        guard bufferSnapshotEnabled, !bufferSnapshotTaken,
+              let path = ProcessInfo.processInfo.environment["HDRPLAYER_SYSTEM_PIP_DIRECTORY"],
+              FileManager.default.fileExists(atPath: URL(fileURLWithPath: path).appendingPathComponent("buffer-snapshot-request").path)
+        else { return }
+        bufferSnapshotTaken = true
+        let output = URL(fileURLWithPath: path, isDirectory: true).appendingPathComponent("buffer-snapshot", isDirectory: true)
+        guard !FileManager.default.fileExists(atPath: output.path) else {
+            event("buffer-snapshot-refused", ["reason": "Output directory already exists"])
+            return
+        }
+        var report: [String: Any] = ["schemaVersion": 1, "stateBefore": state,
+            "scope": "Opt-in paused retained/exported and public renderer buffer readback; adds CPU synchronization and does not measure physical presentation"]
+        do {
+            guard !flushing, compatible, let submitted, submitted.isCurrent,
+                  let submittedDescription, snapshot?.state.user_paused != 0,
+                  coreClock?.state["rate"] as? Double == 0 else {
+                throw PiPBufferSnapshot.Failure("Snapshot requires a current, submitted, paused frame with a held clock")
+            }
+            report["hostSecondsBefore"] = ProcessInfo.processInfo.systemUptime
+            try FileManager.default.createDirectory(at: output, withIntermediateDirectories: false)
+            report["layer"] = PiPBufferSnapshot.layer(displayLayer, host: host)
+            report["diagnosticControls"] = ["backingScale": ProcessInfo.processInfo.environment["HDRPLAYER_PIP_LAYER_SCALE"] == "backing",
+                "preserveActiveLayout": ProcessInfo.processInfo.environment["HDRPLAYER_PIP_PRESERVE_ACTIVE_LAYOUT"] == "1"]
+            report["submittedFormatDescription"] = PiPBufferSnapshot.format(submittedDescription)
+            report["sourcePath"] = submitted.source
+            report["sourceToPlayerSeconds"] = submitted.state.source_to_player_seconds
+            report["exported"] = try PiPBufferSnapshot.write(submitted.pixelBuffer, name: "exported", directory: output)
+            if let displayed = displayLayer.sampleBufferRenderer.displayedPixelBuffer() {
+                report["displayed"] = try PiPBufferSnapshot.write(displayed, name: "displayed", directory: output)
+                report["cvPixelBuffersCFEqual"] = CFEqual(submitted.pixelBuffer, displayed)
+            } else { report["displayed"] = ["available": false] }
+            report["leaseCurrentAfter"] = submitted.isCurrent
+            report["stateAfter"] = state
+            report["hostSecondsAfter"] = ProcessInfo.processInfo.systemUptime
+            report["captured"] = true
+        } catch {
+            report["captured"] = false; report["error"] = error.localizedDescription
+        }
+        try? FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        if let data = try? JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys]) {
+            try? data.write(to: output.appendingPathComponent("report.json"), options: .atomic)
+        }
     }
     func toggle() {
         if controller?.isPictureInPictureActive == true || startRequested {

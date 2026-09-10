@@ -1,0 +1,1356 @@
+{
+  "schemaVersion": 1,
+  "scope": "Three same-paused-frame buffer/compositor isolation sessions. Numeric input identity verified; native/PiP color and geometry equivalence failed. No physical calibration.",
+  "newProbesStopped": true,
+  "productionWorkaroundImplemented": false,
+  "macOSSampleBufferPiPSupported": false,
+  "supportEvidence": {
+    "url": "https://developer.apple.com/forums/thread/830764",
+    "author": "Richard Yeh, Apple Developer Technical Support",
+    "published": "June 2026",
+    "verified": "2026-09-10",
+    "statement": "Sample-buffer display-layer PiP is supported only on iOS; other-platform availability annotations may be incorrect."
+  },
+  "corroboratingReport": {
+    "url": "https://developer.apple.com/forums/thread/821582",
+    "platform": "macOS26.4 AppleSilicon Retina",
+    "scope": "First-person report of matching lower-left clipping. Its private implementation explanations/workarounds were not adopted or treated as verified product cause."
+  },
+  "cases": [
+    {
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "binaries": {
+        "HDRPlayer": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+          "beforeSHA256": "1074e52e068ba7bf460ff1df8c820bf91a8a47d0df890621036117ee56c9c2f3",
+          "afterSHA256": "1074e52e068ba7bf460ff1df8c820bf91a8a47d0df890621036117ee56c9c2f3"
+        },
+        "libmpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+          "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+          "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a"
+        },
+        "FrameEngineShared": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "AXHelper": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/pip-accessibility/SystemPiPAccessibility",
+          "beforeSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b",
+          "afterSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b"
+        }
+      },
+      "binariesUnchanged": true,
+      "exitCode": 0,
+      "setupAndTeardownPassed": true,
+      "directory": "artifacts/pip-buffer-isolation-1",
+      "control": "baseline",
+      "snapshotReportSHA256": "3841f2c8189af87f9793346ccb306162e511f60926edbaba0ccb4fa894a7eb51",
+      "sessionSHA256": "4b8995279175b977e28f9e86c76b5991644924ec06cb22b8c53ce363e0b840d2",
+      "exported": {
+        "file": "exported.rgba16f",
+        "width": 320,
+        "height": 192,
+        "bytesPerRow": 2560,
+        "byteCount": 491520,
+        "pixelFormat": 1380411457,
+        "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+        "statistics": {
+          "width": 320,
+          "height": 192,
+          "nonfiniteComponents": 0,
+          "finiteComponentMinRGBA": [
+            0.08172607421875,
+            0.011749267578125,
+            0.01250457763671875,
+            1.0
+          ],
+          "finiteComponentMaxRGBA": [
+            8.984375,
+            5.1328125,
+            10.140625,
+            1.0
+          ],
+          "rgbComponentsBelowZero": 0,
+          "rgbComponentsAboveOne": 100347,
+          "opaquePixels": 61440,
+          "nonopaquePixels": 0,
+          "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+        }
+      },
+      "displayed": {
+        "file": "displayed.rgba16f",
+        "width": 320,
+        "height": 192,
+        "bytesPerRow": 2560,
+        "byteCount": 491520,
+        "pixelFormat": 1380411457,
+        "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+        "statistics": {
+          "width": 320,
+          "height": 192,
+          "nonfiniteComponents": 0,
+          "finiteComponentMinRGBA": [
+            0.08172607421875,
+            0.011749267578125,
+            0.01250457763671875,
+            1.0
+          ],
+          "finiteComponentMaxRGBA": [
+            8.984375,
+            5.1328125,
+            10.140625,
+            1.0
+          ],
+          "rgbComponentsBelowZero": 0,
+          "rgbComponentsAboveOne": 100347,
+          "opaquePixels": 61440,
+          "nonopaquePixels": 0,
+          "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+        }
+      },
+      "submittedFormatDescription": {
+        "cleanApertureTopLeft": [
+          0,
+          0,
+          320,
+          192
+        ],
+        "dimensions": [
+          320,
+          192
+        ],
+        "extensions": {
+          "CVBytesPerRow": 2560,
+          "CVImageBufferColorPrimaries": "ITU_R_2020",
+          "CVImageBufferTransferFunction": "Linear",
+          "Version": 2
+        },
+        "mediaSubType": 1380411457,
+        "presentationDimensions": [
+          320,
+          192
+        ]
+      },
+      "layer": {
+        "affineTransform": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "anchorPoint": [
+          0.5,
+          0.5
+        ],
+        "bounds": [
+          0,
+          0,
+          1060,
+          524
+        ],
+        "contentsCenter": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "contentsGravity": "resize",
+        "contentsRect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "contentsScale": 1,
+        "frame": [
+          0,
+          0,
+          1060,
+          524
+        ],
+        "hidden": false,
+        "host": {
+          "backingScale": 2,
+          "bounds": [
+            0,
+            0,
+            1060,
+            524
+          ],
+          "flipped": false,
+          "frame": [
+            0,
+            196,
+            1060,
+            524
+          ],
+          "frameInWindow": [
+            0,
+            196,
+            1060,
+            524
+          ],
+          "layerContentsScale": 2
+        },
+        "masksToBounds": false,
+        "opacity": 1,
+        "position": [
+          530,
+          262
+        ],
+        "rendererStatus": 1,
+        "transform": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "videoGravity": "AVLayerVideoGravityResizeAspect"
+      },
+      "leaseCurrentAfter": true,
+      "stateIdentity": {
+        "sourcePTS": {
+          "timescale": 1000000,
+          "value": 20000000
+        },
+        "generation": 3,
+        "revision": 14,
+        "contentKind": 2,
+        "clockRate": 0
+      },
+      "captures": [
+        {
+          "name": "sck-native-hdr",
+          "reportSHA256": "4ccd4487e36b901f76898cdec400618e1375742abb04dcb0cd1ab5a361d6c596",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "793e654841e7182dfd049bbdbe88ca74673dbed3fd152aea2188ad2d7c094a4f"
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 20682,
+            "windowID": 35770,
+            "windowLayer": 0
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019647359042791
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 2120,
+            "height": 1504,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        },
+        {
+          "name": "sck-pip-hdr",
+          "reportSHA256": "76836ee6efacecfa2fd50ff1618a0806e0d42b159de95a8bfc80b57deeaab860",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 20694,
+            "windowID": 35788,
+            "windowLayer": 19
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019647725058041
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 888,
+            "height": 490,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        },
+        {
+          "name": "sck-pip-hdr-display",
+          "reportSHA256": "d8bf7ce7e57a724fc848ba2e712390cbb760416d7044afc22c8459a32adc7349",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 880,
+            "height": 490,
+            "bytesPerRow": 7040,
+            "bytes": 3449600,
+            "sha256": "afcdeb378b0734b83c2a59e5b58cb235ae1cc3bb80570d414b09aaf6a48c5c08"
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 20694,
+            "windowID": 35788,
+            "windowLayer": 19
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019648028647583
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 880,
+            "height": 490,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 58576,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        }
+      ],
+      "exportedEqualsDisplayedBytes": true,
+      "displayVsIndependentOpaqueComparison": {
+        "comparedPixels": 372624,
+        "excludedPixels": 58576,
+        "roiFirst": "0,0,880,490",
+        "roiSecond": "0,0,880,490",
+        "meanAbsoluteEncodedRGBDifference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "meanAbsoluteRelativeXYZD50Difference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximumAbsoluteRelativeXYZD50Difference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scope": "Caller-aligned ROI comparison in actual ICC PCS D50, relative units; no inferred frame/geometry equivalence, HDR extrapolation or physical qualification"
+      },
+      "cpuVerification": {
+        "path": "artifacts/pip-buffer-isolation-1/buffer-snapshot/verification.json",
+        "sha256": "e8461f68107bd55acbba32096af97c066a72cdf05e0a65e1b33f716d63844b58",
+        "passed": true,
+        "checkCount": 5
+      }
+    },
+    {
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "binaries": {
+        "HDRPlayer": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+          "beforeSHA256": "9121a2228a4f0485699f5c8e2108e270573b97003612d46bea432b83a73716be",
+          "afterSHA256": "9121a2228a4f0485699f5c8e2108e270573b97003612d46bea432b83a73716be"
+        },
+        "libmpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+          "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+          "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a"
+        },
+        "FrameEngineShared": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "AXHelper": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/pip-accessibility/SystemPiPAccessibility",
+          "beforeSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b",
+          "afterSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b"
+        }
+      },
+      "binariesUnchanged": true,
+      "exitCode": 0,
+      "setupAndTeardownPassed": true,
+      "directory": "artifacts/pip-buffer-scale2-1",
+      "control": "contentsScale explicitly set to backing scale2",
+      "snapshotReportSHA256": "8f22b39bea23fe0c5331b901942302f7b59aa3686163b9a037c74cccfe5c13a7",
+      "sessionSHA256": "42cb30bc2be4743aa4753491fb2967e8ccc220c8a43fdb03c6b278ac254aed6e",
+      "exported": {
+        "file": "exported.rgba16f",
+        "width": 320,
+        "height": 192,
+        "bytesPerRow": 2560,
+        "byteCount": 491520,
+        "pixelFormat": 1380411457,
+        "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+        "statistics": {
+          "width": 320,
+          "height": 192,
+          "nonfiniteComponents": 0,
+          "finiteComponentMinRGBA": [
+            0.08172607421875,
+            0.011749267578125,
+            0.01250457763671875,
+            1.0
+          ],
+          "finiteComponentMaxRGBA": [
+            8.984375,
+            5.1328125,
+            10.140625,
+            1.0
+          ],
+          "rgbComponentsBelowZero": 0,
+          "rgbComponentsAboveOne": 100347,
+          "opaquePixels": 61440,
+          "nonopaquePixels": 0,
+          "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+        }
+      },
+      "displayed": {
+        "file": "displayed.rgba16f",
+        "width": 320,
+        "height": 192,
+        "bytesPerRow": 2560,
+        "byteCount": 491520,
+        "pixelFormat": 1380411457,
+        "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+        "statistics": {
+          "width": 320,
+          "height": 192,
+          "nonfiniteComponents": 0,
+          "finiteComponentMinRGBA": [
+            0.08172607421875,
+            0.011749267578125,
+            0.01250457763671875,
+            1.0
+          ],
+          "finiteComponentMaxRGBA": [
+            8.984375,
+            5.1328125,
+            10.140625,
+            1.0
+          ],
+          "rgbComponentsBelowZero": 0,
+          "rgbComponentsAboveOne": 100347,
+          "opaquePixels": 61440,
+          "nonopaquePixels": 0,
+          "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+        }
+      },
+      "submittedFormatDescription": {
+        "cleanApertureTopLeft": [
+          0,
+          0,
+          320,
+          192
+        ],
+        "dimensions": [
+          320,
+          192
+        ],
+        "extensions": {
+          "CVBytesPerRow": 2560,
+          "CVImageBufferColorPrimaries": "ITU_R_2020",
+          "CVImageBufferTransferFunction": "Linear",
+          "Version": 2
+        },
+        "mediaSubType": 1380411457,
+        "presentationDimensions": [
+          320,
+          192
+        ]
+      },
+      "layer": {
+        "affineTransform": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "anchorPoint": [
+          0.5,
+          0.5
+        ],
+        "bounds": [
+          0,
+          0,
+          1060,
+          524
+        ],
+        "contentsCenter": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "contentsGravity": "resize",
+        "contentsRect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "contentsScale": 2,
+        "frame": [
+          0,
+          0,
+          1060,
+          524
+        ],
+        "hidden": false,
+        "host": {
+          "backingScale": 2,
+          "bounds": [
+            0,
+            0,
+            1060,
+            524
+          ],
+          "flipped": false,
+          "frame": [
+            0,
+            196,
+            1060,
+            524
+          ],
+          "frameInWindow": [
+            0,
+            196,
+            1060,
+            524
+          ],
+          "layerContentsScale": 2
+        },
+        "masksToBounds": false,
+        "opacity": 1,
+        "position": [
+          530,
+          262
+        ],
+        "rendererStatus": 1,
+        "transform": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "videoGravity": "AVLayerVideoGravityResizeAspect"
+      },
+      "leaseCurrentAfter": true,
+      "stateIdentity": {
+        "sourcePTS": {
+          "timescale": 1000000,
+          "value": 20000000
+        },
+        "generation": 3,
+        "revision": 14,
+        "contentKind": 2,
+        "clockRate": 0
+      },
+      "captures": [
+        {
+          "name": "sck-native-hdr",
+          "reportSHA256": "3e7a540b0c91d5ab2541e41bc13d4e2016ef8747d687f0420a122fa6fd93f647",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "793e654841e7182dfd049bbdbe88ca74673dbed3fd152aea2188ad2d7c094a4f"
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 21491,
+            "windowID": 35802,
+            "windowLayer": 0
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019768336505750
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 2120,
+            "height": 1504,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        },
+        {
+          "name": "sck-pip-hdr",
+          "reportSHA256": "bd990a60f9aa6f5be84805b411ea16519721994fc689662022c548580671d51b",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 21506,
+            "windowID": 35819,
+            "windowLayer": 19
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019768746286708
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 888,
+            "height": 490,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        },
+        {
+          "name": "sck-pip-hdr-display",
+          "reportSHA256": "d9563210dd513bca11e05dae5e8e1dd6cc22acdc45a00f0e52451322c8fa7bac",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 880,
+            "height": 490,
+            "bytesPerRow": 7040,
+            "bytes": 3449600,
+            "sha256": "afcdeb378b0734b83c2a59e5b58cb235ae1cc3bb80570d414b09aaf6a48c5c08"
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 21506,
+            "windowID": 35819,
+            "windowLayer": 19
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019769073502208
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 880,
+            "height": 490,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 58576,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        }
+      ],
+      "exportedEqualsDisplayedBytes": true,
+      "displayVsIndependentOpaqueComparison": {
+        "comparedPixels": 372624,
+        "excludedPixels": 58576,
+        "roiFirst": "0,0,880,490",
+        "roiSecond": "0,0,880,490",
+        "meanAbsoluteEncodedRGBDifference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "meanAbsoluteRelativeXYZD50Difference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximumAbsoluteRelativeXYZD50Difference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scope": "Caller-aligned ROI comparison in actual ICC PCS D50, relative units; no inferred frame/geometry equivalence, HDR extrapolation or physical qualification"
+      },
+      "cpuVerification": {
+        "path": "artifacts/pip-buffer-scale2-1/buffer-snapshot/verification.json",
+        "sha256": "83cc80d5722248f7e722a5c3e6a95f3651be3b0c8862b88d95a11322c57bdba8",
+        "passed": true,
+        "checkCount": 5
+      }
+    },
+    {
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "binaries": {
+        "HDRPlayer": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+          "beforeSHA256": "3b0d873246bca1a979c03d4cbff402b4f4f4f8c3f4f8607cb17d669958357f31",
+          "afterSHA256": "3b0d873246bca1a979c03d4cbff402b4f4f4f8c3f4f8607cb17d669958357f31"
+        },
+        "libmpv": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+          "beforeSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a",
+          "afterSHA256": "eb82b93d4aeb945f4d369173a5dc09f264eb3129c21709310f4ed6e6facec21a"
+        },
+        "FrameEngineShared": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "AXHelper": {
+          "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/pip-accessibility/SystemPiPAccessibility",
+          "beforeSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b",
+          "afterSHA256": "fd28f63328c0777c57cda5e5cf83a426153a31fc17f76c607ab8c6e7c2f7eb3b"
+        }
+      },
+      "binariesUnchanged": true,
+      "exitCode": 0,
+      "setupAndTeardownPassed": true,
+      "directory": "artifacts/pip-buffer-preserve-layout-1",
+      "control": "skip source layout updates while PiP starts or is active",
+      "snapshotReportSHA256": "bdb2a028491ea5bbb8f117ee51fd3581f589f5139be238c6233ebe5c978ef193",
+      "sessionSHA256": "ff1a20959ec1af85e81e6ffcdc2ad0200ec6d82d2f23a89400ad4dbbeeebdcae",
+      "exported": {
+        "file": "exported.rgba16f",
+        "width": 320,
+        "height": 192,
+        "bytesPerRow": 2560,
+        "byteCount": 491520,
+        "pixelFormat": 1380411457,
+        "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+        "statistics": {
+          "width": 320,
+          "height": 192,
+          "nonfiniteComponents": 0,
+          "finiteComponentMinRGBA": [
+            0.08172607421875,
+            0.011749267578125,
+            0.01250457763671875,
+            1.0
+          ],
+          "finiteComponentMaxRGBA": [
+            8.984375,
+            5.1328125,
+            10.140625,
+            1.0
+          ],
+          "rgbComponentsBelowZero": 0,
+          "rgbComponentsAboveOne": 100347,
+          "opaquePixels": 61440,
+          "nonopaquePixels": 0,
+          "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+        }
+      },
+      "displayed": {
+        "file": "displayed.rgba16f",
+        "width": 320,
+        "height": 192,
+        "bytesPerRow": 2560,
+        "byteCount": 491520,
+        "pixelFormat": 1380411457,
+        "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+        "statistics": {
+          "width": 320,
+          "height": 192,
+          "nonfiniteComponents": 0,
+          "finiteComponentMinRGBA": [
+            0.08172607421875,
+            0.011749267578125,
+            0.01250457763671875,
+            1.0
+          ],
+          "finiteComponentMaxRGBA": [
+            8.984375,
+            5.1328125,
+            10.140625,
+            1.0
+          ],
+          "rgbComponentsBelowZero": 0,
+          "rgbComponentsAboveOne": 100347,
+          "opaquePixels": 61440,
+          "nonopaquePixels": 0,
+          "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+        }
+      },
+      "submittedFormatDescription": {
+        "cleanApertureTopLeft": [
+          0,
+          0,
+          320,
+          192
+        ],
+        "dimensions": [
+          320,
+          192
+        ],
+        "extensions": {
+          "CVBytesPerRow": 2560,
+          "CVImageBufferColorPrimaries": "ITU_R_2020",
+          "CVImageBufferTransferFunction": "Linear",
+          "Version": 2
+        },
+        "mediaSubType": 1380411457,
+        "presentationDimensions": [
+          320,
+          192
+        ]
+      },
+      "layer": {
+        "affineTransform": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "anchorPoint": [
+          0.5,
+          0.5
+        ],
+        "bounds": [
+          0,
+          0,
+          1060,
+          524
+        ],
+        "contentsCenter": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "contentsGravity": "resize",
+        "contentsRect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "contentsScale": 1,
+        "frame": [
+          0,
+          0,
+          1060,
+          524
+        ],
+        "hidden": false,
+        "host": {
+          "backingScale": 2,
+          "bounds": [
+            0,
+            0,
+            1060,
+            524
+          ],
+          "flipped": false,
+          "frame": [
+            0,
+            196,
+            1060,
+            524
+          ],
+          "frameInWindow": [
+            0,
+            196,
+            1060,
+            524
+          ],
+          "layerContentsScale": 2
+        },
+        "masksToBounds": false,
+        "opacity": 1,
+        "position": [
+          530,
+          262
+        ],
+        "presentation": {
+          "bounds": [
+            0,
+            0,
+            1060,
+            524
+          ],
+          "contentsRect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "contentsScale": 1,
+          "frame": [
+            0,
+            0,
+            1060,
+            524
+          ]
+        },
+        "rendererStatus": 1,
+        "superlayer": {
+          "bounds": [
+            0,
+            0,
+            1060,
+            524
+          ],
+          "class": "NSViewBackingLayer",
+          "contentsScale": 2,
+          "frame": [
+            0,
+            196,
+            1060,
+            524
+          ]
+        },
+        "superlayerIsHostLayer": true,
+        "transform": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "videoGravity": "AVLayerVideoGravityResizeAspect"
+      },
+      "leaseCurrentAfter": true,
+      "stateIdentity": {
+        "sourcePTS": {
+          "timescale": 1000000,
+          "value": 20000000
+        },
+        "generation": 3,
+        "revision": 14,
+        "contentKind": 2,
+        "clockRate": 0
+      },
+      "captures": [
+        {
+          "name": "sck-native-hdr",
+          "reportSHA256": "21af80a5d6896d1a93142e3b5a7ec3f886820af48af5bf33fc4233c2adee343c",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 2120,
+            "height": 1504,
+            "bytesPerRow": 17024,
+            "bytes": 25604096,
+            "sha256": "793e654841e7182dfd049bbdbe88ca74673dbed3fd152aea2188ad2d7c094a4f"
+          },
+          "window": {
+            "framePoints": {
+              "height": 752,
+              "width": 1060,
+              "x": 0,
+              "y": 417
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "unbundled",
+            "ownerPID": 22017,
+            "windowID": 35822,
+            "windowLayer": 0
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019839628627041
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 2120,
+            "height": 1504,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 3187312,
+            "nonopaquePixels": 1168,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        },
+        {
+          "name": "sck-pip-hdr",
+          "reportSHA256": "14c848c7246f7762d56ecc80e9e78675a4cc47529f76652803888857eee2072f",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 888,
+            "height": 490,
+            "bytesPerRow": 7168,
+            "bytes": 3512320,
+            "sha256": "537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299"
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 21506,
+            "windowID": 35839,
+            "windowLayer": 19
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019840195181208
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 888,
+            "height": 490,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 62496,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        },
+        {
+          "name": "sck-pip-hdr-display",
+          "reportSHA256": "05c573fd9783ac0b7624b0bf7983c22a6afcf4e006aec9f7d20638177b7614fb",
+          "pixelStorage": {
+            "file": "pixels.rgba16f",
+            "width": 880,
+            "height": 490,
+            "bytesPerRow": 7040,
+            "bytes": 3449600,
+            "sha256": "afcdeb378b0734b83c2a59e5b58cb235ae1cc3bb80570d414b09aaf6a48c5c08"
+          },
+          "window": {
+            "framePoints": {
+              "height": 245,
+              "width": 444,
+              "x": 1360,
+              "y": 56
+            },
+            "isActive": true,
+            "isOnScreen": true,
+            "ownerBundle": "com.apple.PIPAgent",
+            "ownerPID": 21506,
+            "windowID": 35839,
+            "windowLayer": 19
+          },
+          "actualICCProfileSHA256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+          "surfaceContentHeadroom": 1,
+          "referenceWhiteNits": null,
+          "samplePTS": {
+            "epoch": 0,
+            "flags": 1,
+            "timescale": 1000000000,
+            "value": 1019840458178708
+          },
+          "toolSHA256": "a3ae3a13c93448de92cc2459c209aac3008e60d9454c7bd77176b1c1e0fe759a",
+          "pixelStatistics": {
+            "width": 880,
+            "height": 490,
+            "nonfiniteComponents": 0,
+            "finiteComponentMinRGBA": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "finiteComponentMaxRGBA": [
+              1.0,
+              1.0,
+              0.71630859375,
+              1.0
+            ],
+            "rgbComponentsBelowZero": 0,
+            "rgbComponentsAboveOne": 0,
+            "opaquePixels": 372624,
+            "nonopaquePixels": 58576,
+            "scope": "Encoded captured components, not linear light or nits; nonfinite values retained in counts"
+          },
+          "pausedIdentityVerifiedBeforeAfter": true
+        }
+      ],
+      "exportedEqualsDisplayedBytes": true,
+      "displayVsIndependentOpaqueComparison": {
+        "comparedPixels": 372624,
+        "excludedPixels": 58576,
+        "roiFirst": "0,0,880,490",
+        "roiSecond": "0,0,880,490",
+        "meanAbsoluteEncodedRGBDifference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "meanAbsoluteRelativeXYZD50Difference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximumAbsoluteRelativeXYZD50Difference": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scope": "Caller-aligned ROI comparison in actual ICC PCS D50, relative units; no inferred frame/geometry equivalence, HDR extrapolation or physical qualification"
+      },
+      "cpuVerification": {
+        "path": "artifacts/pip-buffer-preserve-layout-1/buffer-snapshot/verification.json",
+        "sha256": "ddc8df39e2b79f0e74efd5d76934239c936a71c5b5d90dc1cb063a0a17050f60",
+        "passed": true,
+        "checkCount": 5
+      }
+    }
+  ],
+  "conclusions": [
+    "All three sessions exited 0 with player/core/shared binaries unchanged within each case; app-only diagnostic builds differ across cases.",
+    "All exported and public displayed buffers are identical full 320x192 RGhA with stride 2560, full clean aperture/presentation dimensions and extended linear BT2020 tags.",
+    "Exported RGB maxima [8.984375, 5.1328125, 10.140625] exceed 1; same-frame captured HDR compositor output does not exceed 1. This does not establish a physical brightness or transfer-loss cause.",
+    "Every PiP independent HDR capture remains byte-identical with SHA256 537adbb7b45a96444af85572511c56eab582e42bcbae2b6e4a0c66d9da8cc299; both diagnostic controls have no effect.",
+    "Native contains the full dark fixture while PiP remains cropped to an enlarged red/green region; source-buffer contents and aperture are ruled out as its origin.",
+    "The approximate feature layout matches clipping of native-layer-sized composition. Both SCK filters still share OS media capture; physical PiP composition is not independently calibrated.",
+    "No private view-hierarchy workaround or production color change is implemented. Native brightness and supported PiP architecture remain separate open gates."
+  ],
+  "provenance": {
+    "builds": "Uncommitted opt-in app diagnostics; exact binary hashes retained in each case. Core/shared are unchanged; the capture helper is unchanged across all cases.",
+    "repositoryHEADAtAggregation": "1a03a092db1a00ea3799286a88d1e873266fe27e",
+    "finalAssemblySourceHashes": {
+      "apps/macos/Sources/PictureInPictureController.swift": "11f126388dda7f1c1eb13e9931175fc762ca1487e0ae91b3da8fc0bf2187d749",
+      "apps/macos/Sources/PiPBufferSnapshot.swift": "0b57aa739b8d1a7e53e5be137e9dcff95345d63e32ff0e369ac4d0a16850e5a1",
+      "scripts/verify-pip-buffer-snapshot.py": "595aa235489e5578342dd7cbcaa30f215c3a9b559877fc7972f13ecfd691a260"
+    },
+    "finalAssemblySourceScope": "Final post-capture diagnostic source. The controller adds an early refusal before writing an existing buffer-snapshot directory and renames sameCVPixelBufferObject to cvPixelBuffersCFEqual; the original CFEqual result does not establish pointer identity. These refinements were compiled after all captures and were not rerun. The first two app builds also precede the diagnostic parent metadata and preserve-layout control added for the third build. Verifier assembled afterward; exact measured runtime binary identities remain recorded per case."
+  }
+}
