@@ -2,15 +2,17 @@
 
 Development workspace for a native macOS HDR player with experimental MLX/Metal neural enhancement. Development and benchmarks currently run on an M3 with 16 GB. M5 Max with 64 GB is the next target; its performance remains unmeasured.
 
-**Status: implementation in progress.** Native NV12/P010 HDR import, retained-original neural reconstruction, an asynchronous C-compatible frame engine, native playback adapters and persistent float HDR segments are implemented. The AppKit/WKWebView player uses provisional mpv with native video, audio, subtitles and chapters. Playback policy and cached playback are being integrated. The [original plan](mac-hdr-player-plan.md) and [implementation status](docs/implementation-status.md) define the remaining acceptance work.
+**Status: implementation in progress.** Native NV12/P010 HDR import, retained-original neural reconstruction, an asynchronous C-compatible frame engine and both native playback adapters are implemented. The AppKit/WKWebView player uses provisional mpv with native video, audio, subtitles and chapters. Shared-clock Adaptive playback and persistent Prepared playback are integrated; the measured M3 Prepared case sustains source cadence.
+
+An [opt-in PiP consumer](docs/picture-in-picture.md) passes native lifecycle, cached-playback and quality-change checks. Physical HDR, sustained presented A/V, actual system PiP controls and final M5 performance retain their acceptance gates. The [original plan](mac-hdr-player-plan.md) and [implementation status](docs/implementation-status.md) track the remaining work.
 
 ## Start here
 
 On the prepared Mac:
 
 ```sh
-open "artifacts/HDR Player.app"
 bash scripts/build-harness.sh
+open "artifacts/HDR Player.app"
 bash scripts/test-frame-api.sh
 bash scripts/doctor.sh
 uv run --frozen scripts/smoke-models.py
@@ -40,6 +42,7 @@ Bootstrap installs missing build dependencies without upgrading existing formula
 | `tools/HDRProbe` | JSON GPU and decoded-frame reports |
 | `tools/FrameBenchmark` | Native decoder/shared-engine completed-work benchmark |
 | `tools/CFrameConsumer` | Plain C HDR round trip and resource-lifetime check |
+| `tools/HDRPiPProbe` | Public AVKit float transport and paused-renderer diagnostics |
 | `vendor/MLX-DLSS` | HDR reader/import/reconstruction fork, branch `hdr-player` |
 | `vendor/mpv`, `vendor/libplacebo`, `vendor/Erika` | Pinned Git submodules for adapter work |
 | `references` | Pinned Windows reference sources, fetched locally |
