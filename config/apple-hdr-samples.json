@@ -1,0 +1,461 @@
+{
+  "schemaVersion": 1,
+  "publisher": "Apple",
+  "catalogSource": "https://developer.apple.com/streaming/examples/advanced-stream-dv-atmos.html",
+  "master": {
+    "filename": "main.m3u8",
+    "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8",
+    "bytes": 41377,
+    "sha256": "3288c3b8cf19658d24d5b85910c8901c17a4d1502171184d7458d4a1243c0292"
+  },
+  "usage": "Public developer streaming example for local engineering tests. No open-content or redistribution licence is asserted; media stays outside Git.",
+  "maximumCombinedMediaAndPlaylistBytes": 104857600,
+  "assets": {
+    "audio": {
+      "title": "English AAC-LC stereo",
+      "directory": "audio",
+      "playlist": {
+        "filename": "prog_index.m3u8",
+        "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/prog_index.m3u8",
+        "bytes": 1118,
+        "sha256": "703999bc2827570390ee59cab15cff1482be1b2e51909b327911a47c79490f4f"
+      },
+      "members": [
+        {
+          "filename": "fileSequence0.mp4",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence0.mp4",
+          "bytes": 713,
+          "sha256": "982281281ba6e61c9f80a35203ae12511a90816ac65f9cd984b8a908da0e9565",
+          "etag": "\"430567d779a0b98a9a0057481eccfcd8\""
+        },
+        {
+          "filename": "fileSequence1.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence1.m4s",
+          "bytes": 133850,
+          "sha256": "d8cc8b8926a21b2c72d85545ba168181301158775d468e91a9ef8f545c5ef9cb",
+          "etag": "\"6f5cbb3dc313a83b4984498cb16dacc9\""
+        },
+        {
+          "filename": "fileSequence2.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence2.m4s",
+          "bytes": 104274,
+          "sha256": "bd889bee4cf493d4ed9b805d8a55d776dc6e342a39c2594b87b6a95d15e7b1a9",
+          "etag": "\"a55b5a35554cb44aed4b29fb217c6c31\""
+        },
+        {
+          "filename": "fileSequence3.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence3.m4s",
+          "bytes": 124285,
+          "sha256": "0d2a45ef37908557c7477b897a2fb24b744794a41da5c66a6ffd129b55fe737a",
+          "etag": "\"4c27d51c1d17a5c752e2de6ccfed2d74\""
+        },
+        {
+          "filename": "fileSequence4.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence4.m4s",
+          "bytes": 114865,
+          "sha256": "8eb513a37394c6455c0e5520e1da4c82c55cfc60856a3b7aebd4e5864b50555f",
+          "etag": "\"24fbe2c27e918c7cafd3696df96e2936\""
+        },
+        {
+          "filename": "fileSequence5.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence5.m4s",
+          "bytes": 117001,
+          "sha256": "5b60763343c73f9ffb2bf916a5cd2cb5f4191c0095be54531c02d96ac3c76d31",
+          "etag": "\"4a3b9f4245af5881b0412c95bf1f5ca2\""
+        },
+        {
+          "filename": "fileSequence6.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence6.m4s",
+          "bytes": 118977,
+          "sha256": "7c5a6680b5eaea341bad005da9cfc1a50253367886cc6ac981e7876965358fe1",
+          "etag": "\"7c0f7e6aee21e1b3bcb86ad2bd79cffb\""
+        },
+        {
+          "filename": "fileSequence7.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence7.m4s",
+          "bytes": 129249,
+          "sha256": "6b7303f3d8b623489dfae4220f4624982790f60c1afab7249d40ffd7dc559897",
+          "etag": "\"5078a60eeca6e2d6ab172c5761c96107\""
+        },
+        {
+          "filename": "fileSequence8.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence8.m4s",
+          "bytes": 117435,
+          "sha256": "79962bcc3e50f4cb7a5cf2225636bb8aa1fc38b21b440ad1bb503f2814ac9e9b",
+          "etag": "\"c787e08e13ae85bdfcf9a4fa378b61ad\""
+        },
+        {
+          "filename": "fileSequence9.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence9.m4s",
+          "bytes": 124805,
+          "sha256": "d8de9906c6cc1c5d1da1dacd7383c70ea398261235c30078602bfd9606710005",
+          "etag": "\"7052ecd63b539fb74ca53f841a1495eb\""
+        },
+        {
+          "filename": "fileSequence10.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence10.m4s",
+          "bytes": 117487,
+          "sha256": "2df3e48c0bafd861b6d2b76d1456fb9874eb09ce91e8bb461f88e8640a078626",
+          "etag": "\"73ce37615721d089f6151ebc0a59c8e5\""
+        },
+        {
+          "filename": "fileSequence11.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence11.m4s",
+          "bytes": 122519,
+          "sha256": "ffe66a1ae7fde3d12880d761cbd2a1b368fa1b65f3d5175685a5f6c52be6f13b",
+          "etag": "\"69d9657cd6c783ad3025d7500d57a797\""
+        },
+        {
+          "filename": "fileSequence12.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence12.m4s",
+          "bytes": 124299,
+          "sha256": "812f9f292a9eced5477d5778c1335e49637e72ef02266ace26bfd4d479e37e9c",
+          "etag": "\"6d40a44adfad54881dc694f2e6f6c897\""
+        },
+        {
+          "filename": "fileSequence13.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence13.m4s",
+          "bytes": 126086,
+          "sha256": "0ad6542ab91c1e0e1d2661d3ee47fcfcf4e8eb693b063ebc8d1595199e86739b",
+          "etag": "\"7692d47c4d41bd99b2eae85a4466e133\""
+        },
+        {
+          "filename": "fileSequence14.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence14.m4s",
+          "bytes": 117489,
+          "sha256": "1d1a63026ce768fe0c010d22bede3af3314ccef1daecc0c5ba4a88ac002b4ece",
+          "etag": "\"ae4e32805c89c0133af3845e53ffb89e\""
+        },
+        {
+          "filename": "fileSequence15.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence15.m4s",
+          "bytes": 121364,
+          "sha256": "105f18c6da6b90e8751a17f127be8958427ba04a9329d83cb7e5892ba06982d5",
+          "etag": "\"255413511c00d587882034a3157ed2f2\""
+        },
+        {
+          "filename": "fileSequence16.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence16.m4s",
+          "bytes": 114692,
+          "sha256": "8d58412008153af307ad8e3ed05b52e577b21ea68df49d870fec47f31ee2447e",
+          "etag": "\"114513831fa3a8b975a96eae82a18114\""
+        },
+        {
+          "filename": "fileSequence17.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job932393e2-1e4f-4fdb-ab59-0d201f752656-107660254-Transcode_audio_en_stereo160_audio/fileSequence17.m4s",
+          "bytes": 28656,
+          "sha256": "e3d6b840f2b6d269df6c05d83fc73583018b0aefd978a9f1ee31a86d0bc11a67",
+          "etag": "\"78130859546848b9178055bf496a661f\""
+        }
+      ],
+      "concatenatedSHA256": "2248bb705ea922bedade2681dbf5faaebf0c1b97e78b435756dbcf702afbd449"
+    },
+    "hdr10plus": {
+      "title": "HDR10+ 1920x1080 PQ",
+      "directory": "video",
+      "playlist": {
+        "filename": "prog_index.m3u8",
+        "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/prog_index.m3u8",
+        "bytes": 1248,
+        "sha256": "10a32e19e29d9483a12127bd7229f7675cf668874ee92606ed478d216455b297"
+      },
+      "members": [
+        {
+          "filename": "fileSequence0.mp4",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence0.mp4",
+          "bytes": 1318,
+          "sha256": "d687ef95fd8b816241e2adecf53c4965ef63c2437b498876a2360b7e1f5bf8a6",
+          "etag": "\"0af368cec94c3e2685118a97fc9e778e\""
+        },
+        {
+          "filename": "fileSequence1.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence1.m4s",
+          "bytes": 466763,
+          "sha256": "d5eed1cdfb4f9bba5eeeccdf9f5855b9db0ee7e13833a18dab7dce384bca6a2b",
+          "etag": "\"69081b3095079b2ccfd82a99bc3fc3f7\""
+        },
+        {
+          "filename": "fileSequence2.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence2.m4s",
+          "bytes": 1592651,
+          "sha256": "4e2c5ad9ea4981eb0faa490b51d446d830596aca330e93e4980bb5556680c832",
+          "etag": "\"03d4d4d6d08986b46cf53e8af9da7152\""
+        },
+        {
+          "filename": "fileSequence3.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence3.m4s",
+          "bytes": 2378203,
+          "sha256": "f8a4c928f45ea62c6bbf52246b53a843ffbbcf0876f4ba142e37a9cd814ec376",
+          "etag": "\"c3fa44d84a2b059812b6e9af77b792f8\""
+        },
+        {
+          "filename": "fileSequence4.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence4.m4s",
+          "bytes": 2425515,
+          "sha256": "f581579cfc21ec1c6b634d82362d31cc7803b12cb1c7c86a88f3e8126a3a272e",
+          "etag": "\"9c5f89c438280d19ef01b7cf072b3285\""
+        },
+        {
+          "filename": "fileSequence5.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence5.m4s",
+          "bytes": 2532979,
+          "sha256": "bbec764fe15b716709f6bc8497eda8a7084ffcfa46a6bea0c068f684bc73f3e6",
+          "etag": "\"107e8bacedd1cf410ea1cb5ae21bf645\""
+        },
+        {
+          "filename": "fileSequence6.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence6.m4s",
+          "bytes": 1608053,
+          "sha256": "5854853111fb1c238b5742a0046e36f007f64fc4a3ddaa5001cf2f2f5ab91bf5",
+          "etag": "\"0e6e9ad14e89ecd92566a9cc3a9cc6b2\""
+        },
+        {
+          "filename": "fileSequence7.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence7.m4s",
+          "bytes": 1971980,
+          "sha256": "7679a833103bd23403e4ce3e9eb68a997ad72eebe38b7a6496207d53af77b69a",
+          "etag": "\"29698d8950e01948bdfc30147471566e\""
+        },
+        {
+          "filename": "fileSequence8.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence8.m4s",
+          "bytes": 2321380,
+          "sha256": "f5d770a79fddb4d50fc20615be847836357556b092369996df9dd5e199fac97b",
+          "etag": "\"0378f326c3aed9d0fdb92f92ba44056d\""
+        },
+        {
+          "filename": "fileSequence9.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence9.m4s",
+          "bytes": 4067576,
+          "sha256": "99d41a2807ae58835aab2ddcb62de2640f9f7de9c186b86bec60f0d29cafe844",
+          "etag": "\"1f1ddaa49687261ae38e493b7d79be60\""
+        },
+        {
+          "filename": "fileSequence10.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence10.m4s",
+          "bytes": 3632399,
+          "sha256": "8997ffc3899007c5a812ff0ee71b19c9daa31be1e5d4c6656f42bfa368c2ae40",
+          "etag": "\"54a04cae9514ba8ad82f12059a355fcc\""
+        },
+        {
+          "filename": "fileSequence11.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence11.m4s",
+          "bytes": 3418382,
+          "sha256": "c334a398e41a50935208261848914ae0cf7e34242995c480cf3fb13d65131766",
+          "etag": "\"c9a042a59ff121a6dad198cfc1ec12b5\""
+        },
+        {
+          "filename": "fileSequence12.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence12.m4s",
+          "bytes": 2428815,
+          "sha256": "29736194c261abb1482674787268d7411c0c5b09e5d0f284109952f258ed60cb",
+          "etag": "\"5ad8d319b0d32096a654ae970decac5a\""
+        },
+        {
+          "filename": "fileSequence13.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence13.m4s",
+          "bytes": 2342857,
+          "sha256": "fc78741c191c11ad9c39fc81af18d139f4b3a336b78ea81e97c2f7a7735df7f1",
+          "etag": "\"c1c456bc01dd38b5b9e0d0b31ab9a74d\""
+        },
+        {
+          "filename": "fileSequence14.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence14.m4s",
+          "bytes": 1964648,
+          "sha256": "2a01ba05770de1e2752b1061964c25d60ed8293c28218b1d980e1e0c77ce5628",
+          "etag": "\"ae5a7a35330792f33cea775f9c62bd58\""
+        },
+        {
+          "filename": "fileSequence15.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence15.m4s",
+          "bytes": 1601202,
+          "sha256": "b4ad2719a6a562be388175a14132bfa828c5c805425e236aa3deb29028436bdb",
+          "etag": "\"3ecde771e6f6e1ede670fdf731ce6b37\""
+        },
+        {
+          "filename": "fileSequence16.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence16.m4s",
+          "bytes": 1995485,
+          "sha256": "6e79c05ef4d9bd0a28707e38bd7ec8f9760bececb24e88208679a2d672f23553",
+          "etag": "\"757613f8238553f702a440c84f012371\""
+        },
+        {
+          "filename": "fileSequence17.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence17.m4s",
+          "bytes": 1585383,
+          "sha256": "f20358e09c7cffb9ef1881dee9080c4bc3dcd3c4024f4f85aa98fca949988b9c",
+          "etag": "\"c37141eb9e80671e7483e72f69f2efee\""
+        },
+        {
+          "filename": "fileSequence18.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence18.m4s",
+          "bytes": 1387072,
+          "sha256": "1b9e5fbe4d2539f685662a0eef6309b64782a09ad98164b7b5930323254332c5",
+          "etag": "\"a1d8b5eda1c8af7ce211e5f828e0583e\""
+        },
+        {
+          "filename": "fileSequence19.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job8208634a-0add-4223-9782-600c14a70339-139240443-hls_bundle_hdrhls765_hdr10plus/fileSequence19.m4s",
+          "bytes": 105618,
+          "sha256": "69c4231a65f7399f5919f5199937221daf28e7a57b2adced91bbc821e6f4e305",
+          "etag": "\"2e0e4005f1f2df5154e97940bac4adec\""
+        }
+      ],
+      "concatenatedSHA256": "f0a366aac243b673be88c6a593c6ccfd24fa1ffe62f4d26ca4fb438cd38428c6"
+    },
+    "dolby-profile5": {
+      "title": "Dolby Vision Profile5 1920x1080",
+      "directory": "dolby-profile5",
+      "playlist": {
+        "filename": "prog_index.m3u8",
+        "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/prog_index.m3u8",
+        "bytes": 1248,
+        "sha256": "73927d76b5591df0e086c83171b7bae01aa53858c3e2a962ab4b1bcda0b35cc3"
+      },
+      "members": [
+        {
+          "filename": "fileSequence0.mp4",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence0.mp4",
+          "bytes": 1336,
+          "sha256": "ef204de03954a1af2a989bd656dc98c78066d5700933e6d6bbb43739f960bf56",
+          "etag": "\"409c722ca0f91efbcb34d9e06692bf7b\""
+        },
+        {
+          "filename": "fileSequence1.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence1.m4s",
+          "bytes": 498107,
+          "sha256": "259967858a8ba5ce6774c9f325bc3b43bd0476559733af8cc9bbe164764b3679",
+          "etag": "\"c5f394f0440bbffdeb56b73162d7dfe6\""
+        },
+        {
+          "filename": "fileSequence2.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence2.m4s",
+          "bytes": 1663147,
+          "sha256": "cc5269b486b4b84b1fbc1c79e52f0810e331988121d9c03360b39d2c27125f14",
+          "etag": "\"f1b92d4117e9897e122e08bb139d1ad7\""
+        },
+        {
+          "filename": "fileSequence3.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence3.m4s",
+          "bytes": 2537809,
+          "sha256": "73bce6e3617a13128d5ee1392694f636bfe00d72fc4a8bc503b8f976a755168b",
+          "etag": "\"e42b5ee84619a63870aafb00e1b8cb11\""
+        },
+        {
+          "filename": "fileSequence4.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence4.m4s",
+          "bytes": 2465839,
+          "sha256": "780af8c7da2d802ff73acd330f83f2b8dc327b30d7abbe705a0ea69122cea553",
+          "etag": "\"e7807dd9f103167363b27a158c885d25\""
+        },
+        {
+          "filename": "fileSequence5.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence5.m4s",
+          "bytes": 2499029,
+          "sha256": "d3b45ece08188488d9b06666289c425a48db75673be40438fc37dfec69c3bae7",
+          "etag": "\"d6a9f54f33967d9bd37f2b96d083f7ae\""
+        },
+        {
+          "filename": "fileSequence6.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence6.m4s",
+          "bytes": 1642639,
+          "sha256": "9644918cc1c97cc85604028481a28a8b1e61c03a81b66b4d546dd1ac3936b6f8",
+          "etag": "\"45be683fb9b4da119c1b4deee453a7c0\""
+        },
+        {
+          "filename": "fileSequence7.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence7.m4s",
+          "bytes": 2058040,
+          "sha256": "afc336297be4f6fd55d549d64c737f73bf5cfebc89bb4823162d1659a3a78caa",
+          "etag": "\"76be1d988fed502de7a4229386f58088\""
+        },
+        {
+          "filename": "fileSequence8.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence8.m4s",
+          "bytes": 2531583,
+          "sha256": "d04ff023444e072b14673d679b030ffb778923a3d1413526a9fd05497e25c9ff",
+          "etag": "\"71f53af1e22e02344f5ba79e34300f49\""
+        },
+        {
+          "filename": "fileSequence9.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence9.m4s",
+          "bytes": 4192130,
+          "sha256": "fb3be06f5c9379fa9de484bb76d6d8a7c7b19e7599662444bba6c8590e85609c",
+          "etag": "\"a8e054ac30f2435181ed06349c2a5938\""
+        },
+        {
+          "filename": "fileSequence10.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence10.m4s",
+          "bytes": 4011588,
+          "sha256": "72cae66560279f1f9f462093f58d4ddd8d809f8f6dfae9f14e4649aecace9361",
+          "etag": "\"17e5cdfdcf44f7b0a18e07e2c6047004\""
+        },
+        {
+          "filename": "fileSequence11.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence11.m4s",
+          "bytes": 3285667,
+          "sha256": "07a90fc2b8e1158a722b187115bf814f58c3d2c09f574a1ff65238d9e97aec74",
+          "etag": "\"3bfacbf066d2d939047b9a1a6783bdec\""
+        },
+        {
+          "filename": "fileSequence12.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence12.m4s",
+          "bytes": 2337017,
+          "sha256": "16732bbde2bedc24558f98dce11732355a9192d2985558cbc38198f60d7b939a",
+          "etag": "\"b879c55f3969c7215ee502fee5d6c9aa\""
+        },
+        {
+          "filename": "fileSequence13.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence13.m4s",
+          "bytes": 2541167,
+          "sha256": "249bf2e8eb4f08611d9ba119c253b87d074443a5ab699991fb779b8bc8633852",
+          "etag": "\"5b92799c8ba18ef0afeedf6f594b56c4\""
+        },
+        {
+          "filename": "fileSequence14.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence14.m4s",
+          "bytes": 1871970,
+          "sha256": "8ab97a49ffafdbd6e70617f5a2341d65ecf85757936dfcddfe23ee485fc8d167",
+          "etag": "\"71ff16c0463b3067a7e4a0da15f95e2b\""
+        },
+        {
+          "filename": "fileSequence15.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence15.m4s",
+          "bytes": 1611726,
+          "sha256": "61f9136b451556811fd366c1349706542fb719ddde246880933f542a1d841a2e",
+          "etag": "\"63fecbad9e702aa8e89c2caa367d496b\""
+        },
+        {
+          "filename": "fileSequence16.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence16.m4s",
+          "bytes": 1929668,
+          "sha256": "6c811bd30120b3d85d2e6f589ba4398e1ca10f120a42fa9de3910767d707fd1e",
+          "etag": "\"881cc98ebcb9112b1cb2251059fce62a\""
+        },
+        {
+          "filename": "fileSequence17.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence17.m4s",
+          "bytes": 1588097,
+          "sha256": "562118b5a1f343e4dbbdb43b17bb5a1ddf0f42df30ba798f80bd1912ce9e3e78",
+          "etag": "\"af7894738e911d629ace7147b25ef9b7\""
+        },
+        {
+          "filename": "fileSequence18.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence18.m4s",
+          "bytes": 1503958,
+          "sha256": "976c7d3f74f401a4a7a4abca79592b12c205b91075c139328489983f5abb5162",
+          "etag": "\"1f165864893d377253bc7b076001d8bb\""
+        },
+        {
+          "filename": "fileSequence19.m4s",
+          "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/Job2dae5735-d6ca-48ca-91be-0ec0bead535c-107702578-hls_bundle_hdrhls765_dolbyvision/fileSequence19.m4s",
+          "bytes": 119870,
+          "sha256": "da44030e9890cfe152800203ee34bcaee46b8a2fd9f3cdcf5d4353a425d29b2a",
+          "etag": "\"8f2e28571cd72e159870bf8aa6a30c1d\""
+        }
+      ],
+      "concatenatedSHA256": "d6d19c2459ae9a04602ef75f172c2be6f4dd1d6a5da5d399569d1aaa6b46e6ae"
+    }
+  },
+  "remuxPolicy": "Copy exact video and shared audio packets/timestamps, omit separate c608 track, retain original fragments. FFmpeg may rewrite container metadata including hvcC array completeness flags. No decode, colour conversion, retiming or audio re-encode. Use -strict unofficial so FFmpeg retains the dvcC configuration box; validate DOVI configuration equality after remux."
+}

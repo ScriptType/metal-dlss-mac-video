@@ -1,0 +1,443 @@
+{
+  "schemaVersion": 1,
+  "recordedUTC": "2026-09-10T02:20:31.458035+00:00",
+  "scope": "Public source and CPU integrity audit only; no native playback, neural quality, physical HDR colour, HDR10+ mapping or Dolby Vision display qualification.",
+  "publisher": "Apple",
+  "sourcePage": "https://developer.apple.com/streaming/examples/advanced-stream-dv-atmos.html",
+  "examplesPage": "https://developer.apple.com/streaming/examples/",
+  "masterURL": "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8",
+  "usage": "Public Apple developer example for local tests. No open-content or redistribution licence asserted. Media and derived pixels stay outside Git.",
+  "sourceCatalog": {
+    "path": "config/apple-hdr-samples.json",
+    "bytes": 27851,
+    "sha256": "ef2a08ac2a400fb47a04ed4e7b687a6f1e1b6751ca2b71e4fea9c519c3f22812"
+  },
+  "downloadBounds": {
+    "maximumBytes": 104857600,
+    "uniqueOriginalMediaBytes": 82676712,
+    "uniqueOriginalMediaObjects": 58,
+    "uniqueMediaPlusPinnedPlaylistsBytes": 82721703,
+    "sharedAudioDownloadedOnce": true,
+    "smallAdditionalPublisherMetadataRequestsBytesBelow": 1048576,
+    "noEXT_X_KEYInSelectedPlaylists": true
+  },
+  "hdr10plus": {
+    "file": {
+      "path": "artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4",
+      "bytes": 41784502,
+      "sha256": "65365b9c91bede25c294a34e87106e80f8794ba15a690b2cb9f608d18385c5b5"
+    },
+    "videoStream": {
+      "codec_name": "hevc",
+      "profile": "Main 10",
+      "codec_tag_string": "hvc1",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "color_range": "tv",
+      "color_space": "bt2020nc",
+      "color_primaries": "bt2020",
+      "color_transfer": "smpte2084",
+      "chroma_location": "topleft",
+      "r_frame_rate": "24000/1001",
+      "avg_frame_rate": "24000/1001",
+      "time_base": "1/24000",
+      "start_pts": 241001,
+      "duration_ts": 2362360,
+      "side_data_list": null
+    },
+    "decodedFrames": 2360,
+    "sideDataFrameCounts": {
+      "Mastering display metadata": 2360,
+      "Content light level metadata": 2360,
+      "HDR Dynamic Metadata SMPTE2094-40 (HDR10+)": 2360
+    },
+    "firstPTS": {
+      "value": 241001,
+      "timescale": 24000
+    },
+    "lastPTS": {
+      "value": 2602360,
+      "timescale": 24000
+    },
+    "everyFrameDuration": {
+      "value": 1001,
+      "timescale": 24000
+    },
+    "sampleSpan": {
+      "value": 2362360,
+      "timescale": 24000
+    },
+    "allFramesColourTagsAgree": true,
+    "staticMasteringMetadata": {
+      "side_data_type": "Mastering display metadata",
+      "red_x": "35400/50000",
+      "red_y": "14600/50000",
+      "green_x": "8500/50000",
+      "green_y": "39850/50000",
+      "blue_x": "6550/50000",
+      "blue_y": "2300/50000",
+      "white_point_x": "15635/50000",
+      "white_point_y": "16450/50000",
+      "min_luminance": "50/10000",
+      "max_luminance": "10000000/10000"
+    },
+    "contentLightMetadata": {
+      "side_data_type": "Content light level metadata",
+      "max_content": 1375,
+      "max_average": 188
+    },
+    "interpretation": "Actual SMPTE2094-40 HDR10+ exists on every frame. PQ-base input interpretation is separate from applying dynamic display metadata; do not relabel this rendition plain static HDR10."
+  },
+  "dolby-profile5": {
+    "file": {
+      "path": "artifacts/public-hdr-source-audit/apple-advanced-dolby-profile5-aac.mp4",
+      "bytes": 42855591,
+      "sha256": "69bbb93355cb91d69eefe7f24f6525e61670aa3ae25bbfb4a546a19a0358e110"
+    },
+    "videoStream": {
+      "codec_name": "hevc",
+      "profile": "Main 10",
+      "codec_tag_string": "dvh1",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "color_range": "tv",
+      "color_space": null,
+      "color_primaries": null,
+      "color_transfer": null,
+      "chroma_location": "left",
+      "r_frame_rate": "24000/1001",
+      "avg_frame_rate": "24000/1001",
+      "time_base": "1/24000",
+      "start_pts": 240000,
+      "duration_ts": 2362360,
+      "side_data_list": [
+        {
+          "side_data_type": "DOVI configuration record",
+          "dv_version_major": 1,
+          "dv_version_minor": 0,
+          "dv_profile": 5,
+          "dv_level": 3,
+          "rpu_present_flag": 1,
+          "el_present_flag": 0,
+          "bl_present_flag": 1,
+          "dv_bl_signal_compatibility_id": 0,
+          "dv_md_compression": "none"
+        }
+      ]
+    },
+    "decodedFrames": 2360,
+    "sideDataFrameCounts": {
+      "Dolby Vision RPU Data": 2360,
+      "Dolby Vision Metadata": 2360
+    },
+    "firstPTS": {
+      "value": 240000,
+      "timescale": 24000
+    },
+    "lastPTS": {
+      "value": 2601359,
+      "timescale": 24000
+    },
+    "everyFrameDuration": {
+      "value": 1001,
+      "timescale": 24000
+    },
+    "sampleSpan": {
+      "value": 2362360,
+      "timescale": 24000
+    },
+    "interpretation": "Profile5/compatibility0 requires Dolby Vision interpretation. Missing ordinary BT.2020/PQ tags are not permission to reinterpret the IPtPQ base. No P5 contact sheet or display evaluation performed."
+  },
+  "audio": {
+    "codec": "AAC-LC",
+    "sampleRate": 48000,
+    "channels": 2,
+    "packets": 4617,
+    "firstPTS": {
+      "value": 477888,
+      "timescale": 48000
+    },
+    "softwareDecode": {
+      "sampleCountPerChannel": 4727808,
+      "peakDBFS": -7.050627,
+      "rmsDBFS": -26.104502,
+      "nonfiniteSamples": 0
+    }
+  },
+  "remuxVerification": {
+    "hdr10plus": {
+      "video": {
+        "packets": 2360,
+        "timeBase": "1/24000",
+        "preservedFields": [
+          "pts",
+          "dts",
+          "duration",
+          "size",
+          "data_hash"
+        ],
+        "sourceExtradataHash": "SHA256:a571b6bf7d5974013bd97590e14d06d0f0d36d467debbd2061c163d950bde102",
+        "remuxExtradataHash": "SHA256:0cd365de0192831b48481b5bc1c94f9f6974c154b47e9baa601c011784ef5b80",
+        "codecDataIdenticalIgnoringHEVCArrayCompleteness": true
+      },
+      "audio": {
+        "packets": 4617,
+        "timeBase": "1/48000",
+        "preservedFields": [
+          "pts",
+          "dts",
+          "duration",
+          "size",
+          "data_hash"
+        ],
+        "sourceExtradataHash": "SHA256:b65f22439176f7827a0d82a66b34477888f0287450985d8e3dc836d7e32ce79b",
+        "remuxExtradataHash": "SHA256:b65f22439176f7827a0d82a66b34477888f0287450985d8e3dc836d7e32ce79b",
+        "codecDataIdenticalIgnoringHEVCArrayCompleteness": true
+      }
+    },
+    "dolby-profile5": {
+      "video": {
+        "packets": 2360,
+        "timeBase": "1/24000",
+        "preservedFields": [
+          "pts",
+          "dts",
+          "duration",
+          "size",
+          "data_hash"
+        ],
+        "sourceExtradataHash": "SHA256:5189ee93917fdfcb374c5a9f8f00de4f8d58fab515991d892ac0465ededd69f7",
+        "remuxExtradataHash": "SHA256:a44582b89046a2022bd5c86eb594f33a7082b54553e5a5cbfe06404039bcd80d",
+        "codecDataIdenticalIgnoringHEVCArrayCompleteness": true
+      },
+      "audio": {
+        "packets": 4617,
+        "timeBase": "1/48000",
+        "preservedFields": [
+          "pts",
+          "dts",
+          "duration",
+          "size",
+          "data_hash"
+        ],
+        "sourceExtradataHash": "SHA256:b65f22439176f7827a0d82a66b34477888f0287450985d8e3dc836d7e32ce79b",
+        "remuxExtradataHash": "SHA256:b65f22439176f7827a0d82a66b34477888f0287450985d8e3dc836d7e32ce79b",
+        "codecDataIdenticalIgnoringHEVCArrayCompleteness": true
+      }
+    }
+  },
+  "containerLimitations": [
+    "All original CMAF init/fragment bytes retained; each combined MP4 is a stream-copy derivative.",
+    "FFmpeg changes hvcC array-completeness flags, so codec extradata hashes differ despite identical video payload packets and matching parsed configuration.",
+    "Separate original c608 track omitted from combined MP4; additional master subtitle/audio renditions not downloaded.",
+    "Original source starts preserved independently: PQ241001/24000, P5 240000/24000, AAC477888/48000. PQ and P5 starts differ by1001/24000; no same-PTS cross-rendition pairing or physical A/V offset claim."
+  ],
+  "sceneDiscovery": {
+    "contactSheet": {
+      "path": "artifacts/public-hdr-source-audit/scene-contact-sheet.png",
+      "bytes": 1766105,
+      "sha256": "694bbe270120c2f837eada5e749103344bc7aa03bed0ac8bdc36328a1af3856d"
+    },
+    "mappingReport": {
+      "path": "artifacts/public-hdr-source-audit/scene-contact-sheet.json",
+      "bytes": 5071,
+      "sha256": "38252bdef129f62d34ad2f454839ddcbd4118b2b0654f9eaa33908ade63dc56d"
+    },
+    "source": "HDR10+ PQ rendition only",
+    "observed": "12 thumbnails show faces/children, mother and child under foliage, moving train/subjects, water/surf and bright sunset backlighting. Sustained pan, grain and dark-gradient quality remain unqualified.",
+    "mappingLimitations": "CPU swscale explicit BT.2020 limited-YCbCr to full RGB48 PQ at480x270; ST2084 inverse; fixed203-nit SDR review mapping. Encoded-domain resizing and RGB48 conversion/quantization occur before mapping. No HDR10+ dynamic display mapping or physical colour claim. P5 pixels were never used."
+  },
+  "initialRejectedRemux": {
+    "file": {
+      "path": "artifacts/public-hdr-source-audit/rejected-profile5-no-dvcc.mp4",
+      "bytes": 42855559,
+      "sha256": "5ce694d39cd3320551669476ef1e19ba82a39c5b37495af80f24efb40fd40ec7"
+    },
+    "reason": "Default FFmpeg MP4 copy omitted dvcC while retaining RPU packets. Helper rejected missing DOVI configuration. Corrected remux uses -strict unofficial and checks identical DOVI configuration.",
+    "primaryImplementationSource": "https://www.ffmpeg.org/doxygen/8.0/movenc_8c_source.html",
+    "neverPlayed": true
+  },
+  "validation": {
+    "cpuTests": 9,
+    "bothPinnedRenditionsReusedAndRemuxesVerified": true,
+    "fullFrameSoftwareDecodeErrors": {
+      "hdr10plus": "",
+      "profile5": ""
+    },
+    "tools": [
+      {
+        "path": "/opt/homebrew/bin/ffmpeg",
+        "bytes": 426496,
+        "sha256": "9f5ddd4f8b36eb07b0c5d60ab6ea1e618bedd70bc45feab82b4dc23be1596ad1"
+      },
+      {
+        "path": "/opt/homebrew/bin/ffprobe",
+        "bytes": 253488,
+        "sha256": "0ecd5e1affb1466b129b4f65bee261e9ab625c4d4a2e7c3e9089f63d44808605"
+      }
+    ],
+    "rootRevision": "e34fb16e6aa7a1328fe7a86023eafaef2f55cf37",
+    "noBuildsOrGPU": true
+  },
+  "sourceFiles": [
+    {
+      "path": "scripts/fetch-apple-hdr-samples.py",
+      "bytes": 10291,
+      "sha256": "ee66eba3e7015debece1c33e121f63cd77eac567cff8898acf6e759ad20bfe01"
+    },
+    {
+      "path": "scripts/test_apple_hdr_samples.py",
+      "bytes": 5515,
+      "sha256": "eaf1a028be2d55b6a96cb0367dc921231a7b052de0b8f31c29a73c917cfc55b9"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-examples.html",
+      "bytes": 123100,
+      "sha256": "5db8736ba697996ed7cb94922796439394b0982cc3dc22897ce6c559db4b821d"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-advanced.html",
+      "bytes": 102159,
+      "sha256": "ff0e6a76ceb8c9ce4909fe1cb66a52897bcfa251cfd616354da335d34f425425"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-main.m3u8",
+      "bytes": 41377,
+      "sha256": "3288c3b8cf19658d24d5b85910c8901c17a4d1502171184d7458d4a1243c0292"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-video.m3u8",
+      "bytes": 1248,
+      "sha256": "10a32e19e29d9483a12127bd7229f7675cf668874ee92606ed478d216455b297"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/apple-audio.m3u8",
+      "bytes": 1118,
+      "sha256": "703999bc2827570390ee59cab15cff1482be1b2e51909b327911a47c79490f4f"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/dolby-profile5-prog_index.m3u8",
+      "bytes": 1248,
+      "sha256": "73927d76b5591df0e086c83171b7bae01aa53858c3e2a962ab4b1bcda0b35cc3"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/dolby-profile5-fileSequence0.mp4",
+      "bytes": 1336,
+      "sha256": "ef204de03954a1af2a989bd656dc98c78066d5700933e6d6bbb43739f960bf56"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/dolby-profile5-init-probe.json",
+      "bytes": 4321,
+      "sha256": "691ca373b9cc76847b97860e7693535cc2be2adc970ceeb66644cb0300d49b2a"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/downloaded-media.json",
+      "bytes": 13521,
+      "sha256": "dc4f25f1f722156a8838618f61e847cace0e845e1bfdd200e80da5b59b998306"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/downloaded-profile5-media.json",
+      "bytes": 7415,
+      "sha256": "5e38bc86900520c3594d9e386b4ec722468627ea7610f28aca1feb99b1962aae"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/video-packets-probe.json",
+      "bytes": 1136858,
+      "sha256": "3ea276ed320bd34a5c55f700c747597ed8985710adc53b23c223f0eda2ed6ae5"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/audio-packets-probe.json",
+      "bytes": 2178825,
+      "sha256": "63a1a2d7fb567c70bbf0720308c6aa7a2893e19af22a29d2ea8fe75c17969339"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/remux-packets-probe.json",
+      "bytes": 3304100,
+      "sha256": "f324152318e2009ed9e46d313b35658cb3db1176afbfaa17fc03773205a5c1a8"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/video-all-frames-probe.json",
+      "bytes": 8428324,
+      "sha256": "38990b01fc3ccb34c5c5edd98e109cc178f619e366d8efb3148d6b0b54abb74b"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/dolby-profile5-source-packets-probe.json",
+      "bytes": 1137417,
+      "sha256": "fa8005241c00a1ff0e62ddea94cd922596210e7fc4fff4728146b73fd339bbd6"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/dolby-profile5-remux-packets-probe.json",
+      "bytes": 3304759,
+      "sha256": "f9e271f576988e3c5b28b401352c8c045583540ceaed45b8691e203ba1740cde"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/dolby-profile5-first-frame.json",
+      "bytes": 8772,
+      "sha256": "44179d447131c90cafa0ade1e82dc836a3478e668d458dd94d303c7556e858d5"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/dolby-profile5-all-frames.json",
+      "bytes": 14572265,
+      "sha256": "a68a46e314a8d907a1489b5821679f0468102bb06ca7c1a4f706c7836158c43e"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/rejected-profile5-no-dvcc-packets-probe.json",
+      "bytes": 3304220,
+      "sha256": "c5458975f721b112cf5ec7e8695415a50787807a69caa49fb536cb2c986e3fad"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/all.source.json",
+      "bytes": 5101,
+      "sha256": "f76170d92e2c7bcfc3b0cbcdf9acba2ea3bbe1195b7380923843eb4ff62a9b3e"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/helper-cpu-tests.log",
+      "bytes": 1455,
+      "sha256": "3996983564c99332d0a5657aa278155c678c43b2e27810cc138de975b94e03c2"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/pinned-helper-final.stdout",
+      "bytes": 273,
+      "sha256": "6c24ecaf45aed320dda9bc2595f29e74da730afaa8f995736593d6b03e2650e6"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/pinned-helper-final.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/ffprobe-version.txt",
+      "bytes": 799,
+      "sha256": "abd50a4468578ece7323bce6d220a2c909c5a38ce7328929947dda86a8bfab41"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/ffmpeg-version.txt",
+      "bytes": 824,
+      "sha256": "4db45f7e79a457642a487a65a67bfe6be66b0cee1bd461fa5b432b373cdfbc0e"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/audio-decode.stderr",
+      "bytes": 5285,
+      "sha256": "41167ef2a5228ba0ecf7fb9cdaefdffc30dd448009dacfade38799127ef3b576"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/make-contact-sheet.py",
+      "bytes": 2202,
+      "sha256": "6f95dfd484740226393ca64b759d42e19c80d9f15d0b9a5953eff3875e0598a9"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/source-video-codec-configuration.json",
+      "bytes": 3074,
+      "sha256": "9ffd78ac9e946ad2c8769b4c497390d1c1661ac1f5434dc59127eddf37781535"
+    },
+    {
+      "path": "artifacts/public-hdr-source-audit/remux-video-codec-configuration.json",
+      "bytes": 3042,
+      "sha256": "41d37eb957ed3e149a841b9893373ce4a202a4de1b38c3dbab7b8caa219a34a2"
+    }
+  ]
+}

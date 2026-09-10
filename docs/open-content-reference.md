@@ -41,3 +41,19 @@ The source includes negative and above-one encoded components. `--extend-pq-doma
 The [input evidence](evidence/m3-cosmos-reference-input.json) records 48 finite frames, 24,698,880 output bytes, and values from −0.04922 to 13,333.18 nits under that selected interpretation. Box averaging avoids the large negative ringing observed in the retained Lanczos experiment. These are small diagnostic inputs for temporal comparisons, not full-resolution quality, native decode or display-accuracy results.
 
 An independent format check found OpenEXR and FFmpeg's direct `gbrpf16le` output identical for frame 10000. Forcing that FFmpeg invocation to `gbrpf32le` changed all components and clipped its 1,066 above-one components to at most one. The reference converter uses OpenEXR directly; the evidence retains both results and the tested FFmpeg identity.
+
+## Apple native-playback candidates
+
+Apple's [public streaming example](https://developer.apple.com/streaming/examples/advanced-stream-dv-atmos.html) provides natural-scene HDR10+ and Dolby Vision Profile 5 renditions with matching English AAC stereo. The separate [Apple source catalog](../config/apple-hdr-samples.json) pins both 1920×1080 video renditions, shared audio and playlists: 82,721,703 bytes in total. These are developer test media; the Netflix CC BY licence above does not apply. Downloads and derived pixels remain outside Git.
+
+```sh
+# Optional, CPU-only acquisition and verified stream-copy assembly.
+python3 scripts/fetch-apple-hdr-samples.py all
+# Or select only hdr10plus or dolby-profile5 instead of all.
+```
+
+The [source audit](evidence/apple-natural-hdr-source.json) decoded all 2,360 frames per rendition. Every HDR10+ frame reports 10-bit limited-range BT.2020, PQ, BT.2020 nonconstant-luminance YCbCr, top-left chroma, static mastering/CLL metadata and actual SMPTE2094-40 dynamic metadata. The Profile 5 stream declares RPU present, no enhancement layer and compatibility ID 0; every frame carries RPU and parsed Dolby Vision metadata. Its base must not be interpreted as ordinary PQ YCbCr.
+
+Each assembled MP4 preserves all video and audio packet hashes, PTS, DTS and durations. Original video starts differ: `241001/24000` for HDR10+ and `240000/24000` for Profile 5; shared audio starts at `477888/48000`. The helper preserves these offsets and the DOVI configuration, using FFmpeg's required `-strict unofficial` for the latter. A default remux that dropped `dvcC` was rejected and retained as diagnostic evidence. Container metadata can change, and the separate original `c608` track is omitted from the assembled audio/video files.
+
+A fixed SDR contact sheet from the PQ rendition establishes faces, moving subjects, water, foliage and backlit scenes. It is scene-discovery evidence; its mapping does not apply HDR10+ dynamic display metadata. No Profile 5 pixels were passed through that ordinary PQ mapping. Native playback, physical colour, grain, dark gradients and neural temporal quality remain unqualified by this CPU audit.
