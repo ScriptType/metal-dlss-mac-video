@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+  "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+  "revisions": {
+    "root": {
+      "revision": "7aef81655f9437c08e922aaccba263258ed25d6c",
+      "status": [
+        " M .github/workflows/ci.yml",
+        " M apps/controls/src/controls.js",
+        " M apps/controls/src/index.html",
+        "MM apps/macos/Sources/MPVPlaybackController.swift",
+        "MM apps/macos/Sources/PlayerSmokeCheck.swift",
+        " M apps/macos/Sources/main.swift",
+        " M docs/adapter-comparison.md",
+        " M docs/erika-adapter.md",
+        "A  docs/evidence/m3-subtitle-brightness.json",
+        "M  docs/native-player.md",
+        " M docs/picture-in-picture.md",
+        " M packages/CMpv/shim.h",
+        " M scripts/check.sh",
+        " M scripts/compare-adapters.py",
+        " M scripts/run-erika-adapter.sh",
+        " M scripts/test-mpv-policy.py",
+        "AM scripts/test-mpv-subtitle-brightness.py",
+        " M scripts/test-player-lifecycle-playback.py",
+        " M scripts/test-player-lifecycle.sh",
+        " M vendor/Erika",
+        "?? apps/macos/Sources/MPVFrameExport.swift",
+        "?? apps/macos/Sources/PiPCoreClock.swift",
+        "?? apps/macos/Sources/PictureInPictureController.swift",
+        "?? docs/evidence/m3-erika-presentation-diagnostics.json",
+        "?? docs/evidence/m3-pip-consumer.json",
+        "?? scripts/adapter_visibility.py",
+        "?? scripts/test-erika-presentation.py",
+        "?? scripts/test-player-pip-clock.swift",
+        "?? scripts/test_adapter_visibility.py"
+      ],
+      "trackedDiffSHA256": "eaefc876e977397dcf2e486bc4ed418f8ea7ac824eb83f9c0161a08662b4f2c2",
+      "untrackedSHA256": {
+        "apps/macos/Sources/MPVFrameExport.swift": "7a932af0d1d12e8ad3666c8cf5e4a01a4f439230e21c8a241c7f56eda31e0027",
+        "apps/macos/Sources/PiPCoreClock.swift": "4cc316d2491c43e16b77996ec87857e0a027e5a4bb26e74d2ca0e54753fbc22d",
+        "apps/macos/Sources/PictureInPictureController.swift": "021d2909409ff529a29fe930bfe9820dcb18e360de53a9f87463ba2ea63408d7",
+        "docs/evidence/m3-erika-presentation-diagnostics.json": "166a986a3c242a1ccece840dd15d8f115b72762c6bf8e6d302dde2166665d9e7",
+        "docs/evidence/m3-pip-consumer.json": "ee1adaa23b5550db275e24e39468125ea5b8ea2fc213789fec42f3547ffb8b4b",
+        "scripts/adapter_visibility.py": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8",
+        "scripts/test-erika-presentation.py": "a7f07b1efdfe5880c6cb5962e191d06ead9e0396bce0b3ba731041a9d560d2a2",
+        "scripts/test-player-pip-clock.swift": "664e2e166067ba510f9e49afc1531978754f2f41f51988c884571f5ee17e1ccc",
+        "scripts/test_adapter_visibility.py": "5b971f913e02ca937744e1c519028f08465bd2635949085ecc7bcf598ebd910f"
+      }
+    },
+    "mpv": {
+      "revision": "c51dc1ac894992e306564a91f54f8caaec2a48fe",
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {}
+    },
+    "Erika": {
+      "revision": "f58e7397fef3f12f34c9fee50b9e37ebbf4798d6",
+      "status": [
+        " M crates/erika/src/renderer/metal/apple.rs",
+        " M crates/erika/src/shared_hdr.rs",
+        " M examples/macos_native_demo/native/ErikaMetalDemo.m",
+        "?? crates/erika/src/shared_hdr_diagnostics.rs"
+      ],
+      "trackedDiffSHA256": "1d8d6c7694ad6747f4dfd9a4d1122e67ee873b1883de9bbe8f00d6482c5bc154",
+      "untrackedSHA256": {
+        "crates/erika/src/shared_hdr_diagnostics.rs": "4284ab76ae1d41e5cabd3cdc091d73537eeca0886ba2ad8856781bbdc48ca4f6"
+      }
+    },
+    "MLX-DLSS": {
+      "revision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "untrackedSHA256": {}
+    }
+  },
+  "binarySHA256": {
+    "artifacts/mpv-build/mpv": "a5cfee64038230e3999b1a4c0c21cb35d7bc4be3a49e74b5f5720d349db5fef8",
+    "artifacts/mpv-build/libmpv.2.dylib": "ff002bc12bc95df9dce98ccd002798bc1bcfd96f9ee24e06b54e0bccc3d34a27",
+    "artifacts/erika-target/debug/macos_native_demo": "929c0eed6f233abbd2b398d599da650b384a423830edac2ef09480be3f841154",
+    ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+    ".build/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "artifacts/erika-target/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+  },
+  "processingWidth": 160,
+  "processingHeight": 96,
+  "drawableWidth": 960,
+  "drawableHeight": 496,
+  "scope": "M3 development comparison; same source/model/shape/drawable, actual native visibility gated and app-muted audio; no final M5 selection",
+  "limitations": [
+    "mpv Adaptive buffers both clocks; Erika currently drops unsustainable admissions",
+    "Navigation harnesses differ: mpv rapid original-first seek/comparison, Erika one scheduled seek",
+    "mpv A/V is cached audio-minus-video at queue time; Erika is video-minus-audio estimated at drawable presentation",
+    "Physical display luminance, temporal quality, copies and energy remain separate acceptance checks",
+    "Native visibility eligibility requires actual visible/unoccluded/unminimized state over all warmed completed-work intervals and mpv playback-clock interval, with no observation gaps over 1.5 s; it does not qualify synchronization, physical presentation or select a core"
+  ],
+  "capturePassed": true,
+  "visibilityEligible": false,
+  "presentationComparisonQualified": false,
+  "rawComparisonSHA256": "5154ddf73b788e11d4469231ab425ecfbfc42440053a142f7ac61dbf5f7891f6",
+  "captureDirectory": "artifacts/m3-adapter-comparison-visible-1",
+  "assessment": "All four data captures completed with unchanged binary hashes. Both mpv cases failed actual native visibility; both Erika cases passed. This remains ineligible for matched presentation comparison or core selection.",
+  "runs": [
+    {
+      "adapter": "mpv",
+      "index": 1,
+      "startedUnixSeconds": 1789002839.574249,
+      "report": "mpv-1.json",
+      "completed": 292,
+      "warmed": 288,
+      "completedFPS": 9.740995113988372,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t50%; discharging; 3:18 remaining present: true",
+      "warmedAVOffsetSeconds": null,
+      "completedWorkSeconds": {
+        "p99": 0.1546161261794623,
+        "count": 288,
+        "maximum": 0.19607762503437698,
+        "p50": 0.10035393753787503,
+        "minimum": 0.0837213332997635,
+        "p95": 0.12436971044517117
+      },
+      "peakSampledResidentBytes": 586170368,
+      "maximumQueueSlots": 2,
+      "peakRetainedBytes": 5777024,
+      "visibility": {
+        "completedWork": {
+          "eligible": false,
+          "startHostSeconds": 1017031.5627268335,
+          "endHostSeconds": 1017061.4149125002,
+          "durationSeconds": 29.852185666677542,
+          "nativeObservationCount": 120,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.25100933329667896,
+          "observedVisibleSeconds": 0.0,
+          "observedInactiveSeconds": 0.0,
+          "reasons": [
+            "native window was hidden, occluded, minimized or its state was unavailable"
+          ],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement",
+          "ineligibleObservationCount": 120
+        },
+        "playbackClock": {
+          "eligible": false,
+          "startHostSeconds": 1017031.429581375,
+          "endHostSeconds": 1017061.432281166,
+          "durationSeconds": 30.002699790988117,
+          "nativeObservationCount": 121,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.25100933329667896,
+          "observedVisibleSeconds": 0.0,
+          "observedInactiveSeconds": 0.0,
+          "reasons": [
+            "native window was hidden, occluded, minimized or its state was unavailable"
+          ],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement",
+          "ineligibleObservationCount": 121
+        },
+        "eligible": false
+      },
+      "policy": {
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.015851,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+        "steadyMedianAVOffsetSeconds": 0.0,
+        "steadySampleCount": 941,
+        "synchronisation20msTargetMet": true,
+        "adaptiveBufferedSeconds": 20.832517,
+        "adaptiveBufferEpisodes": 289,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "exitCode": 0
+      },
+      "reportSHA256": {
+        "mpv-1.json": "29150682724a93e4660d43ad2cf6261056f26876dbc7cffd18e1a664c33c3ba1",
+        "mpv-1.native.log": "a87df60a46e154c365df299049503208e042e69b361c7e93681d8e5d9b69def8",
+        "mpv-1.visibility.json": "247cc9cbc2bb77d76fb05123e292e5e9235006ec297df16a5217a3a51db9f79b",
+        "mpv-1.engine.json": "c08b315cc54b9e43c921a0b404a51ff4ce71b48d0fe9ebb3387788d7684f6816"
+      }
+    },
+    {
+      "adapter": "erika",
+      "index": 1,
+      "startedUnixSeconds": 1789002872.8458428,
+      "report": "erika-1.json",
+      "completed": 232,
+      "warmed": 226,
+      "completedFPS": 7.25038247279083,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t50%; discharging; 3:08 remaining present: true; app-muted=1; no energy measurement",
+      "warmedAVOffsetSeconds": {
+        "maximum": -0.31030920233518344,
+        "minimum": -0.6949792613714605,
+        "p95": -0.3449202661973447,
+        "p50": -0.3804409337067787,
+        "count": 226,
+        "p99": -0.3179401225209828
+      },
+      "completedWorkSeconds": {
+        "maximum": 0.28581475000828505,
+        "minimum": 0.10769529175013304,
+        "p95": 0.169754927046597,
+        "p50": 0.13121491664787754,
+        "count": 226,
+        "p99": 0.21823987501556985
+      },
+      "peakSampledResidentBytes": 479117312,
+      "maximumQueueSlots": 3,
+      "peakRetainedBytes": 8665536,
+      "visibility": {
+        "completedWork": {
+          "eligible": true,
+          "startHostSeconds": 1017066.1867313336,
+          "endHostSeconds": 1017097.5054734169,
+          "durationSeconds": 31.31874208326917,
+          "nativeObservationCount": 34,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 1.016735791694373,
+          "observedVisibleSeconds": 31.31874208326917,
+          "observedInactiveSeconds": 0.0,
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement",
+          "ineligibleObservationCount": 0
+        },
+        "eligible": true
+      },
+      "presentationDiagnostics": {
+        "gpu_completed": 1929,
+        "gpu_failed": 0,
+        "presented": 1927,
+        "stale_callbacks": 1,
+        "submitted": 1929,
+        "unpresented": 2
+      },
+      "admissionDrops": 737,
+      "staleCompletions": 0,
+      "reportSHA256": {
+        "erika-1.json": "6640b45ac1fa5eeec03253ef5998c08ec2ba334f47236a5d45956a095fd36dcb",
+        "erika-1.native.log": "2de36340ad4bb6295395a330de7309d18b28d6f9668ec8e52121f09ab461991d",
+        "erika-1.visibility.json": "31d6dc857639f642f32a5b7cd205d442b8236a07599ad26111f97a0becdf72a9",
+        "erika-1.json.adapter.json": "1c2bc587425c31a076955258254562debe83e92807ce7f4e81d7eaf8bd6b7c36"
+      }
+    },
+    {
+      "adapter": "mpv",
+      "index": 2,
+      "startedUnixSeconds": 1789002908.875469,
+      "report": "mpv-2.json",
+      "completed": 334,
+      "warmed": 330,
+      "completedFPS": 11.182375941033474,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t49%; discharging; 2:58 remaining present: true",
+      "warmedAVOffsetSeconds": null,
+      "completedWorkSeconds": {
+        "count": 330,
+        "p95": 0.11224940835963938,
+        "p99": 0.1465405017114244,
+        "minimum": 0.07632662507239729,
+        "p50": 0.08706333336886019,
+        "maximum": 0.1601699999300763
+      },
+      "peakSampledResidentBytes": 570687488,
+      "maximumQueueSlots": 2,
+      "peakRetainedBytes": 5777024,
+      "visibility": {
+        "completedWork": {
+          "eligible": false,
+          "startHostSeconds": 1017102.7521078335,
+          "endHostSeconds": 1017132.5010007919,
+          "durationSeconds": 29.74889295839239,
+          "nativeObservationCount": 122,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.25096341664902866,
+          "observedVisibleSeconds": 0.0,
+          "observedInactiveSeconds": 29.125616000033915,
+          "reasons": [
+            "native window was hidden, occluded, minimized or its state was unavailable"
+          ],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement",
+          "ineligibleObservationCount": 122
+        },
+        "playbackClock": {
+          "eligible": false,
+          "startHostSeconds": 1017102.507044666,
+          "endHostSeconds": 1017132.525080916,
+          "durationSeconds": 30.018036250025034,
+          "nativeObservationCount": 123,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 0.25096341664902866,
+          "observedVisibleSeconds": 0.0,
+          "observedInactiveSeconds": 29.149696124135517,
+          "reasons": [
+            "native window was hidden, occluded, minimized or its state was unavailable"
+          ],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement",
+          "ineligibleObservationCount": 123
+        },
+        "eligible": false
+      },
+      "policy": {
+        "steadyMaximumAbsoluteAVOffsetSeconds": 6e-06,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.0,
+        "steadyMedianAVOffsetSeconds": 0.0,
+        "steadySampleCount": 939,
+        "synchronisation20msTargetMet": true,
+        "adaptiveBufferedSeconds": 19.526726999999998,
+        "adaptiveBufferEpisodes": 331,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "maximumPendingFrames": 2,
+        "staleGenerationObservations": 0,
+        "exitCode": 0
+      },
+      "reportSHA256": {
+        "mpv-2.json": "03e39f90dec18a3d5e6f15299dd5997ae7c04efe80c3729b2bed274ec526578f",
+        "mpv-2.native.log": "62360098208a7de8ff7d25caf96f9841f736b244ec01e03412b39eb66baeb662",
+        "mpv-2.visibility.json": "93e478e3e0ab0e15b5dc7e5ebadf7d326821a0545f6a5306a021aeba2409d917",
+        "mpv-2.engine.json": "62c1d8c09b0a785a00f6462ee8b32517ad0291d1b55f9239ff2fe03d1c6dd174"
+      }
+    },
+    {
+      "adapter": "erika",
+      "index": 2,
+      "startedUnixSeconds": 1789002943.912322,
+      "report": "erika-2.json",
+      "completed": 235,
+      "warmed": 229,
+      "completedFPS": 7.308815218131132,
+      "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t49%; discharging; 2:58 remaining present: true; app-muted=1; no energy measurement",
+      "warmedAVOffsetSeconds": {
+        "maximum": -0.28858579407864093,
+        "count": 229,
+        "minimum": -0.6710034703168328,
+        "p50": -0.38227921991331293,
+        "p99": -0.3439183629876255,
+        "p95": -0.3497825819858127
+      },
+      "completedWorkSeconds": {
+        "maximum": 0.3013351249974221,
+        "count": 229,
+        "minimum": 0.11703441676218063,
+        "p50": 0.13197658327408135,
+        "p99": 0.18753822001628576,
+        "p95": 0.15037626663688566
+      },
+      "peakSampledResidentBytes": 482885632,
+      "maximumQueueSlots": 3,
+      "peakRetainedBytes": 8665536,
+      "visibility": {
+        "completedWork": {
+          "eligible": true,
+          "startHostSeconds": 1017136.0612826252,
+          "endHostSeconds": 1017167.5578649169,
+          "durationSeconds": 31.496582291671075,
+          "nativeObservationCount": 32,
+          "maximumAllowedObservationGapSeconds": 1.5,
+          "maximumObservationGapSeconds": 1.017423166660592,
+          "observedVisibleSeconds": 31.496582291671075,
+          "observedInactiveSeconds": 0.0,
+          "reasons": [],
+          "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement",
+          "ineligibleObservationCount": 0
+        },
+        "eligible": true
+      },
+      "presentationDiagnostics": {
+        "gpu_completed": 1941,
+        "gpu_failed": 0,
+        "presented": 1938,
+        "stale_callbacks": 0,
+        "submitted": 1941,
+        "unpresented": 3
+      },
+      "admissionDrops": 739,
+      "staleCompletions": 0,
+      "reportSHA256": {
+        "erika-2.json": "4421e13da8863dd5c3fb1620aec54d5dc2f6e0dff0e602e4f9173f8b6de07732",
+        "erika-2.native.log": "0c5f8d24e63146ea61a9e51867114abab6d03dd6eb73327d9379c7ea5f12feef",
+        "erika-2.visibility.json": "f5ea14e04cada53b702ef10bc25b18d6fcaeb909978dd0986820113f7ef855d8",
+        "erika-2.json.adapter.json": "35dde2b43603308e199d40dd47e42f4180fc924837855b8f5df36dba1d6636b9"
+      }
+    }
+  ],
+  "metadataProbe": {
+    "nativeLogSHA256": "0cbf4afaf86163138de7194e14572198fe81c07acdf8efdff5af505ca94b5da8",
+    "windowListSHA256": "a88d831f4a7321434cac923583d73d9da8cb45c492c3a5163bfea2835ca29d98",
+    "finding": "The actual diagnostic presentationWindow matched the mpv-owned480x248 window with in-display bounds and alpha1. It was absent from the active on-screen stacking list. No foreground/order intervention was made. Window ordering or Space activation requires a separate test; wrong window selection is not supported.",
+    "scope": "CGWindowList metadata only; no titles or screenshots"
+  }
+}

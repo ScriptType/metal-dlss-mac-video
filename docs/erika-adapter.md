@@ -47,7 +47,11 @@ The first completed output in each generation can be captured as binary16 RGBA p
 
 ## Measurement and limitations
 
-The script activates the window by default. `ERIKA_ADAPTER_FOREGROUND=0` leaves smoke runs in the background; a fully occluded window may never present its drawables. Apple defines a zero [`presentedTime`](https://developer.apple.com/documentation/metal/mtldrawable/presentedtime) as unpresented or dropped. Those callbacks are counted separately and never used as display or A/V timestamps.
+The script activates the window and enables bounded presentation diagnostics by default. `ERIKA_ADAPTER_FOREGROUND=0` leaves smoke runs in the background; a fully occluded window may never present its drawables. Apple defines a zero [`presentedTime`](https://developer.apple.com/documentation/metal/mtldrawable/presentedtime) as unpresented or skipped. Those notifications are counted separately and never used as display or A/V timestamps. They are received callbacks, not missing handlers.
+
+`ERIKA_ADAPTER_DIAGNOSTICS=1` records actual native window state on transitions and at least once per second while the main loop advances. The `.native.log` includes visibility, occlusion, minimization, activation, window identity, drawable extent and layer configuration. The `.adapter.json` adds lifetime draw/GPU/presentation counters, the last 120 host-second buckets, the first eight positive and zero callbacks, and the most recent 16 callbacks. This instrumentation does not change rendering or clock policy. `ERIKA_ADAPTER_DIAGNOSTICS=0` disables it.
+
+`ERIKA_ADAPTER_REQUIRE_VISIBLE=1` additionally writes a `.visibility.json` and exits with status 2 when actual visibility coverage is insufficient. It checks the entire interval from the first warmed frame's submission through the last warmed completion; a truncated retained-frame inventory is ineligible. Every observed state must be visible, occlusion-visible and unminimized with the same native window identity, with an initial state and no observation gap longer than 1.5 seconds. Activation and focus are recorded separately. Native occlusion-visible state establishes that some part of the window is visible; it does not measure the visible area or physical scanout. All completed work and zero timestamps remain in reports even when the visibility gate fails.
 
 The adapter uses [shared completed-work measurements](frame-engine.md), reports actual drawable presentation times, and records first-presentation latency after a generation reset. A/V offset is video PTS minus an audio callback clock sampled before encoding and advanced to the actual drawable presentation time at normal playback speed. This estimate does not establish a measured long-duration drift result or rate-change accuracy.
 
@@ -85,4 +89,27 @@ bash scripts/run-erika-adapter.sh artifacts/erika-adapter/hdr10-repeat-12s.mp4 \
 
 Reports and captures remain ignored under `artifacts/erika-adapter/`. These short development runs establish the prototype path and expose overload; they do not establish sustainable real-time performance, long-duration A/V drift, or a playback-core winner. In particular, source timing, cold compilation, display dimensions and window visibility differ from CLI-only mpv runs and must be controlled for comparative qualification.
 
-The [alternating M3 capture](adapter-comparison.md) uses matched source/model/processing/drawable dimensions and app-muted audio. Its incomplete drawable callbacks prevent a final presentation comparison; the captured limits remain explicit.
+The [alternating M3 capture](adapter-comparison.md) uses matched source/model/processing/drawable dimensions and app-muted audio. Its mostly skipped drawable presentations prevent a final presentation comparison; the captured limits remain explicit.
+
+## Controlled presentation diagnostics
+
+Two ten-second neural runs used the same 320×192 PQ source, 160×96 processing, 960×496 drawable and recorded source/weights/runtime hashes. A diagnostic-only opaque window covered the playback window for three seconds in the second run while its render timer continued. The [compact evidence](evidence/m3-erika-presentation-diagnostics.json) retains exact binary/source hashes, actual window observations, callback buckets and report checksums; source changes were uncommitted during capture.
+
+| Case | Completed / warmed | Successful GPU commands | Positive / zero presentation callbacks | Warmed A/V samples |
+|---|---:|---:|---:|---:|
+| Visible neural playback | 52 / 49 | 527 | 526 / 1 startup skip | 49 |
+| Three-second occlusion | 62 / 59 | 545 | 365 / 180 | 38 |
+
+All GPU commands succeeded, with no stale callbacks. Full occlusion produced 60 zero timestamps per second, and positive presentations resumed when the cover was removed. Losing foreground activation while remaining occlusion-visible did not interrupt positive presentation callbacks. A separate original-only visible run completed 286 frames with 578 positive callbacks and no zero timestamps.
+
+The visible neural run still had video-minus-audio estimates from −625 to −338 ms, median −433 ms. These measurements expose the existing overload clock policy; they do not qualify synchronized playback. Historical comparison logs lacked window state, so their skipped presentations cannot be attributed conclusively to occlusion. Their positive-plus-zero counts account for every HDR draw, which rules out missing callback delivery in those reports. No renderer, layer-attachment or ownership correction was justified by the controlled evidence.
+
+Reproduce without rebuilding the shared engine:
+
+```sh
+python3 scripts/test-erika-presentation.py --strength 1 \
+  --model models/neural-rendering/NeuralRendering.dlssmodel \
+  --output artifacts/erika-presentation-repeat
+```
+
+Use current diagnostic-enabled Erika binaries and a new output directory. The harness validates full run duration plus observed occlusion and reveal. An earlier `orderOut` experiment exited after three seconds because it removed the final window; its incomplete hidden/reveal case is explicitly excluded from the evidence.

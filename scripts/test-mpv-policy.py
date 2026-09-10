@@ -132,8 +132,9 @@ def main():
                "--input-terminal=no",
                f"--input-ipc-server={ipc}", f"--vf={options}",
                f"--log-file={args.report.with_suffix('.log')}", str(args.source.resolve())]
-        process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                                   cwd=root, env=dict(os.environ))
+        with args.report.with_suffix('.native.log').open('w') as native_log:
+            process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=native_log,
+                                       cwd=root, env=dict(os.environ))
         client = socket.socket(socket.AF_UNIX)
         try:
             deadline = time.monotonic() + 30
@@ -238,6 +239,7 @@ def main():
             report["playbackInitialCounters"] = counters()
             command("set_property", "pause", False)
             started = time.monotonic()
+            report["playbackStartedHostSeconds"] = started
             while time.monotonic() - started < args.seconds:
                 current = state()
                 offset = command("get_property", "avsync", allow_error=True).get("data")
@@ -249,6 +251,7 @@ def main():
                 if command("get_property", "eof-reached", allow_error=True).get("data"):
                     break
                 time.sleep(.025)
+            report["playbackEndedHostSeconds"] = time.monotonic()
             steady = [s["avOffset"] for s in report["samples"]
                       if s["elapsed"] >= 2 and isinstance(s["avOffset"], (int, float))]
             report["steadyMaximumAbsoluteAVOffsetSeconds"] = max(map(abs, steady), default=None)

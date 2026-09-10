@@ -1,0 +1,639 @@
+{
+  "schemaVersion": 1,
+  "scope": "Public NSWindow visibility plus Metal presentedTime/GPU callbacks; no physical scanout measurement",
+  "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+  "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+  "strength": 1.0,
+  "processingDimensions": [
+    160,
+    96
+  ],
+  "drawableDimensions": [
+    960,
+    496
+  ],
+  "erikaRevision": "f58e7397fef3f12f34c9fee50b9e37ebbf4798d6",
+  "erikaDiffSHA256": "06af24d17067b57f74c65421a53c21465bb96ddfacf03e1e32c3b35b3be63a1a",
+  "sourceFilesSHA256": {
+    "vendor/Erika/crates/erika/src/shared_hdr.rs": "e6dc4d25feeb12edbc84637b4f3b8125b801727e1b88e5ad574fbd8facf5c32f",
+    "vendor/Erika/crates/erika/src/shared_hdr_diagnostics.rs": "4284ab76ae1d41e5cabd3cdc091d73537eeca0886ba2ad8856781bbdc48ca4f6",
+    "vendor/Erika/crates/erika/src/renderer/metal/apple.rs": "0c6809eecf28c78fe5708514c0364d035f4b758cff122f39db771741bd2a2c25",
+    "vendor/Erika/examples/macos_native_demo/native/ErikaMetalDemo.m": "4f65cd8a4e685755efd3cbbc044bebc0409697642ae317ce5c3ee9d2fc709056",
+    "scripts/test-erika-presentation.py": "b70f4622ea0baf122220eb8c9639cc90b0ebf58cfda1e3601e70f422be17969b"
+  },
+  "binarySHA256": {
+    "artifacts/erika-target/debug/macos_native_demo": "5bbd204b7cd5af179d1807bf199042ea86d9e80f25add9cfaa315f6432ba7653",
+    ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+    "artifacts/erika-target/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+  },
+  "binaryHashesUnchanged": true,
+  "sourceHashUnchanged": true,
+  "capturePassed": true,
+  "platform": "Apple M3, 16 GiB, macOS 26.5; development Rust/Swift builds; native 960x496 drawable",
+  "provenanceNote": "Captured diagnostics differ from published Erika HEAD. Per-file hashes include new Rust diagnostics. Subsequent native notification coverage and visibility-gate additions are not included in these measured binaries.",
+  "historicalCallbackAccounting": [
+    {
+      "run": 1,
+      "hdrDraws": 1953,
+      "positiveCallbacks": 92,
+      "zeroCallbacks": 1861,
+      "allHDRDrawsAccounted": true,
+      "uniquePresentedOutputs": 6,
+      "warmedAVSamples": 3,
+      "nativeVisibilityRecorded": false,
+      "engineReportSHA256": "774f8121c61d2e1c18ed3add1d59a9150d1cbfbfcf61759cb055fa82d7e5728e",
+      "adapterReportSHA256": "b81fea0016377c82d5c8e2a62f4f89688ef1cb1f95c04d4662f8f94db8c177d7"
+    },
+    {
+      "run": 2,
+      "hdrDraws": 1882,
+      "positiveCallbacks": 85,
+      "zeroCallbacks": 1797,
+      "allHDRDrawsAccounted": true,
+      "uniquePresentedOutputs": 3,
+      "warmedAVSamples": 0,
+      "nativeVisibilityRecorded": false,
+      "engineReportSHA256": "239ce42080d8772ba39e7e967afe009646ce7226266fbdb4f6284f289ad3ead4",
+      "adapterReportSHA256": "546314e1ee8fcdef88126b403e1ed72697c5b3e96c105efa121d2dd24b6496f9"
+    }
+  ],
+  "runs": {
+    "visible": {
+      "completedFrames": 52,
+      "warmedFrames": 49,
+      "completedFPS": 6.72479453753494,
+      "warmedAVOffsetSeconds": {
+        "p99": -0.3614382068150018,
+        "p50": -0.4328769809666593,
+        "maximum": -0.3377638217051988,
+        "minimum": -0.6249670130434146,
+        "count": 49,
+        "p95": -0.3881738832622917
+      },
+      "uniquePresentedOutputs": 52,
+      "admissionDrops": 208,
+      "counts": {
+        "gpu_completed": 527,
+        "gpu_failed": 0,
+        "presented": 526,
+        "stale_callbacks": 0,
+        "submitted": 527,
+        "unpresented": 1
+      },
+      "callbackIntervals": [
+        {
+          "counts": {
+            "gpu_completed": 14,
+            "gpu_failed": 0,
+            "presented": 12,
+            "stale_callbacks": 0,
+            "submitted": 14,
+            "unpresented": 1
+          },
+          "host_second": 1016427
+        },
+        {
+          "counts": {
+            "gpu_completed": 59,
+            "gpu_failed": 0,
+            "presented": 59,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016428
+        },
+        {
+          "counts": {
+            "gpu_completed": 61,
+            "gpu_failed": 0,
+            "presented": 61,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016429
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016430
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016431
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016432
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016433
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016434
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016435
+        },
+        {
+          "counts": {
+            "gpu_completed": 33,
+            "gpu_failed": 0,
+            "presented": 34,
+            "stale_callbacks": 0,
+            "submitted": 33,
+            "unpresented": 0
+          },
+          "host_second": 1016436
+        }
+      ],
+      "visibility": {
+        "eligible": true,
+        "startHostSeconds": 1016428.9900516252,
+        "endHostSeconds": 1016436.4711030002,
+        "durationSeconds": 7.481051375041716,
+        "nativeObservationCount": 9,
+        "maximumAllowedObservationGapSeconds": 1.5,
+        "maximumObservationGapSeconds": 1.016729083377868,
+        "observedVisibleSeconds": 7.481051375041716,
+        "observedInactiveSeconds": 3.6444987499853596,
+        "ineligibleObservations": [],
+        "reasons": [],
+        "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+      },
+      "windowObservations": [
+        {
+          "hostSeconds": 1016426.6119433752,
+          "isVisible": true,
+          "occlusionVisible": 0,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016426.7900761669,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016426.8565320836,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016427.8730448335,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016428.5230555002,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016429.1072409169,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016430.1229622919,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016431.1239139169,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016432.1239681252,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016432.8266042502,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016433.8397506669,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016434.8564272919,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35113
+        },
+        {
+          "hostSeconds": 1016435.8731563753,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35113
+        }
+      ],
+      "reportSHA256": {
+        "visible.json": "65aa865ecaffb5d15f241587a568c535de13da85ccbb9365b9fadcbcfcd9701c",
+        "visible.json.adapter.json": "cab65b1717c5e25de00675734a10758f1e80f0a784f55a41f88b58443039824a",
+        "visible.log": "6ab27afeaae08c80259edb02e530d50bc0d387bc538e941ba426fa0bb68b2a9c"
+      }
+    },
+    "occluded-midrun": {
+      "completedFrames": 62,
+      "warmedFrames": 59,
+      "completedFPS": 7.420250458431924,
+      "warmedAVOffsetSeconds": {
+        "minimum": -0.6001916847562201,
+        "p99": -0.3057957629341939,
+        "count": 38,
+        "p50": -0.3935268230606441,
+        "p95": -0.35027033474950675,
+        "maximum": -0.2817730252387207
+      },
+      "uniquePresentedOutputs": 41,
+      "admissionDrops": 207,
+      "counts": {
+        "gpu_completed": 545,
+        "gpu_failed": 0,
+        "presented": 365,
+        "stale_callbacks": 0,
+        "submitted": 545,
+        "unpresented": 180
+      },
+      "callbackIntervals": [
+        {
+          "counts": {
+            "gpu_completed": 45,
+            "gpu_failed": 0,
+            "presented": 43,
+            "stale_callbacks": 0,
+            "submitted": 45,
+            "unpresented": 0
+          },
+          "host_second": 1016438
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 61,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016439
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 21,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 40
+          },
+          "host_second": 1016440
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 0,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 60
+          },
+          "host_second": 1016441
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 0,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 60
+          },
+          "host_second": 1016442
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 39,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 20
+          },
+          "host_second": 1016443
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016444
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 60,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016445
+        },
+        {
+          "counts": {
+            "gpu_completed": 60,
+            "gpu_failed": 0,
+            "presented": 59,
+            "stale_callbacks": 0,
+            "submitted": 60,
+            "unpresented": 0
+          },
+          "host_second": 1016446
+        },
+        {
+          "counts": {
+            "gpu_completed": 20,
+            "gpu_failed": 0,
+            "presented": 22,
+            "stale_callbacks": 0,
+            "submitted": 20,
+            "unpresented": 0
+          },
+          "host_second": 1016447
+        }
+      ],
+      "visibility": {
+        "eligible": false,
+        "startHostSeconds": 1016439.2106791253,
+        "endHostSeconds": 1016447.2934295002,
+        "durationSeconds": 8.082750374916941,
+        "nativeObservationCount": 9,
+        "maximumAllowedObservationGapSeconds": 1.5,
+        "maximumObservationGapSeconds": 1.0161397499032319,
+        "observedVisibleSeconds": 5.083704124903306,
+        "observedInactiveSeconds": 8.082750374916941,
+        "ineligibleObservations": [
+          {
+            "hostSeconds": 1016440.3611345836,
+            "isVisible": true,
+            "occlusionVisible": 0,
+            "isMiniaturized": false,
+            "appActive": false,
+            "windowNumber": 35130
+          },
+          {
+            "hostSeconds": 1016441.3772743335,
+            "isVisible": true,
+            "occlusionVisible": 0,
+            "isMiniaturized": false,
+            "appActive": false,
+            "windowNumber": 35130
+          },
+          {
+            "hostSeconds": 1016442.3778484169,
+            "isVisible": true,
+            "occlusionVisible": 0,
+            "isMiniaturized": false,
+            "appActive": false,
+            "windowNumber": 35130
+          }
+        ],
+        "reasons": [
+          "native window was hidden, occluded, minimized or its state was unavailable"
+        ],
+        "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+      },
+      "windowObservations": [
+        {
+          "hostSeconds": 1016437.3611229586,
+          "isVisible": true,
+          "occlusionVisible": 0,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016437.4147558752,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016438.4274309169,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": true,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016438.7846321252,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016439.794360917,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016440.3611345836,
+          "isVisible": true,
+          "occlusionVisible": 0,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016441.3772743335,
+          "isVisible": true,
+          "occlusionVisible": 0,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016442.3778484169,
+          "isVisible": true,
+          "occlusionVisible": 0,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016443.3601808336,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016444.3611418336,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016445.3611692919,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016446.3772149169,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        },
+        {
+          "hostSeconds": 1016447.3774702086,
+          "isVisible": true,
+          "occlusionVisible": 1,
+          "isMiniaturized": false,
+          "appActive": false,
+          "windowNumber": 35130
+        }
+      ],
+      "reportSHA256": {
+        "occluded-midrun.json": "b96044aeabc21a1dce3eb33ff23f447798848729d26f1110e1acd71da73e1d34",
+        "occluded-midrun.json.adapter.json": "28c8a3a1778312bc4e968d43eedefdf803190afabb59b7509353351753b533f3",
+        "occluded-midrun.log": "c246441d302a842429f5791a802a429d5547794d1769db645682ee084631210f"
+      }
+    }
+  },
+  "originalOnlyVisible": {
+    "completedFrames": 286,
+    "counts": {
+      "gpu_completed": 579,
+      "gpu_failed": 0,
+      "presented": 578,
+      "stale_callbacks": 0,
+      "submitted": 579,
+      "unpresented": 0
+    },
+    "engineReportSHA256": "d515cda066c1d7191a279112d4c009a099eb6d7dbad4e9c88a17f8f9006a1d22",
+    "adapterReportSHA256": "bd4d2e3c555cc49a124d3c5b8ef62721450eb262e549cb4d762d3332f237b728"
+  },
+  "excludedProbe": {
+    "report": "artifacts/erika-presentation-diagnostics-1/presentation.json",
+    "sha256": "038c3a31bbd8c7bf0439b594db7c2896aaa8923501af1513e5b41e515630d43d",
+    "reason": "Initial orderOut experiment ended the final-window smoke after 3.02 s; no hidden/reveal interval was measured. Its original capturePassed flag was insufficient. Current harness requires full duration and actual occlusion/reveal."
+  },
+  "findings": [
+    "All historical HDR draws have callbacks: zero timestamps are unpresented notifications, not missing handlers. Historical window visibility was unrecorded, so the cause of those particular skips remains unavailable.",
+    "Controlled full-window cover causes 180 zero callbacks across three seconds; all 545 GPU commands complete and positive callbacks return on uncovering.",
+    "Visible neural run has 526 positive callbacks plus one startup zero, 52 unique presented outputs and 49 warmed A/V samples. Losing foreground activation while still occlusion-visible does not stop presentation.",
+    "Visible-run A/V estimates remain hundreds of milliseconds late under overload. Visibility evidence does not qualify Erika synchronized playback."
+  ],
+  "limitations": [
+    "NSWindow occlusion means some window portion is visible; it does not measure exact visible area or physical scanout.",
+    "New diagnostic observer/qualification scripts preserve existing pixels, scheduling, ownership and clock policy.",
+    "AppKit layer order probe showed presentsWithTransaction=false for both tested attachment orders; no layer-order renderer correction was justified.",
+    "Paired diagnostic source/model/shapes match each other, but this is not the requested four-run adapter comparison."
+  ]
+}

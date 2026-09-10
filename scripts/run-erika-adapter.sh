@@ -5,6 +5,7 @@ cd "$PROJECT_ROOT"
 media="${1:?Usage: run-erika-adapter.sh MEDIA [MODEL_DIRECTORY]}"
 export ERIKA_FRAME_ENGINE="$PROJECT_ROOT/.build/debug/libFrameEngineShared.dylib"
 export ERIKA_ADAPTER_FOREGROUND="${ERIKA_ADAPTER_FOREGROUND:-1}"
+export ERIKA_ADAPTER_DIAGNOSTICS="${ERIKA_ADAPTER_DIAGNOSTICS:-1}"
 export ERIKA_FRAME_ENGINE_MODEL="${2:-${ERIKA_FRAME_ENGINE_MODEL:-}}"
 if [[ -z "$ERIKA_FRAME_ENGINE_MODEL" ]]; then unset ERIKA_FRAME_ENGINE_MODEL; fi
 export ERIKA_FRAME_ENGINE_WIDTH="${ERIKA_FRAME_ENGINE_WIDTH:-32}"
@@ -39,5 +40,10 @@ Path(os.environ['ERIKA_FRAME_ENGINE_REPORT']).with_suffix('.configuration.json')
 print(json.dumps(config))
 PY
 )"
-exec artifacts/erika-target/debug/macos_native_demo --edr 4 \
-  --smoke-seconds "${ERIKA_ADAPTER_SECONDS:-6}" "$media"
+artifacts/erika-target/debug/macos_native_demo --edr 4 \
+  --smoke-seconds "${ERIKA_ADAPTER_SECONDS:-6}" "$media" 2>&1 | tee "${ERIKA_FRAME_ENGINE_REPORT%.json}.native.log"
+if [[ "${ERIKA_ADAPTER_REQUIRE_VISIBLE:-0}" == "1" ]]; then
+  python3 scripts/adapter_visibility.py --engine "$ERIKA_FRAME_ENGINE_REPORT" \
+    --log "${ERIKA_FRAME_ENGINE_REPORT%.json}.native.log" \
+    --report "${ERIKA_FRAME_ENGINE_REPORT%.json}.visibility.json"
+fi

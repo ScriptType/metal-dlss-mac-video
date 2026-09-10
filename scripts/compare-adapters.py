@@ -9,6 +9,8 @@ import subprocess
 import sys
 import time
 
+from adapter_visibility import completed_window, qualify_visibility, window_events
+
 
 def digest(path):
     with path.open('rb') as source:
@@ -56,13 +58,16 @@ def main():
             return subprocess.check_output(['git', '-C', str(path), *values])
         revisions[name] = {'revision': git('rev-parse', 'HEAD').decode().strip(),
             'status': git('status', '--porcelain').decode().splitlines(),
-            'trackedDiffSHA256': hashlib.sha256(git('diff', 'HEAD', '--binary')).hexdigest()}
-    report = {'schemaVersion': 1, 'sourceSHA256': digest(source),
+            'trackedDiffSHA256': hashlib.sha256(git('diff', 'HEAD', '--binary')).hexdigest(),
+            'untrackedSHA256': {file: digest(path/file) for file in
+                git('ls-files', '--others', '--exclude-standard', '-z').decode().split('\0')
+                if file and (path/file).is_file()}}
+    report = {'schemaVersion': 2, 'sourceSHA256': digest(source),
         'modelSHA256': digest(model/'weights.safetensors'), 'revisions': revisions,
         'binarySHA256': {path: digest(root/path) for path in binaries},
         'processingWidth': args.width, 'processingHeight': args.height,
         'drawableWidth': 960, 'drawableHeight': 496, 'runs': [],
-        'scope': 'M3 development comparison; same source/model/shape/drawable, foreground requested and app-muted audio; no final M5 selection',
+        'scope': 'M3 development comparison; same source/model/shape/drawable, actual native visibility gated and app-muted audio; no final M5 selection',
         'limitations': ['mpv Adaptive buffers both clocks; Erika currently drops unsustainable admissions',
             'Navigation harnesses differ: mpv rapid original-first seek/comparison, Erika one scheduled seek',
             'mpv A/V is cached audio-minus-video at queue time; Erika is video-minus-audio estimated at drawable presentation',
@@ -72,7 +77,10 @@ def main():
             for adapter in ['mpv', 'erika']:
                 path = output/f'{adapter}-{index+1}.json'
                 environment = dict(os.environ)
+                for key in ('ERIKA_ADAPTER_OCCLUDE_AT', 'ERIKA_ADAPTER_REVEAL_AT'):
+                    environment.pop(key, None)
                 if adapter == 'mpv':
+                    environment['HDRPLAYER_MPV_VISIBILITY'] = '1'
                     values = [sys.executable, 'scripts/test-mpv-policy.py', str(source), '--model', str(model),
                         '--seconds', str(args.seconds), '--width', str(args.width), '--height', str(args.height),
                         '--report', str(path)]
@@ -80,6 +88,7 @@ def main():
                     environment.update(ERIKA_FRAME_ENGINE_REPORT=str(path), ERIKA_FRAME_ENGINE_CAPTURE='none',
                         ERIKA_FRAME_ENGINE_WIDTH=str(args.width), ERIKA_FRAME_ENGINE_HEIGHT=str(args.height),
                         ERIKA_FRAME_ENGINE_STRENGTH='1', ERIKA_ADAPTER_FOREGROUND='1', ERIKA_ADAPTER_MUTE='1',
+                        ERIKA_ADAPTER_DIAGNOSTICS='1', ERIKA_ADAPTER_REQUIRE_VISIBLE='0',
                         ERIKA_ADAPTER_DISPLAY_WIDTH='960', ERIKA_ADAPTER_DISPLAY_HEIGHT='496',
                         ERIKA_ADAPTER_SECONDS=str(args.seconds+4), ERIKA_ADAPTER_SEEK_AT='4', ERIKA_ADAPTER_SEEK_TO='0.73')
                     values = ['bash', 'scripts/run-erika-adapter.sh', str(source), str(model)]
@@ -95,13 +104,30 @@ def main():
                     raise RuntimeError(f'{adapter} has fewer than 60 warmed completed frames')
                 if any(digest(root/name) != value for name,value in report['binarySHA256'].items()):
                     raise RuntimeError('An adapter or shared runtime binary changed during comparison')
+                # Preserve every completed frame and zero drawable callback. Eligibility
+                # is additional evidence, never a filter on throughput/A/V samples.
+                visibility = {}
+                try:
+                    native_log = path.with_suffix('.native.log')
+                    events = window_events(native_log.read_text(), adapter)
+                    visibility['completedWork'] = qualify_visibility(events, *completed_window(engine))
+                    if adapter == 'mpv':
+                        playback = json.loads(path.read_text())
+                        visibility['playbackClock'] = qualify_visibility(events,
+                            playback['playbackStartedHostSeconds'], playback['playbackEndedHostSeconds'])
+                    visibility['eligible'] = all(value['eligible'] for value in visibility.values())
+                except (ValueError, KeyError, OSError) as error:
+                    visibility = {'eligible': False, 'reasons': [str(error)]}
+                path.with_suffix('.visibility.json').write_text(json.dumps(visibility, indent=2)+'\n')
                 report['runs'].append({'adapter': adapter, 'index': index+1, 'startedUnixSeconds': started,
                     'report': path.name, 'completed': engine['completedTotal'], 'warmed': engine['warmedSamples'],
-                    'completedFPS': engine['completedThroughputFPS'], 'power': config['powerConfiguration']})
+                    'completedFPS': engine['completedThroughputFPS'], 'power': config['powerConfiguration'],
+                    'visibility': visibility})
                 (output/'comparison.json').write_text(json.dumps(report,indent=2)+'\n')
         report['capturePassed'] = True
+        report['visibilityEligible'] = all(run['visibility']['eligible'] for run in report['runs'])
         report['presentationComparisonQualified'] = False
-        report['limitations'].append('Capture success verifies completed counts and dimensions; it does not qualify actual presentation or select a core')
+        report['limitations'].append('Native visibility eligibility requires actual visible/unoccluded/unminimized state over all warmed completed-work intervals and mpv playback-clock interval, with no observation gaps over 1.5 s; it does not qualify synchronization, physical presentation or select a core')
     except Exception as error:
         report['capturePassed'] = False
         report['error'] = str(error)
@@ -109,11 +135,12 @@ def main():
     finally:
         (output/'comparison.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report['runs'],indent=2))
+    return 0 if report.get('visibilityEligible') else 2
 
 
 if __name__ == '__main__':
     try:
-        main()
+        raise SystemExit(main())
     except (OSError, RuntimeError, subprocess.SubprocessError) as error:
         print(f'compare-adapters: {error}', file=sys.stderr)
         raise SystemExit(1)
