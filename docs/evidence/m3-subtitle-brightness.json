@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "device": "Apple M3",
+  "osVersion": "26.5",
+  "passed": true,
+  "scope": "Native gpu-next high-bit-depth PNG composition on a retained neural frame; no physical HDR luminance/colour claim",
+  "conditions": "960x496 requested drawable; paused; dithering and dynamic peak detection disabled for deterministic pixel comparison; muted CoreAudio",
+  "sourceSHA256": "faa4fb42365f933b659d42bdc2a9ad241a91ee49d7f0c72f5418cce9ee36db77",
+  "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+  "binaries": {
+    "artifacts/mpv-build/mpv": "a5cfee64038230e3999b1a4c0c21cb35d7bc4be3a49e74b5f5720d349db5fef8",
+    "artifacts/mpv-build/libmpv.2.dylib": "ff002bc12bc95df9dce98ccd002798bc1bcfd96f9ee24e06b54e0bccc3d34a27",
+    ".build/debug/libFrameEngineShared.dylib": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+  },
+  "captures": {
+    "hidden": {
+      "file": "hidden.png",
+      "sha256": "3d16645ad48cf1528db9c7ec11423506d0d9005f835751b7163748feece47728",
+      "requestedColor": null,
+      "nativeColor": "#FFFFFFFF",
+      "width": 960,
+      "height": 496,
+      "pixelFormat": "rgba64be",
+      "colourTransfer": "iec61966-2-1",
+      "colourPrimaries": "bt709"
+    },
+    "full": {
+      "file": "full.png",
+      "sha256": "d816ef03bdc7a775559de46c3843975248e3ee51a959a0c7ea6073b7551a184d",
+      "requestedColor": "#FFFFFF",
+      "nativeColor": "#FFFFFFFF",
+      "width": 960,
+      "height": 496,
+      "pixelFormat": "rgba64be",
+      "colourTransfer": "iec61966-2-1",
+      "colourPrimaries": "bt709"
+    },
+    "half": {
+      "file": "half.png",
+      "sha256": "49d22bf2b65e55aacf04677fac994f7e4f1968f6383897145fe07ebc2abc8152",
+      "requestedColor": "#808080",
+      "nativeColor": "#FF808080",
+      "width": 960,
+      "height": 496,
+      "pixelFormat": "rgba64be",
+      "colourTransfer": "iec61966-2-1",
+      "colourPrimaries": "bt709"
+    },
+    "quarter": {
+      "file": "quarter.png",
+      "sha256": "a33cc58c0cc2f69f7dad8edc043d654c4ad0c701effc07b9c0c6afa9f0231424",
+      "requestedColor": "#404040",
+      "nativeColor": "#FF404040",
+      "width": 960,
+      "height": 496,
+      "pixelFormat": "rgba64be",
+      "colourTransfer": "iec61966-2-1",
+      "colourPrimaries": "bt709"
+    },
+    "full-repeat": {
+      "file": "full-repeat.png",
+      "sha256": "d816ef03bdc7a775559de46c3843975248e3ee51a959a0c7ea6073b7551a184d",
+      "requestedColor": "#FFFFFF",
+      "nativeColor": "#FFFFFFFF",
+      "width": 960,
+      "height": 496,
+      "pixelFormat": "rgba64be",
+      "colourTransfer": "iec61966-2-1",
+      "colourPrimaries": "bt709"
+    },
+    "hidden-repeat": {
+      "file": "hidden-repeat.png",
+      "sha256": "3d16645ad48cf1528db9c7ec11423506d0d9005f835751b7163748feece47728",
+      "requestedColor": null,
+      "nativeColor": "#FFFFFFFF",
+      "width": 960,
+      "height": 496,
+      "pixelFormat": "rgba64be",
+      "colourTransfer": "iec61966-2-1",
+      "colourPrimaries": "bt709"
+    }
+  },
+  "pixelChecks": {
+    "changedPixels": 3348,
+    "changedFraction": 0.00703125,
+    "boundingBox": [
+      356,
+      452,
+      604,
+      471
+    ],
+    "meanEncodedRGBOnFill": {
+      "full": 40423.219918483075,
+      "half": 20137.354953039165,
+      "quarter": 10477.368775474039
+    },
+    "unchangedUpperVideoRegion": true,
+    "sameFrameAndSubmissionCount": true,
+    "repeatCapturesIdentical": true,
+    "monotonicEncodedSubtitleBrightness": true
+  },
+  "exitCode": 0,
+  "binariesUnchanged": true,
+  "sourceUnchanged": true,
+  "provenance": {
+    "report": "artifacts/subtitle-strength-sweep-quantized/report.json",
+    "reportSHA256": "781e8de0216286a66b0f509e5871e0c21581e88bb2fb24a1e9250eb453ceaf66",
+    "rootRevision": "26cd601788d7d2cc0da9eb6751387be65261b6eb",
+    "mpvRevision": "c51dc1ac894992e306564a91f54f8caaec2a48fe",
+    "sourceTreeClean": false,
+    "testScriptSHA256": "fa2d3030ac765085ff3f140ce3016a66bb660923dc299ed1169f87f04f793c9c"
+  },
+  "retainedFrame": {
+    "displayed-source-pts": 767000,
+    "displayed-timebase-num": 1,
+    "displayed-timebase-den": 1000000,
+    "displayed-generation": 2,
+    "generation": 2,
+    "submitted-frames": 2,
+    "displayed-content-kind": "enhanced"
+  },
+  "nativeApp": {
+    "report": "artifacts/player-pip-streaming-final/dom.json",
+    "reportSHA256": "50ada80d435374d0c84562f80490549bf39318485eb34c6967c95a4bf3eade6a",
+    "wrapperReport": "artifacts/player-pip-streaming-final/report.json",
+    "wrapperReportSHA256": "7a7ec57ac37ead1c65d0ac8d93fa3ff9535ba99b2472b222212e1fb631701ce1",
+    "check": "native subtitle colour is opaque neutral gray at 0.6",
+    "expectedMpvValue": "#FF999999",
+    "passed": true,
+    "note": "Actual shipped DOM ran against a development app build that also contained the opt-in PiP consumer; no physical subtitle luminance measurement.",
+    "binaries": {
+      "HDRPlayer": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/HDRPlayer",
+        "beforeSHA256": "dcdf99b95e981007f884619ec56678a094ea930a5ad7de35940a589ae05acf2e",
+        "afterSHA256": "dcdf99b95e981007f884619ec56678a094ea930a5ad7de35940a589ae05acf2e"
+      },
+      "libmpv": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/mpv-build/libmpv.2.dylib",
+        "beforeSHA256": "f52b9899c20e201ed8e45dcc8f103fe0f2430e522d49dbc795bd9132653e566e",
+        "afterSHA256": "f52b9899c20e201ed8e45dcc8f103fe0f2430e522d49dbc795bd9132653e566e"
+      },
+      "FrameEngineShared": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/libFrameEngineShared.dylib",
+        "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+        "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      }
+    },
+    "binariesUnchanged": true,
+    "exitCode": 0
+  },
+  "retainedFailures": [
+    {
+      "report": "artifacts/subtitle-brightness/report.json",
+      "reportSHA256": "4f7388ebef5f996ef3653f2d170b61d02853a797615b2f8bdb7822db39020920",
+      "passed": false,
+      "errors": [
+        "Command failed: ('screenshot-to-file', '/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/subtitle-brightness/hidden.png', 'window'): {'request_id': 56, 'error': 'error running command'}"
+      ],
+      "diagnosis": "Screenshot queue query used stale last_pts=0 after retained seek replacement at 0.767s; clamp to oldest queued PTS fixes native capture."
+    },
+    {
+      "report": "artifacts/subtitle-brightness-fixed/report.json",
+      "reportSHA256": "668bc32aa7f473888314f55922a3f5a226c12f0e69a127b0e955194d40c868b4",
+      "passed": false,
+      "errors": [
+        "subtitle greys did not reduce pixel brightness monotonically"
+      ],
+      "diagnosis": "CSS-style #RRGGBBAA was parsed by mpv as #AARRGGBB: gray adjustment changed alpha and blue; the per-channel monotonic assertion failed."
+    },
+    {
+      "report": "artifacts/subtitle-strength-sweep/report.json",
+      "reportSHA256": "7181fcd811d04fe3e65e7ed8d7b37958ae260c6df53452a9c1b998f529bd46fa",
+      "passed": false,
+      "diagnosis": "Harness coverage mask initially demanded exact encoded black0. Native gpu-next conversion produced2/65535 in all503 full-coverage glyph pixels. The final mask allows this measured two-code black floor; gray invariance remains a separate assertion with one-code tolerance and observed zero difference."
+    }
+  ],
+  "unqualified": [
+    "Physical HDR reference white, luminance and colour",
+    "Independent WebKit overlay luminance measurement",
+    "General subtitle antialiasing/background blending across arbitrary content; strength comparison isolates fully covered gray glyph pixels"
+  ],
+  "priorPassingBrightnessReport": {
+    "report": "artifacts/subtitle-brightness-opaque/report.json",
+    "reportSHA256": "47a9bcaee9ac3d8f133eb864fc8ebd31392a13345702599f660175cf97f3b813",
+    "rootRevision": "26cd601788d7d2cc0da9eb6751387be65261b6eb",
+    "mpvRevision": "25d149f51ae51bc83241e779a6b258ea873186bd",
+    "sourceTreeClean": false,
+    "testScriptSHA256": "de763fbf7f66f9e3d5c4c3b7638d3add6c1c4c13fe20c89f6149f567ca5124ce"
+  },
+  "strengthSweep": [
+    {
+      "strength": 1,
+      "identity": {
+        "displayed-source-pts": 767000,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 1000000,
+        "displayed-generation": 2,
+        "generation": 2,
+        "submitted-frames": 2
+      },
+      "captures": {
+        "hidden": {
+          "file": "strength-1-hidden.png",
+          "sha256": "3d16645ad48cf1528db9c7ec11423506d0d9005f835751b7163748feece47728"
+        },
+        "white": {
+          "file": "strength-1-white.png",
+          "sha256": "d816ef03bdc7a775559de46c3843975248e3ee51a959a0c7ea6073b7551a184d"
+        },
+        "black": {
+          "file": "strength-1-black.png",
+          "sha256": "fe4143e5f6e4a7967264b09eb9e1dd5bf7fa53c67d87699a8c8084cafec8eeba"
+        },
+        "half": {
+          "file": "strength-1-half.png",
+          "sha256": "49d22bf2b65e55aacf04677fac994f7e4f1968f6383897145fe07ebc2abc8152"
+        }
+      },
+      "opaqueSubtitlePixels": 503,
+      "blackCoverageToleranceEncoded": 2,
+      "maximumSubtitleEncodedDifference": 0,
+      "changedVideoPixels": 0
+    },
+    {
+      "strength": 0.5,
+      "identity": {
+        "displayed-source-pts": 767000,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 1000000,
+        "displayed-generation": 3,
+        "generation": 3,
+        "submitted-frames": 2
+      },
+      "captures": {
+        "hidden": {
+          "file": "strength-0.5-hidden.png",
+          "sha256": "bc8872551b98e8a30124a681483c8c3bee45fddb25ea6c22b456fa890a8b9990"
+        },
+        "white": {
+          "file": "strength-0.5-white.png",
+          "sha256": "d63cbbfff0f6b962d821d2fd69ad18ac0293e4689d50672f678fe34615bce5a1"
+        },
+        "black": {
+          "file": "strength-0.5-black.png",
+          "sha256": "5be92dcf6e3ee2564e2c910f5b033f7564fcd7783ca22814fd8eeab0563e0493"
+        },
+        "half": {
+          "file": "strength-0.5-half.png",
+          "sha256": "8db8d17774f9b3590c496f9ba88376ac533a5de7c1a81aa686a311d95092034f"
+        }
+      },
+      "opaqueSubtitlePixels": 503,
+      "blackCoverageToleranceEncoded": 2,
+      "maximumSubtitleEncodedDifference": 0,
+      "changedVideoPixels": 409689
+    },
+    {
+      "strength": 0.25,
+      "identity": {
+        "displayed-source-pts": 767000,
+        "displayed-timebase-num": 1,
+        "displayed-timebase-den": 1000000,
+        "displayed-generation": 3,
+        "generation": 3,
+        "submitted-frames": 2
+      },
+      "captures": {
+        "hidden": {
+          "file": "strength-0.25-hidden.png",
+          "sha256": "bd0a218cf95c47841e3800cb24b4d6c39766f0503add6693054f1fecef4007d3"
+        },
+        "white": {
+          "file": "strength-0.25-white.png",
+          "sha256": "d63e292206970eaf39bf21aecca0d009da2cac015d0eda023e4c2de5f2c9127f"
+        },
+        "black": {
+          "file": "strength-0.25-black.png",
+          "sha256": "8ca25b48c2505b2a4cce2d57d897219daccf24b48edac756d6393c6edff28561"
+        },
+        "half": {
+          "file": "strength-0.25-half.png",
+          "sha256": "97331a28a0068c3e71ad51a99e0738b985e90bc2dcbd355ba11e0b0d92ab125d"
+        }
+      },
+      "opaqueSubtitlePixels": 503,
+      "blackCoverageToleranceEncoded": 2,
+      "maximumSubtitleEncodedDifference": 0,
+      "changedVideoPixels": 409687
+    }
+  ]
+}

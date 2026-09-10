@@ -188,6 +188,9 @@ final class PlayerSmokeCheck {
             try await change("subtitleScale", value: "1.2")
             try await change("subtitleDelay", value: "0.3")
             try await wait("subtitle scale and delay applied natively") { abs(self.number("subtitleScale") - 1.2) < 0.01 && abs(self.number("subtitleDelay") - 0.3) < 0.01 }
+            try await wait("subtitle brightness is opaque neutral gray in native mpv state") {
+                (self.state()["nativeSubtitleColor"] as? String)?.uppercased() == "#FF999999"
+            }
             try await click("settings-close")
             try await change("timeline", value: "0.7")
             try await wait("exact paused timeline seek") { abs(self.number("position") - 0.7) < 0.05 && self.state()["paused"] as? Bool == true }

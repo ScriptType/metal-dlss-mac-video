@@ -101,3 +101,18 @@ The script reads the AppKit/WebKit tree without changing accessibility settings.
 The opt-in [lifecycle recorder and VoiceOver capability probe](player-lifecycle-diagnostics.md) capture real system events and native transport state without changing OS settings. Eight CPU pause-intent regression cases and the recorder format/bounds/flush check pass; they do not qualify physical sleep or speech.
 
 This is a functional integration check. It does not establish sustained Live performance, calibrated display accuracy or physical presentation timing. Development measurements use the current M3; M5 measurements are separate future runs.
+
+## Native subtitle brightness regression
+
+Subtitle brightness sends an opaque six-digit RGB colour to mpv. Its eight-digit syntax is `#AARRGGBB`; a CSS-style `#RRGGBBAA` value changed opacity and the blue channel instead of producing neutral gray. The native DOM check now requires brightness 0.6 to read back as `#FF999999`.
+
+```sh
+uv run --frozen scripts/test-mpv-subtitle-brightness.py --strength-sweep \
+  --output artifacts/subtitle-brightness
+```
+
+The [M3 pixel check](evidence/m3-subtitle-brightness.json) captures hidden, white, half-gray, quarter-gray and repeated subtitle states on one paused neural frame at exact source PTS 767/1000. All six captures preserve its generation and inference submission count. Only 3,348 pixels in the lower subtitle region change; the upper video region and repeated captures are bit-identical. Every RGB channel decreases monotonically with the gray setting. The native app's separate DOM check also passed the opaque-gray assertion and exited cleanly.
+
+The strength sweep keeps source PTS unchanged while rebuilding enhancement at strengths 1, 0.5 and 0.25. All 503 fully covered gray glyph pixels remain bit-identical, while the two lower strengths change 409,689 and 409,687 video pixels. White/black captures identify full coverage, allowing the measured two-code black conversion floor; the gray comparison avoids saturated white and excludes background-dependent antialiased edges.
+
+Captures are 16-bit sRGB/BT.709 PNGs from `gpu-next`, with dithering and dynamic peak detection disabled for deterministic comparison. They verify native composition and control mapping, not physical HDR luminance or WebKit overlay brightness. The evidence retains both product failures found by this check: a screenshot query before the oldest queued frame after a retained seek, fixed by clamping to that frame's PTS, and the incorrect eight-digit colour encoding. It also preserves the initial coverage-mask failure before accounting for the native encoded black floor.

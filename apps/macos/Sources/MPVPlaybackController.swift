@@ -231,7 +231,8 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                         "tracks": tracks, "chapters": chapters, "chapter": Int(number("chapter", fallback: -1)),
                         "sourceFPS": number("container-fps"), "frameDrops": Int(number("frame-drop-count")),
                         "decoderDrops": Int(number("decoder-frame-drop-count")), "coreLibrary": library.path,
-                        "subtitleDelay": number("sub-delay"), "subtitleScale": number("sub-scale", fallback: 1)]
+                        "subtitleDelay": number("sub-delay"), "subtitleScale": number("sub-scale", fallback: 1),
+                        "nativeSubtitleColor": property("sub-color") ?? ""]
                     if let text = property("enhancement-state"), let data = text.data(using: .utf8),
                        let enhancement = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] {
                         state["nativeEnhancement"] = enhancement
@@ -244,7 +245,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
     }
     static func subtitleColor(_ brightness: Double) -> String {
         let component = Int((max(0.1, min(1, brightness)) * 255).rounded())
-        return String(format: "#%02X%02X%02XFF", component, component, component)
+        return String(format: "#%02X%02X%02X", component, component, component)
     }
 }
 
