@@ -1,0 +1,445 @@
+{
+  "buildProvenance": {
+    "builtAtUTC": "2026-09-10T00:43:00.054502+00:00",
+    "files": [
+      {
+        "bytes": 18855,
+        "path": "tools/HDRPiPProbe/FrameReference.swift",
+        "sha256": "5a046465973d07e08dc582d14abe2091406a04470992d73d623ab45b929a32d5"
+      },
+      {
+        "bytes": 12401,
+        "path": "tools/HDRPiPProbe/main.swift",
+        "sha256": "92045ea238d078c498bb25b8b27bba81092f7cd21b4fb2386991f964aa5b4d8a"
+      },
+      {
+        "bytes": 2727,
+        "path": "scripts/build-pip-probe.sh",
+        "sha256": "0b90c1070a98ab2d1a9e58034873d1e49ae64864d12cc41c64cedd8c48802ace"
+      },
+      {
+        "bytes": 9957,
+        "path": "packages/CFrameEngine/include/frame_engine.h",
+        "sha256": "618d672862ce2634539e66aef9d9898870453887c7f32ef6fcd43cfeb1053e5e"
+      },
+      {
+        "bytes": 50138200,
+        "path": ".build/debug/libFrameEngineShared.dylib",
+        "sha256": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a"
+      },
+      {
+        "bytes": 107392404,
+        "path": ".build/debug/mlx.metallib",
+        "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      },
+      {
+        "bytes": 227288,
+        "path": "artifacts/pip-probe/HDRPiPProbe.app/Contents/MacOS/HDRPiPProbe",
+        "sha256": "7ef83b2c500637b3f6042231be6f1bac9ade4ec37bad1a5d71286d1c28aef6cf"
+      }
+    ],
+    "mlxDLSSRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+    "mpvRevision": "0805fb6da583bfafade44fa061657b0b5e35877d",
+    "rootRevision": "6513f36af7a8c7b8e9119f8ec454059ca033564b"
+  },
+  "cases": [
+    {
+      "contentKind": 2,
+      "conversion": {
+        "above10000NitComponents": 0,
+        "clippedComponents": 0,
+        "colourInterpretationEstablished": false,
+        "colourLimitation": "Relative linear unity is normalized to203nit reference white; AVKit physical reference-white mapping is unverified",
+        "cpuSurfaceWrites": 1,
+        "format": "RGBA16F extended linearBT2020",
+        "frameworkInternalCopies": "unmeasured",
+        "fullFrameCPUReadbacks": 1,
+        "height": 192,
+        "inputMaximumNits": 2492,
+        "inputMinimumNits": 0.5068359375,
+        "negativeInputComponents": 0,
+        "numericRoundTripMaximumErrorNits": 0.7734375,
+        "numericRoundTripMeanErrorNits": 0.05853431976089875,
+        "numericRoundTripRMSErrorNits": 0.09225989092883422,
+        "referenceDomain": "original absolute nits; stored float divided by203",
+        "width": 320
+      },
+      "engineAfter": {
+        "completed": 1,
+        "occupiedSlots": 1,
+        "peakSlots": 1,
+        "submitted": 1
+      },
+      "engineBefore": {
+        "completed": 1,
+        "occupiedSlots": 1,
+        "peakSlots": 1,
+        "submitted": 1
+      },
+      "events": [
+        {
+          "backingScale": 2,
+          "hostSeconds": 0.07774383330252022,
+          "name": "host-visible"
+        },
+        {
+          "engine": {
+            "completed": 1,
+            "occupiedSlots": 1,
+            "peakSlots": 1,
+            "submitted": 1
+          },
+          "hostSeconds": 5.70431570825167,
+          "name": "completed-frame-enqueued",
+          "pts": {
+            "numeric": true,
+            "timescale": 48000,
+            "value": 0
+          }
+        },
+        {
+          "hostSeconds": 6.704910833272152,
+          "name": "public-start-request"
+        },
+        {
+          "hostSeconds": 6.704952541622333,
+          "name": "will-start"
+        },
+        {
+          "active": false,
+          "height": 384,
+          "hostSeconds": 6.718438583309762,
+          "name": "render-size",
+          "width": 640
+        },
+        {
+          "active": true,
+          "hostSeconds": 6.80785137496423,
+          "name": "did-start"
+        },
+        {
+          "height": 480,
+          "hostSeconds": 7.859030166640878,
+          "name": "source-host-resized",
+          "width": 800
+        },
+        {
+          "hostSeconds": 9.957511208252981,
+          "name": "public-stop-request"
+        },
+        {
+          "hostSeconds": 9.95754762494471,
+          "name": "will-stop"
+        },
+        {
+          "hostSeconds": 9.958306624903344,
+          "name": "restore-interface"
+        },
+        {
+          "active": false,
+          "hostSeconds": 10.52845383330714,
+          "name": "did-stop"
+        }
+      ],
+      "exitCode": 0,
+      "format": "float",
+      "lifecyclePassed": true,
+      "possible": true,
+      "renderSizes": [
+        "640x384"
+      ],
+      "rendererStatus": 1,
+      "report": "artifacts/pip-probe-float-exact-timing.json",
+      "reportSHA256": "62537ee046e30c5c62ddc8dae934f2c57da6df00c0d00cad2f728218075b6cd4",
+      "retainedPTSUnchanged": true,
+      "retainedRedrawIdentity": true,
+      "sourceDuration": {
+        "numeric": true,
+        "timescale": 15360,
+        "value": 512
+      },
+      "sourcePTS": {
+        "numeric": true,
+        "timescale": 48000,
+        "value": 0
+      },
+      "supported": true,
+      "timingProvenance": {
+        "durationOrigin": "interval to next decoded image PTS; explicit held-frame display interval",
+        "nextDecodedPTS": {
+          "numeric": true,
+          "timescale": 15360,
+          "value": 512
+        },
+        "nominalFrameRateAssumption": false,
+        "ptsOrigin": "decoded outputPresentationTimeStamp",
+        "sampleDuration": {
+          "numeric": false,
+          "timescale": 0,
+          "value": 0
+        },
+        "sampleOutputDuration": {
+          "numeric": false,
+          "timescale": 0,
+          "value": 0
+        },
+        "sampleOutputPTS": {
+          "numeric": true,
+          "timescale": 48000,
+          "value": 0
+        },
+        "samplePTS": {
+          "numeric": true,
+          "timescale": 48000,
+          "value": 0
+        }
+      }
+    },
+    {
+      "contentKind": 2,
+      "conversion": {
+        "above10000NitComponents": 0,
+        "clippedComponents": 0,
+        "colourInterpretationEstablished": true,
+        "colourLimitation": "ST2084 absolute-nit coding is explicit; physical display accuracy is unmeasured",
+        "cpuSurfaceWrites": 1,
+        "format": "PQ P010 limited-range BT2020 NCL420",
+        "frameworkInternalCopies": "unmeasured",
+        "fullFrameCPUReadbacks": 1,
+        "height": 192,
+        "inputMaximumNits": 2492,
+        "inputMinimumNits": 0.5068359375,
+        "negativeInputComponents": 0,
+        "numericRoundTripMaximumErrorNits": 1112.9387393317343,
+        "numericRoundTripMeanErrorNits": 7.254206926948911,
+        "numericRoundTripRMSErrorNits": 25.62027324076511,
+        "referenceDomain": "input clipped to0...10000nits; error includes420 chroma subsampling and10bit quantization",
+        "width": 320
+      },
+      "engineAfter": {
+        "completed": 1,
+        "occupiedSlots": 1,
+        "peakSlots": 1,
+        "submitted": 1
+      },
+      "engineBefore": {
+        "completed": 1,
+        "occupiedSlots": 1,
+        "peakSlots": 1,
+        "submitted": 1
+      },
+      "events": [
+        {
+          "backingScale": 2,
+          "hostSeconds": 0.07562333333771676,
+          "name": "host-visible"
+        },
+        {
+          "engine": {
+            "completed": 1,
+            "occupiedSlots": 1,
+            "peakSlots": 1,
+            "submitted": 1
+          },
+          "hostSeconds": 1.0611468750284985,
+          "name": "completed-frame-enqueued",
+          "pts": {
+            "numeric": true,
+            "timescale": 48000,
+            "value": 0
+          }
+        },
+        {
+          "hostSeconds": 2.062195291626267,
+          "name": "public-start-request"
+        },
+        {
+          "hostSeconds": 2.062243791646324,
+          "name": "will-start"
+        },
+        {
+          "active": false,
+          "height": 384,
+          "hostSeconds": 2.0672917916672304,
+          "name": "render-size",
+          "width": 640
+        },
+        {
+          "active": true,
+          "hostSeconds": 2.0727837500162423,
+          "name": "did-start"
+        },
+        {
+          "height": 480,
+          "hostSeconds": 3.121521249995567,
+          "name": "source-host-resized",
+          "width": 800
+        },
+        {
+          "hostSeconds": 5.22259704163298,
+          "name": "public-stop-request"
+        },
+        {
+          "hostSeconds": 5.222711291629821,
+          "name": "will-stop"
+        },
+        {
+          "hostSeconds": 5.223309791646898,
+          "name": "restore-interface"
+        },
+        {
+          "active": false,
+          "hostSeconds": 5.797088791616261,
+          "name": "did-stop"
+        }
+      ],
+      "exitCode": 0,
+      "format": "pq",
+      "lifecyclePassed": true,
+      "possible": true,
+      "renderSizes": [
+        "640x384"
+      ],
+      "rendererStatus": 1,
+      "report": "artifacts/pip-probe-pq-exact-timing.json",
+      "reportSHA256": "08ed5b0ae935d4aec454cfac032c1c2974dc2acc86276d2c01c3567bb5891630",
+      "retainedPTSUnchanged": true,
+      "retainedRedrawIdentity": true,
+      "sourceDuration": {
+        "numeric": true,
+        "timescale": 15360,
+        "value": 512
+      },
+      "sourcePTS": {
+        "numeric": true,
+        "timescale": 48000,
+        "value": 0
+      },
+      "supported": true,
+      "timingProvenance": {
+        "durationOrigin": "interval to next decoded image PTS; explicit held-frame display interval",
+        "nextDecodedPTS": {
+          "numeric": true,
+          "timescale": 15360,
+          "value": 512
+        },
+        "nominalFrameRateAssumption": false,
+        "ptsOrigin": "decoded outputPresentationTimeStamp",
+        "sampleDuration": {
+          "numeric": false,
+          "timescale": 0,
+          "value": 0
+        },
+        "sampleOutputDuration": {
+          "numeric": false,
+          "timescale": 0,
+          "value": 0
+        },
+        "sampleOutputPTS": {
+          "numeric": true,
+          "timescale": 48000,
+          "value": 0
+        },
+        "samplePTS": {
+          "numeric": true,
+          "timescale": 48000,
+          "value": 0
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "colourStrength": 1,
+    "effectStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "model": "NeuralRendering.dlssmodel",
+    "modelManifestSHA256": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32",
+    "processingHeight": 24,
+    "processingWidth": 32,
+    "referenceWhiteNits": 203,
+    "source": "assets/test-clips/hdr10-30.mp4",
+    "sourceHeight": 192,
+    "sourceSHA256": "8ae84e52bfa515b432d2a78d66811be987fd5a4e1bd668c9064af0a555a58924",
+    "sourceWidth": 320,
+    "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+  },
+  "device": "Apple M3",
+  "initialTimingFailure": {
+    "engineFrameSubmitted": false,
+    "error": "Source has no exact PTS/duration",
+    "report": "artifacts/pip-probe-float.json",
+    "sha256": "4db2294810bf929badc0c7664f1e4076195fd848084ed9cbabe18f61456c13b1"
+  },
+  "osVersion": "Version 26.5 (Build 25F71)",
+  "physicalMemoryBytes": 17179869184,
+  "schemaVersion": 1,
+  "scope": "Public macOS PiP with one actual completed neural frame held paused; no streaming or physical HDR accuracy qualification",
+  "teardownVerification": {
+    "buildProvenance": {
+      "builtAtUTC": "2026-09-10T00:45:11.439908+00:00",
+      "files": [
+        {
+          "bytes": 19516,
+          "path": "tools/HDRPiPProbe/FrameReference.swift",
+          "sha256": "480ea24d22bada873dd71a07c2ea0b8c770694f836d2d7b5ce9b1fa82bec18d6"
+        },
+        {
+          "bytes": 13315,
+          "path": "tools/HDRPiPProbe/main.swift",
+          "sha256": "e969fae0d5d40bdc1394c13e3906a8ed7e3285391b9d822e8360bdffc6e967e5"
+        },
+        {
+          "bytes": 2727,
+          "path": "scripts/build-pip-probe.sh",
+          "sha256": "0b90c1070a98ab2d1a9e58034873d1e49ae64864d12cc41c64cedd8c48802ace"
+        },
+        {
+          "bytes": 9957,
+          "path": "packages/CFrameEngine/include/frame_engine.h",
+          "sha256": "618d672862ce2634539e66aef9d9898870453887c7f32ef6fcd43cfeb1053e5e"
+        },
+        {
+          "bytes": 50138200,
+          "path": ".build/debug/libFrameEngineShared.dylib",
+          "sha256": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a"
+        },
+        {
+          "bytes": 107392404,
+          "path": ".build/debug/mlx.metallib",
+          "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+        },
+        {
+          "bytes": 245400,
+          "path": "artifacts/pip-probe/HDRPiPProbe.app/Contents/MacOS/HDRPiPProbe",
+          "sha256": "d9217fb68ff27924bebe6720c9a2b95852c9c85820e9a55e1c43ebe3320459b9"
+        }
+      ],
+      "mlxDLSSRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+      "mpvRevision": "0805fb6da583bfafade44fa061657b0b5e35877d",
+      "rootRevision": "2c5c2a6da27e312345d97bd82fc815e84f9d7dd2"
+    },
+    "exitCode": 0,
+    "lifecyclePassed": true,
+    "rendererFlushedBeforeEngineDestroy": true,
+    "report": "artifacts/pip-probe-float-drain.json",
+    "reportSHA256": "66bca7f221cd838be81dcfd6630d08724e64c2f75d38950289e2ad61d82e6d8f",
+    "retainedPTSUnchanged": true,
+    "teardown": {
+      "afterClose": {
+        "completed": 1,
+        "occupiedSlots": 0,
+        "peakSlots": 1,
+        "submitted": 1
+      },
+      "drainSeconds": 3.5791657865047455e-05,
+      "idleBeforeDestroy": true
+    }
+  },
+  "unqualified": [
+    "Physical EDR/brightness and colour matching against gpu-next",
+    "Streaming frame pacing and A/V synchronization",
+    "User resizing the system PiP window",
+    "PiP playback/skip controls applied to a real stream",
+    "App integration, subtitles, Dolby Vision, external-display switching"
+  ]
+}
