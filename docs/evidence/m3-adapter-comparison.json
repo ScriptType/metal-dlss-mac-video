@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+  "modelSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+  "revisions": {
+    "root": {
+      "revision": "d8c8fbafa3ed38cfe8832dace313a2073b0abc00",
+      "status": [
+        " M Package.swift",
+        " M apps/controls/src/controls.js",
+        " M apps/macos/Sources/MPVPlaybackController.swift",
+        " M apps/macos/Sources/PlayerSmokeCheck.swift",
+        " M docs/mpv-adapter.md",
+        " M docs/native-player.md",
+        " M scripts/run-erika-adapter.sh",
+        " M scripts/test-mpv-policy.py",
+        " M scripts/test-mpv-prepared.py",
+        " D tools/FrameBenchmark/main.swift",
+        " M vendor/Erika",
+        " M vendor/mpv",
+        "?? docs/dolby-vision.md",
+        "?? docs/frame-stress.md",
+        "?? scripts/compare-adapters.py",
+        "?? scripts/fetch-dovi-fixture.py",
+        "?? scripts/stress-frame-engine.py",
+        "?? scripts/test-dovi-passthrough.py",
+        "?? tools/FrameBenchmark/FrameBenchmarkCommand.swift",
+        "?? tools/FrameBenchmark/FrameStressHarness.swift"
+      ],
+      "trackedDiffSHA256": "8253523ab888e11613727318a9d60bb66e077b48a2b882378b41defb4f96a497"
+    },
+    "mpv": {
+      "revision": "0805fb6da583bfafade44fa061657b0b5e35877d",
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Erika": {
+      "revision": "36fe00df4a7cdf99c67e5ecba48c120ab0f92935",
+      "status": [
+        " M examples/macos_native_demo/native/ErikaMetalDemo.m",
+        " M examples/macos_native_demo/src/main.rs"
+      ],
+      "trackedDiffSHA256": "0b09ce229e6c3131474963d0fb968525f9342fd6b9846e13c1b753dfb8fa6149"
+    },
+    "MLX-DLSS": {
+      "revision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+      "status": [],
+      "trackedDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "binarySHA256": {
+    "artifacts/mpv-build/mpv": "6bced249bef8d25ba412f9a526116beb6da99da08c52f16927631224e6abe5ac",
+    "artifacts/mpv-build/libmpv.2.dylib": "edf4c21506b439823c246d31e8779b81fac112e0c3e8cd4a3652a29b0d44131d",
+    "artifacts/erika-target/debug/macos_native_demo": "854780dc46d8e157c879cfaab04ba22d71f20fa349abf7acc97cb4a79fa60025",
+    ".build/debug/libFrameEngineShared.dylib": "4696f453957b551dd864bf26e251e9838ba60c87f6a9584f7384362ec16cea5a",
+    ".build/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35",
+    "artifacts/erika-target/debug/mlx.metallib": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+  },
+  "processingWidth": 160,
+  "processingHeight": 96,
+  "drawableWidth": 960,
+  "drawableHeight": 496,
+  "scope": "M3 development capture with matched source/model/neural/drawable sizes and app-muted audio; foreground requested, actual presentation incomplete; no final core selection",
+  "limitations": [
+    "mpv Adaptive buffers both clocks; Erika currently drops unsustainable admissions",
+    "Navigation harnesses differ: mpv rapid original-first seek/comparison, Erika one scheduled seek",
+    "mpv A/V is cached audio-minus-video at queue time; Erika is video-minus-audio estimated at drawable presentation",
+    "Physical display luminance, temporal quality, copies and energy remain separate acceptance checks",
+    "Erika recorded mostly zero presentedTime callbacks despite requested foreground activation; physical visibility/pacing comparison remains unqualified",
+    "Measurements were captured from development source trees with recorded revisions/diff hashes; binaries were unchanged across all four runs"
+  ],
+  "capturePassed": true,
+  "presentationComparisonQualified": false,
+  "runs": [
+    {
+      "capture": {
+        "adapter": "mpv",
+        "index": 1,
+        "startedUnixSeconds": 1788998316.561688,
+        "report": "mpv-1.json",
+        "completed": 283,
+        "warmed": 279,
+        "completedFPS": 9.408805477971896,
+        "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t58%; discharging; 3:15 remaining present: true"
+      },
+      "engine": {
+        "gpuStageSeconds": {
+          "rgba16f_pack": {
+            "minimum": 9.750016033649445e-06,
+            "p50": 3.587489482015371e-05,
+            "p95": 6.974177667871117e-05,
+            "count": 279,
+            "p99": 0.0001319833775050931,
+            "maximum": 0.0010198750533163548
+          },
+          "planar_import": {
+            "minimum": 6.170838605612516e-05,
+            "p50": 9.391666390001774e-05,
+            "p95": 0.0001387124415487051,
+            "count": 279,
+            "p99": 0.00024159253342077088,
+            "maximum": 0.0012687499402090907
+          }
+        },
+        "duplicatePresentations": 0,
+        "completedStageWallSeconds": {
+          "inference": {
+            "minimum": 0.073185833,
+            "p50": 0.087674875,
+            "p95": 0.10653806699999996,
+            "count": 279,
+            "p99": 0.1289547189799998,
+            "maximum": 0.160355458
+          },
+          "motion": {
+            "minimum": 0.011863584,
+            "p50": 0.014347041,
+            "p95": 0.017143916599999993,
+            "count": 279,
+            "p99": 0.019068940519999994,
+            "maximum": 0.022387042
+          },
+          "reconstruction": {
+            "minimum": 0.000987459,
+            "p50": 0.001645458,
+            "p95": 0.0021590259,
+            "count": 279,
+            "p99": 0.002746805979999996,
+            "maximum": 0.0054977920000000005
+          },
+          "proxy": {
+            "minimum": 0.0003035,
+            "p50": 0.000487458,
+            "p95": 0.0006008335999999999,
+            "count": 279,
+            "p99": 0.0006944652399999981,
+            "maximum": 0.002869041
+          }
+        },
+        "measurementScope": "all completed frames",
+        "warmedSamples": 279,
+        "cpuReadbacks": 279,
+        "osVersion": "Version 26.5 (Build 25F71)",
+        "retainedSamples": 283,
+        "completedWorkSeconds": {
+          "p50": 0.1052721249870956,
+          "minimum": 0.08998408343177289,
+          "p95": 0.12476001658942534,
+          "p99": 0.15216730834450548,
+          "maximum": 0.18319650006014854,
+          "count": 279
+        },
+        "configuration": {
+          "warmupFrames": 3,
+          "processingHeight": 96,
+          "displayWidth": 960,
+          "sourceHeight": 192,
+          "sourceFPS": 30,
+          "source": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+          "displayHeight": 496,
+          "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t58%; discharging; 3:15 remaining present: true",
+          "adapter": "mpv-metal-hdr-policy",
+          "processingWidth": 160,
+          "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+          "settingsJSON": "{\"strength\": 1, \"colourStrength\": 1, \"referenceWhiteNits\": 203, \"maximumLuminanceRatio\": 2, \"policy\": \"adaptive\"}",
+          "displayConfiguration": "gpu-next/macvk; requested drawable960x496 verified against OSD dimensions or native Vulkan swapchain log; physical calibration and brightness unreported",
+          "implementationRevision": "See comparison-level source and binary provenance",
+          "sourceWidth": 320
+        },
+        "cpuWaits": 0,
+        "gpuCopies": 279,
+        "endToEndSeconds": {
+          "p50": 0.20610824995674193,
+          "minimum": 0.17800129170063883,
+          "p95": 0.2519475583103484,
+          "p99": 0.2980036891577759,
+          "maximum": 0.3411610833136365,
+          "count": 279
+        },
+        "device": "Apple M3",
+        "completedCadenceSeconds": {
+          "p50": 0.10524858330609277,
+          "minimum": 0.0900122084422037,
+          "p95": 0.12201218548580067,
+          "p99": 0.1484696741693188,
+          "maximum": 0.18323841667734087,
+          "count": 278
+        },
+        "maximumQueueSlots": 2,
+        "drops": 0,
+        "schemaVersion": 1,
+        "unavailableMetrics": [
+          "presentation timing, drops and duplicates",
+          "audio/video offset",
+          "seek latency",
+          "power and energy",
+          "isolated neural/proxy GPU intervals; completed wall stages are separate"
+        ],
+        "physicalMemoryBytes": 17179869184,
+        "queueSeconds": {
+          "p50": 0.10149712499696761,
+          "minimum": 0.0857367500429973,
+          "p95": 0.12053139164345317,
+          "p99": 0.14776132661383576,
+          "maximum": 0.17903404170647264,
+          "count": 279
+        },
+        "completedTotal": 283,
+        "cpuSubmissionSeconds": {
+          "p50": 4.583271220326424e-06,
+          "minimum": 7.50063918530941e-07,
+          "p95": 1.0716682299971564e-05,
+          "p99": 2.9173283837735684e-05,
+          "maximum": 7.187493611127138e-05,
+          "count": 567
+        },
+        "peakSampledResidentBytes": 562036736,
+        "deadlineMisses": 0,
+        "completedThroughputFPS": 9.408805477971896,
+        "peakRetainedBytes": 5777024,
+        "targetHardware": false,
+        "maximumAllocatorBytes": {
+          "mlx_active": 305442664,
+          "resident_model_payload": 291576650,
+          "mlx_cache": 274597536,
+          "runtime_mlx_cache_policy": 268435456,
+          "mlx_peak_active": 609703572
+        }
+      },
+      "playback": {
+        "seekSecondsToEnhancedPair": 0.5070481250295416,
+        "seekSecondsToOriginalPreview": 0.06760100007522851,
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.024,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.007667,
+        "steadyMedianAVOffsetSeconds": 0.003667,
+        "steadyFirstQuarterMedianAVOffsetSeconds": 0.003333,
+        "steadyLastQuarterMedianAVOffsetSeconds": 0.004,
+        "steadyMedianAVDriftSeconds": 0.0006670000000000001,
+        "steadySampleCount": 937,
+        "synchronisation20msTargetMet": false,
+        "maximumPendingFrames": 2,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "adaptiveBufferEpisodes": 281,
+        "adaptiveBufferedSeconds": 20.919122,
+        "staleGenerationObservations": 0
+      }
+    },
+    {
+      "capture": {
+        "adapter": "erika",
+        "index": 1,
+        "startedUnixSeconds": 1788998351.370968,
+        "report": "erika-1.json",
+        "completed": 286,
+        "warmed": 280,
+        "completedFPS": 8.861375687799127,
+        "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t58%; discharging; 3:05 remaining present: true; app-muted=1; no energy measurement"
+      },
+      "engine": {
+        "duplicatePresentations": 13,
+        "maximumQueueSlots": 3,
+        "endToEndSeconds": {
+          "p50": 0.1619438958587125,
+          "minimum": 0.09226379171013832,
+          "maximum": 0.2952871249290183,
+          "p95": 0.26798487082123756,
+          "p99": 0.28115729622077196,
+          "count": 280
+        },
+        "drops": 275,
+        "gpuStageSeconds": {
+          "rgba16f_pack": {
+            "minimum": 8.624978363513947e-06,
+            "p95": 8.425410487689085e-05,
+            "maximum": 0.0023522499250248075,
+            "p99": 0.00018066457007080112,
+            "p50": 1.066667027771473e-05,
+            "count": 280
+          },
+          "planar_import": {
+            "minimum": 4.325003828853369e-05,
+            "p95": 0.00013873546849936248,
+            "maximum": 0.0021560416789725423,
+            "p99": 0.0006187724811024671,
+            "p50": 6.150000263005495e-05,
+            "count": 280
+          }
+        },
+        "schemaVersion": 1,
+        "retainedSamples": 286,
+        "osVersion": "Version 26.5 (Build 25F71)",
+        "completedThroughputFPS": 8.861375687799127,
+        "completedTotal": 286,
+        "completedStageWallSeconds": {
+          "reconstruction": {
+            "minimum": 0.000837041,
+            "p95": 0.0016837163500000002,
+            "maximum": 0.004795625,
+            "p99": 0.002645264289999993,
+            "p50": 0.001165937,
+            "count": 280
+          },
+          "proxy": {
+            "minimum": 0.00031175,
+            "p95": 0.0007350872,
+            "maximum": 0.00322225,
+            "p99": 0.0017281649999999807,
+            "p50": 0.0006289795,
+            "count": 280
+          },
+          "inference": {
+            "minimum": 0.048967667,
+            "p95": 0.10587234135000001,
+            "maximum": 0.120357958,
+            "p99": 0.11286176503999999,
+            "p50": 0.054776646,
+            "count": 280
+          },
+          "motion": {
+            "minimum": 0.001133667,
+            "p95": 0.0016578226000000002,
+            "maximum": 0.014097375,
+            "p99": 0.007086901249999844,
+            "p50": 0.001321334,
+            "count": 280
+          }
+        },
+        "maximumAllocatorBytes": {
+          "mlx_cache": 269206186,
+          "mlx_peak_active": 565227584,
+          "resident_model_payload": 291576650,
+          "runtime_mlx_cache_policy": 268435456,
+          "mlx_active": 305475432
+        },
+        "configuration": {
+          "warmupFrames": 3,
+          "adapter": "erika-shared-hdr",
+          "processingWidth": 160,
+          "displayWidth": 960,
+          "sourceFPS": 30,
+          "implementationRevision": "See comparison-level source and binary provenance",
+          "displayConfiguration": "native RGBA16F extended-linear Display P3; current EDR queried each tick",
+          "sourceHeight": 192,
+          "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t58%; discharging; 3:05 remaining present: true; app-muted=1; no energy measurement",
+          "sourceWidth": 320,
+          "settingsJSON": "{\"effectStrength\": 1.0, \"colourStrength\": 1, \"referenceWhiteNits\": 203, \"maximumLuminanceRatio\": 2}",
+          "displayHeight": 496,
+          "processingHeight": 96,
+          "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+          "source": "pq-30-60s.mkv;sha256=567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac"
+        },
+        "measurementScope": "all completed frames",
+        "avOffsetSeconds": {
+          "p50": -0.2688918100375286,
+          "minimum": -0.3378880609507664,
+          "maximum": -0.23317022997621772,
+          "p95": -0.2367423879823488,
+          "p99": -0.23388466157744395,
+          "count": 3
+        },
+        "deadlineMisses": 0,
+        "cpuSubmissionSeconds": {
+          "p50": 6.458372808992863e-06,
+          "minimum": 9.583309292793274e-07,
+          "maximum": 7.220834959298372e-05,
+          "p95": 1.1374952737241984e-05,
+          "p99": 1.6018343158066275e-05,
+          "count": 979
+        },
+        "warmedSamples": 280,
+        "peakSampledResidentBytes": 478494720,
+        "completedWorkSeconds": {
+          "p50": 0.09631014580372721,
+          "minimum": 0.07026587496511638,
+          "maximum": 0.16610958334058523,
+          "p95": 0.14958419584436342,
+          "p99": 0.15648727535735815,
+          "count": 280
+        },
+        "unavailableMetrics": [
+          "GPU copy count",
+          "CPU readback count",
+          "CPU wait count",
+          "seek latency",
+          "power and energy",
+          "isolated neural/proxy GPU intervals; completed wall stages are separate"
+        ],
+        "completedCadenceSeconds": {
+          "p50": 0.09667895827442408,
+          "minimum": 0.07029258331749588,
+          "maximum": 0.6290856249397621,
+          "p95": 0.1498681249562651,
+          "p99": 0.15712895832024515,
+          "count": 279
+        },
+        "physicalMemoryBytes": 17179869184,
+        "device": "Apple M3",
+        "peakRetainedBytes": 8665536,
+        "targetHardware": false,
+        "queueSeconds": {
+          "p50": 0.06946166668785736,
+          "minimum": 7.275003008544445e-05,
+          "maximum": 0.13894195831380785,
+          "p95": 0.12070023331907578,
+          "p99": 0.13231365040875967,
+          "count": 280
+        }
+      },
+      "adapter": {
+        "admissionDrops": 689,
+        "clockMeasurement": "audio callback media time sampled before encode, advanced to CAMetalDrawable presentedTime at 1x; unavailable without audio",
+        "decodedFrames": 979,
+        "displayHeadroomRange": [
+          1.0,
+          16.0
+        ],
+        "displayHeight": 496,
+        "displayWidth": 960,
+        "limitations": [
+          "Live overload drops admission; synchronized buffering policy remains required",
+          "Late enhanced overlays omitted until timestamp pairing matches",
+          "No physical display accuracy or M5 performance claim"
+        ],
+        "renderer": "RendererRuntimeStats { surface_width: 960, surface_height: 496, rendered_frames: 1960, offscreen_frames: 0, prepared_overlay_frames: 0, prepared_overlay_subtitle_planes: 0, danmaku_passes: 0, danmaku_draw_items: 0, overlay_alpha_atlas_uploads: 0, overlay_alpha_atlas_reuses: 0, last_danmaku_atlas_duration: 0ns, last_danmaku_vertex_build_duration: 0ns, last_danmaku_vertex_copy_duration: 0ns, last_danmaku_encode_duration: 0ns, last_danmaku_vertex_bytes: 0, last_danmaku_vertex_count: 0, upscaler_mode: Off, upscaler_backend: Off, upscaler_fallbacks: 0, upscaled_frames: 0, last_upscaler_encode_duration: 0ns, last_gpu_duration: 73\u00b5s, attached: true, software_video_frames: 0, hardware_video_frames: 286, zero_copy_video_frames: 286, direct_zero_copy_video_frames: 286, shared_handle_video_frames: 0, cpu_video_frame_fallbacks: 0, hdr_source_frames: 1953, hdr10_output_frames: 0, sdr_tonemap_frames: 0, hdr10_metadata_updates: 0, hdr10_metadata_failures: 0, hdr10_output_failures: 0, hdr10_output_active: false }",
+        "staleCompletions": 0,
+        "unpresentedDrawableCallbacks": 1861
+      }
+    },
+    {
+      "capture": {
+        "adapter": "mpv",
+        "index": 2,
+        "startedUnixSeconds": 1788998387.298522,
+        "report": "mpv-2.json",
+        "completed": 294,
+        "warmed": 290,
+        "completedFPS": 9.789309363410858,
+        "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t57%; discharging; 2:55 remaining present: true"
+      },
+      "engine": {
+        "cpuWaits": 0,
+        "queueSeconds": {
+          "p50": 0.09599822922609746,
+          "maximum": 0.19803854159545153,
+          "p95": 0.11585711872321554,
+          "count": 290,
+          "p99": 0.14940093623474243,
+          "minimum": 0.08148816658649594
+        },
+        "completedWorkSeconds": {
+          "p50": 0.09975241665961221,
+          "maximum": 0.20082437491510063,
+          "p95": 0.1194838812458329,
+          "count": 290,
+          "p99": 0.15255512380041186,
+          "minimum": 0.08501441671978682
+        },
+        "retainedSamples": 294,
+        "peakRetainedBytes": 5777024,
+        "cpuReadbacks": 290,
+        "schemaVersion": 1,
+        "cpuSubmissionSeconds": {
+          "p50": 4.208297468721867e-06,
+          "maximum": 4.0458282455801964e-05,
+          "p95": 7.860379992052907e-06,
+          "count": 590,
+          "p99": 1.7388310516253122e-05,
+          "minimum": 7.917406037449837e-07
+        },
+        "gpuStageSeconds": {
+          "rgba16f_pack": {
+            "maximum": 0.00013437506277114153,
+            "p99": 0.00012092464719899006,
+            "minimum": 9.750016033649445e-06,
+            "p95": 6.828956538811328e-05,
+            "count": 290,
+            "p50": 3.429170465096831e-05
+          },
+          "planar_import": {
+            "maximum": 0.00029699993319809437,
+            "p99": 0.00016198707395233223,
+            "minimum": 6.158335600048304e-05,
+            "p95": 0.00013316457625478506,
+            "count": 290,
+            "p50": 8.597917621955276e-05
+          }
+        },
+        "completedTotal": 294,
+        "gpuCopies": 290,
+        "warmedSamples": 290,
+        "completedStageWallSeconds": {
+          "inference": {
+            "p99": 0.12916915486,
+            "count": 290,
+            "p95": 0.10056252065,
+            "maximum": 0.175155625,
+            "minimum": 0.070663542,
+            "p50": 0.083058417
+          },
+          "proxy": {
+            "p99": 0.0006265479900000005,
+            "count": 290,
+            "p95": 0.00057761615,
+            "maximum": 0.001827625,
+            "minimum": 0.000290083,
+            "p50": 0.0004668965
+          },
+          "reconstruction": {
+            "p99": 0.00244537236,
+            "count": 290,
+            "p95": 0.0020584960499999997,
+            "maximum": 0.0025215009999999998,
+            "minimum": 0.001033708,
+            "p50": 0.0015766455
+          },
+          "motion": {
+            "p99": 0.019460500870000005,
+            "count": 290,
+            "p95": 0.016849178949999998,
+            "maximum": 0.022123958,
+            "minimum": 0.010869292,
+            "p50": 0.0137221455
+          }
+        },
+        "completedThroughputFPS": 9.789309363410858,
+        "osVersion": "Version 26.5 (Build 25F71)",
+        "physicalMemoryBytes": 17179869184,
+        "measurementScope": "all completed frames",
+        "maximumAllocatorBytes": {
+          "resident_model_payload": 291576650,
+          "mlx_active": 305442664,
+          "mlx_peak_active": 609703572,
+          "mlx_cache": 274874904,
+          "runtime_mlx_cache_policy": 268435456
+        },
+        "drops": 0,
+        "duplicatePresentations": 0,
+        "completedCadenceSeconds": {
+          "p50": 0.09977083338890225,
+          "maximum": 0.2008711249800399,
+          "p95": 0.11934150001034141,
+          "count": 289,
+          "p99": 0.14523766329977664,
+          "minimum": 0.08504200004972517
+        },
+        "configuration": {
+          "source": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+          "sourceWidth": 320,
+          "processingHeight": 96,
+          "displayWidth": 960,
+          "implementationRevision": "See comparison-level source and binary provenance",
+          "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+          "displayConfiguration": "gpu-next/macvk; requested drawable960x496 verified against OSD dimensions or native Vulkan swapchain log; physical calibration and brightness unreported",
+          "warmupFrames": 3,
+          "sourceHeight": 192,
+          "adapter": "mpv-metal-hdr-policy",
+          "sourceFPS": 30,
+          "settingsJSON": "{\"strength\": 1, \"colourStrength\": 1, \"referenceWhiteNits\": 203, \"maximumLuminanceRatio\": 2, \"policy\": \"adaptive\"}",
+          "displayHeight": 496,
+          "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t57%; discharging; 2:55 remaining present: true",
+          "processingWidth": 160
+        },
+        "unavailableMetrics": [
+          "presentation timing, drops and duplicates",
+          "audio/video offset",
+          "seek latency",
+          "power and energy",
+          "isolated neural/proxy GPU intervals; completed wall stages are separate"
+        ],
+        "peakSampledResidentBytes": 585826304,
+        "targetHardware": false,
+        "deadlineMisses": 0,
+        "device": "Apple M3",
+        "maximumQueueSlots": 2,
+        "endToEndSeconds": {
+          "p50": 0.1958761457935907,
+          "maximum": 0.389498749980703,
+          "p95": 0.23394602500484327,
+          "count": 290,
+          "p99": 0.30795135669061036,
+          "minimum": 0.16884925006888807
+        }
+      },
+      "playback": {
+        "seekSecondsToEnhancedPair": 1.002442083088681,
+        "seekSecondsToOriginalPreview": 0.0907208330463618,
+        "steadyMaximumAbsoluteAVOffsetSeconds": 0.010333,
+        "steadyP95AbsoluteAVOffsetSeconds": 0.008,
+        "steadyMedianAVOffsetSeconds": 0.004,
+        "steadyFirstQuarterMedianAVOffsetSeconds": 0.004667,
+        "steadyLastQuarterMedianAVOffsetSeconds": 0.004,
+        "steadyMedianAVDriftSeconds": -0.0006670000000000001,
+        "steadySampleCount": 939,
+        "synchronisation20msTargetMet": true,
+        "maximumPendingFrames": 2,
+        "playbackCounterDeltas": {
+          "frame-drop-count": 0,
+          "decoder-frame-drop-count": 0,
+          "vo-delayed-frame-count": 0
+        },
+        "adaptiveBufferEpisodes": 291,
+        "adaptiveBufferedSeconds": 20.574461000000003,
+        "staleGenerationObservations": 0
+      }
+    },
+    {
+      "capture": {
+        "adapter": "erika",
+        "index": 2,
+        "startedUnixSeconds": 1788998422.603486,
+        "report": "erika-2.json",
+        "completed": 216,
+        "warmed": 210,
+        "completedFPS": 6.734617208873429,
+        "power": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t57%; discharging; 2:55 remaining present: true; app-muted=1; no energy measurement"
+      },
+      "engine": {
+        "duplicatePresentations": 0,
+        "targetHardware": false,
+        "deadlineMisses": 0,
+        "configuration": {
+          "warmupFrames": 3,
+          "settingsJSON": "{\"effectStrength\": 1.0, \"colourStrength\": 1, \"referenceWhiteNits\": 203, \"maximumLuminanceRatio\": 2}",
+          "displayWidth": 960,
+          "sourceHeight": 192,
+          "powerConfiguration": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=22741091)\t57%; discharging; 2:55 remaining present: true; app-muted=1; no energy measurement",
+          "implementationRevision": "See comparison-level source and binary provenance",
+          "processingWidth": 160,
+          "source": "pq-30-60s.mkv;sha256=567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+          "processingHeight": 96,
+          "sourceFPS": 30,
+          "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+          "adapter": "erika-shared-hdr",
+          "displayConfiguration": "native RGBA16F extended-linear Display P3; current EDR queried each tick",
+          "sourceWidth": 320,
+          "displayHeight": 496
+        },
+        "maximumAllocatorBytes": {
+          "resident_model_payload": 291576650,
+          "runtime_mlx_cache_policy": 268435456,
+          "mlx_peak_active": 608622228,
+          "mlx_cache": 274498098,
+          "mlx_active": 305442664
+        },
+        "physicalMemoryBytes": 17179869184,
+        "schemaVersion": 1,
+        "queueSeconds": {
+          "p99": 0.1853094575088471,
+          "count": 210,
+          "p50": 0.10434595833066851,
+          "maximum": 0.2889481249731034,
+          "minimum": 5.512498319149017e-05,
+          "p95": 0.14711874789209103
+        },
+        "completedStageWallSeconds": {
+          "inference": {
+            "p95": 0.12967059359999994,
+            "p99": 0.162655682,
+            "maximum": 0.248365666,
+            "count": 210,
+            "p50": 0.09502314549999999,
+            "minimum": 0.074825916
+          },
+          "reconstruction": {
+            "p95": 0.0020544060999999995,
+            "p99": 0.003046058,
+            "maximum": 0.003816,
+            "count": 210,
+            "p50": 0.00135275,
+            "minimum": 0.0009282089999999999
+          },
+          "motion": {
+            "p95": 0.0017853126499999996,
+            "p99": 0.0040875089099999965,
+            "maximum": 0.025579334,
+            "count": 210,
+            "p50": 0.0013791250000000001,
+            "minimum": 0.00114875
+          },
+          "proxy": {
+            "p95": 0.0009559336999999999,
+            "p99": 0.0015015417799999992,
+            "maximum": 0.003433083,
+            "count": 210,
+            "p50": 0.0006300005,
+            "minimum": 0.000418125
+          }
+        },
+        "cpuSubmissionSeconds": {
+          "p99": 1.6891653649508938e-05,
+          "count": 947,
+          "p50": 6.833230145275593e-06,
+          "maximum": 0.00011279166210442781,
+          "minimum": 1.500011421740055e-06,
+          "p95": 1.1875026393681764e-05
+        },
+        "retainedSamples": 216,
+        "peakRetainedBytes": 8665536,
+        "completedThroughputFPS": 6.734617208873429,
+        "warmedSamples": 210,
+        "completedTotal": 216,
+        "completedCadenceSeconds": {
+          "p99": 0.20775043327361326,
+          "count": 209,
+          "p50": 0.13651891669724137,
+          "maximum": 1.809305666713044,
+          "minimum": 0.11454862495884299,
+          "p95": 0.17557685000356285
+        },
+        "osVersion": "Version 26.5 (Build 25F71)",
+        "measurementScope": "all completed frames",
+        "unavailableMetrics": [
+          "presentation timing, drops and duplicates",
+          "audio/video offset",
+          "GPU copy count",
+          "CPU readback count",
+          "CPU wait count",
+          "seek latency",
+          "power and energy",
+          "isolated neural/proxy GPU intervals; completed wall stages are separate"
+        ],
+        "maximumQueueSlots": 3,
+        "device": "Apple M3",
+        "peakSampledResidentBytes": 472236032,
+        "drops": 208,
+        "completedWorkSeconds": {
+          "p99": 0.21101003079209477,
+          "count": 210,
+          "p50": 0.1365285207866691,
+          "maximum": 0.321635291678831,
+          "minimum": 0.11452820838894695,
+          "p95": 0.1779884562885854
+        },
+        "gpuStageSeconds": {
+          "planar_import": {
+            "p95": 0.00015257909544743594,
+            "p99": 0.0005217399366665626,
+            "maximum": 0.004077833378687501,
+            "count": 210,
+            "p50": 0.00010066665709018707,
+            "minimum": 6.150000263005495e-05
+          },
+          "rgba16f_pack": {
+            "p95": 8.962916908785699e-05,
+            "p99": 0.0006572562665678552,
+            "maximum": 0.0021792083280161023,
+            "count": 210,
+            "p50": 4.202080890536308e-05,
+            "minimum": 9.958399459719658e-06
+          }
+        },
+        "endToEndSeconds": {
+          "p99": 0.38944672460202123,
+          "count": 210,
+          "p50": 0.23914977081585675,
+          "maximum": 0.48155037499964237,
+          "minimum": 0.1906972083961591,
+          "p95": 0.32203352502547206
+        }
+      },
+      "adapter": {
+        "admissionDrops": 727,
+        "clockMeasurement": "audio callback media time sampled before encode, advanced to CAMetalDrawable presentedTime at 1x; unavailable without audio",
+        "decodedFrames": 947,
+        "displayHeadroomRange": [
+          1.0,
+          16.0
+        ],
+        "displayHeight": 496,
+        "displayWidth": 960,
+        "limitations": [
+          "Live overload drops admission; synchronized buffering policy remains required",
+          "Late enhanced overlays omitted until timestamp pairing matches",
+          "No physical display accuracy or M5 performance claim"
+        ],
+        "renderer": "RendererRuntimeStats { surface_width: 960, surface_height: 496, rendered_frames: 1889, offscreen_frames: 0, prepared_overlay_frames: 0, prepared_overlay_subtitle_planes: 0, danmaku_passes: 0, danmaku_draw_items: 0, overlay_alpha_atlas_uploads: 0, overlay_alpha_atlas_reuses: 0, last_danmaku_atlas_duration: 0ns, last_danmaku_vertex_build_duration: 0ns, last_danmaku_vertex_copy_duration: 0ns, last_danmaku_encode_duration: 0ns, last_danmaku_vertex_bytes: 0, last_danmaku_vertex_count: 0, upscaler_mode: Off, upscaler_backend: Off, upscaler_fallbacks: 0, upscaled_frames: 0, last_upscaler_encode_duration: 0ns, last_gpu_duration: 39.458\u00b5s, attached: true, software_video_frames: 0, hardware_video_frames: 216, zero_copy_video_frames: 216, direct_zero_copy_video_frames: 216, shared_handle_video_frames: 0, cpu_video_frame_fallbacks: 0, hdr_source_frames: 1882, hdr10_output_frames: 0, sdr_tonemap_frames: 0, hdr10_metadata_updates: 0, hdr10_metadata_failures: 0, hdr10_output_failures: 0, hdr10_output_active: false }",
+        "staleCompletions": 0,
+        "unpresentedDrawableCallbacks": 1797
+      }
+    }
+  ]
+}

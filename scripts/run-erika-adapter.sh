@@ -17,21 +17,26 @@ mkdir -p "$(dirname "$ERIKA_FRAME_ENGINE_REPORT")"
 if [[ -n "${ERIKA_FRAME_ENGINE_CAPTURE:-}" ]]; then mkdir -p "$ERIKA_FRAME_ENGINE_CAPTURE"; fi
 export ERIKA_FRAME_ENGINE_MEASUREMENTS
 ERIKA_FRAME_ENGINE_MEASUREMENTS="$(python3 - "$media" <<'PY'
-import json,os,subprocess,sys
+import hashlib,json,os,subprocess,sys
+from pathlib import Path
 path=os.path.realpath(sys.argv[1])
 p=json.loads(subprocess.check_output(['/opt/homebrew/opt/ffmpeg-full/bin/ffprobe','-v','error','-select_streams','v:0','-show_streams','-of','json',path]))['streams'][0]
 a,b=map(int,p['avg_frame_rate'].split('/'))
 model=os.environ.get('ERIKA_FRAME_ENGINE_MODEL')
-model_version=json.load(open(os.path.join(model,'manifest.json')))['weights']['sha256'] if model else 'bypass'
+def digest(path):
+ with open(path,'rb') as source: return hashlib.file_digest(source,'sha256').hexdigest()
+model_version=digest(os.path.join(model,'weights.safetensors')) if model else 'original'
 revision=subprocess.check_output(['git','-C','vendor/Erika','rev-parse','HEAD'],text=True).strip()
 if subprocess.check_output(['git','-C','vendor/Erika','status','--porcelain'],text=True).strip(): revision+=' + worktree'
-print(json.dumps(dict(adapter='erika-shared-hdr',source=path,sourceWidth=p['width'],sourceHeight=p['height'],
+config=dict(adapter='erika-shared-hdr',source=Path(path).name+';sha256='+digest(path),sourceWidth=p['width'],sourceHeight=p['height'],
  processingWidth=int(os.environ['ERIKA_FRAME_ENGINE_WIDTH']),processingHeight=int(os.environ['ERIKA_FRAME_ENGINE_HEIGHT']),
- displayWidth=1920,displayHeight=992,sourceFPS=a/b,modelVersion=model_version,
+ displayWidth=int(os.environ.get('ERIKA_ADAPTER_DISPLAY_WIDTH','1920')),displayHeight=int(os.environ.get('ERIKA_ADAPTER_DISPLAY_HEIGHT','992')),sourceFPS=a/b,modelVersion=model_version,
  implementationRevision=revision,
  settingsJSON=json.dumps(dict(effectStrength=float(os.environ['ERIKA_FRAME_ENGINE_STRENGTH']),colourStrength=1,referenceWhiteNits=203,maximumLuminanceRatio=2)),
  warmupFrames=3,displayConfiguration='native RGBA16F extended-linear Display P3; current EDR queried each tick',
- powerConfiguration='uncontrolled development run; no energy measurement')))
+ powerConfiguration=subprocess.check_output(['pmset','-g','batt'],text=True).strip()+'; app-muted='+os.environ.get('ERIKA_ADAPTER_MUTE','0')+'; no energy measurement')
+Path(os.environ['ERIKA_FRAME_ENGINE_REPORT']).with_suffix('.configuration.json').write_text(json.dumps(config,indent=2)+'\n')
+print(json.dumps(config))
 PY
 )"
 exec artifacts/erika-target/debug/macos_native_demo --edr 4 \

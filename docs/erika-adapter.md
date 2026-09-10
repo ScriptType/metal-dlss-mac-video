@@ -84,3 +84,5 @@ bash scripts/run-erika-adapter.sh artifacts/erika-adapter/hdr10-repeat-12s.mp4 \
 ```
 
 Reports and captures remain ignored under `artifacts/erika-adapter/`. These short development runs establish the prototype path and expose overload; they do not establish sustainable real-time performance, long-duration A/V drift, or a playback-core winner. In particular, source timing, cold compilation, display dimensions and window visibility differ from CLI-only mpv runs and must be controlled for comparative qualification.
+
+The [alternating M3 capture](adapter-comparison.md) uses matched source/model/processing/drawable dimensions and app-muted audio. Its incomplete drawable callbacks prevent a final presentation comparison; the captured limits remain explicit.

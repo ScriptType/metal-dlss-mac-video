@@ -66,9 +66,13 @@ def main():
     parser.add_argument("source", type=Path)
     parser.add_argument("--model", type=Path)
     parser.add_argument("--seconds", type=float, default=12)
+    parser.add_argument("--width", type=int, default=32)
+    parser.add_argument("--height", type=int, default=24)
     parser.add_argument("--seek-target", default="0.73", help="Decimal final target; expected frame comes from exact source timestamps")
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
+    if not (1 <= args.width <= 16384 and 1 <= args.height <= 16384):
+        parser.error("processing dimensions must be within 1…16384")
     root = Path(__file__).resolve().parents[1]
     source_path = args.source.resolve()
     source_hash = digest(source_path)
@@ -98,7 +102,7 @@ def main():
         "requestedPlaybackWallSeconds": args.seconds})
     with tempfile.TemporaryDirectory(prefix="mpv-policy-") as directory:
         ipc = Path(directory) / "ipc"
-        options = "@enhance:metal-hdr=policy=adaptive:processing-width=32:processing-height=24:strength=1:maximum-luminance-ratio=2"
+        options = f"@enhance:metal-hdr=policy=adaptive:processing-width={args.width}:processing-height={args.height}:strength=1:maximum-luminance-ratio=2"
         if args.model:
             model = str(args.model.resolve())
             options += f":model=%{len(model.encode())}%{model}"
@@ -107,7 +111,7 @@ def main():
         model_id = digest(args.model / "weights.safetensors") if args.model else "original"
         config = {"adapter": "mpv-metal-hdr-policy", "source": source_hash,
             "sourceWidth": source_stream["width"], "sourceHeight": source_stream["height"],
-            "processingWidth": 32, "processingHeight": 24, "displayWidth": 960, "displayHeight": 496,
+            "processingWidth": args.width, "processingHeight": args.height, "displayWidth": 960, "displayHeight": 496,
             "sourceFPS": float(Fraction(source_stream["avg_frame_rate"])), "modelVersion": model_id,
             "implementationRevision": json.dumps(provenance, sort_keys=True, separators=(",", ":")), "warmupFrames": 3,
             "settingsJSON": json.dumps({"strength": 1, "colourStrength": 1, "referenceWhiteNits": 203,
@@ -271,7 +275,7 @@ def main():
             observed = [sample["state"] for sample in report["samples"]]
             report["staleGenerationObservations"] = sum(s.get("displayed-generation", s.get("generation")) != s.get("generation") for s in observed)
             report["displayedContentKinds"] = sorted({s.get("displayed-content-kind", "unavailable") for s in observed})
-            report["liveDeadlineFallback"] = "unexercised: neural Live is correctly unqualified for32x24; Adaptive deadline buffering measured directly"
+            report["liveDeadlineFallback"] = "unexercised: Live request rejected before warmed qualification; Adaptive deadline buffering measured directly"
             if report["staleGenerationObservations"]:
                 raise RuntimeError("stale generation observed during controlled playback")
             report["passed"] = True
