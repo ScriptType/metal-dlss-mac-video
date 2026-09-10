@@ -106,9 +106,44 @@ The manifest pins the generator, recipe, exact timing, RGB payloads and auxiliar
 
 Use a new output directory. Incomplete preparation is retained on failure; the final input manifest is published only after the payload checks complete. The default RGB input occupies 298,598,400 bytes, plus masks and metadata. A later four-view capture requires another 1,194,393,600 bytes plus metadata and fits the existing default capture allowance. Use the normal reference capture/review commands above, keeping their model/runtime provenance.
 
-The [M3 input validation](evidence/m3-occlusion-reference-input.json) accepted all 48 frames through the existing CPU preflight. An independent audit checked 240 masks and 72,014,184 corresponding Float32 components with no differences, including 19 exact static comparisons. A deliberately incorrect same-screen reveal mask was rejected with 2,088 missed pixels. Two small-scale generations reproduced their complete manifests exactly in the same pinned runtime; existing output and dangling-symlink controls preserved the prior evidence. The raw input, audit source and reports are retained locally at the paths and hashes recorded in the evidence. No neural capture has run for this sequence.
+The [M3 input validation](evidence/m3-occlusion-reference-input.json) accepted all 48 frames through the existing CPU preflight. An independent audit checked 240 masks and 72,014,184 corresponding Float32 components with no differences, including 19 exact static comparisons. A deliberately incorrect same-screen reveal mask was rejected with 2,088 missed pixels. Two small-scale generations reproduced their complete manifests exactly in the same pinned runtime; existing output and dangling-symlink controls preserved the prior evidence. The raw input, audit source and reports are retained locally at the paths and hashes recorded in the evidence. That report covers input preparation. The subsequent neural capture is described below.
 
 Preparation and exact source correspondence do not establish neural motion estimation, absence of ghosting, accepted temporal quality or native playback. Those require a subsequent capture and review. The natural animation and live-action references below retain their separate content and provenance.
+
+## Motion-aligned occlusion analysis
+
+The controlled source has exact integer motion. After capturing its complete 48 frames, compare neural residuals at the corresponding material coordinates:
+
+```sh
+uv run --frozen python scripts/analyze-occlusion-reference.py \
+  --input artifacts/occlusion-reference-input/manifest.json \
+  --capture artifacts/occlusion-reference-capture/manifest.json \
+  --output artifacts/occlusion-reference-analysis
+```
+
+The analysis requires the original prepared directory because its mask sidecars are referenced by the capture's input-manifest copy but are not copied into the capture. It checks complete four-view pairing, input identity, timing, saved masks and exact original-pixel correspondence. Proxy pixels are encoded sRGB and do not enter the nit-domain residual calculations.
+
+For background and foreground, it measures the change in enhanced-minus-original and identity-minus-original residuals at the same visible surface in adjacent frames. Pixels must be inside both viewports and visible as the same surface in both images. Newly revealed and entering-viewport pixels have no visible predecessor; their temporal measurements are unavailable. Empty regions are also unavailable, rather than zero error.
+
+Reveal cohorts follow fixed background world coordinates at ages 0, 1, 2, 4 and 8, and at final frame 47 where still visible. These compare each later residual with its value when the pixel was revealed. Final-frame measurements describe later context; they do not supply an ideal enhanced target. Static intervals and public history-reset flags remain in the results.
+
+The report and CSV contain signed mean, mean absolute, RMS and maximum absolute RGB-component residuals in nits. These describe changes in enhancement; intended enhancement can also produce nonzero residuals. They do not classify ghosting, establish perceived flicker or impose an accepted quality threshold. Use the raw views and fixed-mapping visual review alongside these measurements.
+
+## M3 controlled occlusion observation
+
+The [48-frame neural capture and analysis](evidence/m3-occlusion-temporal.json) uses the canonical 960 × 540 input with 512 × 288 processing, automatic motion requested, strength and colour strength 1, ratio 2 and reference white 203 nits. All 192 views pass complete-capture integrity and finite-value checks; all 48 originals match the inputs exactly. Identity reconstruction differs by at most 0.000003815 nit per component. Only cold-start frame 0 reports a history reset.
+
+Residual variation remains after matching the same visible source material. The largest background temporal RMS is 15.1426 nits at frames 11→12; the largest background component change is 964.342 nits at 12→13. Foreground temporal RMS peaks at 2.18575 nits at 16→17. During the final static interval, frames 45→46 have identical original pixels yet an 8.38175-nit RMS change in enhancement residual. These are equal-weight RGB-component measurements, not luminance or perceived-flicker scores.
+
+The 10,440 background pixels revealed at frame 21 show a 51.6538-nit RMS residual change two frames later, while their original pixels remain bit-identical. The later frame is an empirical context comparison; it does not define ideal enhancement or isolate a cause. All 384 regional/residual rows and 168 reveal-cohort observations are retained, including cold history, static intervals and empty regions.
+
+![Motion-aligned residual trajectories and all reveal cohorts](evidence/m3-occlusion-temporal.png)
+
+[Regional CSV](evidence/m3-occlusion-temporal.csv), [cohort CSV](evidence/m3-occlusion-cohorts.csv), [standalone PDF](evidence/m3-occlusion-temporal.pdf). Five CPU tests use explicitly fabricated captures: material-attached residuals yield exact zero aligned change despite nonzero fixed-screen variation; unit frame drift yields exact unit aligned change and cohort changes equal to age. Resealed mask corruption, exact-time mismatches and existing-output controls also pass. These tests are included in CI.
+
+The capture process exits successfully in 77.192 seconds, with peak sampled RSS 639,041,536 bytes and at least 6,602,280,960 free disk bytes; both power readings show AC. All 311 frozen input/runtime/source pins remain unchanged. The original wrapper's final model check reports failure because it compared absolute and relative directory paths literally. That failed report is preserved. A separate audit verifies the paths resolve to the same directory, both model hashes match and the completed capture passes the remaining checks; no capture was repeated or rewritten. Process duration includes preflight, inference, readback and writes and differs from the manifest's later timing origin.
+
+The observations identify temporal residual variation for further investigation. They do not establish its cause, acceptable temporal quality, absence of ghosting, source-rate Live, physical HDR or native playback. Grain/global-flash cases and natural-scene quality retain their separate requirements. Raw views and the fixed SDR review remain at `artifacts/temporal-occlusion-reference-1/capture-1` and `review-1` respectively.
 
 ## M3 natural-sequence observation
 

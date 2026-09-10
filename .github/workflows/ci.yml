@@ -48,5 +48,7 @@ jobs:
           python3 -m unittest discover -s scripts -p test_mpv_policy_timing.py
           python3 scripts/audit-public-tree.py
           git diff --check
-      - name: Check HDR reference preparation (CPU only)
-        run: uv run --frozen python scripts/test_apple_hdr_reference.py
+      - name: Check HDR reference preparation and occlusion analysis (CPU only)
+        run: |
+          uv run --frozen python scripts/test_apple_hdr_reference.py
+          uv run --frozen python scripts/test_occlusion_reference_analysis.py
