@@ -2,7 +2,7 @@
 
 `HDRMetalView` is the native development surface. `NativeHDRPlayback` feeds it decoded SDR, PQ and HLG originals; this controller is a video-only harness. Selected-core audio, seeks, track controls and neural playback remain separate integration work.
 
-The embedded mpv player uses a different native output path. Its [linear HDR colour audit](native-hdr-color-audit.md) identifies target-range loss and mismatched Metal-layer optical units. The development surface policy below does not establish correctness of that player path.
+The embedded mpv player uses a different native output path. Its [linear HDR colour audit](native-hdr-color-audit.md) records the target-range and optical-unit fix, ten passing metadata transitions, and the remaining compositor/display checks. The development surface policy below does not establish correctness of that player path.
 
 ## Buffer and colour policy
 

@@ -1,8 +1,8 @@
 # Native HDR output color audit
 
-The M3 native output controls identify two defects in the measured mpv/macvk path: a linear HDR target loses its peak metadata and defaults to 203 nits, and its float Metal layer retains HDR metadata created for the preceding PQ presentation. A public metadata control reversibly changed compositor output when its optical scale changed from 1 to 203. No production fix is included in this checkpoint.
+The M3 native output controls identified two defects in the former mpv/macvk path: a linear HDR target lost its peak metadata and defaulted to 203 nits, and its float Metal layer retained HDR metadata created for the preceding PQ presentation. A public metadata control reversibly changed compositor output when its optical scale changed from 1 to 203. The targeted native fix now preserves the range and assigns consistent float units after swapchain recreation. Ten metadata transitions pass; a final comparison of compositor pixels with stable window visibility remains open.
 
-[Compact evidence](evidence/m3-native-hdr-color-audit.json) preserves the successful controls, the failed original-object restore, exact source and binary hashes, capture timing, and report/payload checksums. All three diagnostic hosts exited successfully with unchanged player, mpv, libplacebo, MoltenVK and shared-engine binaries. The isolated host changed between control builds; each binary is recorded separately.
+The original [isolation evidence](evidence/m3-native-hdr-color-audit.json), published in `38d696a`, preserves the successful controls, the failed original-object restore, exact source and binary hashes, capture timing, and report/payload checksums. All three diagnostic hosts exited successfully with unchanged player, mpv, libplacebo, MoltenVK and shared-engine binaries. The isolated host changed between control builds; each binary is recorded separately.
 
 ## Fixed frame and measured controls
 
@@ -28,18 +28,46 @@ MoltenVK 1.4.2 creates HDR metadata with optical scale 1 for the preceding PQ sw
 
 The recorded mpv PNG screenshots are a separate diagnostic. `vo_gpu_next.c:1959` clears the linear source peak before rendering screenshots to a separate UNORM target. They are not raw native swapchain pixels and cannot replace the SCK/exported-buffer evidence.
 
-## Reproduction and implementation boundary
+## Native fix and verified scope
 
-With the existing shared engine and mpv build present, run sequentially in an available GPU window:
+The [implementation evidence](evidence/m3-native-hdr-color-fix.json) records the final mpv sources published as `ae579755614cd8a0edf7c6f9d94c0095c7d26216`. Captures used a working tree containing those exact sources before the commit; publication did not rebuild the binaries. The final `libmpv.2.dylib` SHA256 is `4859ba6b0caafa2c7f26bfe6889ae5d1db9c5792cd71503dace6da9bd854ef25`.
+
+The macvk external-color callback preserves a linear BT.2020 target's supplied range while retaining Vulkan's normal color-space and RGBA16F selection. It completes pending recreation with `pl_swapchain_resize(0,0)`, validates the actual layer format/color space/EDR contract, then assigns public HDR metadata with `opticalOutputScale = 203`. That value comes from the source call; `CAEDRMetadata` has no public scale getter. Actual layer properties and target peak are recorded independently. Default linear output therefore reaches Core Animation with source range and defined optical units; it no longer acquires an automatic 203-nit target cap. Explicit user target settings retain their normal meaning. No pass-through swapchain, alpha conversion or swizzle was added.
+
+The ordering follows Apple's requirement to set [`edrMetadata` before `nextDrawable`](https://developer.apple.com/documentation/quartzcore/cametallayer/edrmetadata). The pinned libplacebo resize path creates the swapchain and image wrappers without acquiring a drawable; an unchanged swapchain only takes its mutex. Drawable acquisition follows later in frame start. The renderer retains the layer and metadata under Objective-C manual reference counting and performs a short explicit Core Animation transaction. It makes no synchronous AppKit call per color update and holds no Core Animation lock across Vulkan or main-queue calls. Screen/profile/backing callbacks invalidate a locked revision and request redraw. Allocation/contract failures cannot claim a configured external HDR target.
+
+The successful metadata-only sequence selects exactly 20 seconds from PQ, HLG and SDR sources, then resizes and restores the same float frame. Each enhancement uses real NR at 32×24; this remains an instrumentation shape.
+
+| Observed path | Actual layer / target | Check |
+| --- | --- | --- |
+| Original PQ | ITUR2100 PQ, 1000 nits | Fresh native HDR metadata after returning from float output |
+| Original HLG | ITUR2100 PQ, 1000 nits | This MoltenVK selection converts HLG to a PQ target; metadata is refreshed |
+| Original SDR | ITUR709, 203 nits | HDR metadata is nil |
+| Enhanced PQ | RGBA16F, extended-linear BT.2020, 1018.656982 nits | Full output peak retained; return reproduces the exact `f84a…ff3fe2` source export |
+| Enhanced HLG | RGBA16F, extended-linear BT.2020, 1089.223755 nits | Full output peak retained |
+| Enhanced SDR and resize | RGBA16F, extended-linear BT.2020, 203 nits | Drawable changes 2120×1048 → 1680×1000 → 2120×1048; all three exports are byte-identical |
+
+All ten phases passed and the process exited cleanly with unchanged binaries. Many transition phases were occluded, so they establish native state, source bytes and lifecycle behavior. They do not establish compositor brightness, physical luminance or scanout timing. Multiple-display/profile behavior still needs broader runtime qualification.
+
+The evidence retains every excluded attempt. Two early compositor runs became occluded; a later run passed its original weak visibility check but its title-free window inventory showed a global desktop/Space translation. The final guarded binary's capture moved from global x=180/visible before SCK to x=−1683/occluded afterward and is rejected by the stronger check. The source of that movement is not inferred. Two separate harness errors are also preserved: requesting a third lease under a two-lease limit, and casting an in-memory `[CGFloat]` resize value to `[Double]`. The corrected metadata sequence passes. None of these files is presented as a passing final compositor comparison.
+
+## Reproduction
+
+With the shared engine and current mpv build present, compile the diagnostic host and run the metadata transitions in an available GPU window:
 
 ```sh
 bash scripts/build-hdr-native-color-probe.sh
-bash scripts/build-hdr-capture-probe.sh
-python3 scripts/test-hdr-native-color.py --output artifacts/native-color-target-new
-python3 scripts/test-hdr-native-color.py --output artifacts/native-color-metadata-new --metadata-control
-python3 scripts/test-hdr-native-color.py --output artifacts/native-color-scale-new --scale-control
+python3 scripts/test-hdr-native-color.py --transition-control \
+  --output artifacts/native-color-transitions-new
 ```
 
-The wrapper refuses existing output paths and never requests screen-capture permission. The helper uses only public APIs and the current frame-export ABI; it creates no AVKit renderer or PiP controller. Seven existing capture-parser CPU tests passed, both isolated helpers compiled, and all payload/report hashes were verified.
+A later compositor check additionally needs screen-capture access already granted and a stable, visible desktop throughout the three phases:
 
-A platform color handler is the preferred next implementation candidate: preserve the linear target's supplied range, explicitly configure float optical units, and clear stale metadata during source/transfer transitions. Its swapchain format, alpha, recreation order and display-update behavior must be verified before adoption. Clearing metadata alone does not define an absolute HDR mapping. The source/export contract should remain unchanged; native output needs one defined display mapper. This gate is separate from the unsupported macOS sample-buffer PiP route and from physical display qualification.
+```sh
+bash scripts/build-hdr-capture-probe.sh
+python3 scripts/test-hdr-native-color.py --output artifacts/native-color-target-new
+```
+
+The current wrapper checks actual visibility and identical global window/display/backing geometry before and after every SCK capture. It rejects a Space transition without repeatedly forcing the window forward. It refuses existing output paths and never requests screen-capture permission. The historical `--metadata-control` and `--scale-control` results above belong to the recorded pre-fix binaries; the native fix now owns and refreshes those metadata values during redraw.
+
+Seven capture-parser CPU tests and the isolated mpv/diagnostic-host builds pass. Raw source, report and payload hashes remain available in the implementation evidence. This native output gate is separate from the unsupported macOS sample-buffer PiP route and from physical display qualification.

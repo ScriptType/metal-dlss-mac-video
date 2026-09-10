@@ -19,13 +19,27 @@ def sha(path):
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
+def settled_geometry(surface, pid):
+    if surface["pid"] != pid or not surface["visible"] or not surface["occlusionVisible"] or surface["miniaturized"]:
+        raise RuntimeError("Target window is not actually visible")
+    bounds = surface.get("onScreenBounds")
+    if not isinstance(bounds, dict):
+        raise RuntimeError("Target is absent from the on-screen window inventory")
+    return {"bounds": bounds, "backingScale": surface["backingScale"],
+            "contentBounds": surface["contentBounds"], "screenID": surface["screen"]["displayID"],
+            "screenFrame": surface["screen"]["frame"],
+            "drawableSize": surface["metalLayer"]["drawableSize"]}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--metadata-control", action="store_true", help="Hold target-peak1000; clear and restore only actual CAMetalLayer EDRMetadata")
     parser.add_argument("--scale-control", action="store_true", help="Hold target-peak1000; assign fresh public metadata with opticalOutputScale1,203,1 and request redraw")
+    parser.add_argument("--transition-control", action="store_true", help="Run native PQ/HLG/SDR and linear/resize metadata transitions without SCK capture")
+    parser.add_argument("--metadata-only", action="store_true", help="Record native state and title-free window ordering without any SCK pixel capture")
     args = parser.parse_args()
-    if args.metadata_control and args.scale_control:
+    if sum([args.metadata_control, args.scale_control, args.transition_control]) > 1:
         parser.error("Select only one control")
     output = args.output.resolve()
     if output.exists():
@@ -44,16 +58,17 @@ def main():
     report = {"passed": False, "sourceSHA256": sha(source), "weightsSHA256": sha(model / "weights.safetensors"),
               "binaries": {str(path): {"beforeSHA256": sha(path)} for path in paths}, "captures": []}
     process = None
-    names = ("scale1", "scale203", "scale1-repeat") if args.scale_control else ("metadata-original", "metadata-cleared", "metadata-restored") if args.metadata_control else ("auto", "peak1000", "auto-repeat")
+    names = () if args.transition_control else ("scale1", "scale203", "scale1-repeat") if args.scale_control else ("metadata-original", "metadata-cleared", "metadata-restored") if args.metadata_control else ("auto", "peak1000", "auto-repeat")
     try:
         preflight = subprocess.run([str(capture), "--preflight"], capture_output=True, text=True, timeout=10)
         report["screenCapturePreflight"] = json.loads(preflight.stdout)
         if preflight.returncode:
             raise RuntimeError("Screen capture preflight failed; no permission requested")
         with output.with_name(output.name + "-host.log").open("x") as log:
-            mode = ["--scale-control"] if args.scale_control else ["--metadata-control"] if args.metadata_control else []
+            mode = ["--transition-control"] if args.transition_control else ["--scale-control"] if args.scale_control else ["--metadata-control"] if args.metadata_control else []
             process = subprocess.Popen([str(host), str(source), str(model), str(output)] + mode, stdout=log, stderr=subprocess.STDOUT)
             report["pid"] = process.pid
+            reference_geometry = None
             for name in names:
                 directory = output / name
                 ready = directory / "ready.json"
@@ -64,8 +79,15 @@ def main():
                     time.sleep(.02)
                 phase = json.loads(ready.read_text())
                 surface = phase["surface"]
-                if surface["pid"] != process.pid or not surface["visible"] or not surface["occlusionVisible"] or surface["miniaturized"]:
-                    raise RuntimeError(f"Host is not actually visible: {surface}")
+                if args.metadata_only:
+                    report["captures"].append({"phase": name, "captureAttempted": False, "surface": surface})
+                    (directory / "capture-complete").touch()
+                    continue
+                before_geometry = settled_geometry(surface, process.pid)
+                if reference_geometry is None:
+                    reference_geometry = before_geometry
+                if before_geometry != reference_geometry:
+                    raise RuntimeError("Target/display geometry changed between phases; capture is excluded")
                 command = [str(capture), "--owner-pid", str(process.pid), "--owner-bundle", "unbundled",
                     "--window-id", str(surface["windowID"]), "--output", str(directory / "sck-hdr"),
                     "--frame-reference", str(ready)]
@@ -76,9 +98,24 @@ def main():
                 if result.returncode:
                     raise RuntimeError(f"Target capture failed: {result.stderr}")
                 (directory / "capture-complete").touch()
-            report["hostExitCode"] = process.wait(timeout=25)
+                phase_result = directory / "phase.json"
+                deadline = time.monotonic() + 10
+                while not phase_result.exists():
+                    if process.poll() is not None or time.monotonic() >= deadline:
+                        raise RuntimeError("Host did not record the post-capture state")
+                    time.sleep(.02)
+                final_phase = json.loads(phase_result.read_text())
+                after_geometry = settled_geometry(final_phase["surfaceAfter"], process.pid)
+                if before_geometry != after_geometry:
+                    raise RuntimeError("Target/display geometry changed during capture; capture is excluded")
+                report["captures"][-1]["settledVisibleGeometry"] = before_geometry
+            report["hostExitCode"] = process.wait(timeout=100 if args.transition_control else 25)
             session = json.loads((output / "session.json").read_text())
             report["hostPassed"] = session["passed"]
+            if args.transition_control:
+                report["transitionPhases"] = [{"name": phase["name"], "passed": phase["passed"],
+                    "visible": phase["surface"]["visible"], "occlusionVisible": phase["surface"]["occlusionVisible"]}
+                    for phase in session.get("phases", [])]
             if report["hostExitCode"] or not session["passed"]:
                 raise RuntimeError(f"Host failed: {session.get('error')}")
             report["passed"] = True

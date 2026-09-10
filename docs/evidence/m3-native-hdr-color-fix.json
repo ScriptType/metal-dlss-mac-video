@@ -1,0 +1,4335 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-09-10",
+  "hardware": "Apple M3 /16GiB",
+  "scope": "Native macvk linear HDR target/metadata ordering fix; successful metadata transitions, excluded unsettled compositor captures. No physical display qualification.",
+  "status": {
+    "implementationAndMetadataTransitionsPassed": true,
+    "finalSettledCompositorComparisonPassed": false,
+    "physicalDisplayQualification": false
+  },
+  "baseline": {
+    "path": "docs/evidence/m3-native-hdr-color-audit.json",
+    "sha256": "a1b5ef0a79315f5ec54e11cb3e9a61dc5356b0767fc870418e99be0bc966e512",
+    "commit": "38d696a",
+    "scope": "Published two-defect isolation and reversible fresh optical-scale1\u2192203\u21921 control; original-object restore failure remains retained."
+  },
+  "sourceScope": {
+    "rootHEADAtAssembly": "18b21d964bd97fb7e15636d6a9c62b6e51399e45",
+    "mpvHEADAtAssembly": "ae579755614cd8a0edf7c6f9d94c0095c7d26216",
+    "capturedWorkingTreeWasDirty": true,
+    "publishedMPVCommitMatchingCapturedSources": "ae579755614cd8a0edf7c6f9d94c0095c7d26216",
+    "files": [
+      {
+        "path": "vendor/mpv/video/out/vulkan/context_mac.m",
+        "bytes": 9513,
+        "sha256": "d27c20adc80a2ea5bc52b7359a53edb28a839a1c76a5500196ca6a2e2038ec4c"
+      },
+      {
+        "path": "vendor/mpv/video/out/mac_common.swift",
+        "bytes": 12122,
+        "sha256": "03dcbbc362bf3750b4210a97f948c639f27522b0301d11ee7221ee26161840dd"
+      },
+      {
+        "path": "tools/HDRNativeColorProbe/main.swift",
+        "bytes": 22775,
+        "sha256": "da084de8043f9d3300b8f663f2a436b43135e788765a525d7e82e5f9b3acb130"
+      },
+      {
+        "path": "scripts/test-hdr-native-color.py",
+        "bytes": 8880,
+        "sha256": "00746d8e7dfb49b5c41742fc000c9c824752987327570bc0d5a25681c2ebbfa5"
+      }
+    ],
+    "note": "Final vendor sources match ordered-target-2 and ordered-transitions-1/2 core binaries. Final diagnostic host and wrapper sources match ordered-transitions-2. Earlier host builds differ by added metadata, geometry guards, transition checks and the corrected CGFloat assertion. Actual binary hashes are per case. Parent published the identical vendor sources as ae579755614cd8a0edf7c6f9d94c0095c7d26216 after capture; no binaries changed for publication."
+  },
+  "implementation": {
+    "opticalOutputScale": 203,
+    "scaleObservation": "Value is specified by the source call; CAEDRMetadata has no public optical-scale getter. Runtime report observes object presence/description, actual pixel format, colour space, EDR enablement and target range.",
+    "ordering": [
+      "libplacebo colorspace hint",
+      "pl_swapchain_resize with zero dimensions completes pending colour recreation; unchanged is mutex-only",
+      "validate actual RGBA16Float + extended-linearBT2020 + EDR",
+      "short explicit VO-thread Core Animation transaction assigns fresh metadata if changed",
+      "later pl_swapchain_start_frame obtains nextDrawable"
+    ],
+    "threading": "Renderer owns retained layer and metadata under MRC. No per-frame synchronous AppKit dispatch; screen/profile/backing callbacks increment a locked revision and request expose. No CA lock spans Vulkan or main dispatch.",
+    "mapping": "Default linear target preserves source peak/range and normal Vulkan BT2020-linear format selection; Core Animation receives reference-white-consistent display metadata. No PASS_THROUGH request, new swizzle, alpha conversion or additional automatic203-nit target mapping. Explicit user target options retain their meaning.",
+    "failureHandling": "Missing layer/colour space rejects initialization; invalid range/failed recreation cannot claim external success; actual contract or metadata-allocation failure clears owned metadata and returns false with a bounded warning."
+  },
+  "validation": {
+    "isolatedMPVBuild": {
+      "path": "artifacts/native-color-ordered-build.log",
+      "bytes": 27009,
+      "sha256": "b2124647ca96d1ac47faae0228f5b3c64400d78e765a1e07a94bec5b36cc2a44"
+    },
+    "diagnosticHostBuild": {
+      "path": "artifacts/native-color-transition-helper-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "transitionCount": 10,
+    "selectedSourceSeconds": 20,
+    "realNRProcessingSize": [
+      32,
+      24
+    ],
+    "retainedPQSHA256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+    "resizeSDRSHA256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc",
+    "peakNits": {
+      "linearPQ": 1018.656982,
+      "linearHLG": 1089.223755,
+      "linearSDR": 203,
+      "originalPQTarget": 1000,
+      "originalHLGTarget": 1000
+    },
+    "resizePixels": [
+      [
+        2120,
+        1048
+      ],
+      [
+        1680,
+        1000
+      ],
+      [
+        2120,
+        1048
+      ]
+    ],
+    "originalHLGNote": "This MoltenVK surface selection renders originalHLG through a PQ target with fresh1000-nit metadata; it does not expose an HLG CAMetalLayer in this case. OriginalSDR selects ITUR709 and nil HDR metadata.",
+    "checksummedPayloadsVerified": 32,
+    "checksummedReportOrLogRecords": 102,
+    "allProcessesExited": true,
+    "captureParserCPUTestsPassed": 7
+  },
+  "cases": [
+    {
+      "id": "native-color-fixed-target-1",
+      "disposition": "excluded",
+      "scope": "Initial pre-ordering candidate; wrapper rejected actual occlusion before the second phase. No matched compositor acceptance.",
+      "wrapper": {
+        "path": "artifacts/native-color-fixed-target-1-wrapper.json",
+        "bytes": 4985,
+        "sha256": "91e34cc39d029f5d831badc3b3dbc32057eafe76852df58378c7f5ed202ab3dd"
+      },
+      "wrapperPassed": false,
+      "error": "Host is not actually visible: {'appActive': False, 'backingScale': 2, 'contentBounds': [0, 0, 1060, 524], 'metalLayer': {'colorspace': {'icc': {'base64': 'AAACRGFwcGwEAAAAbW50clJHQiBYWVogB+MAAQABAAAAAAAAYWNzcEFQUEwAAAAAQVBQTAAAAAAAAAAAAAAAAAAAAAAAAPbWAAEAAAAA0y1hcHBsuCkJF4q76TcmR6tvXGjXsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALZGVzYwAAAQgAAABSY3BydAAAAVwAAABQd3RwdAAAAawAAAAUclhZWgAAAcAAAAAUZ1hZWgAAAdQAAAAUYlhZWgAAAegAAAAUclRSQwAAAfwAAAAQY2hhZAAAAgwAAAAsY2ljcAAAAjgAAAAMYlRSQwAAAfwAAAAQZ1RSQwAAAfwAAAAQbWx1YwAAAAAAAAABAAAADGVuVVMAAAA2AAAAHABSAGUAYwAuACAASQBUAFUALQBSACAAQgBUAC4AMgAwADIAMAAtADEAIABMAGkAbgBlAGEAcgAAbWx1YwAAAAAAAAABAAAADGVuVVMAAAA0AAAAHABDAG8AcAB5AHIAaQBnAGgAdAAgAEEAcABwAGwAZQAgAEkAbgBjAC4ALAAgADIAMAAxADlYWVogAAAAAAAA9tYAAQAAAADTLVhZWiAAAAAAAACsaQAAR2////+BWFlaIAAAAAAAACppAACs4wAAB61YWVogAAAAAAAAIAMAAAutAADL/nBhcmEAAAAAAAAAAAABAABzZjMyAAAAAAABDEIAAAXe///zJgAAB5MAAP2Q///7ov///aMAAAPcAADAbmNpY3AAAAAACQgAAQ==', 'bytes': 580, 'sha256': 'd3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2'}, 'model': 1, 'name': 'kCGColorSpaceExtendedLinearITUR_2020'}, 'contentsRect': [0, 0, 1, 1], 'contentsScale': 2, 'drawableSize': [2120, 1048], 'edrMetadata': 'CAEDRMetadata <0x7d0cf6f70> display min nits: 0.000000, max nits: 1000.000000', 'pixelFormat': 115, 'wantsExtendedDynamicRangeContent': True}, 'miniaturized': False, 'occlusionVisible': False, 'pid': 30753, 'screen': {'currentHeadroom': 16, 'potentialHeadroom': 16, 'referenceHeadroom': 0}, 'visible': True, 'windowID': 36075}",
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "65add714b4f97f6055cd2724f08562735faecc53be1a60519430608a2eba7f4b",
+          "afterSHA256": "65add714b4f97f6055cd2724f08562735faecc53be1a60519430608a2eba7f4b"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da",
+          "afterSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99",
+          "afterSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "auto",
+          "reference": {
+            "path": "artifacts/native-color-fixed-target-1/auto/phase.json",
+            "bytes": 9475,
+            "sha256": "5cbe9cf734a5df8d5908aa636ec89793ab1fa0d066bdec85b3f3f5e81318a528"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021144.9542370836,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24507478898817,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 18,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x7d0cf57e0> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-1/auto/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "sck": {
+            "report": {
+              "path": "artifacts/native-color-fixed-target-1/auto/sck-hdr/report.json",
+              "bytes": 15160,
+              "sha256": "b2727fc6959362e95af3bb55567b828795668c06623b8ca4f312a1619c712b76"
+            },
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-1/auto/sck-hdr/pixels.rgba16f",
+              "bytes": 18930688,
+              "sha256": "68b1d8cbcc94c845afda30e6a807beab70519dfa3cc9482b2278e53f9e938f91"
+            },
+            "pixelStorage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "68b1d8cbcc94c845afda30e6a807beab70519dfa3cc9482b2278e53f9e938f91",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1021145.2496980419,
+              "completedMachTicks": 24507485992756,
+              "cpuReadbackCompletedHostSeconds": 1021145.2686956669,
+              "cpuReadbackStartedHostSeconds": 1021145.2654410836,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1021145.1028818336,
+              "requestedMachTicks": 24507482469159,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021145224558875
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021145224558875
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "window": {
+              "framePoints": {
+                "height": 556,
+                "width": 1060,
+                "x": 180,
+                "y": 413
+              },
+              "isActive": true,
+              "isOnScreen": true,
+              "ownerBundle": "unbundled",
+              "ownerPID": 30753,
+              "windowID": 36075,
+              "windowLayer": 0
+            },
+            "referenceWhiteNits": null,
+            "referenceWhiteNote": "No universal ScreenCaptureKit reference-white-nits field. Half-float is not inherently linear; headroom is a ratio, not a luminance calibration.",
+            "headroom": 1,
+            "icc": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-fixed-target-1/auto/ready.json",
+              "bytes": 8006,
+              "sha256": "7aaf12a027ef9b755002da3925c81500b448deb3d4a5a866b95fe48e283868e3"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-1/auto/phase.json",
+              "bytes": 9475,
+              "sha256": "5cbe9cf734a5df8d5908aa636ec89793ab1fa0d066bdec85b3f3f5e81318a528"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-1/auto/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-1/auto/capture.stdout",
+              "bytes": 203,
+              "sha256": "bff2661492b890180607330d1d9ad5e66675eb67036b61beedc669e583836b56"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-1/auto/capture.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        },
+        {
+          "name": "auto-repeat",
+          "reference": {
+            "path": "artifacts/native-color-fixed-target-1/auto-repeat/ready.json",
+            "bytes": 8015,
+            "sha256": "f34370811e3566769fdc73e6d31fc526306da29bc69ac42a41aadd6931724d46"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021148.4416062502,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24507562596387,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 18,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x7d0cf7000> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-1/auto-repeat/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-fixed-target-1/auto-repeat/ready.json",
+              "bytes": 8015,
+              "sha256": "f34370811e3566769fdc73e6d31fc526306da29bc69ac42a41aadd6931724d46"
+            }
+          ]
+        },
+        {
+          "name": "peak1000",
+          "reference": {
+            "path": "artifacts/native-color-fixed-target-1/peak1000/phase.json",
+            "bytes": 9463,
+            "sha256": "9b23590d01654915ce6c6193a81401447518473edd06dcb1da5ff9f52b6d55ca"
+          },
+          "requestedTargetPeak": "1000",
+          "hostSeconds": 1021146.8348137086,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24507524033570,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 18,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x7d0cf6f70> display min nits: 0.000000, max nits: 1000.000000"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-1/peak1000/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-fixed-target-1/peak1000/ready.json",
+              "bytes": 7994,
+              "sha256": "281179bdb73d96f57d4acdeea0f42adf286fbb5621e69b429857a6a6d70bd19b"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-1/peak1000/phase.json",
+              "bytes": 9463,
+              "sha256": "9b23590d01654915ce6c6193a81401447518473edd06dcb1da5ff9f52b6d55ca"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-1/peak1000/mpv-window.png",
+              "bytes": 6924798,
+              "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-fixed-target-1/session.json",
+          "bytes": 1323,
+          "sha256": "2fe75cae1849a454025aed5dc38aa690b9b8f2ba52da5ad1b10e9cb002b18f88"
+        },
+        {
+          "path": "artifacts/native-color-fixed-target-1/mpv.log",
+          "bytes": 220797,
+          "sha256": "f58786551250a585b9a214c615b570ea2500a516b5db3f5465e5ea01e0e26d02"
+        },
+        {
+          "path": "artifacts/native-color-fixed-target-1-host.log",
+          "bytes": 44,
+          "sha256": "382aaacf8e3fe1c23b468a3f874fee31f4e2b08d962a0f1c6ac00e7a57c3f1c6"
+        }
+      ]
+    },
+    {
+      "id": "native-color-fixed-target-2",
+      "disposition": "excluded",
+      "scope": "Initial pre-ordering candidate; wrapper rejected actual occlusion before the second phase. Visible single-phase differences have multiple uncontrolled conditions.",
+      "wrapper": {
+        "path": "artifacts/native-color-fixed-target-2-wrapper.json",
+        "bytes": 4984,
+        "sha256": "e8deb6be89178499a479c63d871e408907989e66d05d484269479c6a3d6cec70"
+      },
+      "wrapperPassed": false,
+      "error": "Host is not actually visible: {'appActive': True, 'backingScale': 2, 'contentBounds': [0, 0, 1060, 524], 'metalLayer': {'colorspace': {'icc': {'base64': 'AAACRGFwcGwEAAAAbW50clJHQiBYWVogB+MAAQABAAAAAAAAYWNzcEFQUEwAAAAAQVBQTAAAAAAAAAAAAAAAAAAAAAAAAPbWAAEAAAAA0y1hcHBsuCkJF4q76TcmR6tvXGjXsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALZGVzYwAAAQgAAABSY3BydAAAAVwAAABQd3RwdAAAAawAAAAUclhZWgAAAcAAAAAUZ1hZWgAAAdQAAAAUYlhZWgAAAegAAAAUclRSQwAAAfwAAAAQY2hhZAAAAgwAAAAsY2ljcAAAAjgAAAAMYlRSQwAAAfwAAAAQZ1RSQwAAAfwAAAAQbWx1YwAAAAAAAAABAAAADGVuVVMAAAA2AAAAHABSAGUAYwAuACAASQBUAFUALQBSACAAQgBUAC4AMgAwADIAMAAtADEAIABMAGkAbgBlAGEAcgAAbWx1YwAAAAAAAAABAAAADGVuVVMAAAA0AAAAHABDAG8AcAB5AHIAaQBnAGgAdAAgAEEAcABwAGwAZQAgAEkAbgBjAC4ALAAgADIAMAAxADlYWVogAAAAAAAA9tYAAQAAAADTLVhZWiAAAAAAAACsaQAAR2////+BWFlaIAAAAAAAACppAACs4wAAB61YWVogAAAAAAAAIAMAAAutAADL/nBhcmEAAAAAAAAAAAABAABzZjMyAAAAAAABDEIAAAXe///zJgAAB5MAAP2Q///7ov///aMAAAPcAADAbmNpY3AAAAAACQgAAQ==', 'bytes': 580, 'sha256': 'd3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2'}, 'model': 1, 'name': 'kCGColorSpaceExtendedLinearITUR_2020'}, 'contentsRect': [0, 0, 1, 1], 'contentsScale': 2, 'drawableSize': [2120, 1048], 'edrMetadata': 'CAEDRMetadata <0xc7f15ae70> display min nits: 0.000000, max nits: 1000.000000', 'pixelFormat': 115, 'wantsExtendedDynamicRangeContent': True}, 'miniaturized': False, 'occlusionVisible': False, 'pid': 31628, 'screen': {'currentHeadroom': 16, 'potentialHeadroom': 16, 'referenceHeadroom': 0}, 'visible': True, 'windowID': 36093}",
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "e8055841ccaae02cc8b529ebf67372b34a442f445ed1a93e6efca50c57decdcf",
+          "afterSHA256": "e8055841ccaae02cc8b529ebf67372b34a442f445ed1a93e6efca50c57decdcf"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da",
+          "afterSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99",
+          "afterSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "auto",
+          "reference": {
+            "path": "artifacts/native-color-fixed-target-2/auto/phase.json",
+            "bytes": 9481,
+            "sha256": "928c4112c112aa209877fc0f3262eb52c637ac67af6fb5483fa5813f256d6309"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021251.1349040419,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24510027235883,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 18,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc7f1597d0> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-2/auto/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "sck": {
+            "report": {
+              "path": "artifacts/native-color-fixed-target-2/auto/sck-hdr/report.json",
+              "bytes": 15177,
+              "sha256": "eeee83a358b9059746e77de738ad960fcaf9f5949ca3797a3e7130d69e161cdc"
+            },
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-2/auto/sck-hdr/pixels.rgba16f",
+              "bytes": 18930688,
+              "sha256": "8c5ca5122158275c9a045c8bf886eccfdad62eb552ae0e0e5913b30067160c0e"
+            },
+            "pixelStorage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "8c5ca5122158275c9a045c8bf886eccfdad62eb552ae0e0e5913b30067160c0e",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1021251.4011345003,
+              "completedMachTicks": 24510033627232,
+              "cpuReadbackCompletedHostSeconds": 1021251.4090295836,
+              "cpuReadbackStartedHostSeconds": 1021251.4058345002,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1021251.2770137503,
+              "requestedMachTicks": 24510030648326,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021251381008375
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021251381008375
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "window": {
+              "framePoints": {
+                "height": 556,
+                "width": 1060,
+                "x": 180,
+                "y": 413
+              },
+              "isActive": true,
+              "isOnScreen": true,
+              "ownerBundle": "unbundled",
+              "ownerPID": 31628,
+              "windowID": 36093,
+              "windowLayer": 0
+            },
+            "referenceWhiteNits": null,
+            "referenceWhiteNote": "No universal ScreenCaptureKit reference-white-nits field. Half-float is not inherently linear; headroom is a ratio, not a luminance calibration.",
+            "headroom": 16,
+            "icc": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-fixed-target-2/auto/ready.json",
+              "bytes": 8022,
+              "sha256": "4650e081c7a1e81a9f0defcf5a4882fc6ec179f4c35fca9208c66693ae65583e"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-2/auto/phase.json",
+              "bytes": 9481,
+              "sha256": "928c4112c112aa209877fc0f3262eb52c637ac67af6fb5483fa5813f256d6309"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-2/auto/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-2/auto/capture.stdout",
+              "bytes": 203,
+              "sha256": "512b3ff78f9189b0c06b86438c858507b81adaf7d38c91343bf3d11369c3e519"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-2/auto/capture.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        },
+        {
+          "name": "auto-repeat",
+          "reference": {
+            "path": "artifacts/native-color-fixed-target-2/auto-repeat/ready.json",
+            "bytes": 8207,
+            "sha256": "31652042af3073021e46c9524c44319cbcf2b9cf78b28398d6fb3b6d76df8a56"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021254.5115826252,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24510108277048,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 18,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc7f15b070> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-2/auto-repeat/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-fixed-target-2/auto-repeat/ready.json",
+              "bytes": 8207,
+              "sha256": "31652042af3073021e46c9524c44319cbcf2b9cf78b28398d6fb3b6d76df8a56"
+            }
+          ]
+        },
+        {
+          "name": "peak1000",
+          "reference": {
+            "path": "artifacts/native-color-fixed-target-2/peak1000/phase.json",
+            "bytes": 9658,
+            "sha256": "e7b3e9b823dcc2f55f4a83fbb7ba7d324bbbff1281e961747495906ba7e4876e"
+          },
+          "requestedTargetPeak": "1000",
+          "hostSeconds": 1021252.9012020419,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24510069626609,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 18,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc7f15ae70> display min nits: 0.000000, max nits: 1000.000000"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-fixed-target-2/peak1000/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-fixed-target-2/peak1000/ready.json",
+              "bytes": 8189,
+              "sha256": "98a324b08de8e535c3c26781971c179ffa37b73a97c5c6fcfb619fb043fa0514"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-2/peak1000/phase.json",
+              "bytes": 9658,
+              "sha256": "e7b3e9b823dcc2f55f4a83fbb7ba7d324bbbff1281e961747495906ba7e4876e"
+            },
+            {
+              "path": "artifacts/native-color-fixed-target-2/peak1000/mpv-window.png",
+              "bytes": 6924798,
+              "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-fixed-target-2/session.json",
+          "bytes": 1323,
+          "sha256": "d1555b481e06d97ab8155c124d429acd9e7b6a742a4a39cf0e5b7bd605e18b98"
+        },
+        {
+          "path": "artifacts/native-color-fixed-target-2/mpv.log",
+          "bytes": 223285,
+          "sha256": "e641a324feadcfc2e7b8f7bc05decbb852734ce9dcc24cf7afc3e787c3d64a3c"
+        },
+        {
+          "path": "artifacts/native-color-fixed-target-2-host.log",
+          "bytes": 44,
+          "sha256": "382aaacf8e3fe1c23b468a3f874fee31f4e2b08d962a0f1c6ac00e7a57c3f1c6"
+        }
+      ]
+    },
+    {
+      "id": "native-color-visibility-no-sck-1",
+      "disposition": "diagnostic-only",
+      "scope": "Title-free window-state control without SCK: all three observed phases visible. It uses the initial candidate, not the final ordered implementation.",
+      "wrapper": {
+        "path": "artifacts/native-color-visibility-no-sck-1-wrapper.json",
+        "bytes": 38512,
+        "sha256": "0534241e00ef8aca404254bba5a2a9a67b0051c14362a7f684346e549d2c7bfb"
+      },
+      "wrapperPassed": true,
+      "error": null,
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "7eff2ad7440d00f459fe294d165432337935bf8e4fe64d6f42505dd8e739a3c3",
+          "afterSHA256": "7eff2ad7440d00f459fe294d165432337935bf8e4fe64d6f42505dd8e739a3c3"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da",
+          "afterSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99",
+          "afterSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "auto",
+          "reference": {
+            "path": "artifacts/native-color-visibility-no-sck-1/auto/phase.json",
+            "bytes": 18254,
+            "sha256": "a1d232d34cabdf9c4e89e9074d0f42513b0a9ed00e3e35ec1e3e03392007fcfe"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021449.5122793335,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24514788290931,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xa4cd02e90> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto/ready.json",
+              "bytes": 16795,
+              "sha256": "84159ba4a589a0b0e2f0bae00bd37e0c3bd6fc8f1df8c7c3e1b380b4fed97bca"
+            },
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto/phase.json",
+              "bytes": 18254,
+              "sha256": "a1d232d34cabdf9c4e89e9074d0f42513b0a9ed00e3e35ec1e3e03392007fcfe"
+            },
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            }
+          ]
+        },
+        {
+          "name": "auto-repeat",
+          "reference": {
+            "path": "artifacts/native-color-visibility-no-sck-1/auto-repeat/phase.json",
+            "bytes": 18270,
+            "sha256": "31488b50f3eb005b482e3061ffdca19dd31d5f332aea8c976332e1d91fed35ba"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021452.5823009586,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24514861973969,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xa4cd02fc0> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto-repeat/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto-repeat/ready.json",
+              "bytes": 16801,
+              "sha256": "87ed6cb01b716525ed208b334ed16d6358a0a992e05ce4524d01025a829bb13a"
+            },
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto-repeat/phase.json",
+              "bytes": 18270,
+              "sha256": "31488b50f3eb005b482e3061ffdca19dd31d5f332aea8c976332e1d91fed35ba"
+            },
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/auto-repeat/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            }
+          ]
+        },
+        {
+          "name": "peak1000",
+          "reference": {
+            "path": "artifacts/native-color-visibility-no-sck-1/peak1000/phase.json",
+            "bytes": 18241,
+            "sha256": "6f2200a0abd55c1ac003e91b8483ea9f67f5a3f1061a321347bc50dffdb3a09b"
+          },
+          "requestedTargetPeak": "1000",
+          "hostSeconds": 1021451.0128619169,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24514824307263,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xa4cd02f20> display min nits: 0.000000, max nits: 1000.000000"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-visibility-no-sck-1/peak1000/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/peak1000/ready.json",
+              "bytes": 16772,
+              "sha256": "4ebcef51960e9c2fc4eea262422ba97e50a7399970a02b3ae8c83e6fbb72e2ed"
+            },
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/peak1000/phase.json",
+              "bytes": 18241,
+              "sha256": "6f2200a0abd55c1ac003e91b8483ea9f67f5a3f1061a321347bc50dffdb3a09b"
+            },
+            {
+              "path": "artifacts/native-color-visibility-no-sck-1/peak1000/mpv-window.png",
+              "bytes": 6924798,
+              "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-visibility-no-sck-1/session.json",
+          "bytes": 63653,
+          "sha256": "a67628d6ee159cfc953a2956c166021fe201a329483488001cd3128f4babc469"
+        },
+        {
+          "path": "artifacts/native-color-visibility-no-sck-1/mpv.log",
+          "bytes": 221726,
+          "sha256": "643d92078536706f697110d8c37e6f9fcadc5c94a9a919dea7d78e405bbedd91"
+        },
+        {
+          "path": "artifacts/native-color-visibility-no-sck-1-host.log",
+          "bytes": 44,
+          "sha256": "382aaacf8e3fe1c23b468a3f874fee31f4e2b08d962a0f1c6ac00e7a57c3f1c6"
+        }
+      ]
+    },
+    {
+      "id": "native-color-visibility-sck-1",
+      "disposition": "excluded",
+      "scope": "Old wrapper reported protocol success, but phase3 title-free CG inventory shows a global desktop/Space translation: target x180 to -948, unrelated windows shifted equally. Origin is not inferred; not settled-window acceptance.",
+      "wrapper": {
+        "path": "artifacts/native-color-visibility-sck-1-wrapper.json",
+        "bytes": 4814,
+        "sha256": "e8062b1be63bd87af4d7c08e1a1fb298a116ee5c25a0a301e6d066b31d1c9142"
+      },
+      "wrapperPassed": true,
+      "error": null,
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "7eff2ad7440d00f459fe294d165432337935bf8e4fe64d6f42505dd8e739a3c3",
+          "afterSHA256": "7eff2ad7440d00f459fe294d165432337935bf8e4fe64d6f42505dd8e739a3c3"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da",
+          "afterSHA256": "0897b6c6035b0b184c9e0eff8ec877dc131ee551897a570d75d97ce8d2cbb6da"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99",
+          "afterSHA256": "19fcc62190fa301769040a125af443f3f7e28fc18cb63a85130cc2b9d7304e99"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "auto",
+          "reference": {
+            "path": "artifacts/native-color-visibility-sck-1/auto/phase.json",
+            "bytes": 18263,
+            "sha256": "bdbf64e986f48d04b9dabb60bcff10b4735f4ff1dc350d5fab56fd073fcc126f"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021493.9713172918,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24515855310758,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 17,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x74ed057c0> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-visibility-sck-1/auto/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "sck": {
+            "report": {
+              "path": "artifacts/native-color-visibility-sck-1/auto/sck-hdr/report.json",
+              "bytes": 25300,
+              "sha256": "b624b1eec8897c0ba2e83a7181233742bc203a76a4f42424c6c61c308bd75dfd"
+            },
+            "payload": {
+              "path": "artifacts/native-color-visibility-sck-1/auto/sck-hdr/pixels.rgba16f",
+              "bytes": 18930688,
+              "sha256": "68b1d8cbcc94c845afda30e6a807beab70519dfa3cc9482b2278e53f9e938f91"
+            },
+            "pixelStorage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "68b1d8cbcc94c845afda30e6a807beab70519dfa3cc9482b2278e53f9e938f91",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1021494.2313920419,
+              "completedMachTicks": 24515861553412,
+              "cpuReadbackCompletedHostSeconds": 1021494.2348739168,
+              "cpuReadbackStartedHostSeconds": 1021494.2320342918,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1021494.0961137086,
+              "requestedMachTicks": 24515858306725,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021494210575708
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021494210575708
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "window": {
+              "framePoints": {
+                "height": 556,
+                "width": 1060,
+                "x": 180,
+                "y": 413
+              },
+              "isActive": true,
+              "isOnScreen": true,
+              "ownerBundle": "unbundled",
+              "ownerPID": 32982,
+              "windowID": 36142,
+              "windowLayer": 0
+            },
+            "referenceWhiteNits": null,
+            "referenceWhiteNote": "No universal ScreenCaptureKit reference-white-nits field. Half-float is not inherently linear; headroom is a ratio, not a luminance calibration.",
+            "headroom": 1,
+            "icc": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto/ready.json",
+              "bytes": 16794,
+              "sha256": "a63a98eda97a30dc502bd674d0ad18ec850469b1a3fb0a8882254fdf20066e1a"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto/phase.json",
+              "bytes": 18263,
+              "sha256": "bdbf64e986f48d04b9dabb60bcff10b4735f4ff1dc350d5fab56fd073fcc126f"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto/capture.stdout",
+              "bytes": 205,
+              "sha256": "cde35d68e082fe28264c771fe600bc5d28e150432c9d198ddc8fc25ef0b6d06e"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto/capture.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        },
+        {
+          "name": "auto-repeat",
+          "reference": {
+            "path": "artifacts/native-color-visibility-sck-1/auto-repeat/phase.json",
+            "bytes": 18236,
+            "sha256": "49b6b73efc9c526f1b92d8a21a609154c6ad5219b0ab7e54f6fb7988b2a4deba"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021497.5715138336,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24515941715459,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 17,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x74ed06fa0> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "sck": {
+            "report": {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/sck-hdr/report.json",
+              "bytes": 25279,
+              "sha256": "1b5ede117ed0996c943b87b879c2046092940b71bdeff754445ecfcb5b2178ec"
+            },
+            "payload": {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/sck-hdr/pixels.rgba16f",
+              "bytes": 18930688,
+              "sha256": "c245840c8081a50f34ce4c76ba27d7c5388021a9d8e0eaea7a99cffb41b24563"
+            },
+            "pixelStorage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "c245840c8081a50f34ce4c76ba27d7c5388021a9d8e0eaea7a99cffb41b24563",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1021497.8612634169,
+              "completedMachTicks": 24515948670325,
+              "cpuReadbackCompletedHostSeconds": 1021497.8656270002,
+              "cpuReadbackStartedHostSeconds": 1021497.8627440003,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1021497.7333521668,
+              "requestedMachTicks": 24515945600451,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021497843383375
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021497843383375
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "window": {
+              "framePoints": {
+                "height": 556,
+                "width": 1060,
+                "x": -1330,
+                "y": 413
+              },
+              "isActive": true,
+              "isOnScreen": true,
+              "ownerBundle": "unbundled",
+              "ownerPID": 32982,
+              "windowID": 36142,
+              "windowLayer": 0
+            },
+            "referenceWhiteNits": null,
+            "referenceWhiteNote": "No universal ScreenCaptureKit reference-white-nits field. Half-float is not inherently linear; headroom is a ratio, not a luminance calibration.",
+            "headroom": 1,
+            "icc": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/ready.json",
+              "bytes": 16767,
+              "sha256": "158e227415eaba35f02aa2b95a19dd6a37989a9d94c7e60005aa83a741212dde"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/phase.json",
+              "bytes": 18236,
+              "sha256": "49b6b73efc9c526f1b92d8a21a609154c6ad5219b0ab7e54f6fb7988b2a4deba"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/capture.stdout",
+              "bytes": 212,
+              "sha256": "bf3b171511aba09fb80cb24626d752d95b2c79b25452011f71ff81bbf1898db9"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/auto-repeat/capture.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        },
+        {
+          "name": "peak1000",
+          "reference": {
+            "path": "artifacts/native-color-visibility-sck-1/peak1000/phase.json",
+            "bytes": 18241,
+            "sha256": "f2c77b44afba890ee533680ccb9942f215b473af7f7ffe6b7252b34c3b91bc40"
+          },
+          "requestedTargetPeak": "1000",
+          "hostSeconds": 1021495.7362881253,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24515897650842,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 17,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x74ed06f00> display min nits: 0.000000, max nits: 1000.000000"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "sck": {
+            "report": {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/sck-hdr/report.json",
+              "bytes": 25278,
+              "sha256": "accd945f4026db89fec2a97da6a55391f638694a335c5c23d9b7020bef6e38ba"
+            },
+            "payload": {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/sck-hdr/pixels.rgba16f",
+              "bytes": 18930688,
+              "sha256": "216d003f3f3854b88544ea43597599274a1a67a86e3e4b0ac2497975c366feea"
+            },
+            "pixelStorage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "216d003f3f3854b88544ea43597599274a1a67a86e3e4b0ac2497975c366feea",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1021496.0268517085,
+              "completedMachTicks": 24515904644447,
+              "cpuReadbackCompletedHostSeconds": 1021496.0323329585,
+              "cpuReadbackStartedHostSeconds": 1021496.0291897502,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1021495.8971204169,
+              "requestedMachTicks": 24515901530886,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021496006235333
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021496006235333
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "window": {
+              "framePoints": {
+                "height": 556,
+                "width": 1060,
+                "x": 180,
+                "y": 413
+              },
+              "isActive": true,
+              "isOnScreen": true,
+              "ownerBundle": "unbundled",
+              "ownerPID": 32982,
+              "windowID": 36142,
+              "windowLayer": 0
+            },
+            "referenceWhiteNits": null,
+            "referenceWhiteNote": "No universal ScreenCaptureKit reference-white-nits field. Half-float is not inherently linear; headroom is a ratio, not a luminance calibration.",
+            "headroom": 1,
+            "icc": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/ready.json",
+              "bytes": 16772,
+              "sha256": "44dbc6b384530a20ba00c90a3cea9a9e88440244b1d2ec7f37c2c73199323709"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/phase.json",
+              "bytes": 18241,
+              "sha256": "f2c77b44afba890ee533680ccb9942f215b473af7f7ffe6b7252b34c3b91bc40"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/mpv-window.png",
+              "bytes": 6924798,
+              "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/capture.stdout",
+              "bytes": 209,
+              "sha256": "cca0aa29bfa279eac18a3f280d0faf66fba45cadddb6c252cbab3bd332b77483"
+            },
+            {
+              "path": "artifacts/native-color-visibility-sck-1/peak1000/capture.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-visibility-sck-1/session.json",
+          "bytes": 63625,
+          "sha256": "41f2be2dc2433f668cdd3b3d51715c11e055635496213d2cd3cb00236b08fd5f"
+        },
+        {
+          "path": "artifacts/native-color-visibility-sck-1/mpv.log",
+          "bytes": 223348,
+          "sha256": "3a307305810ff7f99839af1d7ca4206e796751e843137cae73115c24e514feff"
+        },
+        {
+          "path": "artifacts/native-color-visibility-sck-1-host.log",
+          "bytes": 44,
+          "sha256": "382aaacf8e3fe1c23b468a3f874fee31f4e2b08d962a0f1c6ac00e7a57c3f1c6"
+        }
+      ]
+    },
+    {
+      "id": "native-color-ordered-target-1",
+      "disposition": "excluded-harness-error",
+      "scope": "Final ordering candidate before two allocation guards; new after-capture check requested a third frame lease with a two-lease limit and timed out. Fixed to snapshot polling at the current revision; raw capture retained.",
+      "wrapper": {
+        "path": "artifacts/native-color-ordered-target-1-wrapper.json",
+        "bytes": 3521,
+        "sha256": "b88c446f89e5dcbccf1bc2f4160332aae61d3043017d2f7db4dc6fd6e8181218"
+      },
+      "wrapperPassed": false,
+      "error": "Host did not record the post-capture state",
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "464294498fe643b2170cd24fe10e15eb7b948bc84bb3f6b6b87a16dc978506f5",
+          "afterSHA256": "464294498fe643b2170cd24fe10e15eb7b948bc84bb3f6b6b87a16dc978506f5"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "25eebac4021bef333e3a95efee62f422128e69045c8a5f5cb96a0786f864f129",
+          "afterSHA256": "25eebac4021bef333e3a95efee62f422128e69045c8a5f5cb96a0786f864f129"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "bda458c8031c933e660dd3f7d435e8a26069c37dd280257fa1663f378a3c0d3f",
+          "afterSHA256": "bda458c8031c933e660dd3f7d435e8a26069c37dd280257fa1663f378a3c0d3f"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "auto",
+          "reference": {
+            "path": "artifacts/native-color-ordered-target-1/auto/ready.json",
+            "bytes": 17003,
+            "sha256": "e1bcd6bff86a4ee37f4c940244b62d007e64f3d1b23f60c06316f8218eca500d"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021832.7563597918,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24523986151575,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 16,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "onScreenBounds": {
+              "Height": 556,
+              "Width": 1060,
+              "X": 180,
+              "Y": 413
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x8fed32c00> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-ordered-target-1/auto/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "sck": {
+            "report": {
+              "path": "artifacts/native-color-ordered-target-1/auto/sck-hdr/report.json",
+              "bytes": 25561,
+              "sha256": "5b3cc5fc3a1fab490e12607d131eab5518a44436fa357f58baa544a7c96182dc"
+            },
+            "payload": {
+              "path": "artifacts/native-color-ordered-target-1/auto/sck-hdr/pixels.rgba16f",
+              "bytes": 18930688,
+              "sha256": "68b1d8cbcc94c845afda30e6a807beab70519dfa3cc9482b2278e53f9e938f91"
+            },
+            "pixelStorage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "68b1d8cbcc94c845afda30e6a807beab70519dfa3cc9482b2278e53f9e938f91",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1021833.0663453336,
+              "completedMachTicks": 24523993592291,
+              "cpuReadbackCompletedHostSeconds": 1021833.0704144168,
+              "cpuReadbackStartedHostSeconds": 1021833.0670305835,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1021832.9140006253,
+              "requestedMachTicks": 24523989936014,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021833039928166
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021833039928166
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "window": {
+              "framePoints": {
+                "height": 556,
+                "width": 1060,
+                "x": 180,
+                "y": 413
+              },
+              "isActive": true,
+              "isOnScreen": true,
+              "ownerBundle": "unbundled",
+              "ownerPID": 34693,
+              "windowID": 36166,
+              "windowLayer": 0
+            },
+            "referenceWhiteNits": null,
+            "referenceWhiteNote": "No universal ScreenCaptureKit reference-white-nits field. Half-float is not inherently linear; headroom is a ratio, not a luminance calibration.",
+            "headroom": 1,
+            "icc": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-target-1/auto/ready.json",
+              "bytes": 17003,
+              "sha256": "e1bcd6bff86a4ee37f4c940244b62d007e64f3d1b23f60c06316f8218eca500d"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-1/auto/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-1/auto/capture.stdout",
+              "bytes": 205,
+              "sha256": "74497e3873d086f2e77a47bcbdd512e84b2eaa2ec035e0bf0922cbf6eb55c29c"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-1/auto/capture.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-ordered-target-1/session.json",
+          "bytes": 2655,
+          "sha256": "6922752038953ced185bdd8e38048d0ba5ecb5ab0fc0ddd3be257aa37f83a994"
+        },
+        {
+          "path": "artifacts/native-color-ordered-target-1/mpv.log",
+          "bytes": 202732,
+          "sha256": "594d3d3cc721e1cf12f5c369bdc02a29b5f7e6093442cb9958d90be91430bae6"
+        },
+        {
+          "path": "artifacts/native-color-ordered-target-1-host.log",
+          "bytes": 11,
+          "sha256": "dd7563442a2c542bdf3a3723da6e14e5787b86f559da2a444bacf3a017eaf702"
+        }
+      ]
+    },
+    {
+      "id": "native-color-ordered-target-2",
+      "disposition": "excluded",
+      "scope": "Final guarded core. Strong gate rejects the first capture: target CGx180/visible before SCK, x-1683/occluded afterward. Exact pixels retained but no final compositor equivalence claim.",
+      "wrapper": {
+        "path": "artifacts/native-color-ordered-target-2-wrapper.json",
+        "bytes": 3516,
+        "sha256": "da4dbb549522478c3867679d6fbaa4c148b37461af423f699aa1ffb6de048d45"
+      },
+      "wrapperPassed": false,
+      "error": "Target window is not actually visible",
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "b25f55d6b20b7f0bd44d3f913042bb672a010dab78bbd8a8b5d44608224046de",
+          "afterSHA256": "b25f55d6b20b7f0bd44d3f913042bb672a010dab78bbd8a8b5d44608224046de"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "a165c2d4a1da9567cf667d3d50a5e8a6d24c7be1cea2a765248c88309b63e28a",
+          "afterSHA256": "a165c2d4a1da9567cf667d3d50a5e8a6d24c7be1cea2a765248c88309b63e28a"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "4859ba6b0caafa2c7f26bfe6889ae5d1db9c5792cd71503dace6da9bd854ef25",
+          "afterSHA256": "4859ba6b0caafa2c7f26bfe6889ae5d1db9c5792cd71503dace6da9bd854ef25"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "auto",
+          "reference": {
+            "path": "artifacts/native-color-ordered-target-2/auto/phase.json",
+            "bytes": 29257,
+            "sha256": "d5f46c547eef48ee46382a66a943919eecf4bfa53e03c3e61df2c0e5a2b1eebe"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021921.6217043753,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24526118918806,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "onScreenBounds": {
+              "Height": 556,
+              "Width": 1060,
+              "X": 180,
+              "Y": 413
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x79ccc2e70> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "surfaceAfter": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": true,
+            "onScreenBounds": {
+              "Height": 556,
+              "Width": 1060,
+              "X": -1683,
+              "Y": 413
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x79ccc2ee0> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-ordered-target-2/auto/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "sck": {
+            "report": {
+              "path": "artifacts/native-color-ordered-target-2/auto/sck-hdr/report.json",
+              "bytes": 25561,
+              "sha256": "c9329bc90767d106f0203a29b6cd539fd19ca2e38f7a37d59abd1690a111a557"
+            },
+            "payload": {
+              "path": "artifacts/native-color-ordered-target-2/auto/sck-hdr/pixels.rgba16f",
+              "bytes": 18930688,
+              "sha256": "43ba8ca3c516fd8832c12474c09d38d1255ec630497d21dca8b9e661bcefa937"
+            },
+            "pixelStorage": {
+              "alpha": "Preserved without unpremultiplication; use actual alpha attachments, unknown if absent",
+              "bytes": 18930688,
+              "bytesPerPixel": 8,
+              "bytesPerRow": 17024,
+              "encoding": "RGhA little-endian IEEE binary16 RGBA; transfer/colorimetry from actual attachments",
+              "file": "pixels.rgba16f",
+              "height": 1112,
+              "padding": "source stride preserved; non-pixel row padding zeroed",
+              "pixelFormat": 1380411457,
+              "sha256": "43ba8ca3c516fd8832c12474c09d38d1255ec630497d21dca8b9e661bcefa937",
+              "width": 2120
+            },
+            "timing": {
+              "completedHostSeconds": 1021921.9077944169,
+              "completedMachTicks": 24526125787069,
+              "cpuReadbackCompletedHostSeconds": 1021921.9113675419,
+              "cpuReadbackStartedHostSeconds": 1021921.9083910002,
+              "machTimebaseDenominator": 3,
+              "machTimebaseNumerator": 125,
+              "requestedHostSeconds": 1021921.7573736669,
+              "requestedMachTicks": 24526122176965,
+              "sampleDuration": {
+                "epoch": 0,
+                "flags": 0,
+                "timescale": 0,
+                "value": 0
+              },
+              "sampleOutputPTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021921873196333
+              },
+              "samplePTS": {
+                "epoch": 0,
+                "flags": 1,
+                "timescale": 1000000000,
+                "value": 1021921873196333
+              },
+              "scope": "Capture request/completion and sample/WindowServer metadata, not source video PTS or physical scanout"
+            },
+            "window": {
+              "framePoints": {
+                "height": 556,
+                "width": 1060,
+                "x": 180,
+                "y": 413
+              },
+              "isActive": true,
+              "isOnScreen": true,
+              "ownerBundle": "unbundled",
+              "ownerPID": 35265,
+              "windowID": 36182,
+              "windowLayer": 0
+            },
+            "referenceWhiteNits": null,
+            "referenceWhiteNote": "No universal ScreenCaptureKit reference-white-nits field. Half-float is not inherently linear; headroom is a ratio, not a luminance calibration.",
+            "headroom": 16,
+            "icc": {
+              "sha256": "0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0",
+              "type": "data"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-target-2/auto/ready.json",
+              "bytes": 17002,
+              "sha256": "7bb34111b8af6cb657801a3f1eed23805e43d29c40450d83ee0fe6ae8a933da8"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-2/auto/phase.json",
+              "bytes": 29257,
+              "sha256": "d5f46c547eef48ee46382a66a943919eecf4bfa53e03c3e61df2c0e5a2b1eebe"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-2/auto/mpv-window.png",
+              "bytes": 6016276,
+              "sha256": "fca0bc6dadfe4cc036a31ef09fe059fabba89bf8111e2db02d82a8dba50ca832"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-2/auto/capture.stdout",
+              "bytes": 205,
+              "sha256": "5ab6e6570f4d0a1d9b928f6b1e35ee543d66c6bc4ac1b10793b1b1ce1d691835"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-2/auto/capture.stderr",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        },
+        {
+          "name": "auto-repeat",
+          "reference": {
+            "path": "artifacts/native-color-ordered-target-2/auto-repeat/ready.json",
+            "bytes": 10730,
+            "sha256": "8a9e46ae3eaae0d34d50baebc48e4e7fb2083eeaa847b2ca13608fd69924732d"
+          },
+          "requestedTargetPeak": "auto",
+          "hostSeconds": 1021925.0742316252,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24526201780236,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x79ccc3000> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-ordered-target-2/auto-repeat/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-target-2/auto-repeat/ready.json",
+              "bytes": 10730,
+              "sha256": "8a9e46ae3eaae0d34d50baebc48e4e7fb2083eeaa847b2ca13608fd69924732d"
+            }
+          ]
+        },
+        {
+          "name": "peak1000",
+          "reference": {
+            "path": "artifacts/native-color-ordered-target-2/peak1000/phase.json",
+            "bytes": 16698,
+            "sha256": "d3707f819cf67ede6a075956cac89c22981ccbcbd02c02295491fbed3e35e4f8"
+          },
+          "requestedTargetPeak": "1000",
+          "hostSeconds": 1021923.4825722502,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24526163580380,
+            "outstandingLeases": 2,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 20,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x79ccc2f80> display min nits: 0.000000, max nits: 1000.000000"
+            }
+          },
+          "surfaceAfter": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0x79ccc2f80> display min nits: 0.000000, max nits: 1000.000000"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-ordered-target-2/peak1000/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-target-2/peak1000/ready.json",
+              "bytes": 10701,
+              "sha256": "ac6a9308ead994b40282025cfd8167e784384255c33d725a64a38aa8aabf714a"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-2/peak1000/phase.json",
+              "bytes": 16698,
+              "sha256": "d3707f819cf67ede6a075956cac89c22981ccbcbd02c02295491fbed3e35e4f8"
+            },
+            {
+              "path": "artifacts/native-color-ordered-target-2/peak1000/mpv-window.png",
+              "bytes": 6924798,
+              "sha256": "7950e1c3c4cb6326a553e0574e648fdabccfba2c3267c455dcdf55be52aabf77"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-ordered-target-2/session.json",
+          "bytes": 1325,
+          "sha256": "f15550dff9406d96f77eda04a17ac02900e12471b5ffa6ab535da8ddb4786025"
+        },
+        {
+          "path": "artifacts/native-color-ordered-target-2/mpv.log",
+          "bytes": 220653,
+          "sha256": "c8fa5d988f67cc5bcf332e2f95d24b0e2fe1a9c8db7637af0145f236eff2b545"
+        },
+        {
+          "path": "artifacts/native-color-ordered-target-2-host.log",
+          "bytes": 44,
+          "sha256": "382aaacf8e3fe1c23b468a3f874fee31f4e2b08d962a0f1c6ac00e7a57c3f1c6"
+        }
+      ]
+    },
+    {
+      "id": "native-color-ordered-transitions-1",
+      "disposition": "excluded-harness-error",
+      "scope": "First six metadata transitions passed. Resize assertion cast an in-memory [CGFloat] to [Double] and failed; mpv log confirms actual1680x1000 swapchain. Fixed the diagnostic cast. Failed phase metadata was not serialized by that helper version; do not infer it from a later run.",
+      "wrapper": {
+        "path": "artifacts/native-color-ordered-transitions-1-wrapper.json",
+        "bytes": 2948,
+        "sha256": "f67c6bf5b0a554d8f60f3b37bf26f47e5881d79b5af766e46ffa3e361306b243"
+      },
+      "wrapperPassed": false,
+      "error": "Host failed: ProbeFailure(message: \"Drawable did not follow resize\")",
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "f065233614ecbf895f17709ce537c1bc3b7351b6d02ae4cf69895d38d19b67a6",
+          "afterSHA256": "f065233614ecbf895f17709ce537c1bc3b7351b6d02ae4cf69895d38d19b67a6"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "a165c2d4a1da9567cf667d3d50a5e8a6d24c7be1cea2a765248c88309b63e28a",
+          "afterSHA256": "a165c2d4a1da9567cf667d3d50a5e8a6d24c7be1cea2a765248c88309b63e28a"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "4859ba6b0caafa2c7f26bfe6889ae5d1db9c5792cd71503dace6da9bd854ef25",
+          "afterSHA256": "4859ba6b0caafa2c7f26bfe6889ae5d1db9c5792cd71503dace6da9bd854ef25"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "linear-hlg",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-1/linear-hlg/phase.json",
+            "bytes": 10481,
+            "sha256": "1147a089dd4009d9c54ba018f04a153736b939159fb65222d99b7b81cdbbd274"
+          },
+          "requestedTargetPeak": null,
+          "hostSeconds": 1022041.7357394586,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24529001661548,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 30,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "hlg",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1089.223755,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1089.223755,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc4f4c1810> display min nits: 0.000000, max nits: 1089.223755"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "62fc00612082bff929787deec5cf5890060b555b44449a576a8efb70b06d53d9",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-1/linear-hlg/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "62fc00612082bff929787deec5cf5890060b555b44449a576a8efb70b06d53d9"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-1/linear-hlg/phase.json",
+              "bytes": 10481,
+              "sha256": "1147a089dd4009d9c54ba018f04a153736b939159fb65222d99b7b81cdbbd274"
+            }
+          ]
+        },
+        {
+          "name": "linear-pq",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-1/linear-pq/phase.json",
+            "bytes": 10463,
+            "sha256": "e7fc8410fe9abb8f119a7a175190bc0ac8a44cb5407a486748aafc759b5f87f9"
+          },
+          "requestedTargetPeak": null,
+          "hostSeconds": 1022039.1680090419,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24528940046576,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 14,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc50d23e40> display min nits: 0.000000, max nits: 1018.656982"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-1/linear-pq/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-1/linear-pq/phase.json",
+              "bytes": 10463,
+              "sha256": "e7fc8410fe9abb8f119a7a175190bc0ac8a44cb5407a486748aafc759b5f87f9"
+            }
+          ]
+        },
+        {
+          "name": "linear-sdr",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-1/linear-sdr/phase.json",
+            "bytes": 10330,
+            "sha256": "06d51e1ac99cb4c59cf46f03ebe6bf9c91fd991a254671f02f6df5318a98d4fe"
+          },
+          "requestedTargetPeak": null,
+          "hostSeconds": 1022044.0398145836,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24529056969215,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 44,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "bt.1886",
+            "primaries": "bt.709"
+          },
+          "videoOutput": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 203,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "max-luma": 203,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 115,
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc4f4c0370> display min nits: 0.000000, max nits: 203.000000"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-1/linear-sdr/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-1/linear-sdr/phase.json",
+              "bytes": 10330,
+              "sha256": "06d51e1ac99cb4c59cf46f03ebe6bf9c91fd991a254671f02f6df5318a98d4fe"
+            }
+          ]
+        },
+        {
+          "name": "original-hlg",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-1/original-hlg/phase.json",
+            "bytes": 25343,
+            "sha256": "a96638cddfbc54b227ee9b6ed2682fb06bf78d020bc2d25b00e2b3cd813fc13e"
+          },
+          "requestedTargetPeak": null,
+          "hostSeconds": 1022040.1937452919,
+          "identity": {
+            "contentKind": 0,
+            "generation": 0,
+            "hostTicks": 24528964661112,
+            "outstandingLeases": 0,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 16,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "hlg",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "videoOutput": {
+            "gamma": "hlg",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "videoTarget": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 1e-06
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 94,
+              "colorspace": "kCGColorSpaceITUR_2100_PQ",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc50d21a00> display min nits: 0.000000, max nits: 1000.000000"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-1/original-hlg/phase.json",
+              "bytes": 25343,
+              "sha256": "a96638cddfbc54b227ee9b6ed2682fb06bf78d020bc2d25b00e2b3cd813fc13e"
+            }
+          ]
+        },
+        {
+          "name": "original-pq",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-1/original-pq/phase.json",
+            "bytes": 32414,
+            "sha256": "012a945dc664df63e1a91ae6fa4bb2af5b6261c64dd08d00d8a2ca65f1cb1c59"
+          },
+          "requestedTargetPeak": null,
+          "hostSeconds": 1022037.5522082503,
+          "identity": {
+            "contentKind": 0,
+            "generation": 0,
+            "hostTicks": 24528901276255,
+            "outstandingLeases": 0,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 2,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoOutput": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "videoTarget": {
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "max-luma": 1000,
+            "min-luma": 0.0001
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "appActive": true,
+            "onScreenBounds": {
+              "Height": 556,
+              "Width": 1060,
+              "X": 180,
+              "Y": 413
+            },
+            "layer": {
+              "pixelFormat": 94,
+              "colorspace": "kCGColorSpaceITUR_2100_PQ",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "CAEDRMetadata <0xc50d21730> display min nits: 0.000100, max nits: 1000.000000"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-1/original-pq/phase.json",
+              "bytes": 32414,
+              "sha256": "012a945dc664df63e1a91ae6fa4bb2af5b6261c64dd08d00d8a2ca65f1cb1c59"
+            }
+          ]
+        },
+        {
+          "name": "original-sdr",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-1/original-sdr/phase.json",
+            "bytes": 7658,
+            "sha256": "271bd10db4bde92b13af245b5bd9e1bf99d2a3d75f6680df8656fbdb862ae641"
+          },
+          "requestedTargetPeak": null,
+          "hostSeconds": 1022042.4698165419,
+          "identity": {
+            "contentKind": 0,
+            "generation": 0,
+            "hostTicks": 24529019284454,
+            "outstandingLeases": 0,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 32,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "videoSource": {
+            "gamma": "bt.1886",
+            "primaries": "bt.709"
+          },
+          "videoOutput": {
+            "gamma": "bt.1886",
+            "primaries": "bt.709"
+          },
+          "videoTarget": {
+            "gamma": "bt.1886",
+            "primaries": "bt.709",
+            "max-luma": 203,
+            "min-luma": 0.203
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "appActive": false,
+            "layer": {
+              "pixelFormat": 94,
+              "colorspace": "kCGColorSpaceITUR_709",
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "edrMetadata": "none"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-1/original-sdr/phase.json",
+              "bytes": 7658,
+              "sha256": "271bd10db4bde92b13af245b5bd9e1bf99d2a3d75f6680df8656fbdb862ae641"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-ordered-transitions-1/session.json",
+          "bytes": 1287,
+          "sha256": "f8c51bc1b27bf4823128759372ee24597afa244672b9a2b1e61fc147724d2783"
+        },
+        {
+          "path": "artifacts/native-color-ordered-transitions-1/mpv.log",
+          "bytes": 348054,
+          "sha256": "7802e4648e5f9a7bd2ae1f9601f82674ced104a92f7f95e58746240c24a5e6a3"
+        },
+        {
+          "path": "artifacts/native-color-ordered-transitions-1-host.log",
+          "bytes": 136,
+          "sha256": "24d14d82f434485a516a97c766232ad0c98a5c2edcaff6de148441d50509851a"
+        }
+      ]
+    },
+    {
+      "id": "native-color-ordered-transitions-2",
+      "disposition": "passed-metadata-contract",
+      "scope": "Ten original PQ/HLG/SDR, linear and resize metadata phases passed with final guarded core. Many phases are occluded, so this verifies native state/bytes/lifecycle only, not compositor brightness or physical output.",
+      "wrapper": {
+        "path": "artifacts/native-color-ordered-transitions-2-wrapper.json",
+        "bytes": 4067,
+        "sha256": "149cbe8e00134dfe2f115afd22aaee3e117cd9ed2f8781539aa64df2e8c3cf86"
+      },
+      "wrapperPassed": true,
+      "error": null,
+      "hostExitCode": 0,
+      "binariesUnchanged": true,
+      "binaries": {
+        "artifacts/hdr-native-color-probe/HDRNativeColorProbe": {
+          "beforeSHA256": "fc85c295b5e8ba33dbc16b3ccb909a92e7baf5efb0a6f220257b19ac3ef1b0a5",
+          "afterSHA256": "fc85c295b5e8ba33dbc16b3ccb909a92e7baf5efb0a6f220257b19ac3ef1b0a5"
+        },
+        "artifacts/hdr-capture-probe/hdr-capture-probe": {
+          "beforeSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498",
+          "afterSHA256": "6e61e7428630c6e93ddb595859fe8f9dee68dabd7275ac89670c341d7fac9498"
+        },
+        ".build/arm64-apple-macosx/debug/HDRPlayer": {
+          "beforeSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e",
+          "afterSHA256": "633ab9d0a0bc8907a4147832e878d63093059eaab36dfb42d53713ffa097206e"
+        },
+        "artifacts/mpv-build/mpv": {
+          "beforeSHA256": "a165c2d4a1da9567cf667d3d50a5e8a6d24c7be1cea2a765248c88309b63e28a",
+          "afterSHA256": "a165c2d4a1da9567cf667d3d50a5e8a6d24c7be1cea2a765248c88309b63e28a"
+        },
+        "artifacts/mpv-build/libmpv.2.dylib": {
+          "beforeSHA256": "4859ba6b0caafa2c7f26bfe6889ae5d1db9c5792cd71503dace6da9bd854ef25",
+          "afterSHA256": "4859ba6b0caafa2c7f26bfe6889ae5d1db9c5792cd71503dace6da9bd854ef25"
+        },
+        ".build/arm64-apple-macosx/debug/libFrameEngineShared.dylib": {
+          "beforeSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773",
+          "afterSHA256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+        },
+        "artifacts/local/lib/libplacebo.371.dylib": {
+          "beforeSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423",
+          "afterSHA256": "d4e1298b45373127ba6eede87d579e39e2a4d7b8f10ac500f6994f25918dc423"
+        },
+        "/opt/homebrew/Cellar/molten-vk/1.4.2/lib/libMoltenVK.dylib": {
+          "beforeSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1",
+          "afterSHA256": "05df2d2145b9ef5b86b08ed93a7a6e916815c2bbac244298a50b2d58061600d1"
+        }
+      },
+      "sourceSHA256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+      "weightsSHA256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+      "phases": [
+        {
+          "name": "linear-hlg",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/linear-hlg/phase.json",
+            "bytes": 10481,
+            "sha256": "9fe8cc8546377ae6530fb6dc84a01414649111780f98953cbaff50d25cda392f"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/hlg-60-30s.mkv",
+          "enhanced": true,
+          "passed": true,
+          "hostSeconds": 1022099.2952331252,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24530383094270,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 28,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "hlg",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "max-cll": 0
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "rgbaf16",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1089.223755,
+            "min-luma": 1e-06,
+            "max-cll": 1089.223755
+          },
+          "videoTarget": {
+            "pixelformat": "rgba16hf",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 1089.223755,
+            "min-luma": 1e-06,
+            "max-cll": 1089.223755
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80fc380> display min nits: 0.000000, max nits: 1089.223755",
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "iccSHA256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "62fc00612082bff929787deec5cf5890060b555b44449a576a8efb70b06d53d9",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-hlg/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "62fc00612082bff929787deec5cf5890060b555b44449a576a8efb70b06d53d9"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-hlg/phase.json",
+              "bytes": 10481,
+              "sha256": "9fe8cc8546377ae6530fb6dc84a01414649111780f98953cbaff50d25cda392f"
+            }
+          ]
+        },
+        {
+          "name": "linear-pq",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/linear-pq/phase.json",
+            "bytes": 10463,
+            "sha256": "53bffabb7051a2a21e04030876564366e0d1bea097f11fc4602370a5ea09fbc4"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/pq-30-60s.mkv",
+          "enhanced": true,
+          "passed": true,
+          "hostSeconds": 1022096.9208226253,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24530326118698,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 14,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "rgbaf16",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "max-cll": 1018.656982
+          },
+          "videoTarget": {
+            "pixelformat": "rgba16hf",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "max-cll": 1018.656982
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80fd610> display min nits: 0.000000, max nits: 1018.656982",
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "iccSHA256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-pq/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-pq/phase.json",
+              "bytes": 10463,
+              "sha256": "53bffabb7051a2a21e04030876564366e0d1bea097f11fc4602370a5ea09fbc4"
+            }
+          ]
+        },
+        {
+          "name": "linear-pq-repeat",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/linear-pq-repeat/phase.json",
+            "bytes": 10480,
+            "sha256": "14b2febf1ea18b0e1c180f774d771c525ad445b290d3dc991abc295ec6e59779"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/pq-30-60s.mkv",
+          "enhanced": true,
+          "passed": true,
+          "hostSeconds": 1022105.0669924169,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24530521616084,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 56,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "rgbaf16",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "max-cll": 1018.656982
+          },
+          "videoTarget": {
+            "pixelformat": "rgba16hf",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 1018.656982,
+            "min-luma": 1e-06,
+            "max-cll": 1018.656982
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80ff1f0> display min nits: 0.000000, max nits: 1018.656982",
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "iccSHA256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-pq-repeat/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "f84a0325c5b1bd166498968bb8f09164a63ee73e5207f8b928eda0e466ff3fe2"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-pq-repeat/phase.json",
+              "bytes": 10480,
+              "sha256": "14b2febf1ea18b0e1c180f774d771c525ad445b290d3dc991abc295ec6e59779"
+            }
+          ]
+        },
+        {
+          "name": "linear-resize",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/linear-resize/phase.json",
+            "bytes": 10229,
+            "sha256": "364e8789e69daae8433afe261bb28629d32b73631d5d3e7f12b879bbb4ba173b"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/sdr-24-30s.mkv",
+          "enhanced": true,
+          "passed": true,
+          "hostSeconds": 1022102.1833727919,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24530452410102,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 42,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "bt.1886",
+            "primaries": "bt.709",
+            "colormatrix": "bt.709",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "rgbaf16",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 320,
+            "h": 192,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "max-cll": 200.004349
+          },
+          "videoTarget": {
+            "pixelformat": "rgba16hf",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1666,
+            "h": 1000,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "max-cll": 200.004349
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              840,
+              500
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "drawableSize": [
+                1680,
+                1000
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80ff890> display min nits: 0.000000, max nits: 203.000000",
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "iccSHA256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-resize/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-resize/phase.json",
+              "bytes": 10229,
+              "sha256": "364e8789e69daae8433afe261bb28629d32b73631d5d3e7f12b879bbb4ba173b"
+            }
+          ]
+        },
+        {
+          "name": "linear-restore",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/linear-restore/phase.json",
+            "bytes": 10212,
+            "sha256": "5d55a35cc2190ec3cc327c05b488822933e9c18fbe006487c2057b298996c532"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/sdr-24-30s.mkv",
+          "enhanced": true,
+          "passed": true,
+          "hostSeconds": 1022102.7017208335,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24530464892568,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 42,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "bt.1886",
+            "primaries": "bt.709",
+            "colormatrix": "bt.709",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "rgbaf16",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 320,
+            "h": 192,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "max-cll": 200.004349
+          },
+          "videoTarget": {
+            "pixelformat": "rgba16hf",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "max-cll": 200.004349
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80ff940> display min nits: 0.000000, max nits: 203.000000",
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "iccSHA256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-restore/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-restore/phase.json",
+              "bytes": 10212,
+              "sha256": "5d55a35cc2190ec3cc327c05b488822933e9c18fbe006487c2057b298996c532"
+            }
+          ]
+        },
+        {
+          "name": "linear-sdr",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/linear-sdr/phase.json",
+            "bytes": 10330,
+            "sha256": "a687b4919f8cfc815f24d9cc20e048c5b4b0d5a0a174eb5609f532c470166e97"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/sdr-24-30s.mkv",
+          "enhanced": true,
+          "passed": true,
+          "hostSeconds": 1022101.6604284169,
+          "identity": {
+            "contentKind": 2,
+            "generation": 2,
+            "hostTicks": 24530439865267,
+            "outstandingLeases": 1,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 42,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "bt.1886",
+            "primaries": "bt.709",
+            "colormatrix": "bt.709",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "rgbaf16",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 320,
+            "h": 192,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "max-cll": 200.004349
+          },
+          "videoTarget": {
+            "pixelformat": "rgba16hf",
+            "gamma": "linear",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 203,
+            "min-luma": 1e-06,
+            "max-cll": 200.004349
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 115,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80fce20> display min nits: 0.000000, max nits: 203.000000",
+              "colorspace": "kCGColorSpaceExtendedLinearITUR_2020",
+              "iccSHA256": "d3c1c5ca635a45b9bf1a9c69804f4a064b94e8b82a8c42ce272470aa5ecad2c2"
+            }
+          },
+          "exported": {
+            "width": 320,
+            "height": 192,
+            "bytesPerRow": 2560,
+            "byteCount": 491520,
+            "pixelFormat": 1380411457,
+            "rowPadding": "zeroed; component bytes unchanged",
+            "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc",
+            "payload": {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-sdr/exported.rgba16f",
+              "bytes": 491520,
+              "sha256": "89468a2d051d2799875371e577d611ab5597f16ea73af5d623d6ec85d657b9dc"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/linear-sdr/phase.json",
+              "bytes": 10330,
+              "sha256": "a687b4919f8cfc815f24d9cc20e048c5b4b0d5a0a174eb5609f532c470166e97"
+            }
+          ]
+        },
+        {
+          "name": "original-hlg",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/original-hlg/phase.json",
+            "bytes": 25343,
+            "sha256": "4dd519fcb6838b02cf78a87902d61972d488faf8bb3d8879b70652ab522e65a2"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/hlg-60-30s.mkv",
+          "enhanced": false,
+          "passed": true,
+          "hostSeconds": 1022097.5227154169,
+          "identity": {
+            "contentKind": 0,
+            "generation": 0,
+            "hostTicks": 24530340556793,
+            "outstandingLeases": 0,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 16,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "hlg",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "max-cll": 0
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "hlg",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "max-cll": 0
+          },
+          "videoTarget": {
+            "pixelformat": "bgr10a2",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 1000,
+            "min-luma": 1e-06,
+            "max-cll": 1000
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 94,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80fc0d0> display min nits: 0.000000, max nits: 1000.000000",
+              "colorspace": "kCGColorSpaceITUR_2100_PQ",
+              "iccSHA256": "63cd9f4a8443c71df3633aa0a2ec4594aa8fbca23b1a3231b517bc726a567b16"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/original-hlg/phase.json",
+              "bytes": 25343,
+              "sha256": "4dd519fcb6838b02cf78a87902d61972d488faf8bb3d8879b70652ab522e65a2"
+            }
+          ]
+        },
+        {
+          "name": "original-pq",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/original-pq/phase.json",
+            "bytes": 32413,
+            "sha256": "d7ec5c9d078a9e7254d3c4d8fd3a39269b2018df8f28e491f9cd5a70d87b9fff"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/pq-30-60s.mkv",
+          "enhanced": false,
+          "passed": true,
+          "hostSeconds": 1022094.9820755002,
+          "identity": {
+            "contentKind": 0,
+            "generation": 0,
+            "hostTicks": 24530279583629,
+            "outstandingLeases": 0,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 2,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "videoTarget": {
+            "pixelformat": "bgr10a2",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": true,
+            "miniaturized": false,
+            "appActive": true,
+            "windowID": 36214,
+            "onScreenBounds": {
+              "Height": 556,
+              "Width": 1060,
+              "X": 180,
+              "Y": 413
+            },
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 2.851111888885498,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 94,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d8d4d6f0> display min nits: 0.000100, max nits: 1000.000000",
+              "colorspace": "kCGColorSpaceITUR_2100_PQ",
+              "iccSHA256": "63cd9f4a8443c71df3633aa0a2ec4594aa8fbca23b1a3231b517bc726a567b16"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/original-pq/phase.json",
+              "bytes": 32413,
+              "sha256": "d7ec5c9d078a9e7254d3c4d8fd3a39269b2018df8f28e491f9cd5a70d87b9fff"
+            }
+          ]
+        },
+        {
+          "name": "original-pq-repeat",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/original-pq-repeat/phase.json",
+            "bytes": 25392,
+            "sha256": "f11f88aad350d9986449b3132418742cc2d02e36c6c2b68dbafc1818118b8b05"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/pq-30-60s.mkv",
+          "enhanced": false,
+          "passed": true,
+          "hostSeconds": 1022103.2874090419,
+          "identity": {
+            "contentKind": 0,
+            "generation": 0,
+            "hostTicks": 24530478914009,
+            "outstandingLeases": 0,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 44,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "bt.2020-ncl",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "videoTarget": {
+            "pixelformat": "bgr10a2",
+            "gamma": "pq",
+            "primaries": "bt.2020",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 1000,
+            "min-luma": 0.0001,
+            "max-cll": 1000
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 94,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": true,
+              "edrMetadata": "CAEDRMetadata <0x7d80fd940> display min nits: 0.000100, max nits: 1000.000000",
+              "colorspace": "kCGColorSpaceITUR_2100_PQ",
+              "iccSHA256": "63cd9f4a8443c71df3633aa0a2ec4594aa8fbca23b1a3231b517bc726a567b16"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/original-pq-repeat/phase.json",
+              "bytes": 25392,
+              "sha256": "f11f88aad350d9986449b3132418742cc2d02e36c6c2b68dbafc1818118b8b05"
+            }
+          ]
+        },
+        {
+          "name": "original-sdr",
+          "reference": {
+            "path": "artifacts/native-color-ordered-transitions-2/original-sdr/phase.json",
+            "bytes": 7658,
+            "sha256": "645e7e35656c271707f3e8d106afd6f945c00f17d148ff13ec6c526f903053d6"
+          },
+          "requestedTargetPeak": null,
+          "source": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/assets/test-clips/playback/sdr-24-30s.mkv",
+          "enhanced": false,
+          "passed": true,
+          "hostSeconds": 1022099.8817276253,
+          "identity": {
+            "contentKind": 0,
+            "generation": 0,
+            "hostTicks": 24530397174851,
+            "outstandingLeases": 0,
+            "pendingFrames": 0,
+            "rate": 0,
+            "revision": 30,
+            "sourcePTS": {
+              "timescale": 1000000,
+              "value": 20000000
+            }
+          },
+          "identityAfter": null,
+          "leaseCurrentAfter": null,
+          "videoSource": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "bt.1886",
+            "primaries": "bt.709",
+            "colormatrix": "bt.709",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192
+          },
+          "videoOutput": {
+            "pixelformat": "videotoolbox",
+            "hw-pixelformat": "p010",
+            "gamma": "bt.1886",
+            "primaries": "bt.709",
+            "colormatrix": "bt.709",
+            "colorlevels": "limited",
+            "w": 320,
+            "h": 192
+          },
+          "videoTarget": {
+            "pixelformat": "bgr10a2",
+            "gamma": "bt.1886",
+            "primaries": "bt.709",
+            "colormatrix": "rgb",
+            "colorlevels": "full",
+            "w": 1746,
+            "h": 1048,
+            "max-luma": 203,
+            "min-luma": 0.203,
+            "max-cll": 0
+          },
+          "surfaceBefore": {
+            "visible": true,
+            "occlusionVisible": false,
+            "miniaturized": false,
+            "appActive": false,
+            "windowID": 36214,
+            "onScreenBounds": null,
+            "backingScale": 2,
+            "contentBounds": [
+              0,
+              0,
+              1060,
+              524
+            ],
+            "screen": {
+              "currentHeadroom": 16,
+              "displayID": 1,
+              "frame": [
+                0,
+                0,
+                1800,
+                1169
+              ],
+              "potentialHeadroom": 16,
+              "referenceHeadroom": 0
+            },
+            "layer": {
+              "pixelFormat": 94,
+              "drawableSize": [
+                2120,
+                1048
+              ],
+              "contentsScale": 2,
+              "contentsRect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "wantsExtendedDynamicRangeContent": false,
+              "edrMetadata": "none",
+              "colorspace": "kCGColorSpaceITUR_709",
+              "iccSHA256": "c6f7fab7a70c5236059813295f05eb5fbf3d6f5a03335fbf1b548fce430b035b"
+            }
+          },
+          "rawRecords": [
+            {
+              "path": "artifacts/native-color-ordered-transitions-2/original-sdr/phase.json",
+              "bytes": 7658,
+              "sha256": "645e7e35656c271707f3e8d106afd6f945c00f17d148ff13ec6c526f903053d6"
+            }
+          ]
+        }
+      ],
+      "rawRecords": [
+        {
+          "path": "artifacts/native-color-ordered-transitions-2/session.json",
+          "bytes": 167865,
+          "sha256": "d7760f37ffe75ecf54d8856836448495447252201b7ec298d4387ff591289f0b"
+        },
+        {
+          "path": "artifacts/native-color-ordered-transitions-2/mpv.log",
+          "bytes": 392608,
+          "sha256": "2d74580554290f7f411e27851fbf3dd46ae94eed7fa8e6ca73f7b37f2ba42b15"
+        },
+        {
+          "path": "artifacts/native-color-ordered-transitions-2-host.log",
+          "bytes": 245,
+          "sha256": "b8eb0de7cf0e5e180c93993cf3ee3eb504da6c18f8aab8efbfc2eae504071257"
+        }
+      ]
+    }
+  ],
+  "remainingGates": [
+    "Matched same-frame native SCK run with stable actual visibility, global window geometry and display throughout every captured phase. Do not retry absent changed environmental conditions.",
+    "Multi-display/profile and HDR headroom qualification beyond the observed callback/state contract.",
+    "Physical luminance, scanout timing and perceptual HDR quality require separate qualified measurement."
+  ],
+  "sourceInputsAtAssembly": {
+    "scope": "PQ source SHA was recorded by every capture wrapper. These three asset files are additionally hashed at evidence assembly; HLG/SDR wrapper runs did not record separate before/after input hashes. Raw exported pixels and exact source paths remain captured per transition.",
+    "files": [
+      {
+        "path": "assets/test-clips/playback/pq-30-60s.mkv",
+        "bytes": 16195931,
+        "sha256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac"
+      },
+      {
+        "path": "assets/test-clips/playback/hlg-60-30s.mkv",
+        "bytes": 10441266,
+        "sha256": "a18b1244daa205ec9aaf0b2d350843087b1984b51b3d55072f4bbcd1b20e4b09"
+      },
+      {
+        "path": "assets/test-clips/playback/sdr-24-30s.mkv",
+        "bytes": 10247433,
+        "sha256": "d7dca1da3fb2b8903a293cff02df8ca2b66d6216f7ae1f0fa0c008e65a59de9f"
+      }
+    ]
+  }
+}
