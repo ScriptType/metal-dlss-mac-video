@@ -226,6 +226,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                     }
                     var state: [String: Any] = ["configurationID": appliedConfigurationID, "initialized": true, "title": property("media-title") ?? "HDR Player", "source": property("path") ?? "",
                         "paused": property("pause") == "yes", "position": number("time-pos"), "duration": number("duration"),
+                        "playing": property("pause") == "no" && property("core-idle") == "no",
                         "volume": number("volume", fallback: volume), "muted": property("mute") == "yes", "loading": property("paused-for-cache") == "yes",
                         "tracks": tracks, "chapters": chapters, "chapter": Int(number("chapter", fallback: -1)),
                         "sourceFPS": number("container-fps"), "frameDrops": Int(number("frame-drop-count")),
@@ -270,7 +271,7 @@ final class MPVPlaybackController {
     private var capacityBytes: Int64
     private let cacheDirectory: URL
     private let preparedRequestURL = FileManager.default.temporaryDirectory.appendingPathComponent("HDRPlayer-prepared-\(UUID().uuidString).json")
-    private var beforeSleepPaused = true
+    private var pauseIntent = PlayerPauseIntent()
     private(set) var state: [String: Any] = [:]
 
     init(hostView: NSView) {
@@ -328,24 +329,36 @@ final class MPVPlaybackController {
         state["source"] = source; state["title"] = url.lastPathComponent; state["loading"] = true
         state.removeValue(forKey: "error")
         worker?.enqueue(["loadfile", url.path, "replace"])
+        pauseIntent.request(false)
         worker?.enqueue(["set", "pause", "no"])
         publish()
     }
     func fullscreenChanged(_ value: Bool) { state["fullscreen"] = value; publish() }
-    func sleep() { beforeSleepPaused = state["paused"] as? Bool ?? true; worker?.enqueue(["set", "pause", "yes"]) }
-    func wake() { if !beforeSleepPaused { worker?.enqueue(["set", "pause", "no"]) } }
+    func lifecycleSnapshot() -> [String: Any] {
+        var snapshot = state
+        snapshot["requestedPause"] = pauseIntent.requested.map { $0 as Any } ?? NSNull()
+        return snapshot
+    }
+    func sleep() {
+        if pauseIntent.beginSleep(observed: state["paused"] as? Bool ?? true) { worker?.enqueue(["set", "pause", "yes"]) }
+    }
+    func wake() {
+        if let paused = pauseIntent.endSleep() { worker?.enqueue(["set", "pause", paused ? "yes" : "no"]) }
+    }
     func command(_ name: String, value: Any?) {
         func numeric() -> Double? { (value as? NSNumber)?.doubleValue }
         if dolbyVisionUnavailableReason != nil &&
            (["strength", "colorStrength", "quality", "mode"].contains(name) ||
             (name == "enhancement" && value as? Bool == true)) { publish(); return }
         switch name {
-        case "play": worker?.enqueue(["set", "pause", "no"])
-        case "pause": worker?.enqueue(["set", "pause", "yes"])
-        case "togglePause": worker?.enqueue(["cycle", "pause"])
+        case "play": pauseIntent.request(false); worker?.enqueue(["set", "pause", "no"])
+        case "pause": pauseIntent.request(true); worker?.enqueue(["set", "pause", "yes"])
+        case "togglePause":
+            let paused = !pauseIntent.desired(observed: state["paused"] as? Bool ?? true)
+            pauseIntent.request(paused); worker?.enqueue(["set", "pause", paused ? "yes" : "no"])
         case "seek":
             if let position = numeric(), position.isFinite { worker?.enqueue(["seek", String(max(0, position)), "absolute+exact"]) }
-        case "frameStep": worker?.enqueue([(numeric() ?? 1) < 0 ? "frame-back-step" : "frame-step"])
+        case "frameStep": pauseIntent.request(true); worker?.enqueue([(numeric() ?? 1) < 0 ? "frame-back-step" : "frame-step"])
         case "volume":
             if let volume = numeric(), volume.isFinite { state["volume"] = min(100, max(0, volume)); worker?.enqueue(["set", "volume", String(min(100, max(0, volume)))]) }
         case "mute":
@@ -432,6 +445,7 @@ final class MPVPlaybackController {
     private func receive(_ data: Data) {
         guard let incoming = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { return }
         state.merge(incoming) { _, new in new }
+        if let paused = incoming["paused"] as? Bool { pauseIntent.observe(paused) }
         if incoming["configurationID"] as? UInt64 == configurationID || incoming["error"] != nil {
             state["configurationPending"] = false
         }

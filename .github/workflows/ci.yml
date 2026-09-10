@@ -23,6 +23,8 @@ jobs:
       - run: npm --prefix apps/controls ci
       - run: npm --prefix apps/controls run check
       - run: npm --prefix apps/controls run build
+      - name: Check native pause intent and lifecycle recorder (CPU only)
+        run: bash scripts/test-player-lifecycle.sh
       - run: |
           source scripts/env.sh
           swift build --build-tests --jobs 2

@@ -4,6 +4,7 @@ source "$(dirname "$0")/env.sh"
 cd "$PROJECT_ROOT"
 for script in scripts/*.sh; do bash -n "$script"; done
 python3 -m compileall -q scripts
+bash scripts/test-player-lifecycle.sh
 npm --prefix apps/controls run check
 npm --prefix apps/controls run build
 swift build --build-tests --jobs "$BUILD_JOBS"

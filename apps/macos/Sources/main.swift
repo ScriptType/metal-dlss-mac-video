@@ -35,6 +35,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
     private var latestState: [String: Any] = [:]
     private var pendingOpenURL: URL?
     private var smoke: PlayerSmokeCheck?
+    private var lifecycle: PlayerLifecycleDiagnostics?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         makeMenus()
@@ -78,8 +79,20 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         player.onState = { [weak self] state in self?.publish(state) }
         player.onStopped = { [weak self] in
             guard let self, self.terminating else { return }
-            self.terminated = true
-            NSApp.terminate(nil)
+            let complete: @MainActor @Sendable () -> Void = { [weak self] in
+                self?.terminated = true
+                NSApp.terminate(nil)
+            }
+            if let lifecycle = self.lifecycle {
+                lifecycle.record("native-worker-destroyed", extra: ["nativeChildViews": self.video.subviews.count])
+                lifecycle.finish(extra: ["workerDestroyed": true, "nativeChildViews": self.video.subviews.count], completion: complete)
+            } else { complete() }
+        }
+        lifecycle = PlayerLifecycleDiagnostics(path: ProcessInfo.processInfo.environment["HDRPLAYER_LIFECYCLE_LOG"]) { [weak self] in
+            guard let self else { return [:] }
+            var snapshot = self.player.lifecycleSnapshot()
+            snapshot["display"] = self.latestState["display"]
+            return snapshot
         }
         player.start()
         publish(player.state)
@@ -140,8 +153,16 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
     @objc private func previousFrame() { player.command("frameStep", value: -1) }
     @objc private func toggleMute() { player.command("mute", value: !(latestState["muted"] as? Bool ?? false)) }
     @objc private func toggleFullscreen() { window.toggleFullScreen(nil) }
-    @objc private func willSleep() { player.sleep() }
-    @objc private func didWake() { player.wake() }
+    @objc private func willSleep() {
+        lifecycle?.record("will-sleep.before-pause")
+        player.sleep()
+        lifecycle?.record("will-sleep.pause-enqueued")
+    }
+    @objc private func didWake() {
+        lifecycle?.record("did-wake.before-restore")
+        player.wake()
+        lifecycle?.record("did-wake.restore-enqueued")
+    }
     private func handleKey(_ event: NSEvent) -> NSEvent? {
         guard event.window === window, !event.modifierFlags.contains(.command), !event.modifierFlags.contains(.control), !event.modifierFlags.contains(.option) else { return event }
         if let responder = window.firstResponder as? NSView, responder.isDescendant(of: controls) { return event }
@@ -174,6 +195,8 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
                 "screen": window.screen?.localizedName ?? "Unknown",
                 "colorSpace": layer.colorspace?.name as String? ?? "Unknown"]
         }
+        latestState = displayed
+        lifecycle?.recordState()
         guard let data = try? JSONSerialization.data(withJSONObject: displayed, options: [.sortedKeys]),
               let json = String(data: data, encoding: .utf8) else { return }
         controls.evaluateJavaScript("window.dispatchEvent(new CustomEvent('player-state',{detail:\(json)}))")
@@ -194,8 +217,12 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
                  decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void) {
         decisionHandler(navigationAction.request.url?.isFileURL == true ? .allow : .cancel)
     }
-    func windowDidEnterFullScreen(_ notification: Notification) { player.fullscreenChanged(true) }
-    func windowDidExitFullScreen(_ notification: Notification) { player.fullscreenChanged(false) }
+    func windowDidEnterFullScreen(_ notification: Notification) { player.fullscreenChanged(true); lifecycle?.record("window-fullscreen-enter") }
+    func windowDidExitFullScreen(_ notification: Notification) { player.fullscreenChanged(false); lifecycle?.record("window-fullscreen-exit") }
+    func windowDidResize(_ notification: Notification) { lifecycle?.record("window-resized") }
+    func windowDidChangeScreen(_ notification: Notification) { lifecycle?.record("window-screen-changed") }
+    func windowDidBecomeKey(_ notification: Notification) { lifecycle?.record("window-focused") }
+    func windowDidResignKey(_ notification: Notification) { lifecycle?.record("window-unfocused") }
     func application(_ application: NSApplication, open urls: [URL]) {
         guard let url = urls.first else { return }
         if let player { player.load(url) } else { pendingOpenURL = url }
@@ -205,6 +232,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         if terminated { return .terminateNow }
         if terminating { return .terminateCancel }
         terminating = true
+        lifecycle?.record("termination-requested", extra: ["nativeChildViews": video?.subviews.count ?? 0])
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
         NSWorkspace.shared.notificationCenter.removeObserver(self)
         controls?.configuration.userContentController.removeScriptMessageHandler(forName: "player")
