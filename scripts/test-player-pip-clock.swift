@@ -74,7 +74,10 @@ struct PiPClockChecks {
         func ticks(_ seconds: Double) -> UInt64 {
             UInt64((seconds * 1_000_000_000 * Double(units.denom) / Double(units.numer)).rounded())
         }
-        let base = mach_absolute_time() - ticks(2)
+        // Synthetic held-clock tests only need positive ordered host stamps.
+        // Subtracting an age from real uptime can underflow UInt64 on a newly
+        // booted CI runner, before any clock assertion is reached.
+        let base = ticks(1)
         let gaps = NativePiPCoreClock()!
         gaps.update(snapshot(media: 1, rate: 0, ticks: base), receiptHostTicks: base)
         gaps.update(snapshot(media: .nan, rate: 0, valid: false, ticks: base + ticks(0.01)), receiptHostTicks: base + ticks(0.01))
@@ -96,7 +99,7 @@ struct PiPClockChecks {
         // Keep diagnostic storage bounded while continuing to measure maxima
         // after the detailed event buffer fills.
         let bounded = NativePiPCoreClock()!
-        let boundedBase = mach_absolute_time() - ticks(120)
+        let boundedBase = ticks(1)
         for index in 0...105 {
             let stamp = boundedBase + ticks(Double(index))
             bounded.update(snapshot(media: Double(index), rate: 0, ticks: stamp), receiptHostTicks: stamp)
