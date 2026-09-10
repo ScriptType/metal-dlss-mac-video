@@ -178,7 +178,7 @@ For each active ordinal, the field concatenates SHA256 digests of the ASCII seed
 
 At 640 × 360 the input contains 132,710,400 RGB bytes and 2,764,800 sign-field bytes, plus metadata. A four-view 48-frame capture adds 530,841,600 bytes. The generator requires a fresh output path, including rejection of dangling symlinks, and checks space for its payloads plus 4 MiB metadata. A capture runner must separately enforce its runtime and remaining-space limits.
 
-Compare the grain capture with the existing clean control from the paired flash fixture, using all 48 matching ordinals and a fresh persistent processor for each arm. Require the same source geometry, model/runtime and settings: 512 × 288 neural processing, Float16, strength/colour strength 1, ratio 2, white 203 nits, temporal processing and automatic motion. Keep normal noise/history progression and automatic reset decisions. Before interpretation, all four view pairs at ordinals 0–23 must be byte-identical; a failure rejects the comparison rather than shortening the prefix.
+Compare the grain capture with the existing clean control from the paired flash fixture, using all 48 matching ordinals and a fresh persistent processor for each arm. Require the same source geometry, model/runtime and settings: 512 × 288 neural processing, Float16, strength/colour strength 1, ratio 2, white 203 nits, temporal processing and automatic motion. Keep normal noise/history progression and automatic reset decisions. Before interpretation, all four view pairs at ordinals 0–23 must be byte-identical; a failure rejects the comparison rather than shortening the prefix. Capture both arms from the same frozen runtime checkout: the recorded identity includes repository revision, status and diff hash as well as binary/source hashes. Input generation and analysis can run from a separate checkout. A retained control with different runtime metadata requires a separately matched capture; the analyzer does not discard that provenance.
 
 ### Grain input, output and residual analysis
 
@@ -193,7 +193,7 @@ uv run --frozen python scripts/analyze-grain-reference.py \
   --output artifacts/grain-analysis
 ```
 
-The analyzer verifies both complete captures, exact input/timing/runtime pairing, all source and four-view payload hashes, and finite components. It independently reconstructs the SHA256 sign stream, checks the saved 2 × 2 fields and Float32 source products, and verifies clean source bytes outside frames 24–35. Define the following fields at the same source pixel and ordinal, converting RGB components to Float64 before subtraction:
+The analyzer enforces the canonical experiment settings independently of recipe metadata, then verifies both complete captures, exact input/timing/runtime pairing, all source and four-view payload hashes, and finite components. It independently reconstructs the SHA256 sign stream, checks the saved 2 × 2 fields and Float32 source products, and verifies clean source bytes outside frames 24–35. Define the following fields at the same source pixel and ordinal, converting RGB components to Float64 before subtraction:
 
 | Field | Definition | Observation |
 | --- | --- | --- |
@@ -209,9 +209,28 @@ Adjacent observations retain all 47 pairs using `ΔG_i = G_i − G_(i−1)`, and
 
 All metrics weight RGB components equally; they are not luminance or perceptual scores. Matched-control differences retain the control's natural temporal variation and do not independently attribute results to noise, history, estimated flow or reconstruction. Public reset/model/motion-request fields remain observations, without implying a selected flow backend, reset cause, visual acceptance or source-rate qualification.
 
-The 640 × 360 source preparation has passed the independent saved-input audit and the benchmark's CPU reference-sequence preflight. Three analyzer CPU controls also pass, using fabricated captures to check known input/output/residual fields, pooled and adjacent metrics, and rejection of resealed prefix or deterministic-field mismatches. They can be reproduced with `uv run --frozen python scripts/test_grain_reference_analysis.py`; they do not execute a model.
+The 640 × 360 preparation passes the independent saved-input audit and benchmark CPU preflight. Analyzer CPU controls use fabricated captures to check known fields, pooled and adjacent metrics, and rejection of resealed prefix, sign-field and capture-setting mismatches. Run them with `uv run --frozen python scripts/test_grain_reference_analysis.py`; they do not execute a model.
 
-The actual grain capture and result analysis remain pending AC power. The retained runner report records an AC-policy refusal before launch, zero model processes and unchanged frozen inputs/runtime pins. No grain model output, result figure or paired-result acceptance is claimed. Preparation and refusal records are retained under `artifacts/grain-reference-1/` as `input-audit-1.json`, `preflight-1.json`, `grain-process-1.json` and `prelaunch-refusal-followup-2.json`.
+### M3 grain observation
+
+The [M3 evidence](evidence/m3-grain-reference.json) compares one new 48-frame grain capture with the retained static flash control. Both use the same frozen production runtime/model, 640 × 360 source/output and 512 × 288 processing. All 384 views pass finite-value and integrity checks, all 96 pre-event view pairs match exactly, and all 351 frozen files remain unchanged. Both runs report a history reset only at frame 0.
+
+Pooled equal-weight RGB component RMS, in nits:
+
+| Interval | Control residual C | Grain residual R | Input difference G | Output difference Q | Residual difference D |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Active input, 24–35 | 41.616915 | 25.549125 | 4.092336 | 18.163264 | 17.955842 |
+| Returned clean input, 36–47 | 40.344058 | 39.379273 | 0 | 4.429987 | 4.429987 |
+
+After the clean input returns, G is zero and D equals Q exactly. D has RMS 11.702154 nits at frame 36 and 1.214953 at frame 47. It is not monotonic: frame 44 is 2.368609 nits and frame 45 is 5.205892 nits. Lower R than C during the active interval measures distance from each arm's own original; it establishes neither an ideal enhancement target nor a quality improvement. The paired differences do not isolate noise, history, motion estimation or reconstruction as their sole cause.
+
+The independent raw audit and scalar comparison reproduce all 240 frame and 141 adjacent metric records, all phase pools and all 9,144 CSV cells exactly. The [complete CSV](evidence/m3-grain-reference.csv) and figure retain all 48 frames and 47 adjacent pairs, including onset at 24 and removal at 36.
+
+![All frame and adjacent RGB component RMS observations for the synthetic grain input](evidence/m3-grain-reference.png)
+
+The [standalone PDF](evidence/m3-grain-reference.pdf) contains the same four panels. These measurements define no perceptual threshold, accepted recovery deadline or natural film-grain result.
+
+The new capture completed in 39.252 seconds, with Battery Power recorded at 99% before and after. The historical control ran on AC Power. Power conditions were not controlled as a matched pair, and diagnostic readback/I/O is included; the durations and RSS observations are not compared as performance results. An initial AC-only attempt refused before launch. Its failure, the unused second freeze and the explicit recorded-power protocol amendment are retained under `artifacts/grain-reference-1/`. Exactly one grain model process ran. Native playback, physical HDR, source-rate Live and M5 acceptance remain separate requirements.
 
 ## Motion-aligned occlusion analysis
 
