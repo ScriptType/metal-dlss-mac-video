@@ -10,6 +10,7 @@ python3 -m unittest discover -s scripts -p test_apple_hdr_samples.py
 python3 -m unittest discover -s scripts -p test_apple_hdr_playback.py
 python3 -m unittest discover -s scripts -p test_mpv_prepared_timing.py
 python3 -m unittest discover -s scripts -p test_mpv_policy_timing.py
+bash scripts/test-mpv-live-policy.sh
 bash scripts/test-player-lifecycle.sh
 npm --prefix apps/controls run check
 npm --prefix apps/controls run build

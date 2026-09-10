@@ -25,6 +25,8 @@ jobs:
       - run: npm --prefix apps/controls run build
       - name: Check native pause intent, lifecycle recorder and PiP clock (CPU only)
         run: bash scripts/test-player-lifecycle.sh
+      - name: Check Live qualification policy (CPU only)
+        run: bash scripts/test-mpv-live-policy.sh
       - run: |
           source scripts/env.sh
           swift build --build-tests --jobs 2

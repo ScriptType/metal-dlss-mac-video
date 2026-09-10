@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "recordedUTC": "2026-09-10T06:55:08.236010+00:00",
+  "scope": "Production Live policy decisions and a bounded M3 Adaptive/app regression; no measured qualified neural Live entry or fallback",
+  "mpvRevision": "0b9bae001c14b8ab496e6ae2e9ac90dd6ee65788",
+  "rootParentRevision": "fba8e9136b58a7ea68c96f936315e4ad8b114680",
+  "productionChange": [
+    "Extract the actual filter policy into a private C helper; retain 3 cold exclusions, latest-60 p95, inclusive 80% source-period threshold, model/strength and 320x192 eligibility.",
+    "Invalidate qualification on nominal source-rate change without resetting engine temporal history; stamp each admitted frame with its qualification epoch and reject stale completions before counting or validating them.",
+    "Clear invalid current timing/settings evidence and p95; Live loss demotes to Adaptive and renewed qualification requires explicit Live entry.",
+    "Continue warmed count and p95 diagnostics for ordinary valid Live-ineligible configurations."
+  ],
+  "cpu": {
+    "policyGroups": 6,
+    "optimized": "passed",
+    "undefinedBehaviorSanitizer": "passed",
+    "addressSanitizer": "Unavailable: executable stalled before main in recursive macOS ASan/dyld initialization and was terminated; no test assertion result",
+    "allMpvMesonTests": 39,
+    "timingHarnessTests": 13,
+    "rootAndCIWired": true
+  },
+  "build": {
+    "candidateBuildAndTestsPassed": true,
+    "candidateSourcesUnchanged": true,
+    "finalRevisionClean": true,
+    "finalVersionRebuildOnly": true,
+    "binaries": {
+      "artifacts/mpv-build/mpv": {
+        "bytes": 5598144,
+        "sha256": "ab296b8994ff58be5db0d2a0b3589dc0d7f0931127fe3437725b922c7a934c9f"
+      },
+      "artifacts/mpv-build/libmpv.2.dylib": {
+        "bytes": 5597664,
+        "sha256": "8c3979d3924e9bffae1832d41a8b78d0c947ac09d5b7dfc260b8fe6a22304e2d"
+      },
+      ".build/debug/libFrameEngineShared.dylib": {
+        "bytes": 50139368,
+        "sha256": "905d041aa6546f5b1866851e70021b26f7f7597656ce2659d1c27236877ca773"
+      },
+      ".build/debug/mlx.metallib": {
+        "bytes": 107392404,
+        "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      },
+      "vendor/mpv/video/filter/metal_hdr_live_policy.h": {
+        "bytes": 4744,
+        "sha256": "35b6fe475fcf225ca98d46f4b08a2591a0357a0338d3918afe80d1c98208564d"
+      },
+      "vendor/mpv/video/filter/vf_metal_hdr.m": {
+        "bytes": 50032,
+        "sha256": "cf176874aa84c5650224a61a4d6c9073f6e4ec3db800fa8fd19722e08e636a30"
+      },
+      "vendor/mpv/test/metal_hdr_live_policy.c": {
+        "bytes": 8757,
+        "sha256": "fff8512a31045f8ad1d75afe5250f6c80e7fc17e6bd6e8fd93e994e6b78c0298"
+      },
+      "vendor/mpv/test/meson.build": {
+        "bytes": 9204,
+        "sha256": "d151bc4500633a3d56eb00c9e9670c219d1e80208bf157c8f66c71b4861f52c1"
+      }
+    },
+    "sharedEngineAndOtherRuntimeUnchanged": true
+  },
+  "adaptivePlayback": {
+    "sourceSHA256": "c9ea81d5b6cf5bd8f6a43556eae17b86b966fe1f684beb3c0087ed6915aeaa40",
+    "sourceStream": {
+      "width": 320,
+      "height": 192,
+      "avg_frame_rate": "30/1"
+    },
+    "drawable": {
+      "w": 960,
+      "h": 496,
+      "par": 1.0,
+      "aspect": 1.935484,
+      "mt": 0,
+      "mb": 0,
+      "ml": 67,
+      "mr": 67
+    },
+    "expectedSeekPTS": {
+      "value": 733,
+      "timescale": 1000
+    },
+    "exactOriginalPreviewObserved": true,
+    "seekSecondsToOriginalPreview": 0.06471049995161593,
+    "seekSecondsToEnhancedPair": 0.9026552089489996,
+    "liveRejection": {
+      "request_id": 49,
+      "error": "error running command"
+    },
+    "steadySampleCount": 338,
+    "steadyMaximumAbsoluteAVOffsetSeconds": 0.0,
+    "synchronisation20msTargetMet": true,
+    "maximumPendingFrames": 2,
+    "adaptiveBufferEpisodes": 123,
+    "adaptiveBufferedSeconds": 8.238115,
+    "staleGenerationObservations": 0,
+    "playbackCounterDeltas": {
+      "frame-drop-count": 0,
+      "decoder-frame-drop-count": 0,
+      "vo-delayed-frame-count": 0
+    },
+    "engineSummary": {
+      "completedTotal": 125,
+      "warmedSamples": 121,
+      "completedThroughputFPS": 10.519419033900306,
+      "retainedSamples": 125
+    },
+    "visibility": {
+      "completedWork": {
+        "eligible": true,
+        "startHostSeconds": 1037357.5035915002,
+        "endHostSeconds": 1037369.2141255002,
+        "durationSeconds": 11.71053399995435,
+        "nativeObservationCount": 47,
+        "maximumAllowedObservationGapSeconds": 1.5,
+        "maximumObservationGapSeconds": 0.2508399166399613,
+        "observedVisibleSeconds": 11.71053399995435,
+        "observedInactiveSeconds": 0.0,
+        "ineligibleObservations": [],
+        "reasons": [],
+        "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+      },
+      "playbackClock": {
+        "eligible": true,
+        "startHostSeconds": 1037357.24505225,
+        "endHostSeconds": 1037369.27072775,
+        "durationSeconds": 12.0256755000446,
+        "nativeObservationCount": 49,
+        "maximumAllowedObservationGapSeconds": 1.5,
+        "maximumObservationGapSeconds": 0.2508399166399613,
+        "observedVisibleSeconds": 12.0256755000446,
+        "observedInactiveSeconds": 0.0,
+        "ineligibleObservations": [],
+        "reasons": [],
+        "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+      },
+      "eligible": true
+    },
+    "exitCode": 0,
+    "binaryHashesUnchanged": true,
+    "sourceHashUnchanged": true,
+    "modelHashUnchanged": true,
+    "processingWidth": 160,
+    "processingHeight": 96,
+    "actualPlaybackWallSeconds": 12.0256755000446,
+    "sourceProgressSeconds": 4.1000000000000005,
+    "retainedComparisons": 6,
+    "retainedPairIdentityUnchanged": true,
+    "finalWarmedSamples": 121,
+    "finalP95Seconds": 0.194981,
+    "finalPolicy": "adaptive",
+    "finalLiveQualified": false,
+    "peakSampledResidentBytes": 594575360,
+    "peakRetainedBytes": 5777024
+  },
+  "ordinaryBundle": {
+    "nativeLibraries": 46,
+    "modelIncluded": "Models/NeuralRendering.dlssmodel",
+    "strictSignatureVerified": true,
+    "libmpvSourceMatchesFinalBuild": true,
+    "checks": [
+      "Existing DOM/media smoke passed and the process exited cleanly",
+      "Termination request precedes native view/core destruction and final log flush",
+      "Source, paused transport state and native rational displayed timestamps were recorded",
+      "No physical sleep cycle was inferred during the media-only check"
+    ],
+    "domChecksPassed": 23,
+    "exactTimestampSnapshots": 59,
+    "exitCode": 0,
+    "binariesUnchanged": true,
+    "binaries": {
+      "HDRPlayer": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/MacOS/HDRPlayer",
+        "beforeSHA256": "3356008411ad743c6e79fda94d74e4604dc8952685f43f913b25e2df20b574e6",
+        "afterSHA256": "3356008411ad743c6e79fda94d74e4604dc8952685f43f913b25e2df20b574e6"
+      },
+      "libmpv": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/Frameworks/libmpv.2.dylib",
+        "beforeSHA256": "b5399df8181e5ffd148024ee34975c592688362caec62c292a96dadf5bdf1e53",
+        "afterSHA256": "b5399df8181e5ffd148024ee34975c592688362caec62c292a96dadf5bdf1e53"
+      },
+      "FrameEngineShared": {
+        "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/HDR Player.app/Contents/Frameworks/libFrameEngineShared.dylib",
+        "beforeSHA256": "6f4622f8aea8ee6f4c69fc1822a5c8c621638d45dc5c653c7efa86ffd4c6f203",
+        "afterSHA256": "6f4622f8aea8ee6f4c69fc1822a5c8c621638d45dc5c653c7efa86ffd4c6f203"
+      }
+    }
+  },
+  "limitations": [
+    "Synthetic CPU durations test the production state decisions, not measured device qualification or integrated Live clocks.",
+    "Playback used PQ30 synthetic material, 160x96 neural processing, 320x192 source/output and a 960x496 drawable on Apple M3. This processing shape is intentionally ineligible for Live.",
+    "Scheduled mpv avsync can report zero by construction for early queued video. This is not physical acoustic/scanout accuracy or long-duration drift evidence.",
+    "The 12-second Adaptive regression does not establish sustained source-rate playback, accepted temporal/HDR display quality, physical sleep/wake, display migration or VoiceOver speech.",
+    "ASan startup limitation is retained separately from passing optimized and UBSan policy results."
+  ],
+  "artifacts": {
+    "artifacts/live-policy-cpu-1/report.json": {
+      "bytes": 3693,
+      "sha256": "b531e57b3a856c73e3f96b66b556c1e20e7b0c49d95ad1525b6a64b7dc1d52cf"
+    },
+    "artifacts/live-policy-cpu-1/sanitized-sample.txt": {
+      "bytes": 6998,
+      "sha256": "1f570c099de25135de7b4c102a71e33a51a595006c74ffb3f4cbe72c74073311"
+    },
+    "artifacts/live-policy-root-check-1/validation.json": {
+      "bytes": 1381,
+      "sha256": "c2e0e551b2a7593e5e7e8a5b8144f25acf15ecb33b730ca4299f01e46d7af123"
+    },
+    "artifacts/live-policy-root-check-1/runner.log": {
+      "bytes": 79,
+      "sha256": "6b846433457a1be169afc85d6d59ae17a6ea3afdf17417ff3cf4ba5dc6eb7a95"
+    },
+    "artifacts/live-policy-build-1/report.json": {
+      "bytes": 11362,
+      "sha256": "a29e4c278a1a81d1f6dafbed4dd940d344ae1cc5cf56b3435094bcaa8ef38554"
+    },
+    "artifacts/live-policy-build-1/build.log": {
+      "bytes": 41258,
+      "sha256": "d20977739e8a0a9d4ef0e935ef939aba0baa15295cf1a424a68075ae130208a9"
+    },
+    "artifacts/live-policy-build-1/testlog.json": {
+      "bytes": 949164,
+      "sha256": "cec8f67036d4092e8ecb77fa37e501c068adaf06fc499ec9bfd4405e2c53e4af"
+    },
+    "artifacts/live-policy-final-build-1/report.json": {
+      "bytes": 2082,
+      "sha256": "f6cd6e9f8cf59327830e9bac78dc1f412f6c3154d0846f4d0bfa03e0b123b088"
+    },
+    "artifacts/live-policy-final-build-1/build.log": {
+      "bytes": 618,
+      "sha256": "ba0a8ccd86f639399b19b8b0ad17c84dd44c7a34f3dd4acd37145fd652124cd3"
+    },
+    "artifacts/live-policy-runtime-baseline-a946/manifest.json": {
+      "bytes": 967,
+      "sha256": "b63994f31cd9f08bcce82dfa19a4ace8ea664992feda3e44f9cf7fe3098b43b4"
+    },
+    "artifacts/live-policy-bundle-build-1/build.log": {
+      "bytes": 2630,
+      "sha256": "4747fa10e11c67077b909cee3bff824290641c2bf7b508177e580ed2c4575b05"
+    },
+    "artifacts/live-policy-player-bundle-1/report.json": {
+      "bytes": 1620,
+      "sha256": "e4912fada2b34987fe9593a612ec757625e7a6774bbfcae1cb34d11121137afa"
+    },
+    "artifacts/live-policy-player-bundle-1/dom.json": {
+      "bytes": 107640,
+      "sha256": "687e336f988741e09aa55473d2d18b03406fc121bcff2d94687ba7b5a863fcef"
+    },
+    "artifacts/live-policy-player-bundle-1/lifecycle.jsonl": {
+      "bytes": 57027,
+      "sha256": "783f958a4a435a8c7e49d3a437155d784dba4adc29efe855451e1bfe79e0767e"
+    },
+    "artifacts/live-policy-player-bundle-1/player.log": {
+      "bytes": 27,
+      "sha256": "98dc87e956a41b7f47c2854548337aa5bc139efd3afcb348d528070426f4bc84"
+    },
+    "artifacts/HDR Player.app/Contents/Resources/NativeRuntime.json": {
+      "bytes": 10526,
+      "sha256": "f3edf2cd16b33e0938501e82b1c841fac3785c0e42fccf5f070d35e2f30f37dc"
+    },
+    "artifacts/live-policy-publication-1/assemble.py": {
+      "bytes": 8357,
+      "sha256": "de42145b68aa2428291e63b87fcd7305cbefec37b27c4799c5c5a41434860cbc"
+    },
+    "artifacts/mpv-live-policy-regression-1/report.configuration.json": {
+      "bytes": 4186,
+      "sha256": "74ed151859617dd313485ac647d49f288a054cefc1a55b144128603ee4ed90e9"
+    },
+    "artifacts/mpv-live-policy-regression-1/report.engine.json": {
+      "bytes": 101007,
+      "sha256": "ede569add4b331af8b80684a5d53016122b02dced1a1f7ea179f08331c878b00"
+    },
+    "artifacts/mpv-live-policy-regression-1/report.json": {
+      "bytes": 696906,
+      "sha256": "ef9ba2aabd8f58584fbd9a31760df40ac403397ea02a2ba71b9426840a015fd9"
+    },
+    "artifacts/mpv-live-policy-regression-1/report.log": {
+      "bytes": 314004,
+      "sha256": "276dd8b35ba8e2b3c63fa00269b2b199ba4d71a28743cb98919017a16e5be4d9"
+    },
+    "artifacts/mpv-live-policy-regression-1/report.native.log": {
+      "bytes": 35784,
+      "sha256": "aacb2ad09adf3043eb778f8f02f49f7390044af529f446022757bfbc6a5e351f"
+    },
+    "artifacts/mpv-live-policy-regression-1/report.source-timing.json": {
+      "bytes": 51682,
+      "sha256": "efde988b1443d0fe964cff89acbc92bb187f3a7bdbed761847bafef723766321"
+    },
+    "artifacts/mpv-live-policy-regression-1/report.visibility.json": {
+      "bytes": 1209,
+      "sha256": "ba68ab2c610a16a07c23080a84236b9351079706283e22668d69715191e690e5"
+    }
+  },
+  "sources": {
+    "vendor/mpv/video/filter/metal_hdr_live_policy.h": {
+      "bytes": 4744,
+      "sha256": "35b6fe475fcf225ca98d46f4b08a2591a0357a0338d3918afe80d1c98208564d"
+    },
+    "vendor/mpv/video/filter/vf_metal_hdr.m": {
+      "bytes": 50032,
+      "sha256": "cf176874aa84c5650224a61a4d6c9073f6e4ec3db800fa8fd19722e08e636a30"
+    },
+    "vendor/mpv/test/metal_hdr_live_policy.c": {
+      "bytes": 8757,
+      "sha256": "fff8512a31045f8ad1d75afe5250f6c80e7fc17e6bd6e8fd93e994e6b78c0298"
+    },
+    "vendor/mpv/test/meson.build": {
+      "bytes": 9204,
+      "sha256": "d151bc4500633a3d56eb00c9e9670c219d1e80208bf157c8f66c71b4861f52c1"
+    },
+    "scripts/test-mpv-live-policy.sh": {
+      "bytes": 572,
+      "sha256": "a3f9b8dfc9b1df0464445eff2688e854c7eb9cf5f73bebee2bddbcce15e518f8"
+    },
+    "scripts/test-mpv-policy.py": {
+      "bytes": 32135,
+      "sha256": "0f3c304d29bedd6f1fd774de1951683a2294c92fb3cc10628fc6442a523a15aa"
+    },
+    "scripts/test_mpv_policy_timing.py": {
+      "bytes": 9791,
+      "sha256": "e85cd375e6772f3bf91db0f2ab3ba94678c23aaf5ef13a8ea15a1d81e36778e9"
+    },
+    "scripts/check.sh": {
+      "bytes": 1711,
+      "sha256": "4820d96f11c4eecbf1a52cf543979291e5281a416c895b116ed5d66f99c0b50b"
+    },
+    ".github/workflows/ci.yml": {
+      "bytes": 2073,
+      "sha256": "2e5a46ec662ca24ff53c5446ac9159b85a67e74611b6e9c028e2115e9a682fb9"
+    }
+  }
+}

@@ -19,7 +19,7 @@ import time
 from adapter_visibility import completed_window, qualify_visibility, window_events
 
 CORE_SOURCES = ("demux/demux_lavf.c", "demux/lavf_timing.h", "player/video.c", "player/command.c",
-    "video/filter/vf_metal_hdr.m", "audio/out/buffer.c", "audio/out/ao_coreaudio.c",
+    "video/filter/vf_metal_hdr.m", "video/filter/metal_hdr_live_policy.h", "audio/out/buffer.c", "audio/out/ao_coreaudio.c",
     "video/out/vo.c", "video/out/mac_common.swift", "video/out/mac/common.swift", "video/out/mac/metal_layer.swift",
     "video/out/vulkan/context_mac.m")
 
