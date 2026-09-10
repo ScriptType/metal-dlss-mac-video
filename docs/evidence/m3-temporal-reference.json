@@ -1,0 +1,304 @@
+{
+  "afterCaptureChanges": [
+    {
+      "capturedSHA256": "163f00cfdda718716d443de71ad084774bd9805d2e0ffdd2b9eff1a2e1a79ba8",
+      "capturedSourceCopy": "artifacts/cosmos-reference-source/FrameReferenceSequence.swift",
+      "capturedSourceCopyRecovery": "Reconstructed by reversing only the documented diagnostic change; SHA256 matches the hash recorded during capture",
+      "change": "Known-discontinuity logging now subtracts CMTime rationals before converting to seconds; added exact largeInt64 PTS CPU case",
+      "currentSHA256": "d3c5cf856a87faee21077d2cfa68f37b9f7734addcd0a6c62339ea161628773c",
+      "impact": "No processing/pixel change and no effect on this0\u20261.96s sequence; no second GPU run",
+      "path": "tools/FrameBenchmark/FrameReferenceSequence.swift"
+    },
+    {
+      "change": "Reject Python optimization that disables assertions; final CPU review uses this version",
+      "currentSHA256": "7b8d3f36e52d3b277582fed424bb0ccd566204d9fea1b0eeb56d6e6b2a4c643e",
+      "path": "scripts/review-reference-sequence.py"
+    }
+  ],
+  "capture": {
+    "allOriginalsMatchInputBytes": true,
+    "allViewsFinite": true,
+    "binariesAndInputUnchanged": true,
+    "captureWallSeconds": 9.113508291,
+    "dimensions": [
+      320,
+      134
+    ],
+    "exitCode": 0,
+    "finalMLXBytes": {
+      "active": 304589376,
+      "cache": 268533694,
+      "peakActive": 564175884
+    },
+    "firstPTS": {
+      "timescale": 1,
+      "value": 0
+    },
+    "frameDuration": {
+      "timescale": 2997,
+      "value": 125
+    },
+    "frames": 48,
+    "historyResetOrdinals": [
+      0,
+      2
+    ],
+    "lastPTS": {
+      "timescale": 2997,
+      "value": 5875
+    },
+    "peakMLXActiveBytes": 564175884,
+    "processWallSeconds": 10.224570958060212,
+    "rawPayloadBytes": 98795520,
+    "settings": {
+      "colourStrength": 1,
+      "maximumLuminanceRatio": 2,
+      "mlxCacheBytes": 268435456,
+      "motionRequested": "automatic",
+      "precision": "float16",
+      "processingHeight": 96,
+      "processingWidth": 160,
+      "referenceWhiteNits": 203,
+      "sceneCutThreshold": 0.3,
+      "strength": 1,
+      "temporal": true
+    },
+    "sourceFrameIndices": [
+      10000,
+      10047
+    ]
+  },
+  "captureRuntime": {
+    "arguments": [
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/debug/hdr-benchmark",
+      "--reference-sequence",
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/cosmos-reference-input-box/manifest.json",
+      "--output",
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/cosmos-reference-capture",
+      "--model",
+      "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel",
+      "--width",
+      "160",
+      "--height",
+      "96"
+    ],
+    "binary": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/hdr-benchmark",
+    "binarySHA256": "bb61706a0be493f867b9e3ecc21594c8a6ce38ca7b50a1dd8f4c0d7d5039d5a5",
+    "diffSHA256": "1b5f8ab2c854603473c10a4130deecb1eac245a6fe0575200c606381769660c5",
+    "mlxDLSSRevision": "f2ce1772b98a0b862385fd71a1c45e137cdd4580",
+    "mpvRevision": "904d1e05dfa9be551acd95fe562722c0e3b26e33",
+    "os": "Version 26.5 (Build 25F71)",
+    "rootRevision": "ac8624a429054f999a3d1def95eafd3f9b7d0218",
+    "rootStatus": " M scripts/test-player-pip-clock.swift\n M tools/FrameBenchmark/FrameBenchmarkCommand.swift\n?? docs/evidence/m3-hdr-compositor-capture.json\n?? docs/hdr-compositor-capture.md\n?? docs/temporal-reference.md\n?? scripts/analyze-hdr-capture.py\n?? scripts/build-hdr-capture-probe.sh\n?? scripts/review-reference-sequence.py\n?? scripts/test_hdr_capture.py\n?? tools/FrameBenchmark/FrameReferenceSequence.swift\n?? tools/HDRCaptureProbe/",
+    "sourceSHA256": {
+      "tools/FrameBenchmark/FrameBenchmarkCommand.swift": "fb3a2d88965cf0528270891b105265406d72c7bfaceaf88107e47030a8368a36",
+      "tools/FrameBenchmark/FrameReferenceSequence.swift": "163f00cfdda718716d443de71ad084774bd9805d2e0ffdd2b9eff1a2e1a79ba8",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift": "6eeacf6699f1f0978b121811970a0ad77e53378ac197c33fde17681510685389",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift": "93e6b12dd7f4338e286af12eb90a9286f01658d17a9ede944fd39b0d851e4749",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+    }
+  },
+  "capturedBinarySHA256": "bb61706a0be493f867b9e3ecc21594c8a6ce38ca7b50a1dd8f4c0d7d5039d5a5",
+  "cpuChecks": {
+    "pythonOptimizedIntegrityGuard": {
+      "exitCode": 1,
+      "stderr": "reference review: Python optimization disables integrity assertions; run without -O/PYTHONOPTIMIZE"
+    },
+    "pythonReviewChecks": 15,
+    "swiftCaptureChecksAfterRationalFix": 10,
+    "swiftCaptureChecksAtCapture": 9,
+    "viewerJavaScriptSyntaxPassed": true
+  },
+  "device": {
+    "name": "Apple M3",
+    "registryID": 4294968507,
+    "unifiedMemory": true
+  },
+  "finalCPUTestedBinarySHA256": "7c27d54aaf7c42d986d9e442cb16df65145e43c0e526850be3342acb273cef30",
+  "limitations": [
+    "Input retains publisher white-point ambiguity, selected extendedPQ interpretation below0/above1 and floatBOX derivative in its exact provenance",
+    "Combined historyReset does not expose specific cut/flow scores or selected automatic backend",
+    "Residual temporal deltas use fixed coordinates and are not motion-compensated quality scores",
+    "Working Float32 references precede outputRGBA16F packing; previews use fixedSDR mapping and8-bit quantization",
+    "MLX cache setting is a reclamation policy, not a hard process-memory cap",
+    "Browser review and completed diagnostic work do not establish physicalHDR or A/V performance"
+  ],
+  "model": {
+    "files": {
+      "manifest.json": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32",
+      "weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+    },
+    "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel"
+  },
+  "numeric": {
+    "enhancedMinusOriginal": {
+      "allSamplesRMSNits": 16.808926990008963,
+      "maximumAbsoluteNits": 4731.2177734375,
+      "maximumFrameRMSNits": 51.093130700514045
+    },
+    "identityMinusOriginal": {
+      "allSamplesRMSNits": 1.337486599738323e-06,
+      "maximumAbsoluteNits": 0.0009765625,
+      "maximumFrameRMSNits": 5.130678538116034e-06
+    },
+    "temporalResidualDelta": {
+      "allSamplesRMSNits": 11.574251143470082,
+      "maximumAbsoluteNits": 4098.97331237793,
+      "maximumFrameRMSNits": 41.223221397035594
+    },
+    "views": {
+      "enhanced": {
+        "above10000Components": 32,
+        "maximum": 14066.9306640625,
+        "minimum": -0.04921898618340492,
+        "negativeComponents": 11013,
+        "nonfiniteComponents": 0
+      },
+      "identity": {
+        "above10000Components": 34,
+        "maximum": 13333.1806640625,
+        "minimum": -0.04921898618340492,
+        "negativeComponents": 20902,
+        "nonfiniteComponents": 0
+      },
+      "original": {
+        "above10000Components": 34,
+        "maximum": 13333.181640625,
+        "minimum": -0.04921898618340492,
+        "negativeComponents": 20902,
+        "nonfiniteComponents": 0
+      },
+      "proxy": {
+        "above10000Components": 0,
+        "maximum": 0.9999999403953552,
+        "minimum": 0,
+        "negativeComponents": 0,
+        "nonfiniteComponents": 0
+      }
+    }
+  },
+  "observations": [
+    {
+      "historyReset": true,
+      "interpretation": "The combined reset coincides with the observed cut. Public output does not expose cut scores or per-pixel history acceptance; no residual-history or quality conclusion.",
+      "kind": "visible shot cut coincides with combined history reset",
+      "knownInputDiscontinuities": [],
+      "ordinal": 2,
+      "previousSourceFrameIndex": 10001,
+      "pts": {
+        "timescale": 2997,
+        "value": 250
+      },
+      "sourceFrameIndex": 10002,
+      "visualDescription": "Dial close-up changes to a character medium shot"
+    },
+    {
+      "description": "Fixed160\u00d796 processing softens visible detail relative to the320\u00d7134 original; no improvement or acceptable-quality claim",
+      "kind": "inspection resolution limit"
+    }
+  ],
+  "passed": true,
+  "rawFiles": {
+    "artifacts/cosmos-reference-capture-run.json": "ed3fc9f9ca1968000dea01accee41cfc6f42d5b5c5a9c3828f2e5644c5ddf4e3",
+    "artifacts/cosmos-reference-capture.log": "d96f54a4a91c76f5c4153dfa67a97de3946f1c78e365a9279a2e409ee6589e9c",
+    "artifacts/cosmos-reference-capture/input-manifest.json": "30b621693df68abf31f44df64b9d08fc6075fac75e2f0fad37caabfbe9c394fd",
+    "artifacts/cosmos-reference-capture/manifest.json": "58c671427edaac34d16ee14b91e0a9362cad59b8d8af37f30a844a02e40f54c3",
+    "artifacts/cosmos-reference-review-final/index.html": "5cbe3164b02c0735c9781d0edfaaf2c9530cf1ee38b31e7ff9d58318cec78d24",
+    "artifacts/cosmos-reference-review-final/review.json": "4d67089edd355f1a25278321cbcbe9979055076db8d280c0ad8e1eb5054bdc3d",
+    "artifacts/cosmos-reference-source/FrameBenchmarkCommand.swift": "fb3a2d88965cf0528270891b105265406d72c7bfaceaf88107e47030a8368a36",
+    "artifacts/cosmos-reference-source/FrameReferenceSequence.swift": "163f00cfdda718716d443de71ad084774bd9805d2e0ffdd2b9eff1a2e1a79ba8",
+    "artifacts/cosmos-reference-source/reference-review-cpu-final.json": "34eea83fc59ebfc6adfa182508af65343b9f25e9f58bc20cf784bc9508fa73c8",
+    "artifacts/cosmos-reference-source/reference-sequence-build-final.log": "7b45a6c986d1de9fe1f6c3aaba47d93d71a4319f19538d08a020f1c386c62cfb",
+    "artifacts/cosmos-reference-source/reference-sequence-build-rational.log": "44d6e21553cec9e3acde4bd0640867c782e46d3e09a3fa4a9f55b3cbc89e514d",
+    "artifacts/cosmos-reference-source/reference-sequence-cpu-final.log": "21cac402366f0ce9020dfc38e6a1d440318df858a5348144f1a23b206b63279e"
+  },
+  "recordedUTC": "2026-09-10T01:57:23.998726+00:00",
+  "review": {
+    "frames": 48,
+    "index": "artifacts/cosmos-reference-review-final/index.html",
+    "manifest": "artifacts/cosmos-reference-review-final/review.json",
+    "mappedFrameSHA256": {
+      "frame-0000.png": "259bc65fe29278cc14fffefef8bbfc87981c42bec8006ef515ba1f984bc74d96",
+      "frame-0001.png": "391a4fe8807a0a5efafcea610fbe22c9b56ee40a0385b17f1f40b13056ec2d2e",
+      "frame-0002.png": "fec5df3fa05a0b5fc959bc800bc4075494ceb47bd83208549086b072fc05eed6",
+      "frame-0003.png": "2907fadaada236ee6350134fd02a8c90ed85e15111a736c57ef4510f0f9cdfe5",
+      "frame-0004.png": "bff8c81d8e7b35b459864039ce76d1d8b507ab1a49c7c180e8573e315b013b0a",
+      "frame-0005.png": "b0a88a64e8182e7f804613e5691dd052c6a085adc6fff429575a49253533c4bc",
+      "frame-0006.png": "90bb05ae02fec5b6d345b24f16d5d305a3f562943441a942be3c3fef9976ae4e",
+      "frame-0007.png": "7c775b03453eb91f7c123b267dfd564f367f5a903f4d735c10265d87ecf8a2f8",
+      "frame-0008.png": "4e43e837dc26ff8ffda6b4c46a3c15494e26bcf9580a167b8d6dc97b957d90f3",
+      "frame-0009.png": "90faa1a69bca61c7db13a2ee25bebb0010d393bf0db1857efeaeb469f158da54",
+      "frame-0010.png": "60a47be801d16ae564bd46df67cdba539eac2bdbaeee50aacb6b51c7a9a7464b",
+      "frame-0011.png": "b994426a0238177e72c150ae743ac8d8bddc379d84fd240adc5de66d89415e63",
+      "frame-0012.png": "296beb2e0d3debe6c609113614e15ca665fe830743bfce2bbc317920fc4586c1",
+      "frame-0013.png": "f3eafbd847da3c0e31e4e6dbf13b54e62f8fdcc0f9e8498d47e1d58c439b6b1f",
+      "frame-0014.png": "5950fb3ff296b7867dad1429e80ad836c038acc5a72244239eaefa342e91fd39",
+      "frame-0015.png": "7c21a790e17e76aa10e192dd8014a3b18f9f050839147d77bdf5b28f373a07cd",
+      "frame-0016.png": "b5cc8402bf2fc77629c6ee4fd0ce7a96ee5eb6e4dd76a1f2f051e962dbe220ae",
+      "frame-0017.png": "0621c5785b02b1e1bcc0c1b525be79c2859fd1da6e81c6c3e940dd6a194e4dc3",
+      "frame-0018.png": "c26074e7ee374bb9362d9fbc90cc28e2c3f3f5170745ce7ca31b4fb28ebf6060",
+      "frame-0019.png": "37fedf699819d052326c2603712cf3136ba42ff319a7faa368c8bbba2166c5ae",
+      "frame-0020.png": "8b6be0f7fa17fe47ef7c974ba0bd3f405918779406da3a99a773d9b79f807cd6",
+      "frame-0021.png": "bead7acd34dced38704c0edef0ebc7b651de6b1d0a4ff6a4dcfe39b358d59a72",
+      "frame-0022.png": "b01015e3ab3f93464daf836a1858b69265539053e649f9dabbd34084dbfaef8c",
+      "frame-0023.png": "f9056f60c18fb3343e5647535d69904bacb484e2970eacbedf09be76cc68735d",
+      "frame-0024.png": "503b53729e95f727c4734347d5483135e9883155ebcff3d85bba4ee324054a46",
+      "frame-0025.png": "9700282b88348c7de04fb895fd6d854ce21adae013bcccd420ba2be8ee029c8f",
+      "frame-0026.png": "0166e3726bd672cbc179f88cadc6d8cb74294e60b4c90126f1d68ed15fd1b928",
+      "frame-0027.png": "40c6a5f2fc9c365c0f5f53a25fe865f7be3743d6ae5cdb4c9cf9fa13067b19d8",
+      "frame-0028.png": "5645edccb694f2ae9b543787885eb630d1ec4b6930c9b9f3d7eee6f5bfcfddcc",
+      "frame-0029.png": "035da10125fff0b7a47b85fb0fdd8eb186054257552dd19360140bd3174c3320",
+      "frame-0030.png": "a51ba5197c1d5b7172d7a13c3eda0ca6c922afc5c62b855c84f4b92036b8a07f",
+      "frame-0031.png": "41538b1dca0cdf6e066e65df2e6850e9d3d7c61f0a06939ec49cff3bc8cc8dd2",
+      "frame-0032.png": "e1c19881de07853196b1ec7a3604037a15b3b7fe859133bf29703741e2b59423",
+      "frame-0033.png": "47fa3b3b7f04b6b2128346ce41355cd302319d304559b009e0707a105ac4bd56",
+      "frame-0034.png": "6c41c24159b8dd22e04dfd64cf406030011f60144db7b915ad0c1c6d76585bad",
+      "frame-0035.png": "b1cf2062f24144f4c08d0b99c4d45731ae944d58a987560759066bfdd4af194a",
+      "frame-0036.png": "c9317d2906cb2ee7a9698b2dee565eee7ca0c82c40bd90d165d9581bdd6792f7",
+      "frame-0037.png": "454586fb168f8dc9fba99ff9d4a64b1491de83ce884e8640d75f3abb1c6bca63",
+      "frame-0038.png": "60c63e130aca8e0d4fa104546830b076a8d3920b7e924cd4f6178debc3298f64",
+      "frame-0039.png": "ec31d12c32a72311804938c54df0f6295c8e9ff25bf77758545ae4c984f4cd81",
+      "frame-0040.png": "8482af6d7238ce7f4a482036a41df37bde83d5e315a1e525b83469d1da79c0e1",
+      "frame-0041.png": "70b2f0ac734bc2f19bccf80324ec2725cf86240aa85adb9b4c8eda3537da851e",
+      "frame-0042.png": "aa96204999034a926cd806269a2cedd1e971e3aabbc86a5787d4f0eaa6336a48",
+      "frame-0043.png": "a115691112890c52083284718f456d1b15453fc8dc425ffee41dbc6dd4062533",
+      "frame-0044.png": "384b79af1690d3411486c1de11c41d31f085de923fde7b561c71ad800efe4802",
+      "frame-0045.png": "aae68c7363262adf7280a2ec08e408846ddaaf99361a06b673d39baba3533725",
+      "frame-0046.png": "12aed85247ea81102a021ce44f5f109939796ae0714ae76480c4eaeb19dc4dba",
+      "frame-0047.png": "71d9cb95765f79c89fb415e4b071264d0acb112b73687ecc1d719c29fe21bc80"
+    },
+    "mapping": {
+      "BT2020toBT709": [
+        [
+          1.660491,
+          -0.5876411,
+          -0.0728499
+        ],
+        [
+          -0.1245505,
+          1.1328999,
+          -0.0083494
+        ],
+        [
+          -0.0181508,
+          -0.1005789,
+          1.1187297
+        ]
+      ],
+      "encoding": "sRGB piecewise OETF, threshold0.0031308; round to nearest8-bit code; embedded sRGB ICC",
+      "gamut": "clip mapped BT709 components to0...1 before sRGB encoding",
+      "luminance709": [
+        0.2126,
+        0.7152,
+        0.0722
+      ],
+      "name": "fixed SDR inspection, codec-equivalent v1",
+      "negativeSourceClamp": "max(component,0) for review only",
+      "proxy": "already bounded encoded sRGB; only8-bit quantization",
+      "referenceWhiteNits": 203.0,
+      "rolloff": "Y>0.75: Y'=0.75+0.25*(1-exp(-(Y-0.75)/0.25)); scale RGB by Y'/Y"
+    }
+  },
+  "schemaVersion": 1,
+  "scope": "Consecutive natural-scene neural working-reference capture and mapped SDR inspection; no temporal-quality, calibrated-HDR or physical-playback qualification"
+}

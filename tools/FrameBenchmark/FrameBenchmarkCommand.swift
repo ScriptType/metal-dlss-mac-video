@@ -18,6 +18,9 @@ struct FrameBenchmarkCommand {
 
     static func run() async throws {
         let args = Array(CommandLine.arguments.dropFirst())
+        if args.contains("--reference-sequence") || args.contains("--reference-sequence-self-test") || args.contains("--reference-sequence-validate") {
+            try await FrameReferenceSequence.run(args); return
+        }
         if args.contains("--stress") { try await FrameStressHarness.run(args); return }
         func option(_ name: String) -> String? {
             guard let i = args.firstIndex(of: name), i + 1 < args.count else { return nil }

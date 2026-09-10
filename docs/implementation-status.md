@@ -32,6 +32,8 @@ The complete root check passed 39 Swift tests, including real Neural Rendering P
 
 The same root check passes six visibility-gate cases, eight pause-intent cases, the lifecycle recorder checks, nine PiP clock/mailbox/gap cases and six PiP request-ordering cases. Actual window/GPU integration runs remain separate from these CPU checks.
 
+The [consecutive reference capture](temporal-reference.md) adds 48 natural-scene neural frames with exact original Float32 preservation and four paired diagnostic views. A visible shot cut coincides with a history reset; identity error stays below 0.001 nit. Ten Swift and fifteen Python CPU checks cover capture integrity and fixed SDR review mapping. The 160 × 96 processing shape softens detail, and the source retains explicit colour assumptions; this is inspection evidence, not temporal-quality or calibrated-HDR acceptance.
+
 ## Final baseline gates
 
 Final acceptance still requires no unintended HDR clipping/gamut loss with correct PQ/HLG/display mapping; bypass before proxy quantization; no progressive A/V drift; source-rate warmed Live operation without backlog; exact seek generation/timestamp pairing; bounded queues/pools/cache/model residency; accepted temporal quality; and responsive controls through window/display transitions. The full source and interaction corpus remains as specified in the original plan. Missing, indirect or development-only evidence does not satisfy a broader gate.

@@ -30,6 +30,7 @@ jobs:
           swift build --build-tests --jobs 2
           bash scripts/prepare-frame-runtime.sh
           swift test --skip-build --jobs 2
+          .build/debug/hdr-benchmark --reference-sequence-self-test
           bash scripts/test-frame-api.sh
       - name: Check scripts and publication surface
         run: |
