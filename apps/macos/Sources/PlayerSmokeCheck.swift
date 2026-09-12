@@ -52,7 +52,7 @@ final class PlayerSmokeCheck {
         func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
         func integer(_ values: [String: Any], _ key: String) -> Int64 { (values[key] as? NSNumber)?.int64Value ?? -1 }
         let identityKeys = ["displayed-source-pts", "displayed-timebase-num", "displayed-timebase-den",
-            "displayed-generation", "generation", "submitted-frames", "completed-frames"]
+            "displayed-generation", "generation", "submitted-frames", "completed-frames", "pending-frames"]
         func identity() -> [String: Int64]? {
             let value = native()
             guard identityKeys.allSatisfy({ value[$0] is NSNumber }),
@@ -63,12 +63,18 @@ final class PlayerSmokeCheck {
         func record(_ label: String) {
             snapshots.append(["check": label, "hostSeconds": ProcessInfo.processInfo.systemUptime, "state": state()])
         }
-        func settle(_ label: String) async throws -> [String: Int64] {
+        func settle(_ label: String, allowBufferedPending: Bool = false) async throws -> [String: Int64] {
             var previous: [String: Int64]?, consecutive = 0
             try await wait(label, seconds: 25) {
                 let current = identity()
+                let pending = integer(native(), "pending-frames")
+                // Ordinary pause may retain future output within HDR_SLOTS (3).
+                // Initial setup and paused seeks still require an empty queue.
+                let pendingReady = allowBufferedPending
+                    ? (0...3).contains(pending) && native()["preview-pending"] as? Bool == false
+                    : pending == 0
                 let ready = self.state()["paused"] as? Bool == true && native()["compare-ready"] as? Bool == true &&
-                    integer(native(), "pending-frames") == 0 && current != nil
+                    pendingReady && current != nil
                 consecutive = ready && current == previous ? consecutive + 1 : 0
                 previous = current
                 return ready && consecutive >= 3
@@ -121,7 +127,7 @@ final class PlayerSmokeCheck {
             return processing["enabled"] as? Bool == true && processing["mode"] as? String == "adaptive" &&
                 integer(processing, "width") == 160 && integer(processing, "height") == 96 && exactSeconds(20)
         }
-        let initial = try await settle("initial paused rational PTS and inference counts settle")
+        let initial = try await settle("initial paused rational PTS and accepted/emitted filter counters settle")
         let children = video.subviews, layers = video.subviews.compactMap { $0.layer }
         guard let metal = layers.first as? CAMetalLayer, children.count == layers.count,
               let home = video.superview, video.window === window,
@@ -139,10 +145,10 @@ final class PlayerSmokeCheck {
                   state()["error"] == nil else { throw Failure(message: "Native ownership/configuration/EDR changed at " + label) }
         }
         func preserved(_ expected: [String: Int64], _ label: String) async throws {
-            let actual = try await settle(label)
-            guard actual == expected else { throw Failure(message: "Paused PTS, generation or inference counts changed at " + label) }
+            let actual = try await settle(label, allowBufferedPending: (expected["pending-frames"] ?? 0) > 0)
+            guard actual == expected else { throw Failure(message: "Paused PTS, generation, accepted/emitted filter counters or pending count changed at " + label) }
             try checkObjects(label)
-            checks.append(label + " preserves actual host child/layer, rational PTS, generations and inference counts")
+            checks.append(label + " preserves actual host child/layer, rational PTS, generations, accepted/emitted filter counters and pending count")
         }
         func enter(_ label: String) async throws -> NSPanel {
             guard let main = NSApp.mainMenu, let (menu, index) = menuEntry(main) else {
@@ -241,7 +247,7 @@ final class PlayerSmokeCheck {
         window.miniaturize(nil)
         try await progress("floating playback progresses while main is minimized", from: beforeMinimize, panel: transportPanel, minimized: true)
         try press("playPause", in: transportPanel)
-        let held = try await settle("native floating Pause settles exact source identity")
+        let held = try await settle("native floating Pause settles exact source identity", allowBufferedPending: true)
         try press("return", in: transportPanel)
         try await returned(transportPanel, "explicit Return deminiaturizes and shows main", minimized: false)
         guard (floating()["lastRestore"] as? [String: Any])?["activateMain"] as? Bool == true else {
