@@ -175,7 +175,7 @@ final class FloatingVideoController: NSObject, NSWindowDelegate {
         entryLayers = host.subviews.compactMap { $0.layer }.map(Self.identity)
 
         let panel = FloatingVideoPanel(contentRect: NSRect(x: 0, y: 0, width: 640, height: 416),
-            styleMask: [.titled, .closable, .resizable, .utilityWindow], backing: .buffered, defer: false)
+            styleMask: [.titled, .closable, .resizable, .utilityWindow, .nonactivatingPanel], backing: .buffered, defer: false)
         panel.isReleasedWhenClosed = false
         panel.delegate = self
         panel.isFloatingPanel = true
