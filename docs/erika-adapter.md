@@ -86,7 +86,7 @@ With `ERIKA_ADAPTER_DIAGNOSTICS=1`, `enhancement_transport` records hold/release
 
 ## Enhancement hold validation on M3
 
-Candidate 3 is Erika commit [`b68885a`](https://github.com/ScriptType/Erika/commit/b68885a188bf01e3ef7fe2481d0685c335e11a5b). Its visible playback, scripted native lifecycle and zero-strength native checks remain pending. The [capture summary](evidence/m3-erika-enhancement-hold.json) and [all 689 completed frames](evidence/m3-erika-enhancement-hold.csv) preserve the baseline and three candidates, including failures and unavailable observations.
+Candidate 3 is Erika commit [`b68885a`](https://github.com/ScriptType/Erika/commit/b68885a188bf01e3ef7fe2481d0685c335e11a5b). Neural visible playback and scripted lifecycle checks remain pending. The [visible zero-strength control](#visible-zero-strength-control) exposes a discarded input and premature EOF. The [capture summary](evidence/m3-erika-enhancement-hold.json) and [all 689 completed frames](evidence/m3-erika-enhancement-hold.csv) preserve the baseline and three candidates, including failures and unavailable observations.
 
 The transport change passed 75 focused CPU tests, two native-demo schedule parser tests, and the native build. Regressions cover activation ownership, pause and seek intent, quantized PCM consumption, temporary audio gaps, delayed feedback across internal pauses, and ordered catch-up without restarting audio. Native captures use the same shared engine (`9f0c58fa…`), PQ/30-fps source, weights, 160×96 processing and 960×496 drawable. Exact source patches, executables, logs and reports remain in `artifacts/erika-overload-hold-1/`.
 
@@ -108,6 +108,17 @@ The script compiles the actual `shared-hdr` feature and uses software decoding a
 Activation offsets apply the plan's 20-ms diagnostic target to non-warmup, same-generation activation events and actual audio ring-clock samples. They are separate from the retained last-redraw estimates above and mpv's cached queue samples. Every completed frame remains in the reports. Candidate 1 accumulated video lead while using wall time between short audio slices. Candidate 2 exposed a recovery bug in which repeated internal pauses erased the evidence of resumed audio consumption. Both failures are retained.
 
 Candidate 3 passed its activation/audio timing check, with no admission refusals and at most two retained slots (5,777,024 bytes). Its measured window was entirely occluded, so no positive drawable callback or visible presentation qualification is available. These bounded captures do not establish a causal throughput improvement, physical synchronization, source-rate Live, sustained playback or final M5 core selection.
+
+## Visible zero-strength control
+
+The eight-second control on 2026-09-12 uses candidate 3's archived executable and shared engine, the same PQ/30-fps source, 160×96 processing and 960×496 drawable. It pauses at two seconds, seeks to 59.733 seconds while paused, and resumes at four seconds. The [evidence](evidence/m3-erika-zero-control.json) includes all 45 completed frames and the transport audit. Read-only session/display/window observations pass, as does the frozen runner's full warmed-interval visibility check. No physical HDR or scanout acceptance follows from window metadata or drawable callbacks.
+
+The transport audit passes 362 of 364 checks. All completed frames report zero inference, motion and reserved model payload; the asynchronous video clock remains disabled. Paused seeking presents the requested new-generation preview, and the software audio queue eventually drains with stable read counts. Two failures prevent qualification:
+
+- At startup, the three retained engine slots fill and one decoded input is refused. The bypass presenter discards that input instead of retaining it for retry.
+- EOF is observed at host time 1212763.6108968337, with 7,183 audio frames still queued (149.646 ms). Final source PTS 59.967 completes 4.069 ms later and first presents 39.268 ms after that EOF observation. The image is eventually presented; EOF precedes output completion.
+
+The capture, observer and standalone audit are preserved separately, including the audit failure. The monitor performs no permission request or pixel capture. This is a native Metal/VideoToolbox control with zero neural work; it does not qualify neural lifecycle, source-rate Live, physical synchronization or M5 performance. Reported drop flags also include outputs marked before delayed positive presentation callbacks, so those flags alone do not count physically missing images.
 
 ## Development validation before synchronized enhancement holds
 
