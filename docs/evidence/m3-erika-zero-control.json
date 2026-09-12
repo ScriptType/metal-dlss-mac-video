@@ -1,0 +1,4477 @@
+{
+  "schemaVersion": 1,
+  "case": "M3 native zero-strength control",
+  "recordedUTC": "2026-09-12T10:45:28.326566+00:00",
+  "outcome": {
+    "accepted": false,
+    "observerComplete": true,
+    "capturePassed": true,
+    "nativeVisibilityEligible": true,
+    "transportAuditPassed": false,
+    "checks": 364,
+    "passedChecks": 362,
+    "failedChecks": 2,
+    "summary": "Capture and sampled native visibility passed. Transport acceptance failed on one renderer upload refusal and EOF observed before the final source frame completed and presented."
+  },
+  "hardware": {
+    "chip": "Apple M3",
+    "physicalMemoryBytes": 17179869184,
+    "memory": "16 GB",
+    "os": {
+      "product": "macOS",
+      "version": "26.5",
+      "build": "25F71"
+    },
+    "targetHardware": false
+  },
+  "configuration": {
+    "adapter": "erika-shared-hdr",
+    "source": "pq-30-60s.mkv;sha256=567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac",
+    "sourceWidth": 320,
+    "sourceHeight": 192,
+    "sourceFPS": 30,
+    "processingWidth": 160,
+    "processingHeight": 96,
+    "displayWidth": 960,
+    "displayHeight": 496,
+    "modelVersion": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f",
+    "implementationRevision": "b68885a188bf01e3ef7fe2481d0685c335e11a5b",
+    "warmupFrames": 3,
+    "displayConfiguration": "native RGBA16F extended-linear Display P3; current EDR queried each tick",
+    "settings": {
+      "effectStrength": 0.0,
+      "colourStrength": 1,
+      "referenceWhiteNits": 203,
+      "maximumLuminanceRatio": 2
+    },
+    "appMuted": true
+  },
+  "schedule": [
+    {
+      "at": 2,
+      "action": "pause"
+    },
+    {
+      "at": 3,
+      "action": "seek",
+      "seconds": 59.733
+    },
+    {
+      "at": 4,
+      "action": "play"
+    }
+  ],
+  "plannedSmokeSeconds": 8,
+  "processWallSeconds": 8.701028042007238,
+  "pins": {
+    "runtimeAndInputs": [
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/macos_native_demo",
+        "bytes": 67183216,
+        "sha256": "8359aca819d708c965d5e2c779dd0e85e2073d14bc437f3c82de382b3180f540"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/mlx.metallib",
+        "bytes": 107392404,
+        "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/baseline-runtime/libFrameEngineShared.dylib",
+        "bytes": 50161944,
+        "sha256": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18"
+      },
+      {
+        "path": "assets/test-clips/playback/pq-30-60s.mkv",
+        "bytes": 16195931,
+        "sha256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac"
+      },
+      {
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors",
+        "bytes": 291576650,
+        "sha256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+      },
+      {
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
+        "bytes": 101028,
+        "sha256": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/run-native.py",
+        "bytes": 10032,
+        "sha256": "a2a093c091011700a551c4936ab0ff37cf0649f83604f1357ca6ab7d111b7172"
+      },
+      {
+        "path": "scripts/adapter_visibility.py",
+        "bytes": 5587,
+        "sha256": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/zero-actions.json",
+        "bytes": 156,
+        "sha256": "586eb4bd0d19d05895dbb3a956fb363d862c5bc96d2eb0b3c530b8037e932f6a"
+      }
+    ],
+    "observerAndInputs": [
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/macos_native_demo",
+        "bytes": 67183216,
+        "sha256": "8359aca819d708c965d5e2c779dd0e85e2073d14bc437f3c82de382b3180f540"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/mlx.metallib",
+        "bytes": 107392404,
+        "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/baseline-runtime/libFrameEngineShared.dylib",
+        "bytes": 50161944,
+        "sha256": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18"
+      },
+      {
+        "path": "artifacts/native-readiness-1/probe.py",
+        "bytes": 9914,
+        "sha256": "1f9a57bb10e664c9befaf2fed9a620f0ff92ac7a52b42a4061f28e395fb83ca7"
+      },
+      {
+        "path": "assets/test-clips/playback/pq-30-60s.mkv",
+        "bytes": 16195931,
+        "sha256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac"
+      },
+      {
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
+        "bytes": 101028,
+        "sha256": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32"
+      },
+      {
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors",
+        "bytes": 291576650,
+        "sha256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/observe-zero.py",
+        "bytes": 13078,
+        "sha256": "057acb886cd759d9b1cce3d2fef9bcb964edc5b24bc37ad2d61b828c589e60ae"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/run-native.py",
+        "bytes": 10032,
+        "sha256": "a2a093c091011700a551c4936ab0ff37cf0649f83604f1357ca6ab7d111b7172"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/zero-actions.json",
+        "bytes": 156,
+        "sha256": "586eb4bd0d19d05895dbb3a956fb363d862c5bc96d2eb0b3c530b8037e932f6a"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/validation-plan.json",
+        "bytes": 2730,
+        "sha256": "c721e0af11dd021d2e2fdef91eaf13cd26d587ab97e6488f3edc92941b015742"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/manifest.json",
+        "bytes": 9083,
+        "sha256": "39a3bf5ce98d58098c629039c1f57acbbca5360bf97a7d2e0d5fb4b8d44d7ae0"
+      },
+      {
+        "path": "scripts/adapter_visibility.py",
+        "bytes": 5587,
+        "sha256": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
+      },
+      {
+        "path": ".venv/bin/python3",
+        "bytes": 18041344,
+        "sha256": "bc56ea9cdc0fface1eb75712f871a454324f6cbfec4e30311b197f208a7f3d07"
+      },
+      {
+        "path": ".venv/bin/python3",
+        "bytes": 18041344,
+        "sha256": "bc56ea9cdc0fface1eb75712f871a454324f6cbfec4e30311b197f208a7f3d07"
+      }
+    ],
+    "frozenCandidateManifest": {
+      "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/manifest.json",
+      "bytes": 9083,
+      "sha256": "39a3bf5ce98d58098c629039c1f57acbbca5360bf97a7d2e0d5fb4b8d44d7ae0"
+    },
+    "availableFrozenSourceArchives": [
+      {
+        "sourcePath": "vendor/Erika/Cargo.lock",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/Cargo.lock",
+        "bytes": 62209,
+        "sha256": "685f5ce58f5b293bb8eaa44a88f5546b31368e7fb280c452f2fe755963bba300"
+      },
+      {
+        "sourcePath": "vendor/Erika/crates/erika/src/core.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/core.rs",
+        "bytes": 208942,
+        "sha256": "38763e99fd0af9381d3f674ac9e90f9da3590a0207c181720caaa87358dcb5ce"
+      },
+      {
+        "sourcePath": "vendor/Erika/crates/erika/src/playback.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/playback.rs",
+        "bytes": 365139,
+        "sha256": "abd5630ab6798b27102ec4444bbb3a0142ac31b30eb71b9cbf22ad41dc53e084"
+      },
+      {
+        "sourcePath": "vendor/Erika/crates/erika/src/presenter.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/presenter.rs",
+        "bytes": 226399,
+        "sha256": "de8ed0ec51ee6eee5b9d2ce722d49635b1f1e8b6afe5cfb80e664b4f3ea25c2c"
+      },
+      {
+        "sourcePath": "vendor/Erika/crates/erika/src/renderer/metal/apple.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/renderer/metal/apple.rs",
+        "bytes": 145219,
+        "sha256": "4a1c5959d83d6f7da1294fd58974d03a7b5801010ee788d1693c3c95d1e11389"
+      },
+      {
+        "sourcePath": "vendor/Erika/crates/erika/src/renderer/wgpu.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/renderer/wgpu.rs",
+        "bytes": 232006,
+        "sha256": "a02bc2b2b67aca5bd18f8252a3a0443484eea30aaeecdbe25e67ad56a85a4d25"
+      },
+      {
+        "sourcePath": "vendor/Erika/crates/erika/src/shared_hdr.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/shared_hdr.rs",
+        "bytes": 24932,
+        "sha256": "f3e74e2acfb120ebc90aae7efcfaca4dbe0bce60915db34ce131a50fd0bb7b58"
+      },
+      {
+        "sourcePath": "vendor/Erika/examples/macos_native_demo/Cargo.toml",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/macos_native_demo/Cargo.toml",
+        "bytes": 430,
+        "sha256": "11abf9a91ba8d50aa1232d46480edc659638ba9a3e9a44a436331e1b6ddc9950"
+      },
+      {
+        "sourcePath": "vendor/Erika/examples/macos_native_demo/src/main.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/macos_native_demo/src/main.rs",
+        "bytes": 26428,
+        "sha256": "5a52ca4b42595545ca51ea0e33219410f761c878296de8a2fb6b5db2dac79085"
+      },
+      {
+        "sourcePath": "vendor/Erika/examples/wgpu_decode_png/src/main.rs",
+        "archivePath": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/wgpu_decode_png/src/main.rs",
+        "bytes": 4670,
+        "sha256": "76f92b0ba590d497ab154a25e7f54182b9b455360e32ab11a88ccd31ee358def"
+      }
+    ],
+    "auditor": {
+      "path": "artifacts/erika-overload-hold-1/audit-native-transport.py",
+      "bytes": 34664,
+      "sha256": "533885573efdcd73202988a4a671cf3d8afe6b332d46d5c471f13efd53530699"
+    },
+    "sourceScope": "Receipts identify retained files and available archived sources; they do not assert complete build reproducibility."
+  },
+  "captureSummary": {
+    "completedTotal": 45,
+    "warmedSamples": 39,
+    "completedThroughputFPS": 10.74561349524387,
+    "avOffsetSeconds": {
+      "p95": 0.08240123052464846,
+      "count": 39,
+      "minimum": -0.06989506998730421,
+      "p50": -0.05884031408496648,
+      "p99": 0.09167255049856218,
+      "maximum": 0.09522815963529041
+    },
+    "maximumQueueSlots": 3,
+    "peakRetainedBytes": 8665536,
+    "drops": 2,
+    "seekLatencySeconds": {
+      "p95": 0.5059515833854675,
+      "count": 1,
+      "minimum": 0.5059515833854675,
+      "p50": 0.5059515833854675,
+      "p99": 0.5059515833854675,
+      "maximum": 0.5059515833854675
+    },
+    "decodedFrames": 46,
+    "admissionDrops": 1,
+    "staleCompletions": 0
+  },
+  "summaryScope": "Raw completed-throughput/redraw statistics include scripted pause/seek/EOF behavior; they do not qualify source-rate Live throughput or physical synchronization.",
+  "audit": {
+    "checks": [
+      {
+        "name": "actual exact source inventory bound to fixed media",
+        "passed": true
+      },
+      {
+        "name": "clean capture termination",
+        "passed": true
+      },
+      {
+        "name": "recorded frozen files unchanged",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-overload-hold-1/candidate-runtime-3/macos_native_demo",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-overload-hold-1/candidate-runtime-3/mlx.metallib",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-overload-hold-1/baseline-runtime/libFrameEngineShared.dylib",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: assets/test-clips/playback/pq-30-60s.mkv",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-overload-hold-1/run-native.py",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: scripts/adapter_visibility.py",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-overload-hold-1/zero-actions.json",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-native-readiness-1/candidate-zero-1/before.json",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-native-readiness-1/candidate-zero-1/engine.json.adapter.json",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-native-readiness-1/candidate-zero-1/engine.json",
+        "passed": true
+      },
+      {
+        "name": "current retained pin matches: artifacts/erika-native-readiness-1/candidate-zero-1/native.log",
+        "passed": true
+      },
+      {
+        "name": "explicit frozen candidate executable",
+        "passed": true
+      },
+      {
+        "name": "same9f shared engine",
+        "passed": true
+      },
+      {
+        "name": "same adjacent MLX kernels",
+        "passed": true
+      },
+      {
+        "name": "same source media",
+        "passed": true
+      },
+      {
+        "name": "same model package",
+        "passed": true
+      },
+      {
+        "name": "capture readback unset",
+        "passed": true
+      },
+      {
+        "name": "actual source/processing/display configuration",
+        "passed": true
+      },
+      {
+        "name": "exact effect settings",
+        "passed": true
+      },
+      {
+        "name": "planned smoke duration",
+        "passed": true
+      },
+      {
+        "name": "correct async/bypass clock policy",
+        "passed": true
+      },
+      {
+        "name": "complete nonempty output inventory",
+        "passed": true
+      },
+      {
+        "name": "warm count exact",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame0",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame0",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame0",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame0",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame0",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame1",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame1",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame1",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame1",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame1",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame2",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame2",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame2",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame2",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame2",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame3",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame3",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame3",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame3",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame3",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame4",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame4",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame4",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame4",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame4",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame5",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame5",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame5",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame5",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame5",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame6",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame6",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame6",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame6",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame6",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame7",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame7",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame7",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame7",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame7",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame8",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame8",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame8",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame8",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame8",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame9",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame9",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame9",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame9",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame9",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame10",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame10",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame10",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame10",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame10",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame11",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame11",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame11",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame11",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame11",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame12",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame12",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame12",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame12",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame12",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame13",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame13",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame13",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame13",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame13",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame14",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame14",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame14",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame14",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame14",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame15",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame15",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame15",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame15",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame15",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame16",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame16",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame16",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame16",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame16",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame17",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame17",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame17",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame17",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame17",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame18",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame18",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame18",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame18",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame18",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame19",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame19",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame19",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame19",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame19",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame20",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame20",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame20",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame20",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame20",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame21",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame21",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame21",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame21",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame21",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame22",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame22",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame22",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame22",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame22",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame23",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame23",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame23",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame23",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame23",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame24",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame24",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame24",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame24",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame24",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame25",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame25",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame25",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame25",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame25",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame26",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame26",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame26",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame26",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame26",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame27",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame27",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame27",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame27",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame27",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame28",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame28",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame28",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame28",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame28",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame29",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame29",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame29",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame29",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame29",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame30",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame30",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame30",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame30",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame30",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame31",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame31",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame31",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame31",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame31",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame32",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame32",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame32",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame32",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame32",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame33",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame33",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame33",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame33",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame33",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame34",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame34",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame34",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame34",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame34",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame35",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame35",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame35",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame35",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame35",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame36",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame36",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame36",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame36",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame36",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame37",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame37",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame37",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame37",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame37",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame38",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame38",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame38",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame38",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame38",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame39",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame39",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame39",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame39",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame39",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame40",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame40",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame40",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame40",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame40",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame41",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame41",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame41",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame41",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame41",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame42",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame42",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame42",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame42",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame42",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame43",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame43",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame43",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame43",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame43",
+        "passed": true
+      },
+      {
+        "name": "exact source PTS membership frame44",
+        "passed": true
+      },
+      {
+        "name": "completed clock ordering frame44",
+        "passed": true
+      },
+      {
+        "name": "first drawable clock frame44",
+        "passed": true
+      },
+      {
+        "name": "finite optional last-redraw estimate frame44",
+        "passed": true
+      },
+      {
+        "name": "bounded reported frame leases frame44",
+        "passed": true
+      },
+      {
+        "name": "signed retained offset distribution",
+        "passed": true
+      },
+      {
+        "name": "no failed native GPU command",
+        "passed": true
+      },
+      {
+        "name": "all zero-time callbacks retained",
+        "passed": true
+      },
+      {
+        "name": "valid rejected-stale output counter",
+        "passed": true
+      },
+      {
+        "name": "zero inference/motion on every bypass frame",
+        "passed": true
+      },
+      {
+        "name": "fresh zero-strength process retains zero reserved model payload bytes",
+        "passed": true
+      },
+      {
+        "name": "no native import/protocol/tick errors",
+        "passed": false,
+        "details": {
+          "events": [
+            {
+              "action": "drop_current_frame_keep_decoder_and_render_previous",
+              "backend": "videotoolbox",
+              "dropCount": 1,
+              "event": "video_frame_backpressure",
+              "generation": 2,
+              "mediaCodecMode": null,
+              "reason": "shared HDR engine full (three retained slots)",
+              "stage": "renderer_upload_drop"
+            }
+          ],
+          "lines": []
+        }
+      },
+      {
+        "name": "native visibility replay equals runner",
+        "passed": true
+      },
+      {
+        "name": "resource observations retained",
+        "passed": true
+      },
+      {
+        "name": "all operational resource observations within limits",
+        "passed": true
+      },
+      {
+        "name": "process watchdog bound",
+        "passed": true
+      },
+      {
+        "name": "well-formed feedback timestamps; optional audio remains nullable",
+        "passed": true
+      },
+      {
+        "name": "feedback log host order",
+        "passed": true
+      },
+      {
+        "name": "ordinary bypass emits no async transport holds",
+        "passed": true
+      },
+      {
+        "name": "each playback generation/credit activated once",
+        "passed": true
+      },
+      {
+        "name": "activated engine epochs do not regress",
+        "passed": true
+      },
+      {
+        "name": "exact standalone action schedule",
+        "passed": true
+      },
+      {
+        "name": "runner and action schedule agree",
+        "passed": true
+      },
+      {
+        "name": "every action emitted exactly once",
+        "passed": true
+      },
+      {
+        "name": "action0 exact accepted request",
+        "passed": true
+      },
+      {
+        "name": "action1 exact accepted request",
+        "passed": true
+      },
+      {
+        "name": "action2 exact accepted request",
+        "passed": true
+      },
+      {
+        "name": "all actions attempted and clean shutdown ready",
+        "passed": true
+      },
+      {
+        "name": "complete sequential snapshot inventory",
+        "passed": true
+      },
+      {
+        "name": "snapshot0 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot1 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot2 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot3 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot4 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot5 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot6 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot7 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot8 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot9 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot10 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot11 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot12 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot13 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot14 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot15 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot16 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot17 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot18 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot19 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot20 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot21 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot22 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot23 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot24 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot25 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot26 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot27 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot28 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot29 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot30 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot31 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot32 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot33 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot34 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot35 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot36 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot37 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot38 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot39 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot40 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot41 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot42 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot43 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot44 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot45 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot46 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot47 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot48 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot49 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot50 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot51 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot52 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot53 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot54 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot55 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot56 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot57 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot58 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot59 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot60 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot61 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot62 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot63 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot64 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot65 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot66 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot67 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot68 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot69 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot70 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot71 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot72 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot73 actual valid clock/counters",
+        "passed": true
+      },
+      {
+        "name": "snapshot clocks monotonic",
+        "passed": true
+      },
+      {
+        "name": "initial user pause: paused worker state observed twice",
+        "passed": true
+      },
+      {
+        "name": "initial user pause: no observed resumed intent or clock after pause acknowledgment",
+        "passed": true
+      },
+      {
+        "name": "initial user pause: sampled audio reads remain fixed",
+        "passed": true,
+        "details": [
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392
+        ]
+      },
+      {
+        "name": "paused seek: paused worker state observed twice",
+        "passed": true
+      },
+      {
+        "name": "paused seek: no observed resumed intent or clock after pause acknowledgment",
+        "passed": true
+      },
+      {
+        "name": "paused seek: sampled audio reads remain fixed",
+        "passed": true,
+        "details": [
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392,
+          59392
+        ]
+      },
+      {
+        "name": "explicit paused seek advances playback generation",
+        "passed": true
+      },
+      {
+        "name": "bypass paused seek displays requested target frame",
+        "passed": true
+      },
+      {
+        "name": "true player EOF observed twice before smoke shutdown",
+        "passed": true
+      },
+      {
+        "name": "EOF parks player intent/clock at final interval",
+        "passed": true
+      },
+      {
+        "name": "software audio queue drained and final sampled read count stable",
+        "passed": true
+      },
+      {
+        "name": "actual final source frame has positive drawable before first observed EOF",
+        "passed": false
+      }
+    ],
+    "failures": [
+      {
+        "name": "no native import/protocol/tick errors",
+        "passed": false,
+        "details": {
+          "events": [
+            {
+              "action": "drop_current_frame_keep_decoder_and_render_previous",
+              "backend": "videotoolbox",
+              "dropCount": 1,
+              "event": "video_frame_backpressure",
+              "generation": 2,
+              "mediaCodecMode": null,
+              "reason": "shared HDR engine full (three retained slots)",
+              "stage": "renderer_upload_drop"
+            }
+          ],
+          "lines": []
+        }
+      },
+      {
+        "name": "actual final source frame has positive drawable before first observed EOF",
+        "passed": false
+      }
+    ]
+  },
+  "zeroWork": {
+    "retainedFrameCount": 45,
+    "inferenceStageSecondsEveryFrame": 0,
+    "motionStageSecondsEveryFrame": 0,
+    "reservedModelPayloadBytesEveryFrame": 0,
+    "asynchronousVideoClock": false,
+    "asyncEnhancementTransportEventCount": 0,
+    "sourceExplanation": {
+      "sources": [
+        {
+          "path": "packages/FrameEngine/Sources/HDRPipelineProcessor.swift",
+          "bytes": 10055,
+          "sha256": "c18693838298772d2fd7a0b96b9cefa877542fbab68b2867cba53849deb5a29f"
+        },
+        {
+          "path": "packages/FrameEngine/Sources/HDRRuntimeResources.swift",
+          "bytes": 6013,
+          "sha256": "1ae32b22739568365cd186bff46db833ed6c21b05d52e6c44c1034aff2630372"
+        },
+        {
+          "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift",
+          "bytes": 8741,
+          "sha256": "7a66e04760623582c0f1848ca1437a6724fcce7b4ada69088454143bebce8155"
+        }
+      ],
+      "explanation": "HDRPipelineProcessor passes modelURL=nil at strength0; HDRRuntimeResources.reserve returns nil before model file lookup or reservation. NativeHDRProcessor constructs its renderer only for a non-nil model URL. This fresh dedicated one-session process therefore reports zero reserved model payload bytes. The counter is process-wide immutable-weight reservation accounting, not total OS resident memory, MLX active bytes, or proof that imports/packing allocate nothing."
+    },
+    "scope": "Native imports, packing, MLX allocation and rendering still occur."
+  },
+  "transport": {
+    "requests": [
+      {
+        "action": "pause",
+        "audioOnlyRoute": false,
+        "demoElapsedSeconds": 2.005241416627541,
+        "endHostSeconds": 1212761.344681792,
+        "error": null,
+        "event": "action",
+        "failures": 0,
+        "hostSeconds": 1212761.3446999586,
+        "index": 0,
+        "resultScope": "public request result; subsequent snapshots/ticks establish actual state",
+        "scheduledDemoElapsedSeconds": 2.0,
+        "schemaVersion": 1,
+        "seconds": null,
+        "startHostSeconds": 1212761.3430175004,
+        "success": true
+      },
+      {
+        "action": "seek",
+        "audioOnlyRoute": false,
+        "demoElapsedSeconds": 3.0052423749584705,
+        "endHostSeconds": 1212762.3441794587,
+        "error": null,
+        "event": "action",
+        "failures": 0,
+        "hostSeconds": 1212762.3441895002,
+        "index": 1,
+        "resultScope": "public request result; subsequent snapshots/ticks establish actual state",
+        "scheduledDemoElapsedSeconds": 3.0,
+        "schemaVersion": 1,
+        "seconds": 59.733,
+        "startHostSeconds": 1212762.343093042,
+        "success": true
+      },
+      {
+        "action": "play",
+        "audioOnlyRoute": false,
+        "demoElapsedSeconds": 4.006070000119507,
+        "endHostSeconds": 1212763.3438725837,
+        "error": null,
+        "event": "action",
+        "failures": 0,
+        "hostSeconds": 1212763.3438920418,
+        "index": 2,
+        "resultScope": "public request result; subsequent snapshots/ticks establish actual state",
+        "scheduledDemoElapsedSeconds": 4.0,
+        "schemaVersion": 1,
+        "seconds": null,
+        "startHostSeconds": 1212763.343861667,
+        "success": true
+      }
+    ],
+    "shutdown": {
+      "actionsCompleted": 3,
+      "actionsScheduled": 3,
+      "allActionsAttempted": true,
+      "event": "shutdown",
+      "failures": 0,
+      "hostSeconds": 1212767.7879518752,
+      "lastDemoElapsedSeconds": 8.439427375094965,
+      "ready": true,
+      "schemaVersion": 1,
+      "snapshots": 74
+    },
+    "snapshotCount": 74,
+    "pauseWitnesses": {
+      "initial user pause": {
+        "observationCount": 10,
+        "first": {
+          "actionsCompleted": 1,
+          "audio": {
+            "failures": 0,
+            "queuedFrames": 6144,
+            "queuedSeconds": 0.128,
+            "readFrames": 59392,
+            "underflowFrames": 0,
+            "writtenFrames": 65536
+          },
+          "audioOnlyRoute": false,
+          "clockRunning": false,
+          "demoElapsedSeconds": 2.02190358331427,
+          "durationSeconds": 60.0,
+          "eof": false,
+          "event": "snapshot",
+          "failures": 0,
+          "generation": 2,
+          "hostSeconds": 1212761.3599603754,
+          "isPlaying": false,
+          "mediaSeconds": 1.238583167,
+          "sample": 15,
+          "schemaVersion": 1
+        },
+        "last": {
+          "actionsCompleted": 1,
+          "audio": {
+            "failures": 0,
+            "queuedFrames": 6144,
+            "queuedSeconds": 0.128,
+            "readFrames": 59392,
+            "underflowFrames": 0,
+            "writtenFrames": 65536
+          },
+          "audioOnlyRoute": false,
+          "clockRunning": false,
+          "demoElapsedSeconds": 2.9894241667352617,
+          "durationSeconds": 60.0,
+          "eof": false,
+          "event": "snapshot",
+          "failures": 0,
+          "generation": 2,
+          "hostSeconds": 1212762.3277157503,
+          "isPlaying": false,
+          "mediaSeconds": 1.238583167,
+          "sample": 24,
+          "schemaVersion": 1
+        },
+        "sampledAudioReadFrames": 59392
+      },
+      "paused seek": {
+        "observationCount": 9,
+        "first": {
+          "actionsCompleted": 2,
+          "audio": {
+            "failures": 0,
+            "queuedFrames": 0,
+            "queuedSeconds": 0.0,
+            "readFrames": 59392,
+            "underflowFrames": 0,
+            "writtenFrames": 65536
+          },
+          "audioOnlyRoute": false,
+          "clockRunning": false,
+          "demoElapsedSeconds": 3.1053896250668913,
+          "durationSeconds": 60.0,
+          "eof": false,
+          "event": "snapshot",
+          "failures": 0,
+          "generation": 3,
+          "hostSeconds": 1212762.4435658336,
+          "isPlaying": false,
+          "mediaSeconds": 59.733,
+          "sample": 25,
+          "schemaVersion": 1
+        },
+        "last": {
+          "actionsCompleted": 2,
+          "audio": {
+            "failures": 0,
+            "queuedFrames": 0,
+            "queuedSeconds": 0.0,
+            "readFrames": 59392,
+            "underflowFrames": 0,
+            "writtenFrames": 65536
+          },
+          "audioOnlyRoute": false,
+          "clockRunning": false,
+          "demoElapsedSeconds": 3.956073250155896,
+          "durationSeconds": 60.0,
+          "eof": false,
+          "event": "snapshot",
+          "failures": 0,
+          "generation": 3,
+          "hostSeconds": 1212763.2940601252,
+          "isPlaying": false,
+          "mediaSeconds": 59.733,
+          "sample": 33,
+          "schemaVersion": 1
+        },
+        "sampledAudioReadFrames": 59392
+      }
+    },
+    "pausedSeekPreviewFrames": [
+      {
+        "gpuStagesSeconds": {
+          "planar_import": 0.002375749871134758,
+          "rgba16f_pack": 2.4250010028481483e-05
+        },
+        "warmup": true,
+        "ptsTimescale": 1000,
+        "workerStartHostSeconds": 1212762.8101618753,
+        "generation": 6,
+        "dropped": false,
+        "presentedHostSeconds": 1212762.850166417,
+        "allocatorBytes": {
+          "mlx_cache": 0,
+          "mlx_peak_active": 1474560,
+          "mlx_active": 1474560,
+          "resident_model_payload": 0,
+          "runtime_mlx_cache_policy": 268435456
+        },
+        "frameID": 0,
+        "completedHostSeconds": 1212762.8155266668,
+        "avOffsetSeconds": -0.030920591422159305,
+        "presentations": 34,
+        "submittedHostSeconds": 1212762.8101295002,
+        "occupiedSlots": 1,
+        "processResidentBytes": 139460608,
+        "retainedBytes": 2888512,
+        "completedStageWallSeconds": {
+          "inference": 0,
+          "motion": 0,
+          "proxy": 0.000578417,
+          "reconstruction": 1.25e-07
+        },
+        "ptsValue": 59733
+      }
+    ],
+    "postPlayBeforeEOF": [
+      {
+        "actionsCompleted": 3,
+        "audio": {
+          "failures": 0,
+          "queuedFrames": 8207,
+          "queuedSeconds": 0.170979167,
+          "readFrames": 59392,
+          "underflowFrames": 0,
+          "writtenFrames": 73743
+        },
+        "audioOnlyRoute": false,
+        "clockRunning": true,
+        "demoElapsedSeconds": 4.056080791633576,
+        "durationSeconds": 60.0,
+        "eof": false,
+        "event": "snapshot",
+        "failures": 0,
+        "generation": 3,
+        "hostSeconds": 1212763.3942195002,
+        "isPlaying": true,
+        "mediaSeconds": 59.783328833,
+        "sample": 34,
+        "schemaVersion": 1
+      },
+      {
+        "actionsCompleted": 3,
+        "audio": {
+          "failures": 0,
+          "queuedFrames": 12303,
+          "queuedSeconds": 0.2563125,
+          "readFrames": 59392,
+          "underflowFrames": 0,
+          "writtenFrames": 77839
+        },
+        "audioOnlyRoute": false,
+        "clockRunning": true,
+        "demoElapsedSeconds": 4.156087958486751,
+        "durationSeconds": 60.0,
+        "eof": false,
+        "event": "snapshot",
+        "failures": 0,
+        "generation": 3,
+        "hostSeconds": 1212763.4943220003,
+        "isPlaying": true,
+        "mediaSeconds": 59.883430292,
+        "sample": 35,
+        "schemaVersion": 1
+      }
+    ],
+    "snapshotGapSeconds": {
+      "count": 73,
+      "minimum": 0.04794791666790843,
+      "p50": 0.10523624997586012,
+      "p95": 0.11689219172112644,
+      "p99": 0.13043280321173376,
+      "maximum": 0.1648225833196193
+    },
+    "scope": "Request success is separate from sampled player state. Engine generations 4/6 and player generations 2/3 are distinct. The two post-play/pre-EOF samples show reported media advancing while audio readFrames remains fixed; it increases by the first EOF observation and during later queue drainage."
+  },
+  "eofOrdering": {
+    "firstObservedEOF": {
+      "actionsCompleted": 3,
+      "audio": {
+        "failures": 0,
+        "queuedFrames": 7183,
+        "queuedSeconds": 0.149645833,
+        "readFrames": 65024,
+        "underflowFrames": 0,
+        "writtenFrames": 78351
+      },
+      "audioOnlyRoute": false,
+      "clockRunning": false,
+      "demoElapsedSeconds": 4.272740708431229,
+      "durationSeconds": 60.0,
+      "eof": true,
+      "event": "snapshot",
+      "failures": 0,
+      "generation": 3,
+      "hostSeconds": 1212763.6108968337,
+      "isPlaying": false,
+      "mediaSeconds": 60.0,
+      "sample": 36,
+      "schemaVersion": 1
+    },
+    "lastObservedEOF": {
+      "actionsCompleted": 3,
+      "audio": {
+        "failures": 0,
+        "queuedFrames": 0,
+        "queuedSeconds": 0.0,
+        "readFrames": 72207,
+        "underflowFrames": 191985,
+        "writtenFrames": 78351
+      },
+      "audioOnlyRoute": false,
+      "clockRunning": false,
+      "demoElapsedSeconds": 8.422750625060871,
+      "durationSeconds": 60.0,
+      "eof": true,
+      "event": "snapshot",
+      "failures": 0,
+      "generation": 3,
+      "hostSeconds": 1212767.7608455003,
+      "isPlaying": false,
+      "mediaSeconds": 60.0,
+      "sample": 74,
+      "schemaVersion": 1
+    },
+    "firstObservedDrainedEOF": {
+      "actionsCompleted": 3,
+      "audio": {
+        "failures": 0,
+        "queuedFrames": 0,
+        "queuedSeconds": 0.0,
+        "readFrames": 72207,
+        "underflowFrames": 3825,
+        "writtenFrames": 78351
+      },
+      "audioOnlyRoute": false,
+      "clockRunning": false,
+      "demoElapsedSeconds": 4.505241833394393,
+      "durationSeconds": 60.0,
+      "eof": true,
+      "event": "snapshot",
+      "failures": 0,
+      "generation": 3,
+      "hostSeconds": 1212763.843630167,
+      "isPlaying": false,
+      "mediaSeconds": 60.0,
+      "sample": 38,
+      "schemaVersion": 1
+    },
+    "drainedEOFObservationCount": 37,
+    "finalSourcePTS": {
+      "value": 59967,
+      "timebase": "1/1000",
+      "seconds": 59.967
+    },
+    "declaredSourceDurationSeconds": 60,
+    "finalFrame": {
+      "gpuStagesSeconds": {
+        "planar_import": 0.002710833214223385,
+        "rgba16f_pack": 8.525000885128975e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.6105419586,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.6501647502,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 7,
+      "completedHostSeconds": 1212763.6149660419,
+      "avOffsetSeconds": -0.05570458648042376,
+      "presentations": 249,
+      "submittedHostSeconds": 1212763.610504042,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139853824,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.000540875,
+        "reconstruction": 4.2e-08
+      },
+      "ptsValue": 59967
+    },
+    "finalFrameMinusFirstEOFSeconds": {
+      "submitted": -0.00039279181510210037,
+      "workerStart": -0.00035487511195242405,
+      "completed": 0.004069208167493343,
+      "firstPositivePresentation": 0.03926791646517813
+    },
+    "firstEOFAudioQueuedFrames": 7183,
+    "firstEOFAudioQueuedSeconds": 0.149645833,
+    "scope": "EOF is a sampled player flag. Positive drawable time is a software callback, not physical scanout. Resetting reported media to declared duration does not prove final-frame or device-tail drainage."
+  },
+  "nativeRendering": {
+    "decodedFrames": 46,
+    "admissionDrops": 1,
+    "staleCompletions": 0,
+    "drawableTotals": {
+      "gpu_completed": 436,
+      "gpu_failed": 0,
+      "presented": 435,
+      "stale_callbacks": 1,
+      "submitted": 436,
+      "unpresented": 0
+    },
+    "displayHeadroomRange": [
+      1.0,
+      14.678287506103516
+    ],
+    "rendererCounters": "RendererRuntimeStats { surface_width: 960, surface_height: 496, rendered_frames: 443, offscreen_frames: 0, prepared_overlay_frames: 0, prepared_overlay_subtitle_planes: 0, danmaku_passes: 0, danmaku_draw_items: 0, overlay_alpha_atlas_uploads: 0, overlay_alpha_atlas_reuses: 0, last_danmaku_atlas_duration: 0ns, last_danmaku_vertex_build_duration: 0ns, last_danmaku_vertex_copy_duration: 0ns, last_danmaku_encode_duration: 0ns, last_danmaku_vertex_bytes: 0, last_danmaku_vertex_count: 0, upscaler_mode: Off, upscaler_backend: Off, upscaler_fallbacks: 0, upscaled_frames: 0, last_upscaler_encode_duration: 0ns, last_gpu_duration: 50.875µs, attached: true, software_video_frames: 0, hardware_video_frames: 45, zero_copy_video_frames: 45, direct_zero_copy_video_frames: 45, shared_handle_video_frames: 0, cpu_video_frame_fallbacks: 0, hdr_source_frames: 436, hdr10_output_frames: 0, sdr_tonemap_frames: 0, hdr10_metadata_updates: 0, hdr10_metadata_failures: 0, hdr10_output_failures: 0, hdr10_output_active: false }",
+    "clockMeasurement": "audio callback media time sampled before encode, extrapolated to CAMetalDrawable presentedTime at the sampled running playback rate or zero while held; later transport changes are not reconstructed; unavailable without audio",
+    "limitations": [
+      "Shared HDR enhancement holds audio and media clock when the next output misses its current-frame interval; native/bypass retains its existing synchronous policy",
+      "Late enhanced overlays omitted until timestamp pairing matches",
+      "No physical display accuracy or M5 performance claim"
+    ]
+  },
+  "nativeVisibility": {
+    "warmedInterval": {
+      "eligible": true,
+      "startHostSeconds": 1212760.0763549586,
+      "endHostSeconds": 1212763.6149660419,
+      "durationSeconds": 3.538611083291471,
+      "nativeObservationCount": 4,
+      "maximumAllowedObservationGapSeconds": 1.5,
+      "maximumObservationGapSeconds": 1.0166261666454375,
+      "observedVisibleSeconds": 3.538611083291471,
+      "observedInactiveSeconds": 0.0,
+      "ineligibleObservations": [],
+      "reasons": [],
+      "scope": "Native NSWindow state and bounded periodic/transition coverage; app activation is informational; no physical scanout measurement"
+    },
+    "observerSampleCount": 23,
+    "nativeStateCount": 12,
+    "firstReadyNativeElapsedSeconds": 0.7386122499592602,
+    "preflightSession": {
+      "available": true,
+      "onConsole": true,
+      "loginDone": true,
+      "uidMatchesCaller": true,
+      "locked": false,
+      "unlocked": true,
+      "lockSource": "IORegistry IOConsoleLocked"
+    },
+    "displays": [
+      {
+        "displayID": 1,
+        "bounds": {
+          "x": 0.0,
+          "y": 0.0,
+          "width": 1800.0,
+          "height": 1169.0
+        },
+        "active": true,
+        "online": true,
+        "builtIn": true,
+        "awake": true
+      }
+    ],
+    "guards": {
+      "initialReadySeconds": 5,
+      "maximumObservationGapSeconds": 1.5,
+      "outerDeadlineSeconds": 20,
+      "nativePlannedSeconds": 8,
+      "originalRunnerLimitsUnchanged": true
+    },
+    "scope": "The observer covers the first eight seconds of native diagnostic elapsed time, which starts before the smoke timer. Later states are retained but are not independently classified as teardown. Between events, the endpoint uses last native elapsed plus monotonic arrival age. The frozen runner still qualifies its entire warmed interval, including any later frames."
+  },
+  "resources": {
+    "sampleCount": 18,
+    "maximumTreeRSSBytes": 156188672,
+    "minimumFreeDiskBytes": 25781121024,
+    "frozenLimits": {
+      "maximumSeconds": 68.0,
+      "maximumRSSBytes": 4294967296,
+      "minimumFreeBytes": 8589934592
+    },
+    "maximumQueueSlots": 3,
+    "peakRetainedBytes": 8665536,
+    "maximumAllocatorBytes": {
+      "mlx_peak_active": 1474560,
+      "mlx_cache": 0,
+      "mlx_active": 1474560,
+      "runtime_mlx_cache_policy": 268435456,
+      "resident_model_payload": 0
+    },
+    "powerBefore": {
+      "source": "AC Power",
+      "batteryPercent": 44,
+      "batteryState": "charging",
+      "thermalReadout": [
+        "Note: No thermal warning level has been recorded",
+        "Note: No performance warning level has been recorded",
+        "Note: No CPU power status has been recorded"
+      ],
+      "scope": "Recorded status only; no energy measurement."
+    },
+    "powerAfter": {
+      "source": "AC Power",
+      "batteryPercent": 44,
+      "batteryState": "charging",
+      "thermalReadout": [
+        "Note: No thermal warning level has been recorded",
+        "Note: No performance warning level has been recorded",
+        "Note: No CPU power status has been recorded"
+      ],
+      "scope": "Recorded status only; no energy measurement."
+    },
+    "samples": [
+      {
+        "elapsedSeconds": 0.03859508293680847,
+        "rssBytes": 32768,
+        "freeBytes": 25784537088
+      },
+      {
+        "elapsedSeconds": 0.5572326248511672,
+        "rssBytes": 83574784,
+        "freeBytes": 25784516608
+      },
+      {
+        "elapsedSeconds": 1.0791673748753965,
+        "rssBytes": 154435584,
+        "freeBytes": 25781837824
+      },
+      {
+        "elapsedSeconds": 1.5961393748875707,
+        "rssBytes": 154648576,
+        "freeBytes": 25781821440
+      },
+      {
+        "elapsedSeconds": 2.1159649998880923,
+        "rssBytes": 156188672,
+        "freeBytes": 25781817344
+      },
+      {
+        "elapsedSeconds": 2.633753207977861,
+        "rssBytes": 156123136,
+        "freeBytes": 25781805056
+      },
+      {
+        "elapsedSeconds": 3.159212667029351,
+        "rssBytes": 156123136,
+        "freeBytes": 25781796864
+      },
+      {
+        "elapsedSeconds": 3.677451874827966,
+        "rssBytes": 139460608,
+        "freeBytes": 25781661696
+      },
+      {
+        "elapsedSeconds": 4.199347582878545,
+        "rssBytes": 139493376,
+        "freeBytes": 25781604352
+      },
+      {
+        "elapsedSeconds": 4.723276916891336,
+        "rssBytes": 139853824,
+        "freeBytes": 25781415936
+      },
+      {
+        "elapsedSeconds": 5.242630125023425,
+        "rssBytes": 139919360,
+        "freeBytes": 25781325824
+      },
+      {
+        "elapsedSeconds": 5.767390958033502,
+        "rssBytes": 139935744,
+        "freeBytes": 25781284864
+      },
+      {
+        "elapsedSeconds": 6.286193291889504,
+        "rssBytes": 139984896,
+        "freeBytes": 25781194752
+      },
+      {
+        "elapsedSeconds": 6.80548045784235,
+        "rssBytes": 139427840,
+        "freeBytes": 25781194752
+      },
+      {
+        "elapsedSeconds": 7.327631541993469,
+        "rssBytes": 137543680,
+        "freeBytes": 25781190656
+      },
+      {
+        "elapsedSeconds": 7.846851750044152,
+        "rssBytes": 137543680,
+        "freeBytes": 25781186560
+      },
+      {
+        "elapsedSeconds": 8.366815333021805,
+        "rssBytes": 137576448,
+        "freeBytes": 25781182464
+      },
+      {
+        "elapsedSeconds": 8.699676417047158,
+        "rssBytes": 0,
+        "freeBytes": 25781121024
+      }
+    ]
+  },
+  "frames": [
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.006993041606619954,
+        "rgba16f_pack": 6.170826964080334e-05
+      },
+      "warmup": true,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212759.9514647087,
+      "generation": 4,
+      "dropped": true,
+      "presentedHostSeconds": 1212760.0626719587,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 0,
+      "completedHostSeconds": 1212759.9950824587,
+      "avOffsetSeconds": -0.0422007916495204,
+      "presentations": 2,
+      "submittedHostSeconds": 1212759.951404792,
+      "occupiedSlots": 1,
+      "processResidentBytes": 149340160,
+      "retainedBytes": 2888512,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.001881291,
+        "reconstruction": 2.92e-07
+      },
+      "ptsValue": 0
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0003209584392607212,
+        "rgba16f_pack": 8.399994112551212e-05
+      },
+      "warmup": true,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.028026042,
+      "generation": 4,
+      "dropped": true,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 1,
+      "completedHostSeconds": 1212760.0331235419,
+      "presentations": 0,
+      "submittedHostSeconds": 1212760.0280059169,
+      "occupiedSlots": 3,
+      "processResidentBytes": 151617536,
+      "retainedBytes": 8665536,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.003329167,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 33
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002280001062899828,
+        "rgba16f_pack": 8.625001646578312e-05
+      },
+      "warmup": true,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.0331475004,
+      "generation": 4,
+      "dropped": true,
+      "presentedHostSeconds": 1212760.0793385836,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 2,
+      "completedHostSeconds": 1212760.0348336252,
+      "avOffsetSeconds": -0.006474666569381948,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.0281082087,
+      "occupiedSlots": 3,
+      "processResidentBytes": 151617536,
+      "retainedBytes": 8665536,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000487,
+        "motion": 0,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 67
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00013612490147352219,
+        "rgba16f_pack": 4.9250200390815735e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.0767115003,
+      "generation": 4,
+      "dropped": true,
+      "presentedHostSeconds": 1212760.1668384168,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 4,
+      "completedHostSeconds": 1212760.0786393336,
+      "avOffsetSeconds": 0.0668879168933077,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.0763549586,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154107904,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.000695167,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 133
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00015754159539937973,
+        "rgba16f_pack": 6.749993190169334e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.1163010837,
+      "generation": 4,
+      "dropped": true,
+      "presentedHostSeconds": 1212760.1835050837,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 5,
+      "completedHostSeconds": 1212760.1192934585,
+      "avOffsetSeconds": 0.08201566797338654,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.1100070835,
+      "occupiedSlots": 3,
+      "processResidentBytes": 154238976,
+      "retainedBytes": 8665536,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000970708,
+        "motion": 0,
+        "reconstruction": 2.91e-07
+      },
+      "ptsValue": 167
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0005221250467002392,
+        "rgba16f_pack": 0.0007521249353885651
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.1597518753,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.2001717086,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 6,
+      "completedHostSeconds": 1212760.1642183752,
+      "avOffsetSeconds": 0.08587129348600568,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.1597237086,
+      "occupiedSlots": 3,
+      "processResidentBytes": 154402816,
+      "retainedBytes": 8665536,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.000984,
+        "reconstruction": 1.25e-07
+      },
+      "ptsValue": 200
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0004382501356303692,
+        "rgba16f_pack": 0.0010154582560062408
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.193110667,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.233504917,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 7,
+      "completedHostSeconds": 1212760.1986547087,
+      "avOffsetSeconds": 0.06943771132009616,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.1930222085,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154402816,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.002675625,
+        "reconstruction": 2.5e-07
+      },
+      "ptsValue": 233
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00017037498764693737,
+        "rgba16f_pack": 0.00038299988955259323
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.246863542,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.2918382087,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 8,
+      "completedHostSeconds": 1212760.2491465835,
+      "avOffsetSeconds": 0.056815837089332466,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.2468227919,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154517504,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.000574625,
+        "inference": 0,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 267
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00022112485021352768,
+        "rgba16f_pack": 2.1625077351927757e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.293045542,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.3335047918,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 9,
+      "completedHostSeconds": 1212760.2947313753,
+      "avOffsetSeconds": 0.052530920523188335,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.2930233753,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154583040,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.000452875,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 300
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.000400124816223979,
+        "rgba16f_pack": 0.001263124868273735
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.326396542,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.366838042,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 10,
+      "completedHostSeconds": 1212760.3316223752,
+      "avOffsetSeconds": 0.03748867160892966,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.3263750419,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154599424,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.0025385,
+        "motion": 0,
+        "reconstruction": 2.92e-07
+      },
+      "ptsValue": 333
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002188333310186863,
+        "rgba16f_pack": 0.00017333333380520344
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.3763911668,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.4168379586,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 11,
+      "completedHostSeconds": 1212760.3813843753,
+      "avOffsetSeconds": 0.023528004853715312,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.3763687087,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154599424,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.001276208,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 367
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0037377916742116213,
+        "rgba16f_pack": 0.0005240833852440119
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.4264104168,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.4668378336,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 12,
+      "completedHostSeconds": 1212760.4336754587,
+      "avOffsetSeconds": 0.0031581731578629313,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.426385667,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154599424,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.001737875,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 400
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0007656249217689037,
+        "rgba16f_pack": 0.001450750045478344
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.4763781254,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.5168377087,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 13,
+      "completedHostSeconds": 1212760.4824895835,
+      "avOffsetSeconds": -0.01178645103166498,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.4763570835,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154599424,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.002803875,
+        "inference": 0,
+        "reconstruction": 2.92e-07
+      },
+      "ptsValue": 433
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002171248197555542,
+        "rgba16f_pack": 0.00011995830573141575
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.5264224587,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.5668377087,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 14,
+      "completedHostSeconds": 1212760.5305180836,
+      "avOffsetSeconds": -0.03092578395143708,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.5263997503,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154599424,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.00211925,
+        "reconstruction": 2.09e-07
+      },
+      "ptsValue": 467
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00024312501773238182,
+        "rgba16f_pack": 0.004503750009462237
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.5764116254,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.6168376252,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 15,
+      "completedHostSeconds": 1212760.5842736252,
+      "avOffsetSeconds": -0.04593682471188176,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.5763838335,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154648576,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.000892542,
+        "inference": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 500
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0005006249994039536,
+        "rgba16f_pack": 0.00015874998643994331
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.626415667,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.6668374585,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 16,
+      "completedHostSeconds": 1212760.6310968336,
+      "avOffsetSeconds": -0.04493669968182612,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.626389542,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154648576,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.00299625,
+        "motion": 0,
+        "reconstruction": 4.17e-07
+      },
+      "ptsValue": 533
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0001674999948590994,
+        "rgba16f_pack": 8.999998681247234e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.659735292,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.7001707503,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 17,
+      "completedHostSeconds": 1212760.6632779168,
+      "avOffsetSeconds": -0.06428511514941404,
+      "presentations": 3,
+      "submittedHostSeconds": 1212760.659711167,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154648576,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.000474584,
+        "inference": 0,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 567
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0005464584100991488,
+        "rgba16f_pack": 0.0013893749564886093
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.7097394168,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.7501706253,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 18,
+      "completedHostSeconds": 1212760.715618917,
+      "avOffsetSeconds": -0.06323469823466776,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.709713667,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154648576,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.002769917,
+        "motion": 0,
+        "reconstruction": 2.09e-07
+      },
+      "ptsValue": 600
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002435834612697363,
+        "rgba16f_pack": 2.13750172406435e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.7430707503,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.783503917,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 19,
+      "completedHostSeconds": 1212760.7469868753,
+      "avOffsetSeconds": -0.06229953079003836,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.7430465836,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154648576,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000515625,
+        "motion": 0,
+        "reconstruction": 3.75e-07
+      },
+      "ptsValue": 633
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00023462506942451,
+        "rgba16f_pack": 0.0009963333141058683
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.7763825837,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.816837167,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 20,
+      "completedHostSeconds": 1212760.7805642919,
+      "avOffsetSeconds": -0.06030111380558456,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.7763601253,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154730496,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000572833,
+        "motion": 0,
+        "reconstruction": 1.66e-07
+      },
+      "ptsValue": 667
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002528333570808172,
+        "rgba16f_pack": 0.00043762498535215855
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.8097237085,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.850170417,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 21,
+      "completedHostSeconds": 1212760.8150242085,
+      "avOffsetSeconds": -0.06459307110171542,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.809700792,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154730496,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.003713458,
+        "reconstruction": 4.58e-07
+      },
+      "ptsValue": 700
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.005121875088661909,
+        "rgba16f_pack": 0.00033587496727705
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.843070417,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.8835037085,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 22,
+      "completedHostSeconds": 1212760.8517599169,
+      "avOffsetSeconds": -0.06362761269185457,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.843043667,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154746880,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.00209975,
+        "inference": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 733
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0005200000014156103,
+        "rgba16f_pack": 0.0016609167214483023
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.8763863335,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.9168369586,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 23,
+      "completedHostSeconds": 1212760.8848611668,
+      "avOffsetSeconds": -0.06989506998730421,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.8763643336,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154746880,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.005241833,
+        "motion": 0,
+        "reconstruction": 2.5e-07
+      },
+      "ptsValue": 767
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002560834400355816,
+        "rgba16f_pack": 0.001062624854966998
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.9097645003,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.9501702087,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 24,
+      "completedHostSeconds": 1212760.9211082086,
+      "avOffsetSeconds": -0.06066665343267441,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.9097365004,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154746880,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.0078015,
+        "reconstruction": 2.5e-07
+      },
+      "ptsValue": 800
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00024874997325241566,
+        "rgba16f_pack": 0.0006829167250543833
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.9430627087,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212760.9918368335,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 25,
+      "completedHostSeconds": 1212760.9481440003,
+      "avOffsetSeconds": -0.06500469450111979,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.943031542,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154746880,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.003055625,
+        "inference": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 833
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0003487500362098217,
+        "rgba16f_pack": 0.0014366665855050087
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212760.9763678336,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.016836792,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 26,
+      "completedHostSeconds": 1212760.982112292,
+      "avOffsetSeconds": -0.0629360270876933,
+      "presentations": 2,
+      "submittedHostSeconds": 1212760.976349417,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154763264,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.002993791,
+        "motion": 0,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 867
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0001663749571889639,
+        "rgba16f_pack": 9.887479245662689e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.0097449585,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.0501700419,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 27,
+      "completedHostSeconds": 1212761.0135512503,
+      "avOffsetSeconds": -0.06195990200755486,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.009719542,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154796032,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.00211875,
+        "inference": 0,
+        "reconstruction": 4.58e-07
+      },
+      "ptsValue": 900
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002204999327659607,
+        "rgba16f_pack": 0.0008855834603309631
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.0430635836,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.083503292,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 28,
+      "completedHostSeconds": 1212761.0475657503,
+      "avOffsetSeconds": -0.060909192588842864,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.043041667,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154796032,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.002376208,
+        "inference": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 933
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00165779166854918,
+        "rgba16f_pack": 0.00036975019611418247
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.076459917,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.1168365837,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 29,
+      "completedHostSeconds": 1212761.0813014586,
+      "avOffsetSeconds": -0.06411360912409692,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.076434667,
+      "occupiedSlots": 2,
+      "processResidentBytes": 154796032,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.001799084,
+        "reconstruction": 2.5e-07
+      },
+      "ptsValue": 967
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.000910499831661582,
+        "rgba16f_pack": 0.0002463751006871462
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.1097277086,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.1585031252,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 30,
+      "completedHostSeconds": 1212761.1145460003,
+      "avOffsetSeconds": -0.06327998284845515,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.1097052502,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156106752,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.001411,
+        "reconstruction": 3.34e-07
+      },
+      "ptsValue": 1000
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0003258748911321163,
+        "rgba16f_pack": 0.0009181250352412462
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.143042917,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.1835031253,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 31,
+      "completedHostSeconds": 1212761.1532199585,
+      "avOffsetSeconds": -0.06224177464133973,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.1430232087,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156106752,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.007438667,
+        "reconstruction": 4.16e-07
+      },
+      "ptsValue": 1033
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00016891653649508953,
+        "rgba16f_pack": 0.0013597083743661642
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.176417542,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.2168363335,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 32,
+      "completedHostSeconds": 1212761.1821877502,
+      "avOffsetSeconds": -0.060267148689038263,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.1763888753,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156123136,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.002964667,
+        "inference": 0,
+        "reconstruction": 3.75e-07
+      },
+      "ptsValue": 1067
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.000165833393111825,
+        "rgba16f_pack": 2.187490463256836e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.209718792,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.2501696253,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 33,
+      "completedHostSeconds": 1212761.2130453752,
+      "avOffsetSeconds": -0.06445660655392937,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.209691292,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156123136,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.00206225,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 1100
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0010572499595582485,
+        "rgba16f_pack": 0.002875583479180932
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.243130292,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.2835028754,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 34,
+      "completedHostSeconds": 1212761.2506152086,
+      "avOffsetSeconds": -0.06351460676273946,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.2431049587,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156188672,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.002179667,
+        "motion": 0,
+        "reconstruction": 2.92e-07
+      },
+      "ptsValue": 1133
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00016745831817388535,
+        "rgba16f_pack": 0.0025760834105312824
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.2764760836,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.3168362086,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 35,
+      "completedHostSeconds": 1212761.2843169586,
+      "avOffsetSeconds": -0.06158935557522316,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.2763995002,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156188672,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.003769958,
+        "inference": 0,
+        "reconstruction": 2.709e-06
+      },
+      "ptsValue": 1167
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0001666666939854622,
+        "rgba16f_pack": 3.9083417505025864e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.3097177502,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.3501694587,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 36,
+      "completedHostSeconds": 1212761.313285917,
+      "avOffsetSeconds": -0.05884031408496648,
+      "presentations": 2,
+      "submittedHostSeconds": 1212761.3096912503,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156188672,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000805375,
+        "motion": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 1200
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0002462917473167181,
+        "rgba16f_pack": 0.00011583324521780014
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212761.344814292,
+      "generation": 4,
+      "dropped": false,
+      "presentedHostSeconds": 1212761.3835027085,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 37,
+      "completedHostSeconds": 1212761.3484897502,
+      "avOffsetSeconds": -0.02770877254970805,
+      "presentations": 58,
+      "submittedHostSeconds": 1212761.3447897919,
+      "occupiedSlots": 2,
+      "processResidentBytes": 156106752,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000788084,
+        "motion": 0,
+        "reconstruction": 8.3e-08
+      },
+      "ptsValue": 1233
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.002375749871134758,
+        "rgba16f_pack": 2.4250010028481483e-05
+      },
+      "warmup": true,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212762.8101618753,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212762.850166417,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 0,
+      "completedHostSeconds": 1212762.8155266668,
+      "avOffsetSeconds": -0.030920591422159305,
+      "presentations": 34,
+      "submittedHostSeconds": 1212762.8101295002,
+      "occupiedSlots": 1,
+      "processResidentBytes": 139460608,
+      "retainedBytes": 2888512,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.000578417,
+        "reconstruction": 1.25e-07
+      },
+      "ptsValue": 59733
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00040312507189810276,
+        "rgba16f_pack": 0.008694166783243418
+      },
+      "warmup": true,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.3773196253,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.4168319586,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456
+      },
+      "frameID": 1,
+      "completedHostSeconds": 1212763.3885508752,
+      "avOffsetSeconds": 0.01131503380203469,
+      "presentations": 2,
+      "submittedHostSeconds": 1212763.3772715835,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139739136,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "proxy": 0.0008605,
+        "inference": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 59767
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00022970838472247124,
+        "rgba16f_pack": 2.7458416298031807e-05
+      },
+      "warmup": true,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.4106167504,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.450165167,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 2,
+      "completedHostSeconds": 1212763.4126100002,
+      "avOffsetSeconds": 0.04404357539043957,
+      "presentations": 2,
+      "submittedHostSeconds": 1212763.4105835836,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139739136,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "motion": 0,
+        "inference": 0,
+        "proxy": 0.000503333,
+        "reconstruction": 8.3e-08
+      },
+      "ptsValue": 59800
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00021700002253055573,
+        "rgba16f_pack": 2.1249987185001373e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.4437668335,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.4834984168,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 3,
+      "completedHostSeconds": 1212763.4455116668,
+      "avOffsetSeconds": 0.07726174189449608,
+      "presentations": 2,
+      "submittedHostSeconds": 1212763.443740917,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139739136,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000474958,
+        "motion": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 59833
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00031849998049438,
+        "rgba16f_pack": 0.0002196251880377531
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.4772662085,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.5168317503,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "mlx_active": 1474560,
+        "runtime_mlx_cache_policy": 268435456,
+        "resident_model_payload": 0
+      },
+      "frameID": 4,
+      "completedHostSeconds": 1212763.4792897503,
+      "avOffsetSeconds": 0.09522815963529041,
+      "presentations": 2,
+      "submittedHostSeconds": 1212763.477231167,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139853824,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.00052125,
+        "reconstruction": 1.67e-07
+      },
+      "ptsValue": 59867
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.00021837512031197548,
+        "rgba16f_pack": 2.2458378225564957e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.5105727504,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.550165042,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 5,
+      "completedHostSeconds": 1212763.5123564587,
+      "avOffsetSeconds": 0.07947411903803925,
+      "presentations": 3,
+      "submittedHostSeconds": 1212763.5105413753,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139853824,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000473708,
+        "motion": 0,
+        "reconstruction": 2.08e-07
+      },
+      "ptsValue": 59900
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.0005179166328161955,
+        "rgba16f_pack": 0.00011941674165427685
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.559769917,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.6001649168,
+      "allocatorBytes": {
+        "mlx_peak_active": 1474560,
+        "mlx_cache": 0,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 6,
+      "completedHostSeconds": 1212763.5619516668,
+      "avOffsetSeconds": 0.06529649410089888,
+      "presentations": 3,
+      "submittedHostSeconds": 1212763.559739292,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139853824,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "proxy": 0.000577667,
+        "motion": 0,
+        "reconstruction": 1.25e-07
+      },
+      "ptsValue": 59933
+    },
+    {
+      "gpuStagesSeconds": {
+        "planar_import": 0.002710833214223385,
+        "rgba16f_pack": 8.525000885128975e-05
+      },
+      "warmup": false,
+      "ptsTimescale": 1000,
+      "workerStartHostSeconds": 1212763.6105419586,
+      "generation": 6,
+      "dropped": false,
+      "presentedHostSeconds": 1212763.6501647502,
+      "allocatorBytes": {
+        "mlx_cache": 0,
+        "mlx_peak_active": 1474560,
+        "resident_model_payload": 0,
+        "runtime_mlx_cache_policy": 268435456,
+        "mlx_active": 1474560
+      },
+      "frameID": 7,
+      "completedHostSeconds": 1212763.6149660419,
+      "avOffsetSeconds": -0.05570458648042376,
+      "presentations": 249,
+      "submittedHostSeconds": 1212763.610504042,
+      "occupiedSlots": 2,
+      "processResidentBytes": 139853824,
+      "retainedBytes": 5777024,
+      "completedStageWallSeconds": {
+        "inference": 0,
+        "motion": 0,
+        "proxy": 0.000540875,
+        "reconstruction": 4.2e-08
+      },
+      "ptsValue": 59967
+    }
+  ],
+  "limitations": [
+    "Single eight-second zero-strength control; no neural model execution or enhanced-throughput result.",
+    "Transport acceptance failed; successful capture/visibility do not override failed checks.",
+    "No physical HDR, audio output, scanout synchronization, sleep/wake, VoiceOver or display-migration acceptance.",
+    "Host timestamps share the captured monotonic domain; first presentation and last-redraw offset are not an atomic measurement.",
+    "Sampled console/display/window/audio counters do not establish unsampled state or user readiness.",
+    "No causal performance, energy, M5 or final engine/core-selection claim.",
+    "Raw reports remain local and unchanged. This excerpt has relative paths and selected hardware/status fields."
+  ],
+  "unavailableMetrics": [
+    "GPU copy count",
+    "CPU readback count",
+    "CPU wait count",
+    "power and energy",
+    "isolated neural/proxy GPU intervals; completed wall stages are separate"
+  ],
+  "verificationReceipt": {
+    "scope": "Independent CPU-only reading, hashing and cross-checking of retained evidence; no native/player/model/GPU launch, rebuild, settings change, raw-file rewrite or auditor rerun. The frozen audit check inventory is reproduced with workspace prefixes removed. Selected conclusions are independently recomputed below.",
+    "verificationUTC": "2026-09-12T10:50:43.810221+00:00",
+    "checks": [
+      {
+        "name": "Observer complete, unchanged pins and clean runner exit",
+        "passed": true
+      },
+      {
+        "name": "Capture complete, unchanged pins and clean native exit",
+        "passed": true
+      },
+      {
+        "name": "Recorded before/after pin inventories match",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/candidate-runtime-3/macos_native_demo",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/candidate-runtime-3/mlx.metallib",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/baseline-runtime/libFrameEngineShared.dylib",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/native-readiness-1/probe.py",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: assets/test-clips/playback/pq-30-60s.mkv",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-native-readiness-1/observe-zero.py",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/run-native.py",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/zero-actions.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/validation-plan.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/candidate-runtime-3/manifest.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: scripts/adapter_visibility.py",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: .venv/bin/python3",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-native-readiness-1/candidate-zero-1/before.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-native-readiness-1/candidate-zero-1/engine.json.adapter.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-native-readiness-1/candidate-zero-1/engine.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-native-readiness-1/candidate-zero-1/native.log",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-native-readiness-1/candidate-zero-1/run.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: assets/test-clips/playback/pq-30-60s.json",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: packages/FrameEngine/Sources/HDRPipelineProcessor.swift",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: packages/FrameEngine/Sources/HDRRuntimeResources.swift",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: mac-hdr-player-plan.md",
+        "passed": true
+      },
+      {
+        "name": "Recorded file pin matches current retained bytes: artifacts/erika-overload-hold-1/audit-native-transport.py",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/Cargo.lock",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/core.rs",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/playback.rs",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/presenter.rs",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/renderer/metal/apple.rs",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/renderer/wgpu.rs",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/shared_hdr.rs",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/macos_native_demo/Cargo.toml",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/macos_native_demo/src/main.rs",
+        "passed": true
+      },
+      {
+        "name": "Frozen source archive matches manifest: artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/wgpu_decode_png/src/main.rs",
+        "passed": true
+      },
+      {
+        "name": "45 completed and 39 warmed rows match exact frame inventory",
+        "passed": true
+      },
+      {
+        "name": "Exact frozen 362/364 checks and two failures",
+        "passed": true
+      },
+      {
+        "name": "Exact zero-strength configuration",
+        "passed": true
+      },
+      {
+        "name": "Every frame has zero inference, motion and reserved model payload",
+        "passed": true
+      },
+      {
+        "name": "Ordinary bypass clock policy",
+        "passed": true
+      },
+      {
+        "name": "Every frame PTS belongs to the exact 1800-frame fixture inventory",
+        "passed": true
+      },
+      {
+        "name": "Raw native transport records exactly match runner inventory",
+        "passed": true
+      },
+      {
+        "name": "Audit transport records agree with raw log",
+        "passed": true
+      },
+      {
+        "name": "All three exact scripted requests succeeded and completed before shutdown",
+        "passed": true
+      },
+      {
+        "name": "Complete 74-snapshot inventory",
+        "passed": true
+      },
+      {
+        "name": "No asynchronous enhancement transport holds",
+        "passed": true
+      },
+      {
+        "name": "One raw renderer upload refusal reproduces first failed check",
+        "passed": true
+      },
+      {
+        "name": "initial user pause: stopped intent/clock and fixed sampled audio read counter",
+        "passed": true
+      },
+      {
+        "name": "initial user pause: witness boundaries/count match raw samples",
+        "passed": true
+      },
+      {
+        "name": "paused seek: stopped intent/clock and fixed sampled audio read counter",
+        "passed": true
+      },
+      {
+        "name": "paused seek: witness boundaries/count match raw samples",
+        "passed": true
+      },
+      {
+        "name": "Paused seek has positive presentation of requested source target",
+        "passed": true
+      },
+      {
+        "name": "Paused seek advances playback generation",
+        "passed": true
+      },
+      {
+        "name": "Unique final source frame in retained inventory",
+        "passed": true
+      },
+      {
+        "name": "EOF and drained-queue witnesses match raw samples",
+        "passed": true
+      },
+      {
+        "name": "First observed EOF precedes final completion and first positive presentation",
+        "passed": true
+      },
+      {
+        "name": "First observed EOF still has 7183 software audio frames queued",
+        "passed": true
+      },
+      {
+        "name": "Later software audio queue drains with stable final sampled read count",
+        "passed": true
+      },
+      {
+        "name": "Two post-play/pre-EOF samples have running intent/clock and advancing reported media",
+        "passed": true
+      },
+      {
+        "name": "Audio reads fixed across two pre-EOF samples, then increase by first EOF and later queue drainage",
+        "passed": true
+      },
+      {
+        "name": "All resource samples meet frozen tree-RSS and free-disk limits",
+        "passed": true
+      },
+      {
+        "name": "Resource extrema independently recomputed",
+        "passed": true
+      },
+      {
+        "name": "Raw warmed-interval visibility replay equals all reports",
+        "passed": true
+      },
+      {
+        "name": "Hardware/memory/OS agree between selected system fields and native engine",
+        "passed": true
+      },
+      {
+        "name": "Preflight and all 23 OS samples have positive console/session state",
+        "passed": true
+      },
+      {
+        "name": "Active online awake display configuration unchanged in OS samples",
+        "passed": true
+      },
+      {
+        "name": "Native observations bind to recorded child PID",
+        "passed": true
+      }
+    ],
+    "inputPins": [
+      {
+        "path": "artifacts/erika-native-readiness-1/observer-1.json",
+        "bytes": 71646,
+        "sha256": "803a9369494ff3d9977110e1c62f6565cff0c47277bc8610ca7fe188e50d55f9"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/candidate-zero-1/run.json",
+        "bytes": 63768,
+        "sha256": "bcef6c598573cf2c2386e2d66a042dedf75329f814889705701496430901cbc4"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/candidate-zero-1/engine.json",
+        "bytes": 36722,
+        "sha256": "91d13c10557b289c3c9cef7c740846cb9ccae1a857ae98ac7961fc6f82174288"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/candidate-zero-1/engine.json.adapter.json",
+        "bytes": 9250,
+        "sha256": "cdc898688029f48f858925f288c666d49d39f8aacb97a970e23a7b50d4d97721"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/candidate-zero-1/transport-audit.json",
+        "bytes": 108364,
+        "sha256": "87e6905085e8a7e8104318e922df498df1b4709edf2729fb4d6b8334f185794a"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/candidate-zero-1/native.log",
+        "bytes": 47361,
+        "sha256": "2a6ee38e32dc42d4487de60dbbca4143fb0563c7447730777075636110394d0e"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/hardware-1.json",
+        "bytes": 612,
+        "sha256": "5b5f9c8267bde567c82b4bc0cf89a6443bb7e1dbf48e25c0ba08fa22a6529a8c"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/os-1.txt",
+        "bytes": 63,
+        "sha256": "5bb4c33199e7cd997461bc6c78bb13b6f312d7ff1ed36cf14a12974cf09e6522"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/manifest.json",
+        "bytes": 9083,
+        "sha256": "39a3bf5ce98d58098c629039c1f57acbbca5360bf97a7d2e0d5fb4b8d44d7ae0"
+      },
+      {
+        "path": "assets/test-clips/playback/pq-30-60s.json",
+        "bytes": 27036,
+        "sha256": "42013d47cb8176763307550ceb943ba57d9fc188e6269574b372503d3582939b"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/zero-actions.json",
+        "bytes": 156,
+        "sha256": "586eb4bd0d19d05895dbb3a956fb363d862c5bc96d2eb0b3c530b8037e932f6a"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/macos_native_demo",
+        "bytes": 67183216,
+        "sha256": "8359aca819d708c965d5e2c779dd0e85e2073d14bc437f3c82de382b3180f540"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/mlx.metallib",
+        "bytes": 107392404,
+        "sha256": "a97b9b2bd352af9b6281bc29a207a1edc440ca3e96776d81321346ee815a6e35"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/baseline-runtime/libFrameEngineShared.dylib",
+        "bytes": 50161944,
+        "sha256": "9f0c58fab4efb987f9ac22d25f89e501b4870016b312dbd7a8e942f0d97d2f18"
+      },
+      {
+        "path": "artifacts/native-readiness-1/probe.py",
+        "bytes": 9914,
+        "sha256": "1f9a57bb10e664c9befaf2fed9a620f0ff92ac7a52b42a4061f28e395fb83ca7"
+      },
+      {
+        "path": "assets/test-clips/playback/pq-30-60s.mkv",
+        "bytes": 16195931,
+        "sha256": "567a92a25b37f9dd3d6eac2196eddb078394acbd2b635b2da949f58538d3e7ac"
+      },
+      {
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/manifest.json",
+        "bytes": 101028,
+        "sha256": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32"
+      },
+      {
+        "path": "models/neural-rendering/NeuralRendering.dlssmodel/weights.safetensors",
+        "bytes": 291576650,
+        "sha256": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/observe-zero.py",
+        "bytes": 13078,
+        "sha256": "057acb886cd759d9b1cce3d2fef9bcb964edc5b24bc37ad2d61b828c589e60ae"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/run-native.py",
+        "bytes": 10032,
+        "sha256": "a2a093c091011700a551c4936ab0ff37cf0649f83604f1357ca6ab7d111b7172"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/validation-plan.json",
+        "bytes": 2730,
+        "sha256": "c721e0af11dd021d2e2fdef91eaf13cd26d587ab97e6488f3edc92941b015742"
+      },
+      {
+        "path": "scripts/adapter_visibility.py",
+        "bytes": 5587,
+        "sha256": "6fc16ce6723266fa484ef750c37e01c943c8fe86629975f52063a4b5cfca49f8"
+      },
+      {
+        "path": ".venv/bin/python3",
+        "bytes": 18041344,
+        "sha256": "bc56ea9cdc0fface1eb75712f871a454324f6cbfec4e30311b197f208a7f3d07"
+      },
+      {
+        "path": "artifacts/erika-native-readiness-1/candidate-zero-1/before.json",
+        "bytes": 6234,
+        "sha256": "78fc7fcdb537b12442381bca074fb7e4d779308f3b0359a62585dec4850c07b8"
+      },
+      {
+        "path": "packages/FrameEngine/Sources/HDRPipelineProcessor.swift",
+        "bytes": 10055,
+        "sha256": "c18693838298772d2fd7a0b96b9cefa877542fbab68b2867cba53849deb5a29f"
+      },
+      {
+        "path": "packages/FrameEngine/Sources/HDRRuntimeResources.swift",
+        "bytes": 6013,
+        "sha256": "1ae32b22739568365cd186bff46db833ed6c21b05d52e6c44c1034aff2630372"
+      },
+      {
+        "path": "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift",
+        "bytes": 8741,
+        "sha256": "7a66e04760623582c0f1848ca1437a6724fcce7b4ada69088454143bebce8155"
+      },
+      {
+        "path": "mac-hdr-player-plan.md",
+        "bytes": 16657,
+        "sha256": "311310d1b40d9e89fe74fc9d63ae620bfedbc2fdccc2b145561f326179717a10"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/audit-native-transport.py",
+        "bytes": 34664,
+        "sha256": "533885573efdcd73202988a4a671cf3d8afe6b332d46d5c471f13efd53530699"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/Cargo.lock",
+        "bytes": 62209,
+        "sha256": "685f5ce58f5b293bb8eaa44a88f5546b31368e7fb280c452f2fe755963bba300"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/core.rs",
+        "bytes": 208942,
+        "sha256": "38763e99fd0af9381d3f674ac9e90f9da3590a0207c181720caaa87358dcb5ce"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/playback.rs",
+        "bytes": 365139,
+        "sha256": "abd5630ab6798b27102ec4444bbb3a0142ac31b30eb71b9cbf22ad41dc53e084"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/presenter.rs",
+        "bytes": 226399,
+        "sha256": "de8ed0ec51ee6eee5b9d2ce722d49635b1f1e8b6afe5cfb80e664b4f3ea25c2c"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/renderer/metal/apple.rs",
+        "bytes": 145219,
+        "sha256": "4a1c5959d83d6f7da1294fd58974d03a7b5801010ee788d1693c3c95d1e11389"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/renderer/wgpu.rs",
+        "bytes": 232006,
+        "sha256": "a02bc2b2b67aca5bd18f8252a3a0443484eea30aaeecdbe25e67ad56a85a4d25"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/crates/erika/src/shared_hdr.rs",
+        "bytes": 24932,
+        "sha256": "f3e74e2acfb120ebc90aae7efcfaca4dbe0bce60915db34ce131a50fd0bb7b58"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/macos_native_demo/Cargo.toml",
+        "bytes": 430,
+        "sha256": "11abf9a91ba8d50aa1232d46480edc659638ba9a3e9a44a436331e1b6ddc9950"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/macos_native_demo/src/main.rs",
+        "bytes": 26428,
+        "sha256": "5a52ca4b42595545ca51ea0e33219410f761c878296de8a2fb6b5db2dac79085"
+      },
+      {
+        "path": "artifacts/erika-overload-hold-1/candidate-runtime-3/source/examples/wgpu_decode_png/src/main.rs",
+        "bytes": 4670,
+        "sha256": "76f92b0ba590d497ab154a25e7f54182b9b455360e32ab11a88ccd31ee358def"
+      }
+    ],
+    "inputsUnchangedDuringExtraction": true,
+    "onlyWrittenFile": "artifacts/erika-native-readiness-1/public-zero-control.json"
+  }
+}

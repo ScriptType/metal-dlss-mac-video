@@ -1,6 +1,6 @@
 # Erika shared HDR adapter
 
-The optional `shared-hdr` feature inserts the shared frame engine between Erika's VideoToolbox decoder and its native Metal renderer. It is a comparison prototype; playback-core selection and synchronized Live/Adaptive buffering remain separate milestones.
+The optional `shared-hdr` feature inserts the shared frame engine between Erika's VideoToolbox decoder and its native Metal renderer. Neural processing uses an asynchronous presentation contract with an internal audio/video hold. It remains a comparison prototype; source-rate Live qualification and final playback-core selection require separate evidence.
 
 ## Build and run
 
@@ -35,6 +35,12 @@ Repeat with `hlg-60.mp4` and `sdr-24.mp4`. Defaults are processing 32×24, refer
 
 Before each native presentation, the wrapper polls completed outputs. A completed RGBA16F buffer is imported directly with `CVMetalTextureCache`. Engine output leases are shared with the native frame and captured by Metal command-completion handlers; the resource cannot be recycled while a command still reads it. `CAMetalDrawable` presentation callbacks retain the session and record the actual presentation host timestamp. Repeated draws reuse the completed output without submitting neural history again.
 
+With a model and nonzero strength, the worker gives one decoded input an activation token. Successful submission keeps that token occupied until the presenter selects the matching completed output. The decoded input's timestamp does not advance displayed position. Shared HDR bypass uses the ordinary media clock and no enhancement hold, while retaining a refused input for retry. Both shared-engine paths retain at most one refused worker handoff and one refused presenter upload; they retry before taking another input. Other renderers retain their existing admission policy.
+
+EOF uses a separate output-drain acknowledgment. The worker requests it only after decoded output and its final handoff are exhausted. The presenter checks its channels, retained upload, latest processed output and actual queued PCM. The acknowledgment includes generation, command and output epochs; publication revalidates it under the player state lock. Short final PCM tails can start below the normal prefill threshold when this final-output request proves no more audio will arrive. User pause remains respected.
+
+The renderer's drain condition distinguishes a resolved drawable callback from an actual unavailable presentation-target acquisition. Neither a zero callback nor an unavailable target counts as a positive presentation. The visible native audit independently requires the final source frame's positive drawable timestamp before EOF. This lets hidden playback drain without inventing display evidence. Refusals, successful retries, cancelled retries and unavailable targets have separate counters; an output is marked unpresented only after its callback owners retire.
+
 Presenter generations invalidate pending/completed output on seeks, source changes and transitions. The wrapper compares the engine generation immediately before native rendering. The example's AppKit termination handler stops new submissions, calls `fe_session_close`, polls `fe_session_is_idle` without blocking the main thread, and exits after worker completion. The dynamic library remains loaded for the process because ordinary session teardown is asynchronous.
 
 ## Native HDR policy
@@ -53,13 +59,94 @@ The script activates the window and enables bounded presentation diagnostics by 
 
 `ERIKA_ADAPTER_REQUIRE_VISIBLE=1` additionally writes a `.visibility.json` and exits with status 2 when actual visibility coverage is insufficient. It checks the entire interval from the first warmed frame's submission through the last warmed completion; a truncated retained-frame inventory is ineligible. Every observed state must be visible, occlusion-visible and unminimized with the same native window identity, with an initial state and no observation gap longer than 1.5 seconds. Activation and focus are recorded separately. Native occlusion-visible state establishes that some part of the window is visible; it does not measure the visible area or physical scanout. All completed work and zero timestamps remain in reports even when the visibility gate fails.
 
-The adapter uses [shared completed-work measurements](frame-engine.md), reports actual drawable presentation times, and records first-presentation latency after a generation reset. A/V offset is video PTS minus an audio callback clock sampled before encoding and advanced to the actual drawable presentation time at normal playback speed. This estimate does not establish a measured long-duration drift result or rate-change accuracy.
+The adapter uses [shared completed-work measurements](frame-engine.md), reports actual drawable presentation times, and records first-presentation latency after a generation reset. A/V offset is video PTS minus an audio callback clock sampled before encoding and extrapolated to the drawable callback. Neural mode uses the sampled playback rate or zero while held; bypass retains the legacy 1× redraw estimate, including across a user pause. The report's generic `clockMeasurement` description does not distinguish these modes. Transport changes after the sample are not reconstructed. The retained `presentedHostSeconds` is the first positive callback for a completed frame, while `avOffsetSeconds` is updated on later positive redraws; those fields do not form an atomic first-presentation sample. This estimate does not establish physical synchronization or a long-duration drift result.
 
-Three retained engine slots bound queued work. At unsustainable model speed, newly decoded frames receive explicit admission backpressure and the last completed output is reused. The prototype does not yet pause audio and video under one enhancement-buffering policy. Admission drops are reported separately because rejected frames never become completed engine samples. Late enhanced overlays are withheld when their timestamps differ from the completed image; synchronized overlay scheduling remains integration work.
+Three retained engine slots bound queued work. Neural processing also limits the worker to one input awaiting activation. When the next completed output is unavailable at the current frame's deadline, the presenter pauses audio and the media clock while retaining queued PCM and the current image. User pause remains a separate intent. A future completed output permits the current interval to finish before activation. Frame PTS and durations retain their source values. Admission refusals are separate from engine drops because rejected frames never become completed engine samples. Late enhanced overlays are withheld when their timestamps differ from the completed image.
+
+Activation follows the audio output's read cursor. Temporary audio gaps permit a bounded fallback clock; queued PCM alone does not establish resumed consumption. Enhancement holds preserve audio read continuity, while output resets invalidate it. A late frame whose interval has already ended keeps audio held while ordered video frames catch up. These presenter controls cannot service a deadline while the render thread itself is blocked.
 
 The adapter currently requires VideoToolbox frames and explicit supported source colour tags. Software-decoder fallback is rejected rather than silently using an SDR conversion. Frame-level crop, aspect and rotation are supported; stream-only geometry metadata must be checked on representative rotated media. Physical HDR display accuracy, sustained target-hardware performance, and final playback-core qualification require separate evidence.
 
-## Development validation
+## Scripted transport checks
+
+The native demo accepts `ERIKA_ADAPTER_ACTIONS` as an ordered JSON array of `pause`, `play`, `seek`, `audio-only` and `foreground` requests. Each action has an `at` time in seconds from native view creation; `seek` also requires `seconds`. A schedule requires a smoke duration of at most 600 seconds, permits at most 64 actions, and rejects invalid input before opening the window.
+
+For example, this sequence pauses during startup, seeks while paused, resumes, enters the actual audio-only presenter route, returns to rendering, and seeks to the final eight video frames:
+
+```sh
+ERIKA_ADAPTER_ACTIONS='[{"at":0.5,"action":"pause"},{"at":15,"action":"seek","seconds":0.73},{"at":21,"action":"play"},{"at":26,"action":"audio-only"},{"at":29,"action":"foreground"},{"at":35,"action":"seek","seconds":59.733}]' \
+ERIKA_ADAPTER_SECONDS=45 ERIKA_ADAPTER_MUTE=1 \
+ERIKA_FRAME_ENGINE_WIDTH=160 ERIKA_FRAME_ENGINE_HEIGHT=96 \
+ERIKA_ADAPTER_DISPLAY_WIDTH=960 ERIKA_ADAPTER_DISPLAY_HEIGHT=496 \
+ERIKA_FRAME_ENGINE_CAPTURE=none \
+ERIKA_FRAME_ENGINE_REPORT="$PWD/artifacts/erika-transport-repeat/report.json" \
+bash scripts/run-erika-adapter.sh assets/test-clips/playback/pq-30-60s.mkv \
+  "$PWD/models/neural-rendering/NeuralRendering.dlssmodel"
+```
+
+`ERIKA_ADAPTER_TRANSPORT` records each request's result and up to ten snapshots per second, capped at 6,000 snapshots. Snapshots include player intent, running clock, generation, the actual EOF flag, audio read/write/queue/underflow counters, and failures. A successful request establishes acceptance of the call; subsequent observations establish the transition. Smoke termination alone does not establish EOF. The `audio-only` action changes the presenter route; covering the window is a separate visibility test.
+
+With `ERIKA_ADAPTER_DIAGNOSTICS=1`, `enhancement_transport` records hold/release and activation events with actual audio samples and monotonic host time. These records describe feedback enqueued to the worker. They do not measure physical audio output or display scanout. The control schedule is opt-in and does not change ordinary interactive controls.
+
+## Enhancement hold validation on M3
+
+Candidate 3 is Erika commit [`b68885a`](https://github.com/ScriptType/Erika/commit/b68885a188bf01e3ef7fe2481d0685c335e11a5b). Its occluded neural capture left visible playback and scripted lifecycle unqualified, and its later [visible zero-strength control](#visible-zero-strength-control) exposed a discarded input and premature EOF. The [capture summary](evidence/m3-erika-enhancement-hold.json) and [all 689 completed frames](evidence/m3-erika-enhancement-hold.csv) preserve the baseline and three candidates, including failures and unavailable observations. Corrected visible controls follow below.
+
+The transport change passed 75 focused CPU tests, two native-demo schedule parser tests, and the native build. Regressions cover activation ownership, pause and seek intent, quantized PCM consumption, temporary audio gaps, delayed feedback across internal pauses, and ordered catch-up without restarting audio. Native captures use the same shared engine (`9f0c58fa…`), PQ/30-fps source, weights, 160×96 processing and 960×496 drawable. Exact source patches, executables, logs and reports remain in `artifacts/erika-overload-hold-1/`.
+
+Reproduce the focused CPU checks, schedule parser checks and native-demo build after preparing Erika's native dependencies:
+
+```sh
+bash scripts/test-erika-transport.sh
+```
+
+The script compiles the actual `shared-hdr` feature and uses software decoding and buffered PCM in the selected tests. It does not load the shared MLX engine, perform inference or open a native window. The separate Erika CI job uses Erika's native dependency build and runs the same script; visible playback and native lifecycle require the separate captures below.
+
+| Capture | Completed / warmed | Admission refusals | Maximum absolute activation/audio offset | Native visibility |
+|---|---:|---:|---:|---|
+| Original transport, current shared engine | 169 / 166 | 703 | Unavailable | Pass |
+| Candidate 1 | 163 / 160 | 0 | 247.0 ms | Pass |
+| Candidate 2 | 184 / 181 | 0 | 175.0 ms | Fail |
+| Candidate 3 | 173 / 170 | 0 | 13.1 ms | Fail |
+
+Activation offsets apply the plan's 20-ms diagnostic target to non-warmup, same-generation activation events and actual audio ring-clock samples. They are separate from the retained last-redraw estimates above and mpv's cached queue samples. Every completed frame remains in the reports. Candidate 1 accumulated video lead while using wall time between short audio slices. Candidate 2 exposed a recovery bug in which repeated internal pauses erased the evidence of resumed audio consumption. Both failures are retained.
+
+Candidate 3 passed its activation/audio timing check, with no admission refusals and at most two retained slots (5,777,024 bytes). Its measured window was entirely occluded, so no positive drawable callback or visible presentation qualification is available. These bounded captures do not establish a causal throughput improvement, physical synchronization, source-rate Live, sustained playback or final M5 core selection.
+
+## Visible zero-strength control
+
+The eight-second control on 2026-09-12 uses candidate 3's archived executable and shared engine, the same PQ/30-fps source, 160×96 processing and 960×496 drawable. It pauses at two seconds, seeks to 59.733 seconds while paused, and resumes at four seconds. The [evidence](evidence/m3-erika-zero-control.json) includes all 45 completed frames and the transport audit. Read-only session/display/window observations pass, as does the frozen runner's full warmed-interval visibility check. No physical HDR or scanout acceptance follows from window metadata or drawable callbacks.
+
+The transport audit passes 362 of 364 checks. All completed frames report zero inference, motion and reserved model payload; the asynchronous video clock remains disabled. Paused seeking presents the requested new-generation preview, and the software audio queue eventually drains with stable read counts. Two failures prevent qualification:
+
+- At startup, the three retained engine slots fill and one decoded input is refused. The bypass presenter discards that input instead of retaining it for retry.
+- EOF is observed at host time 1212763.6108968337, with 7,183 audio frames still queued (149.646 ms). Final source PTS 59.967 completes 4.069 ms later and first presents 39.268 ms after that EOF observation. The image is eventually presented; EOF precedes output completion.
+
+The capture, observer and standalone audit are preserved separately, including the audit failure. The monitor performs no permission request or pixel capture. This is a native Metal/VideoToolbox control with zero neural work; it does not qualify neural lifecycle, source-rate Live, physical synchronization or M5 performance. Reported drop flags also include outputs marked before delayed positive presentation callbacks, so those flags alone do not count physically missing images.
+
+Erika [`5aeb067`](https://github.com/ScriptType/Erika/commit/5aeb067b101adcd950f8443c3b7afc21d9417573) adds the retry and EOF-drain contracts above. All 91 focused CPU tests, two schedule-parser tests and the native build pass. Regressions cover bounded retry ownership, stale acknowledgments, output resets, suspended video, video-only final intervals, short PCM tails and paused seeks beyond the final frame. The shared engine remains unchanged.
+
+The [corrected visible control](evidence/m3-erika-bypass-drain.json) passes all 348 transport checks. It completes all 42 admitted inputs: 24 full-engine refusal attempts are resolved by nine subsequently accepted retries, with no admission drops or cancelled retries. Four completed outputs are never presented, two of them warmed; the passing control does not establish display of every decoded frame. Inference, motion and reserved model payload remain zero, and the asynchronous video clock remains disabled.
+
+Final PTS 59.967 first presents 192.604 ms before the first observed EOF, whose software audio queue is already empty. Paused seeking presents the requested preview without starting playback. The eight-second capture passes native visibility, retains all input/runtime pins, and peaks at 158,449,664 bytes sampled process-tree RSS. Its scripted duration and redraw estimates do not establish playback throughput or physical synchronization.
+
+## Visible neural transport and lifecycle
+
+The [34-second neural capture](evidence/m3-erika-matched-visible.json) uses the corrected Erika executable and the same archived engine, model, source and dimensions as the zero-strength control. Native visibility and all 1,381 transport checks pass. All 167 completed outputs have positive drawable presentation timestamps; 164 steady activation/audio observations remain within 19.021 ms of the plan's 20-ms diagnostic target. The capture retains all frames, activation links and separately sampled audio clocks. Three zero-time drawable callbacks precede the first frame's positive callback.
+
+No input admission is refused or dropped, and the engine retains at most two slots (5,777,024 bytes). The measured seek latency is 4.807 seconds. These observations qualify this bounded visible transport case; they do not establish a causal performance gain, physical synchronization, source-rate Live operation or final core selection on M5.
+
+The [first 45-second lifecycle capture](evidence/m3-erika-lifecycle-missed-pause.json) passes native visibility and 1,074 of 1,076 transport checks. Its initial pause at two seconds occurs after the last in-flight completion, missing the required completion and activation while paused. The existing displayed frame correctly prevents a future frame from activating during that pause. Paused seek preview, explicit resume, audio-only playback, foreground recovery and final output/audio drain checks pass. The complete failed audit remains recorded.
+
+A [prospective schedule amendment](evidence/m3-erika-lifecycle-torn-snapshot.json) moves only that initial pause to 0.5 seconds and preserves the auditor byte for byte. This captures both missing pause witnesses and passes 1,071 of 1,072 checks, but one EOF snapshot combines running playback flags with a later EOF read. The demo samples those fields under separate locks; the player's EOF publication itself commits stopped state and a parked clock under one lock. Neither lifecycle attempt is accepted as a complete pass.
+
+Erika [`4bee8ae`](https://github.com/ScriptType/Erika/commit/4bee8ae14bf540fb35dd8d3f6251d2285aa6be27) adds a coherent status snapshot for clock, state, generation, duration and EOF while preserving the existing snapshot API. The demo evaluates its media time once before sampling audio counters separately. A deterministic regression crosses actual EOF publication between retained observations and verifies each remains coherent. All 92 CPU tests, two schedule-parser tests and the native build pass. A preceding validation wrapper rejected a concurrent test-formatting edit despite passing tests/build; the accepted repeat preserves every source and artifact pin.
+
+The [coherent 45-second lifecycle capture](evidence/m3-erika-lifecycle-visible.json) passes all 1,070 unchanged transport checks and native visibility. Actual completion and activation occur between parked initial-pause observations, with activation explicitly recording paused user intent. Paused seeking presents the new-generation preview; explicit resume, audio-only playback and foreground recovery pass. All six requests succeed. The capture decodes and completes 72 frames, with 62 steady activation/audio observations within 17.021 ms, zero admission drops and at most two retained slots. Seventy-one outputs have positive presentation timestamps; the remaining completed output stays in the inventory with zero presentations.
+
+Final source PTS 59.967 first presents 54.717 ms before the first observed EOF. All 76 EOF snapshots have stopped playback, a parked clock at 60 seconds, zero queued PCM and an unchanged audio read count. Audio counters are sampled separately from playback status; these observations do not measure a physical audio tail. The single capture uses the same amended schedule, byte-identical auditor and archived shared engine. It qualifies this scripted native lifecycle case, while physical HDR/A/V, sustained playback, source-rate Live and the final M5 comparison remain separate.
+
+## Development validation before synchronized enhancement holds
 
 On 2026-09-10, the self-contained build passed on Apple M3, 16 GB, macOS 26.5. The following local runs used source 320×192, processing 32×24, native drawable 1920×992, reference white 203 nits, maximum luminance ratio 2, and Neural Rendering weights `b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f`. Three initial completed samples are excluded from warmed metrics. First-output numeric capture was enabled.
 

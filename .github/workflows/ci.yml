@@ -6,6 +6,48 @@ on:
 permissions:
   contents: read
 jobs:
+  erika-transport:
+    # Branch PRs run this once; main and explicit dispatches also validate it.
+    if: github.event_name != 'push' || github.ref == 'refs/heads/main'
+    runs-on: macos-26
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: git submodule update --init vendor/Erika
+      - run: brew install cmake meson ninja pkgconf nasm
+      - name: Resolve pinned Rust toolchain
+        run: |
+          rustup toolchain install --profile minimal --no-self-update
+          rustup show active-toolchain
+      - name: Identify native dependency toolchain
+        id: native-context
+        run: |
+          source scripts/env.sh
+          {
+            xcodebuild -version
+            xcrun --sdk macosx --show-sdk-version
+            brew list --versions cmake meson ninja pkgconf nasm
+            printf '%s\n' "$MACOSX_DEPLOYMENT_TARGET" "$PROJECT_ROOT"
+          } > "$RUNNER_TEMP/erika-native-context.txt"
+          printf 'key=%s\n' "$(shasum -a 256 "$RUNNER_TEMP/erika-native-context.txt" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+      - name: Cache generated native dependencies
+        uses: actions/cache@v6.1.0
+        with:
+          path: |
+            vendor/Erika/third_party/cache
+            vendor/Erika/third_party/src
+            vendor/Erika/third_party/build
+            vendor/Erika/third_party/dist
+          key: erika-native-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.native-context.outputs.key }}-${{ hashFiles('rust-toolchain.toml', 'scripts/env.sh', 'vendor/Erika/Cargo.toml', 'vendor/Erika/Cargo.lock', 'vendor/Erika/xtask/**', 'vendor/Erika/third_party/patches/**') }}
+      - name: Prepare Erika native dependencies
+        run: |
+          source scripts/env.sh
+          cargo run --locked --manifest-path vendor/Erika/Cargo.toml --jobs "$BUILD_JOBS" \
+            -p xtask -- deps build --all --profile lgpl --jobs "$BUILD_JOBS"
+      - name: Check Erika transport and native-demo build (CPU only)
+        run: bash scripts/test-erika-transport.sh
   harness:
     runs-on: macos-26
     timeout-minutes: 40
@@ -48,5 +90,9 @@ jobs:
           python3 -m unittest discover -s scripts -p test_mpv_policy_timing.py
           python3 scripts/audit-public-tree.py
           git diff --check
-      - name: Check HDR reference preparation (CPU only)
-        run: uv run --frozen python scripts/test_apple_hdr_reference.py
+      - name: Check HDR reference preparation and temporal analyses (CPU only)
+        run: |
+          uv run --frozen python scripts/test_apple_hdr_reference.py
+          uv run --frozen python scripts/test_occlusion_reference_analysis.py
+          uv run --frozen python scripts/test_flash_reference_analysis.py
+          uv run --frozen python scripts/test_grain_reference_analysis.py
