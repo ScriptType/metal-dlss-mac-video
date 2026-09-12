@@ -48,6 +48,38 @@ final class PlayerSmokeCheck {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
     private func runFloatingVideo() async throws {
+        let capturePath = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_CAPTURE_DIRECTORY"]
+        let captureStarted = ProcessInfo.processInfo.systemUptime
+        let captureDeadline = captureStarted + 105
+        let captureDirectory: URL?
+        var capturePhaseDeadline: Double? = nil
+        if let path = capturePath {
+            guard path.hasPrefix("/"), !FileManager.default.fileExists(atPath: path) else {
+                throw Failure(message: "Floating capture requires a new absolute output directory")
+            }
+            let directory = URL(fileURLWithPath: path, isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
+            captureDirectory = directory
+        } else { captureDirectory = nil }
+        func checkCaptureDeadline() throws {
+            if let phaseDeadline = capturePhaseDeadline, ProcessInfo.processInfo.systemUptime >= phaseDeadline {
+                throw Failure(message: "Floating capture exceeded its 30-second phase deadline")
+            }
+            if captureDirectory != nil && ProcessInfo.processInfo.systemUptime >= captureDeadline {
+                throw Failure(message: "Floating capture exceeded its 105-second overall deadline")
+            }
+        }
+        func floatingWait(_ label: String, seconds: Double = 8, until condition: () -> Bool) async throws {
+            guard captureDirectory != nil else { try await self.wait(label, seconds: seconds, until: condition); return }
+            let deadline = min(min(captureDeadline, capturePhaseDeadline ?? captureDeadline), ProcessInfo.processInfo.systemUptime + seconds)
+            while true {
+                guard ProcessInfo.processInfo.systemUptime < deadline else { throw Failure(message: "Timed out: " + label) }
+                if condition() { break }
+                try await Task.sleep(for: .milliseconds(100))
+            }
+            checks.append(label)
+            snapshots.append(["check": label, "state": state()])
+        }
         func floating() -> [String: Any] { state()["floatingVideo"] as? [String: Any] ?? [:] }
         func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
         func integer(_ values: [String: Any], _ key: String) -> Int64 { (values[key] as? NSNumber)?.int64Value ?? -1 }
@@ -65,7 +97,7 @@ final class PlayerSmokeCheck {
         }
         func settle(_ label: String, allowBufferedPending: Bool = false) async throws -> [String: Int64] {
             var previous: [String: Int64]?, consecutive = 0
-            try await wait(label, seconds: 25) {
+            try await floatingWait(label, seconds: 25) {
                 let current = identity()
                 let pending = integer(native(), "pending-frames")
                 // Ordinary pause may retain future output within HDR_SLOTS (3).
@@ -109,6 +141,7 @@ final class PlayerSmokeCheck {
             let number = window.windowNumber
             guard number > 0 else { throw Failure(message: "Native action has no window number: " + requestLabel) }
             while ProcessInfo.processInfo.systemUptime - started < 5 {
+                try checkCaptureDeadline()
                 guard window.windowNumber == number else {
                     throw Failure(message: "Native action window changed while awaiting observation: " + requestLabel)
                 }
@@ -147,25 +180,38 @@ final class PlayerSmokeCheck {
             }
             let requestLabel = "native-button-" + identifier + "-requested"
             try await observeWindowBeforeAction(panel, requestLabel: requestLabel)
+            try checkCaptureDeadline()
             record(requestLabel)
             control.performClick(nil)
         }
-        try await wait("floating prototype and sixty-second fixture loaded", seconds: 20) {
+        try await floatingWait("floating prototype and sixty-second fixture loaded", seconds: 20) {
             floating()["implementation"] as? String == "appkit-floating-video-prototype" &&
                 floating()["diagnosticOnly"] as? Bool == true && self.number("duration") >= 59 &&
                 self.number("duration") <= 61 && !self.webView.isLoading && !self.video.subviews.isEmpty
         }
         if state()["paused"] as? Bool != true { try await click("play") }
-        try await wait("native core paused before floating setup") { self.state()["paused"] as? Bool == true }
+        try await floatingWait("native core paused before floating setup") { self.state()["paused"] as? Bool == true }
         if state()["muted"] as? Bool != true { try await click("mute") }
-        try await change("sub", value: "no")
+        try await change("sub", value: captureDirectory == nil ? "no" : "1")
+        if captureDirectory != nil {
+            try await change("subtitleBrightness", value: "1")
+            try await change("subtitleScale", value: "1")
+            try await change("subtitleDelay", value: "0")
+        }
         try await change("quality", value: "160x96")
-        try await change("timeline", value: "20")
+        try await change("timeline", value: captureDirectory == nil ? "20" : "4")
         if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true { try await click("enhancement") }
-        try await wait("160x96 Adaptive enhancement reaches exact twenty-second frame", seconds: 25) {
+        try await floatingWait(captureDirectory == nil ? "160x96 Adaptive enhancement reaches exact twenty-second frame" : "160x96 Adaptive enhancement reaches exact four-second frame", seconds: 25) {
             let processing = self.state()["processing"] as? [String: Any] ?? [:]
             return processing["enabled"] as? Bool == true && processing["mode"] as? String == "adaptive" &&
-                integer(processing, "width") == 160 && integer(processing, "height") == 96 && exactSeconds(20)
+                integer(processing, "width") == 160 && integer(processing, "height") == 96 && exactSeconds(captureDirectory == nil ? 20 : 4)
+        }
+        if captureDirectory != nil {
+            try await floatingWait("capture subtitle selection and native settings applied") {
+                self.selected("sub", id: 1) && self.number("subtitleScale") == 1 && self.number("subtitleDelay") == 0 &&
+                    (self.state()["nativeSubtitleColor"] as? String)?.uppercased() == "#FFFFFFFF" &&
+                    ((self.state()["processing"] as? [String: Any])?["subtitleBrightness"] as? NSNumber)?.doubleValue == 1
+            }
         }
         let initial = try await settle("initial paused rational PTS and accepted/emitted filter counters settle")
         let children = video.subviews, layers = video.subviews.compactMap { $0.layer }
@@ -200,9 +246,10 @@ final class PlayerSmokeCheck {
             }
             let requestLabel = label + "-menu-requested"
             try await observeWindowBeforeAction(window, requestLabel: requestLabel)
+            try checkCaptureDeadline()
             record(requestLabel)
             menu.performActionForItem(at: index)
-            try await wait(label + " reparents the same host into an observable native panel") {
+            try await floatingWait(label + " reparents the same host into an observable native panel") {
                 guard let panel = self.video.window as? NSPanel else { return false }
                 return panel.identifier?.rawValue == "HDRPlayer.floatingVideo" && panel.isVisible && !panel.isMiniaturized &&
                     panel.isOnActiveSpace && panel.occlusionState.contains(.visible) &&
@@ -215,7 +262,7 @@ final class PlayerSmokeCheck {
             return panel
         }
         func returned(_ panel: NSPanel, _ label: String, minimized: Bool) async throws {
-            try await wait(label) {
+            try await floatingWait(label) {
                 self.video.superview === home && self.video.window === self.window && !panel.isVisible && panel.contentView == nil &&
                     floating()["active"] as? Bool == false && floating()["phase"] as? String == "home" &&
                     integer(floating(), "homeConstraintsActive") == 4 && integer(floating(), "floatingConstraintsActive") == 0 &&
@@ -225,7 +272,7 @@ final class PlayerSmokeCheck {
         }
         func progress(_ label: String, from start: [String: Int64], panel: NSPanel, minimized: Bool) async throws {
             var seen = Set<Int64>()
-            try await wait(label, seconds: 20) {
+            try await floatingWait(label, seconds: 20) {
                 let value = native(), pts = integer(value, "displayed-source-pts")
                 let eligible = integer(value, "displayed-generation") == start["displayed-generation"] &&
                     integer(value, "generation") == start["generation"] &&
@@ -245,13 +292,198 @@ final class PlayerSmokeCheck {
             }
             try checkObjects(label)
         }
+        if let directory = captureDirectory {
+            // Caller-coordinated compositor diagnostic only: the application never captures pixels.
+            let sessionID = UUID().uuidString, pid = Int(ProcessInfo.processInfo.processIdentifier)
+            guard NSScreen.screens.count == 1, let screen = window.screen, screen.frame.origin == .zero,
+                  let displayID = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber,
+                  screen.backingScaleFactor.isFinite, screen.backingScaleFactor > 0 else {
+                throw Failure(message: "Capture requires one display with an unambiguous zero-origin coordinate space")
+            }
+            let scale = screen.backingScaleFactor
+            let screenFrame = screen.frame, visibleFrame = screen.visibleFrame
+            let viewport = NSSize(width: 800, height: 480)
+            func rect(_ value: NSRect) -> [String: CGFloat] {
+                ["x": value.minX, "y": value.minY, "width": value.width, "height": value.height]
+            }
+            func serverRect(_ value: NSRect) -> [String: CGFloat] {
+                ["X": value.minX, "Y": screenFrame.maxY - value.maxY, "Width": value.width, "Height": value.height]
+            }
+            func json(_ value: [String: Any]) throws -> Data {
+                let data = try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys])
+                guard data.count <= 65_536 else { throw Failure(message: "Capture protocol document exceeds 64 KiB") }
+                return data
+            }
+            func immutable(_ data: Data, at destination: URL) throws {
+                // Publish complete bytes without replacing an existing reference, acknowledgement or receipt.
+                let temporary = directory.appendingPathComponent("." + UUID().uuidString + ".tmp")
+                try data.write(to: temporary, options: .withoutOverwriting)
+                defer { try? FileManager.default.removeItem(at: temporary) }
+                try FileManager.default.moveItem(at: temporary, to: destination)
+            }
+            func geometryReady(_ target: NSWindow) -> Bool {
+                target === self.video.window && self.video.bounds.size == viewport &&
+                    self.video.convertToBacking(self.video.bounds).size == NSSize(width: 800 * scale, height: 480 * scale) &&
+                    children.allSatisfy { $0.bounds.size == viewport && $0.convert($0.bounds, to: self.video) == self.video.bounds &&
+                        $0.convertToBacking($0.bounds).size == NSSize(width: 800 * scale, height: 480 * scale) } &&
+                    metal.bounds.size == viewport && metal.contentsScale == scale &&
+                    metal.drawableSize == NSSize(width: 800 * scale, height: 480 * scale)
+            }
+            func fitViewport(_ target: NSWindow, _ phase: String) async throws {
+                guard let content = target.contentView else { throw Failure(message: "Missing capture window content") }
+                content.layoutSubtreeIfNeeded()
+                let measured = video.bounds.size
+                target.setContentSize(NSSize(width: content.bounds.width + viewport.width - measured.width,
+                    height: content.bounds.height + viewport.height - measured.height))
+                content.layoutSubtreeIfNeeded(); video.layoutSubtreeIfNeeded()
+                guard target.frame.width <= visibleFrame.width, target.frame.height <= visibleFrame.height else {
+                    throw Failure(message: "The measured capture window does not fit the visible display")
+                }
+                target.setFrameOrigin(NSPoint(x: min(max(target.frame.minX, visibleFrame.minX), visibleFrame.maxX - target.frame.width),
+                    y: min(max(target.frame.minY, visibleFrame.minY), visibleFrame.maxY - target.frame.height)))
+                try await floatingWait(phase + " has a measured 800x480-point native viewport") { geometryReady(target) }
+            }
+            func sample(_ target: NSWindow) throws -> [String: Any] {
+                try checkCaptureDeadline(); try checkObjects("compositor hold")
+                let current = state(), processing = current["processing"] as? [String: Any] ?? [:]
+                let nativeState = native()
+                guard identity() == initial, exactSeconds(4), initial["pending-frames"] == 0,
+                      current["paused"] as? Bool == true, current["playing"] as? Bool == false,
+                      current["muted"] as? Bool == true, nativeState["compare-ready"] as? Bool == true,
+                      nativeState["preview-pending"] as? Bool == false,
+                      nativeState["comparison"] as? String == "enhanced", nativeState["displayed-content-kind"] as? String == "enhanced",
+                      processing["enabled"] as? Bool == true, processing["mode"] as? String == "adaptive",
+                      integer(processing, "width") == 160, integer(processing, "height") == 96,
+                      (processing["strength"] as? NSNumber)?.doubleValue == 1,
+                      (processing["colorStrength"] as? NSNumber)?.doubleValue == 1,
+                      selected("sub", id: 1), number("subtitleScale") == 1, number("subtitleDelay") == 0,
+                      (current["nativeSubtitleColor"] as? String)?.uppercased() == "#FFFFFFFF",
+                      (processing["subtitleBrightness"] as? NSNumber)?.doubleValue == 1,
+                      NSScreen.screens.count == 1, target.screen === screen, screen.frame == screenFrame,
+                      screen.visibleFrame == visibleFrame, screen.backingScaleFactor == scale, target.backingScaleFactor == scale,
+                      target.windowNumber > 0, target.isVisible, !target.isMiniaturized, target.isOnActiveSpace,
+                      target.occlusionState.contains(.visible), visibleFrame.contains(target.frame),
+                      geometryReady(target), metal.contentsRect == CGRect(x: 0, y: 0, width: 1, height: 1),
+                      CATransform3DIsIdentity(metal.transform), let content = target.contentView else {
+                    throw Failure(message: "Frame, native subtitle, ownership or measured geometry changed during compositor hold")
+                }
+                let videoInWindow = video.convert(video.bounds, to: nil)
+                let geometry: [String: Any] = [
+                    "coordinateSpace": "single-display AppKit bottom-left; WindowServer rects global top-left",
+                    "displayID": displayID, "screenFrame": rect(screenFrame), "screenVisibleFrame": rect(visibleFrame),
+                    "windowFrame": rect(target.frame), "windowServerBounds": serverRect(target.frame),
+                    "windowContentLayoutRect": rect(target.contentLayoutRect), "contentBounds": rect(content.bounds),
+                    "videoRectInWindow": rect(videoInWindow), "videoRectInContent": rect(video.convert(video.bounds, to: content)),
+                    "videoWindowServerRect": serverRect(target.convertToScreen(videoInWindow)),
+                    "hostIdentity": String(describing: ObjectIdentifier(video)), "hostBounds": rect(video.bounds),
+                    "hostBackingBounds": rect(video.convertToBacking(video.bounds)), "backingScale": scale,
+                    "contentsScale": metal.contentsScale, "drawableSize": ["width": metal.drawableSize.width, "height": metal.drawableSize.height],
+                    "layerBounds": rect(metal.bounds), "layerContentsRect": rect(metal.contentsRect), "layerTransformIsIdentity": true,
+                    "children": children.map { child -> [String: Any] in
+                        let inWindow = child.convert(child.bounds, to: nil)
+                        return ["identity": String(describing: ObjectIdentifier(child)),
+                            "layerIdentity": String(describing: ObjectIdentifier(child.layer!)),
+                            "bounds": rect(child.bounds), "backingBounds": rect(child.convertToBacking(child.bounds)),
+                            "rectInWindow": rect(inWindow), "windowServerRect": serverRect(target.convertToScreen(inWindow))]
+                    }]
+                return ["identity": initial, "geometry": geometry,
+                    "source": source, "core": core, "configuration": configuration,
+                    "subtitle": ["selectedTrackID": 1, "scale": number("subtitleScale"), "delay": number("subtitleDelay"),
+                        "brightness": (processing["subtitleBrightness"] as? NSNumber)!, "nativeColor": current["nativeSubtitleColor"]!],
+                    "processing": ["mode": "adaptive", "enabled": true, "width": 160, "height": 96,
+                        "strength": processing["strength"]!, "colorStrength": processing["colorStrength"]!,
+                        "comparison": "enhanced", "displayedContentKind": "enhanced"]]
+            }
+            func capture(_ phase: String, sequence: Int, target: NSWindow) async throws {
+                let phaseDeadline = min(captureDeadline, ProcessInfo.processInfo.systemUptime + 30)
+                capturePhaseDeadline = phaseDeadline
+                defer { capturePhaseDeadline = nil }
+                try await fitViewport(target, phase)
+                try await preserved(initial, phase + " capture-ready paused identity")
+                let baseline = try sample(target), baselineData = try json(baseline)
+                let binding: [String: Any] = ["version": 1, "sessionID": sessionID, "phase": phase,
+                    "phaseSequence": sequence, "targetPID": pid, "windowID": target.windowNumber]
+                var reference = binding
+                reference["createdUptime"] = ProcessInfo.processInfo.systemUptime
+                reference["createdMediaTime"] = CACurrentMediaTime()
+                reference["overallDeadlineUptime"] = captureDeadline
+                reference["phaseDeadlineUptime"] = phaseDeadline
+                reference["sample"] = baseline
+                let referenceData = try json(reference)
+                let referenceSHA = SHA256.hash(data: referenceData).map { String(format: "%02x", $0) }.joined()
+                let acknowledgementURL = directory.appendingPathComponent(phase + "-complete.json")
+                guard !FileManager.default.fileExists(atPath: acknowledgementURL.path) else {
+                    throw Failure(message: "Premature capture acknowledgement for " + phase)
+                }
+                try checkCaptureDeadline()
+                try immutable(referenceData, at: directory.appendingPathComponent(phase + "-reference.json"))
+                record(phase + "-compositor-reference-published")
+                var sampleIndex = 0
+                while true {
+                    try checkCaptureDeadline()
+                    guard ProcessInfo.processInfo.systemUptime < phaseDeadline else { throw Failure(message: "Capture stage exceeded 30 seconds: " + phase) }
+                    let observed = try sample(target)
+                    guard try json(observed) == baselineData else { throw Failure(message: "Capture sample changed within " + phase) }
+                    sampleIndex += 1
+                    var live = binding
+                    live["referenceSHA256"] = referenceSHA; live["sampleIndex"] = sampleIndex
+                    live["observedUptime"] = ProcessInfo.processInfo.systemUptime; live["observedMediaTime"] = CACurrentMediaTime()
+                    live["status"] = "holding"; live["sample"] = observed
+                    try json(live).write(to: directory.appendingPathComponent(phase + "-live.json"), options: .atomic)
+                    if FileManager.default.fileExists(atPath: acknowledgementURL.path) {
+                        let attributes = try FileManager.default.attributesOfItem(atPath: acknowledgementURL.path)
+                        guard let size = attributes[.size] as? NSNumber, size.intValue <= 65_536 else {
+                            throw Failure(message: "Oversized capture acknowledgement")
+                        }
+                        let acknowledgementData = try Data(contentsOf: acknowledgementURL)
+                        guard acknowledgementData.count <= 65_536,
+                              let acknowledgement = try JSONSerialization.jsonObject(with: acknowledgementData) as? [String: Any],
+                              acknowledgement["version"] as? Int == 1, acknowledgement["sessionID"] as? String == sessionID,
+                              acknowledgement["phase"] as? String == phase, acknowledgement["phaseSequence"] as? Int == sequence,
+                              acknowledgement["targetPID"] as? Int == pid, acknowledgement["windowID"] as? Int == target.windowNumber,
+                              acknowledgement["referenceSHA256"] as? String == referenceSHA,
+                              acknowledgement["captured"] as? Bool == true else {
+                            throw Failure(message: "Capture acknowledgement does not bind the current immutable reference")
+                        }
+                        let acceptedSample = try sample(target)
+                        guard try json(acceptedSample) == baselineData, ProcessInfo.processInfo.systemUptime < phaseDeadline else {
+                            throw Failure(message: "Capture state or deadline changed before acknowledgement acceptance")
+                        }
+                        sampleIndex += 1; live["sampleIndex"] = sampleIndex; live["sample"] = acceptedSample
+                        live["status"] = "complete"; live["observedUptime"] = ProcessInfo.processInfo.systemUptime
+                        live["observedMediaTime"] = CACurrentMediaTime()
+                        live["acknowledgement"] = acknowledgement
+                        live["acknowledgementScope"] = "external coordinator assertion; no in-app pixel verification"
+                        try immutable(try json(live), at: directory.appendingPathComponent(phase + "-after.json"))
+                        try json(live).write(to: directory.appendingPathComponent(phase + "-live.json"), options: .atomic)
+                        snapshots.append(["check": phase + "-compositor-external-acknowledgement", "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                            "referenceSHA256": referenceSHA, "sampleCount": sampleIndex, "receipt": live, "state": state()])
+                        checks.append(phase + " external compositor acknowledgement preserves exact held identity and measured geometry")
+                        return
+                    }
+                    try await Task.sleep(for: .milliseconds(100))
+                }
+            }
+            try await capture("main", sequence: 1, target: window)
+            let panel = try await enter("compositor floating entry")
+            try await capture("floating", sequence: 2, target: panel)
+            try await press("return", in: panel)
+            try await returned(panel, "compositor Return restores main host and constraints", minimized: false)
+            try await capture("returned", sequence: 3, target: window)
+            // Preserve the frozen external runner's active-floating asynchronous teardown contract.
+            _ = try await enter("floating entry before asynchronous quit")
+            try await preserved(initial, "paused active floating host before asynchronous quit")
+            try checkCaptureDeadline()
+            checks.append("three caller-coordinated same-frame subtitle-on compositor stages completed; external teardown still required")
+            return
+        }
         let firstPanel = try await enter("initial floating entry")
         try await preserved(initial, "paused floating entry")
         for size in [NSSize(width: 800, height: 500), NSSize(width: 640, height: 416)] {
             let before = metal.drawableSize
             firstPanel.setContentSize(size)
             firstPanel.contentView?.layoutSubtreeIfNeeded()
-            try await wait("paused native panel resize to \(Int(size.width))x\(Int(size.height))") {
+            try await floatingWait("paused native panel resize to \(Int(size.width))x\(Int(size.height))") {
                 let bounds = self.video.bounds
                 return abs(bounds.width - size.width) < 1 && bounds.height > 0 &&
                     children.allSatisfy { abs($0.bounds.width - bounds.width) < 1 && abs($0.bounds.height - bounds.height) < 1 } &&
@@ -270,7 +502,7 @@ final class PlayerSmokeCheck {
         var previousSeek = initial
         for (control, seconds) in [("seekForward", Int64(25)), ("seekBackward", Int64(20))] {
             try await press(control, in: transportPanel)
-            try await wait("native \(control) reaches exact \(seconds)-second source frame", seconds: 25) {
+            try await floatingWait("native \(control) reaches exact \(seconds)-second source frame", seconds: 25) {
                 exactSeconds(seconds) && integer(native(), "displayed-generation") > (previousSeek["displayed-generation"] ?? Int64.max) &&
                     self.state()["paused"] as? Bool == true
             }
@@ -299,7 +531,7 @@ final class PlayerSmokeCheck {
 
         let closePanel = try await enter("main close control entry")
         window.performClose(nil)
-        try await wait("closing main hides it while floating host remains attached") {
+        try await floatingWait("closing main hides it while floating host remains attached") {
             !self.window.isVisible && !self.window.isMiniaturized && self.video.window === closePanel && closePanel.isVisible &&
                 floating()["active"] as? Bool == true
         }
@@ -310,7 +542,7 @@ final class PlayerSmokeCheck {
 
         let nonactivatingPanel = try await enter("nonactivating panel close entry")
         window.miniaturize(nil)
-        try await wait("main minimized before panel close") { self.window.isMiniaturized }
+        try await floatingWait("main minimized before panel close") { self.window.isMiniaturized }
         nonactivatingPanel.performClose(nil)
         try await returned(nonactivatingPanel, "panel close restores host without deminiaturizing main", minimized: true)
         guard (floating()["lastRestore"] as? [String: Any])?["activateMain"] as? Bool == false else {
@@ -318,7 +550,7 @@ final class PlayerSmokeCheck {
         }
         try await preserved(held, "paused nonactivating panel close")
         window.deminiaturize(nil); window.makeKeyAndOrderFront(nil)
-        try await wait("explicit harness restoration makes main observable") { self.window.isVisible && !self.window.isMiniaturized }
+        try await floatingWait("explicit harness restoration makes main observable") { self.window.isVisible && !self.window.isMiniaturized }
         _ = try await enter("floating entry before asynchronous quit")
         try await preserved(held, "paused active floating host before asynchronous quit")
         checks.append("quit is requested after this report; external lifecycle log and process exit must verify worker destruction and panel release")
