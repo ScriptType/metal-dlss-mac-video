@@ -130,6 +130,16 @@ The [corrected visible control](evidence/m3-erika-bypass-drain.json) passes all 
 
 Final PTS 59.967 first presents 192.604 ms before the first observed EOF, whose software audio queue is already empty. Paused seeking presents the requested preview without starting playback. The eight-second capture passes native visibility, retains all input/runtime pins, and peaks at 158,449,664 bytes sampled process-tree RSS. Its scripted duration and redraw estimates do not establish playback throughput or physical synchronization.
 
+## Visible neural transport and lifecycle
+
+The [34-second neural capture](evidence/m3-erika-matched-visible.json) uses the corrected Erika executable and the same archived engine, model, source and dimensions as the zero-strength control. Native visibility and all 1,381 transport checks pass. All 167 completed outputs have positive drawable presentation timestamps; 164 steady activation/audio observations remain within 19.021 ms of the plan's 20-ms diagnostic target. The capture retains all frames, activation links and separately sampled audio clocks. Three zero-time drawable callbacks precede the first frame's positive callback.
+
+No input admission is refused or dropped, and the engine retains at most two slots (5,777,024 bytes). The measured seek latency is 4.807 seconds. These observations qualify this bounded visible transport case; they do not establish a causal performance gain, physical synchronization, source-rate Live operation or final core selection on M5.
+
+The [first 45-second lifecycle capture](evidence/m3-erika-lifecycle-missed-pause.json) passes native visibility and 1,074 of 1,076 transport checks. Its initial pause at two seconds occurs after the last in-flight completion, missing the required completion and activation while paused. The existing displayed frame correctly prevents a future frame from activating during that pause. Paused seek preview, explicit resume, audio-only playback, foreground recovery and final output/audio drain checks pass. The complete failed audit remains recorded.
+
+A prospective schedule amendment moves only that initial pause to 0.5 seconds and preserves the auditor byte for byte. This captures both missing pause witnesses, but one EOF snapshot combines running playback flags with a later EOF read. The demo samples those fields under separate locks; coherent playback telemetry and its native validation remain pending. Neither lifecycle attempt is accepted as a complete pass.
+
 ## Development validation before synchronized enhancement holds
 
 On 2026-09-10, the self-contained build passed on Apple M3, 16 GB, macOS 26.5. The following local runs used source 320×192, processing 32×24, native drawable 1920×992, reference white 203 nits, maximum luminance ratio 2, and Neural Rendering weights `b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f`. Three initial completed samples are excluded from warmed metrics. First-output numeric capture was enabled.
