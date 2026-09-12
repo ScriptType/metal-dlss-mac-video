@@ -102,12 +102,52 @@ final class PlayerSmokeCheck {
             for child in view.subviews { if let found = button(identifier, in: child) { return found } }
             return nil
         }
-        func press(_ identifier: String, in panel: NSPanel) throws {
+        func observeWindowBeforeAction(_ window: NSWindow, requestLabel: String) async throws {
+            guard let path = ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_WINDOW_OBSERVATIONS"],
+                  !path.isEmpty else { return }
+            let started = ProcessInfo.processInfo.systemUptime
+            let number = window.windowNumber
+            guard number > 0 else { throw Failure(message: "Native action has no window number: " + requestLabel) }
+            while ProcessInfo.processInfo.systemUptime - started < 5 {
+                guard window.windowNumber == number else {
+                    throw Failure(message: "Native action window changed while awaiting observation: " + requestLabel)
+                }
+                if let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+                   let observation = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
+                   observation["version"] as? Int == 1,
+                   observation["targetPID"] as? Int == Int(ProcessInfo.processInfo.processIdentifier),
+                   let queryStart = observation["queryStartUptime"] as? Double, queryStart.isFinite,
+                   let queryEnd = observation["queryEndUptime"] as? Double, queryEnd.isFinite,
+                   queryStart >= started, queryEnd >= queryStart,
+                   let windows = observation["windows"] as? [[String: Any]],
+                   let observed = windows.first(where: { $0["windowID"] as? Int == number }),
+                   observed["onScreen"] as? Bool == true, observed["alpha"] as? Double == 1,
+                   let bounds = observed["bounds"] as? [String: Double],
+                   ["X", "Y", "Width", "Height"].allSatisfy({ bounds[$0]?.isFinite == true }),
+                   (bounds["Width"] ?? 0) > 0, (bounds["Height"] ?? 0) > 0 {
+                    let now = ProcessInfo.processInfo.systemUptime
+                    if now - started < 5, queryEnd <= now, now - queryEnd <= 2 {
+                        let proof: [String: Any] = ["version": 1,
+                            "targetPID": Int(ProcessInfo.processInfo.processIdentifier),
+                            "queryStartUptime": queryStart, "queryEndUptime": queryEnd,
+                            "windows": [["windowID": number, "onScreen": true, "alpha": 1, "bounds": bounds]]]
+                        snapshots.append(["check": requestLabel + "-observer-window-ready", "hostSeconds": now,
+                            "waitStartedUptime": started, "windowObservation": proof, "state": state()])
+                        return
+                    }
+                }
+                try await Task.sleep(for: .milliseconds(50))
+            }
+            throw Failure(message: "Timed out awaiting fresh observer window record: " + requestLabel)
+        }
+        func press(_ identifier: String, in panel: NSPanel) async throws {
             guard let content = panel.contentView, let control = button(identifier, in: content),
                   control.isEnabled, !control.isHidden, control.target != nil, control.action != nil else {
                 throw Failure(message: "Native floating button unavailable: " + identifier)
             }
-            record("native-button-" + identifier + "-requested")
+            let requestLabel = "native-button-" + identifier + "-requested"
+            try await observeWindowBeforeAction(panel, requestLabel: requestLabel)
+            record(requestLabel)
             control.performClick(nil)
         }
         try await wait("floating prototype and sixty-second fixture loaded", seconds: 20) {
@@ -158,7 +198,9 @@ final class PlayerSmokeCheck {
             guard menu.items[index].isEnabled, floating()["canEnter"] as? Bool == true else {
                 throw Failure(message: "Floating diagnostic native menu entry disabled")
             }
-            record(label + "-menu-requested")
+            let requestLabel = label + "-menu-requested"
+            try await observeWindowBeforeAction(window, requestLabel: requestLabel)
+            record(requestLabel)
             menu.performActionForItem(at: index)
             try await wait(label + " reparents the same host into an observable native panel") {
                 guard let panel = self.video.window as? NSPanel else { return false }
@@ -220,14 +262,14 @@ final class PlayerSmokeCheck {
                 "contentsScale": metal.contentsScale, "state": state()])
             try await preserved(initial, "paused resize \(Int(size.width))x\(Int(size.height))")
         }
-        try press("return", in: firstPanel)
+        try await press("return", in: firstPanel)
         try await returned(firstPanel, "native Return restores main host and constraints", minimized: false)
         try await preserved(initial, "paused native Return")
 
         let transportPanel = try await enter("floating transport entry")
         var previousSeek = initial
         for (control, seconds) in [("seekForward", Int64(25)), ("seekBackward", Int64(20))] {
-            try press(control, in: transportPanel)
+            try await press(control, in: transportPanel)
             try await wait("native \(control) reaches exact \(seconds)-second source frame", seconds: 25) {
                 exactSeconds(seconds) && integer(native(), "displayed-generation") > (previousSeek["displayed-generation"] ?? Int64.max) &&
                     self.state()["paused"] as? Bool == true
@@ -241,14 +283,14 @@ final class PlayerSmokeCheck {
             throw Failure(message: "Native ±5-second seek did not return to the original exact rational timestamp")
         }
         checks.append("native ±5-second controls preserve the source timeline and return to the exact initial frame")
-        try press("playPause", in: transportPanel)
+        try await press("playPause", in: transportPanel)
         try await progress("native Play advances exact frames through the same core", from: previousSeek, panel: transportPanel, minimized: false)
         guard let beforeMinimize = identity() else { throw Failure(message: "Missing progressing native identity") }
         window.miniaturize(nil)
         try await progress("floating playback progresses while main is minimized", from: beforeMinimize, panel: transportPanel, minimized: true)
-        try press("playPause", in: transportPanel)
+        try await press("playPause", in: transportPanel)
         let held = try await settle("native floating Pause settles exact source identity", allowBufferedPending: true)
-        try press("return", in: transportPanel)
+        try await press("return", in: transportPanel)
         try await returned(transportPanel, "explicit Return deminiaturizes and shows main", minimized: false)
         guard (floating()["lastRestore"] as? [String: Any])?["activateMain"] as? Bool == true else {
             throw Failure(message: "Return did not record explicit main activation")
@@ -262,7 +304,7 @@ final class PlayerSmokeCheck {
                 floating()["active"] as? Bool == true
         }
         try await preserved(held, "paused main close")
-        try press("return", in: closePanel)
+        try await press("return", in: closePanel)
         try await returned(closePanel, "Return unhides main after close", minimized: false)
         try await preserved(held, "paused main close and Return")
 
