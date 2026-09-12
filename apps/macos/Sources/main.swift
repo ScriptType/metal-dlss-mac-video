@@ -25,6 +25,7 @@ func runDiagnosticHarnessIfRequested() -> Never? {
 
 @MainActor
 final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuItemValidation, WKScriptMessageHandler, WKNavigationDelegate {
+    private let session: PlayerSessionConfiguration
     private var window: NSWindow!
     private var video: NSView!
     private var controls: WKWebView!
@@ -42,6 +43,11 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
     private var mainFullscreenTransitioning = false
     private let floatingVideoDiagnosticEnabled = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_VIDEO"] == "1"
 
+    init(session: PlayerSessionConfiguration) {
+        self.session = session
+        super.init()
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         makeMenus()
         window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1060, height: 720),
@@ -52,7 +58,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         window.delegate = self
         window.backgroundColor = .black
         window.collectionBehavior = [.fullScreenPrimary]
-        if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] == nil { window.setFrameAutosaveName("HDRPlayer.mainWindow") }
+        if !session.isTransient, ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] == nil { window.setFrameAutosaveName("HDRPlayer.mainWindow") }
         let content = NSView()
         video = NSView()
         video.setAccessibilityElement(true)
@@ -74,6 +80,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
             NSLayoutConstraint.activate(videoHomeConstraints)
         }
         let configuration = WKWebViewConfiguration()
+        if session.isTransient { configuration.websiteDataStore = .nonPersistent() }
         configuration.preferences.tabFocusesLinks = true
         configuration.userContentController.add(self, name: "player")
         controls = WKWebView(frame: .zero, configuration: configuration)
@@ -95,7 +102,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         if let html = resources.url(forResource: "index", withExtension: "html", subdirectory: "Controls") {
             controls.loadFileURL(html, allowingReadAccessTo: html.deletingLastPathComponent())
         }
-        player = MPVPlaybackController(hostView: video)
+        player = MPVPlaybackController(hostView: video, session: session)
         if floatingVideoDiagnosticEnabled {
             floatingVideo = FloatingVideoController(host: video, mainSlot: videoArea,
                 homeConstraints: videoHomeConstraints, mainWindow: window,
@@ -429,6 +436,14 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
     }
 }
 
+let session: PlayerSessionConfiguration
+do {
+    session = try PlayerSessionConfiguration.resolve(environment: ProcessInfo.processInfo.environment,
+        arguments: Array(CommandLine.arguments.dropFirst()))
+} catch {
+    fputs("HDRPlayer: \(error)\n", stderr)
+    exit(2)
+}
 if let never = runDiagnosticHarnessIfRequested() { switch never {} }
 if ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_VIDEO"] == "1",
    ProcessInfo.processInfo.environment["HDRPLAYER_ENABLE_PIP"] == "1" {
@@ -436,7 +451,7 @@ if ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_VIDEO"] == "1",
     exit(2)
 }
 let app = NSApplication.shared
-let delegate = PlayerDelegate()
+let delegate = PlayerDelegate(session: session)
 app.delegate = delegate
 app.setActivationPolicy(.regular)
 app.run()

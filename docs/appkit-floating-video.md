@@ -18,6 +18,24 @@ HDRPLAYER_FLOATING_VIDEO=1 .build/debug/HDRPlayer /absolute/path/video.mp4
 
 This builds only the app shell. It still requires the patched libmpv and its shared engine at runtime, as described in [native player setup](native-player.md). `METAL_DLSS_MPV_LIBRARY` can select an existing compatible libmpv in another prepared checkout; its loader paths must resolve the matching engine. The app also needs its model in this checkout or an explicit `MLXDLSS_NEURAL_RENDERING_PACKAGE` path.
 
+## Transient session for hands-on checks
+
+`HDRPLAYER_TRANSIENT_SESSION=1` starts an interactive session with app-owned memory settings, muted audio and enhancement disabled. Normal initial playback and quality defaults apply. Existing controls can change the session settings without saving them. Floating video remains available through its separate opt-in:
+
+```sh
+HDRPLAYER_TRANSIENT_SESSION=1 \
+HDRPLAYER_FLOATING_VIDEO=1 \
+HDRPLAYER_CACHE_DIRECTORY=/absolute/existing-parent/fresh-session-cache \
+.build/debug/HDRPlayer /absolute/path/video.mp4
+```
+
+The cache directory must be absolute and fresh, with an existing parent. Startup claims it atomically with private permissions using `mkdir(0700)`. Existing directories, files, symlinks and dangling symlinks are refused; missing parents are not created. Validation failures never remove existing entries. The successful session cache remains available for inspection and explicit cleanup after exit, and the ordinary Prepared cache is not selected.
+
+Transient mode neither constructs nor accesses the player's standard or smoke `UserDefaults` store. Preference changes stay in memory, the main window skips frame autosave, and the controls use a new nonpersistent WebKit website data store. Mute is supplied before native initialization. This isolates these app storage paths; it does not promise zero framework or operating-system writes.
+
+An absent transient flag or explicit `0` retains ordinary behavior; `1` enables isolation. Any other present value, including an empty value or surrounding whitespace, exits with code 2 before AppKit, native playback or diagnostic CLI forwarding. Transient mode also rejects the presence of `HDRPLAYER_UI_SMOKE_*`, `HDRPLAYER_FLOATING_*` except `HDRPLAYER_FLOATING_VIDEO`, `HDRPLAYER_ENABLE_PIP`, `HDRPLAYER_PIP`, `HDRPLAYER_PIP_*`, and `HDRPLAYER_SYSTEM_PIP_*`, even when their values are empty or `0`. The diagnostic CLI options `--headless`, `--capture-dir`, `--capture-every`, `--headroom`, `--report`, `--frames` and `--exit-after-playback`, including `--option=value` forms, are rejected. An explicit lifecycle log remains allowed.
+
+Input routing, focus behavior and panel controls remain unchanged. No input is injected and no keyboard, Accessibility or saved-preference settings are changed. All 11 focused CPU/file check groups and the isolated M3 app-shell build pass. The checks cover startup validation, exclusive cache creation, in-memory preferences and retained persistent-mode load/save behavior using an injected memory backing; they do not access saved preferences. A transient hands-on launch and physical mouse/keyboard checks are also pending; earlier synthetic keyboard evidence does not qualify physical delivery.
 ## Window and control behavior
 
 Entry requires a settled, non-fullscreen main window and a valid layout. Four retained constraints attach the host to its main-window slot; entry replaces them with four constraints in the floating slot. Return reverses that move. The main slot displays a Return button while its video is floating.
