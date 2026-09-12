@@ -2,7 +2,7 @@
 
 mpv remains the provisional application core. The latest matched two-adapter M3 comparison passes actual native visibility coverage for all four runs and its measured mpv scheduling-offset target. The captured Erika build lags audio under overload. Final selection requires the matched M5 and quality results specified in issue #11.
 
-A subsequent [Erika transport candidate](erika-adapter.md#enhancement-hold-validation-on-m3) eliminates admission refusals and passes a bounded activation/audio clock check. Its measured window was occluded, and native lifecycle checks remain pending. That follow-up does not replace the matched visible comparison below.
+Subsequent [Erika transport controls](erika-adapter.md#visible-neural-transport-and-lifecycle) pass visible neural timing and scripted lifecycle checks after adding synchronized enhancement holds, bounded bypass retries, output/audio drainage at EOF and coherent playback telemetry. The 34-second neural capture has 164 steady activation/audio observations within 19.021 ms; the final executable passes all 1,070 checks in the 45-second lifecycle capture. These adapter-specific controls preserve the earlier occluded and failed attempts and do not replace the matched two-adapter comparison below.
 
 ## Visible M3 comparison
 
