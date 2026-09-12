@@ -48,6 +48,9 @@ final class PlayerSmokeCheck {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
     private func runFloatingVideo() async throws {
+        let spacePath = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_SPACE_DIRECTORY"]
+        let spaceDeadline = ProcessInfo.processInfo.systemUptime + 90
+        var spaceStageDeadline: Double? = nil
         let fullscreenDiagnostic = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_FULLSCREEN_DIAGNOSTIC"] == "1"
         let fullscreenDeadline = ProcessInfo.processInfo.systemUptime + 90
         var fullscreenStageDeadline: Double? = nil
@@ -55,6 +58,18 @@ final class PlayerSmokeCheck {
         guard !fullscreenDiagnostic || capturePath == nil else {
             throw Failure(message: "Select only one floating capture or fullscreen diagnostic")
         }
+        guard spacePath == nil || (!fullscreenDiagnostic && capturePath == nil) else {
+            throw Failure(message: "Select only one floating Space, fullscreen or capture diagnostic")
+        }
+        let spaceDirectory: URL?
+        if let path = spacePath {
+            guard path.hasPrefix("/"), !FileManager.default.fileExists(atPath: path) else {
+                throw Failure(message: "Floating Space diagnostic requires a new absolute directory")
+            }
+            let directory = URL(fileURLWithPath: path, isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
+            spaceDirectory = directory
+        } else { spaceDirectory = nil }
         let captureStarted = ProcessInfo.processInfo.systemUptime
         let captureDeadline = captureStarted + 105
         let captureDirectory: URL?
@@ -68,6 +83,9 @@ final class PlayerSmokeCheck {
             captureDirectory = directory
         } else { captureDirectory = nil }
         func checkCaptureDeadline() throws {
+            if spaceDirectory != nil && ProcessInfo.processInfo.systemUptime >= min(spaceDeadline, spaceStageDeadline ?? spaceDeadline) {
+                throw Failure(message: "Floating Space diagnostic exceeded its stage or overall deadline")
+            }
             if fullscreenDiagnostic && ProcessInfo.processInfo.systemUptime >= min(fullscreenDeadline, fullscreenStageDeadline ?? fullscreenDeadline) {
                 throw Failure(message: "Floating fullscreen diagnostic exceeded its stage or overall deadline")
             }
@@ -79,9 +97,9 @@ final class PlayerSmokeCheck {
             }
         }
         func floatingWait(_ label: String, seconds: Double = 8, until condition: () -> Bool) async throws {
-            guard captureDirectory != nil || fullscreenDiagnostic else { try await self.wait(label, seconds: seconds, until: condition); return }
-            let overall = fullscreenDiagnostic ? fullscreenDeadline : captureDeadline
-            let stage = fullscreenDiagnostic ? fullscreenStageDeadline : capturePhaseDeadline
+            guard captureDirectory != nil || fullscreenDiagnostic || spaceDirectory != nil else { try await self.wait(label, seconds: seconds, until: condition); return }
+            let overall = spaceDirectory != nil ? spaceDeadline : fullscreenDiagnostic ? fullscreenDeadline : captureDeadline
+            let stage = spaceDirectory != nil ? spaceStageDeadline : fullscreenDiagnostic ? fullscreenStageDeadline : capturePhaseDeadline
             let deadline = min(min(overall, stage ?? overall), ProcessInfo.processInfo.systemUptime + seconds)
             while true {
                 guard ProcessInfo.processInfo.systemUptime < deadline else { throw Failure(message: "Timed out: " + label) }
@@ -304,6 +322,244 @@ final class PlayerSmokeCheck {
                 return eligible && seen.count >= 3 && integer(value, "completed-frames") >= (start["completed-frames"] ?? Int64.max) + 3
             }
             try checkObjects(label)
+        }
+        if let directory = spaceDirectory {
+            let sessionID = UUID().uuidString, pid = Int(ProcessInfo.processInfo.processIdentifier)
+            let panel = try await enter("Space diagnostic floating entry")
+            try await preserved(initial, "paused before owned helper Space transition")
+            let panelNumber = panel.windowNumber, mainNumber = window.windowNumber
+            var helperBinding: [String: Any]?
+            var helperReferenceBytes: Data?
+            var stage = 0, sampleIndex = 0
+            var workspaceEvents: [[String: Any]] = []
+            var stageWorkspaceCount = 0
+            var receiptBytes: [Int: Data] = [:]
+            var receiptRecords: [Int: [String: Any]] = [:]
+            var commandBytes: [Int: Data] = [:]
+            var commandIssued: [Int: Double] = [:]
+            var stageHashes: [Int: String] = [:]
+            let initialHostBounds = video.bounds, initialDrawable = metal.drawableSize, initialScale = metal.contentsScale
+            func settings() -> NSDictionary {
+                let current = state(), processing = current["processing"] as? [String: Any] ?? [:]
+                let keys = ["muted", "volume", "subtitleScale", "subtitleDelay", "nativeSubtitleColor", "tracks"]
+                var result = Dictionary(uniqueKeysWithValues: keys.map { ($0, current[$0] ?? NSNull()) })
+                let processingKeys = ["enabled", "mode", "width", "height", "strength", "colorStrength", "subtitleBrightness", "comparison"]
+                result["processing"] = Dictionary(uniqueKeysWithValues: processingKeys.map { ($0, processing[$0] ?? NSNull()) })
+                return result as NSDictionary
+            }
+            let initialSettings = settings()
+            func windowSample(_ target: NSWindow) -> [String: Any] {
+                ["number": target.windowNumber, "visible": target.isVisible, "onActiveSpace": target.isOnActiveSpace,
+                 "occlusionVisible": target.occlusionState.contains(.visible), "minimized": target.isMiniaturized,
+                 "fullscreen": target.styleMask.contains(.fullScreen),
+                 "frame": ["x": target.frame.minX, "y": target.frame.minY, "width": target.frame.width, "height": target.frame.height]]
+            }
+            func held() throws -> [String: Any] {
+                try checkCaptureDeadline(); try checkObjects("owned helper Space hold")
+                guard identity() == initial, initial["pending-frames"] == 0,
+                      state()["paused"] as? Bool == true, state()["playing"] as? Bool == false,
+                      native()["compare-ready"] as? Bool == true, native()["preview-pending"] as? Bool == false,
+                      settings().isEqual(initialSettings), video.window === panel, panel.windowNumber == panelNumber,
+                      window.windowNumber == mainNumber, floating()["active"] as? Bool == true,
+                      floating()["phase"] as? String == "floating", integer(floating(), "homeConstraintsActive") == 0,
+                      integer(floating(), "floatingConstraintsActive") == 4,
+                      !window.styleMask.contains(.fullScreen), floating()["mainFullscreenTransitioning"] as? Bool == false,
+                      video.bounds == initialHostBounds, metal.drawableSize == initialDrawable, metal.contentsScale == initialScale else {
+                    throw Failure(message: "Space transition changed paused state, settings, ownership or native geometry")
+                }
+                return ["identity": initial, "settings": initialSettings, "source": source, "core": core,
+                    "configuration": configuration, "hostIdentity": String(describing: ObjectIdentifier(video)),
+                    "hostBounds": ["x": video.bounds.minX, "y": video.bounds.minY, "width": video.bounds.width, "height": video.bounds.height],
+                    "drawableSize": ["width": metal.drawableSize.width, "height": metal.drawableSize.height], "contentsScale": metal.contentsScale,
+                    "children": children.map { String(describing: ObjectIdentifier($0)) },
+                    "layers": layers.map { String(describing: ObjectIdentifier($0)) },
+                    "mainWindow": windowSample(window), "floatingWindow": windowSample(panel),
+                    "frontmostPID": NSWorkspace.shared.frontmostApplication.map { Int($0.processIdentifier) } ?? -1,
+                    "workspaceChangeCount": workspaceEvents.count]
+            }
+            func json(_ value: [String: Any]) throws -> Data {
+                let data = try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys])
+                guard data.count <= 65_536 else { throw Failure(message: "Space protocol document exceeds 64 KiB") }
+                return data
+            }
+            func read(_ name: String) throws -> ([String: Any], Data) {
+                let url = directory.appendingPathComponent(name)
+                let values = try url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey])
+                guard values.isRegularFile == true, values.isSymbolicLink != true, (values.fileSize ?? Int.max) <= 65_536 else {
+                    throw Failure(message: "Invalid Space protocol file: " + name)
+                }
+                let data = try Data(contentsOf: url)
+                guard data.count <= 65_536, let object = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                    throw Failure(message: "Invalid Space protocol JSON: " + name)
+                }
+                return (object, data)
+            }
+            func immutable(_ value: [String: Any], _ name: String) throws -> String {
+                let data = try json(value), temporary = directory.appendingPathComponent("." + UUID().uuidString + ".tmp")
+                try data.write(to: temporary, options: .withoutOverwriting)
+                defer { try? FileManager.default.removeItem(at: temporary) }
+                try FileManager.default.linkItem(at: temporary, to: directory.appendingPathComponent(name))
+                return SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            }
+            let callbacks = FloatingSpaceSmokeCallbacks(window: window) {
+                let row: [String: Any] = ["check": "NSWorkspace.activeSpaceDidChange", "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                    "eventIndex": workspaceEvents.count, "mainWindow": windowSample(self.window),
+                    "floatingWindow": windowSample(panel), "frontmostPID": NSWorkspace.shared.frontmostApplication.map { Int($0.processIdentifier) } ?? -1]
+                workspaceEvents.append(row); self.snapshots.append(row)
+            }
+            defer { callbacks.stop() }
+            let binding: [String: Any] = ["version": 1, "sessionID": sessionID, "playerPID": pid,
+                "mainWindowID": mainNumber, "panelWindowID": panelNumber]
+            var reference = binding
+            reference["createdUptime"] = ProcessInfo.processInfo.systemUptime; reference["overallDeadlineUptime"] = spaceDeadline
+            reference["sample"] = try held()
+            let referenceSHA = try immutable(reference, "player-reference.json")
+            let originalReferenceBytes = try read("player-reference.json").1
+            spaceStageDeadline = min(spaceDeadline, ProcessInfo.processInfo.systemUptime + 15)
+            defer { spaceStageDeadline = nil }
+            func liveSample() throws -> [String: Any] {
+                let sample = try held()
+                sampleIndex += 1
+                var live = binding
+                live["playerReferenceSHA256"] = referenceSHA; live["stage"] = stage
+                live["sampleIndex"] = sampleIndex; live["observedUptime"] = ProcessInfo.processInfo.systemUptime
+                live["stageDeadlineUptime"] = spaceStageDeadline; live["sample"] = sample
+                live["workspaceEvents"] = workspaceEvents
+                try json(live).write(to: directory.appendingPathComponent("player-live.json"), options: .atomic)
+                try checkCaptureDeadline()
+                return live
+            }
+            func panelPositive() -> Bool {
+                panel.isVisible && panel.isOnActiveSpace && panel.occlusionState.contains(.visible) && !panel.isMiniaturized
+            }
+            while true {
+                try checkCaptureDeadline()
+                guard workspaceEvents.count <= 32, try read("player-reference.json").1 == originalReferenceBytes else {
+                    throw Failure(message: "Space event bound exceeded or immutable player reference changed")
+                }
+                var live = try liveSample()
+                if helperBinding == nil, FileManager.default.fileExists(atPath: directory.appendingPathComponent("helper-reference.json").path) {
+                    let (helper, bytes) = try read("helper-reference.json")
+                    guard helper["version"] as? Int == 1, helper["sessionID"] as? String == sessionID,
+                          helper["playerPID"] as? Int == pid, helper["playerReferenceSHA256"] as? String == referenceSHA,
+                          helper["bundleID"] as? String == "dev.scripttype.FloatingSpaceReference",
+                          let helperPID = helper["helperPID"] as? Int, helperPID > 0, helperPID != pid,
+                          let helperWindow = helper["helperWindowID"] as? Int, helperWindow > 0,
+                          helperWindow != mainNumber, helperWindow != panelNumber else { throw Failure(message: "Unbound helper reference") }
+                    helperBinding = Dictionary(uniqueKeysWithValues: ["version", "sessionID", "playerPID", "playerReferenceSHA256", "helperPID", "helperWindowID"].map { ($0, helper[$0]!) })
+                    helperReferenceBytes = bytes
+                }
+                if let helperBinding, let helperReferenceBytes {
+                    guard try read("helper-reference.json").1 == helperReferenceBytes else { throw Failure(message: "Immutable helper reference changed") }
+                    let helperPID = helperBinding["helperPID"] as! Int
+                    func helperFrontmost() -> Bool {
+                        NSWorkspace.shared.frontmostApplication.map { Int($0.processIdentifier) } == helperPID
+                    }
+                    // Resample after binding the helper; never prove a stage from a pre-receipt sample.
+                    live = try liveSample()
+                    if stage == 0, panelPositive(), window.isOnActiveSpace, helperFrontmost() {
+                        let nextDeadline = min(spaceDeadline, ProcessInfo.processInfo.systemUptime + 15)
+                        var proof = live; proof["helperBinding"] = helperBinding; proof["stageName"] = "helper-normal"
+                        proof["nextStageDeadlineUptime"] = nextDeadline
+                        try checkCaptureDeadline()
+                        stageHashes[0] = try immutable(proof, "player-stage-0.json")
+                        try checkCaptureDeadline()
+                        stageWorkspaceCount = workspaceEvents.count; stage = 1; spaceStageDeadline = nextDeadline
+                    }
+                    for (number, bytes) in receiptBytes {
+                        guard try read("helper-receipt-\(number).json").1 == bytes,
+                              try read("helper-command-\(number).json").1 == commandBytes[number] else {
+                            throw Failure(message: "Accepted helper receipt or command changed")
+                        }
+                    }
+                    if stage >= 1 && stage <= 3 {
+                        if stage < 3, FileManager.default.fileExists(atPath: directory.appendingPathComponent("helper-receipt-\(stage + 1).json").path) {
+                            throw Failure(message: "Helper advanced before the player witnessed the current Space")
+                        }
+                        let name = "helper-receipt-\(stage).json"
+                        if FileManager.default.fileExists(atPath: directory.appendingPathComponent(name).path) {
+                            if receiptRecords[stage] == nil {
+                                let (receipt, bytes) = try read(name)
+                                let (command, bytesOfCommand) = try read("helper-command-\(stage).json")
+                                let now = ProcessInfo.processInfo.systemUptime
+                                let action = ["enter-fullscreen", "exit-fullscreen", "finish"][stage - 1]
+                                guard helperBinding.allSatisfy({ (receipt[$0.key] as? NSObject)?.isEqual($0.value) == true }),
+                                      helperBinding.allSatisfy({ (command[$0.key] as? NSObject)?.isEqual($0.value) == true }),
+                                      receipt["sequence"] as? Int == stage, receipt["action"] as? String == action,
+                                      command["sequence"] as? Int == stage, command["action"] as? String == action,
+                                      let nonce = command["nonce"] as? String, UUID(uuidString: nonce) != nil,
+                                      receipt["nonce"] as? String == nonce,
+                                      receipt["commandSHA256"] as? String == SHA256.hash(data: bytesOfCommand).map({ String(format: "%02x", $0) }).joined(),
+                                      command["playerStageSHA256"] as? String == stageHashes[stage - 1],
+                                      receipt["completed"] as? Bool == true,
+                                      let issued = command["issuedUptime"] as? Double, issued.isFinite,
+                                      let completed = receipt["completedUptime"] as? Double, completed.isFinite,
+                                      issued <= completed, completed <= now, now - completed <= 2 else {
+                                    throw Failure(message: "Stale or unbound helper receipt")
+                                }
+                                if stage < 3 {
+                                    let expected = stage == 1 ? ["will-enter", "did-enter"] : ["will-exit", "did-exit"]
+                                    guard receipt["callbacks"] as? [String] == expected,
+                                          (receipt["workspaceCountAfter"] as? Int ?? 0) > (receipt["workspaceCountBefore"] as? Int ?? Int.max) else {
+                                        throw Failure(message: "Helper lacks actual fullscreen or Space-change callbacks")
+                                    }
+                                }
+                                receiptBytes[stage] = bytes; receiptRecords[stage] = receipt; commandBytes[stage] = bytesOfCommand
+                                commandIssued[stage] = issued
+                            }
+                            // Accepted bytes remain pinned while the post-transition state settles.
+                            // Freshness applies at initial acceptance, not on every later tick.
+                            live = try liveSample()
+                            if stage < 3, panelPositive(), helperFrontmost(), window.isOnActiveSpace == (stage == 2),
+                               workspaceEvents.count > stageWorkspaceCount,
+                               workspaceEvents.contains(where: { event in
+                                   guard let observed = event["hostSeconds"] as? Double else { return false }
+                                   return observed >= commandIssued[stage]! && observed <= (live["observedUptime"] as! Double)
+                               }) {
+                                let nextDeadline = min(spaceDeadline, ProcessInfo.processInfo.systemUptime + 15)
+                                var proof = live; proof["helperBinding"] = helperBinding
+                                proof["helperReceiptSHA256"] = SHA256.hash(data: receiptBytes[stage]!).map { String(format: "%02x", $0) }.joined()
+                                proof["stageName"] = stage == 1 ? "helper-fullscreen" : "helper-returned"
+                                proof["nextStageDeadlineUptime"] = nextDeadline
+                                try checkCaptureDeadline()
+                                stageHashes[stage] = try immutable(proof, "player-stage-\(stage).json")
+                                try checkCaptureDeadline()
+                                stageWorkspaceCount = workspaceEvents.count; stage += 1; spaceStageDeadline = nextDeadline
+                            }
+                        }
+                    }
+                    let acknowledgementPath = directory.appendingPathComponent("player-complete.json")
+                    if FileManager.default.fileExists(atPath: acknowledgementPath.path) {
+                        let (ack, _) = try read("player-complete.json")
+                        guard stage == 3, receiptBytes.count == 3, stageHashes.count == 3,
+                              helperBinding.allSatisfy({ (ack[$0.key] as? NSObject)?.isEqual($0.value) == true }),
+                              ack["verified"] as? Bool == true, ack["helperExitCode"] as? Int == 0,
+                              panelPositive(), window.isOnActiveSpace else { throw Failure(message: "Premature or invalid final Space acknowledgement") }
+                        for number in 0...2 {
+                            guard ack["playerStage\(number)SHA256"] as? String == stageHashes[number] else { throw Failure(message: "Final Space stage hash mismatch") }
+                        }
+                        for number in 1...3 {
+                            let sha = SHA256.hash(data: receiptBytes[number]!).map { String(format: "%02x", $0) }.joined()
+                            guard ack["helperReceipt\(number)SHA256"] as? String == sha else { throw Failure(message: "Final helper receipt hash mismatch") }
+                        }
+                        let finalSample = try held()
+                        guard panelPositive(), window.isOnActiveSpace else { throw Failure(message: "Space membership changed before final receipt") }
+                        try checkCaptureDeadline()
+                        var after = binding; after["playerReferenceSHA256"] = referenceSHA
+                        after["observedUptime"] = ProcessInfo.processInfo.systemUptime; after["sample"] = finalSample
+                        after["workspaceEvents"] = workspaceEvents; after["acknowledgement"] = ack
+                        after["scope"] = "Observed helper fullscreen Space roundtrip; external coordinator verifies window queries and helper exit. No pixel, arbitrary desktop-ID or physical qualification."
+                        _ = try immutable(after, "player-after.json")
+                        try checkCaptureDeadline()
+                        snapshots.append(["check": "owned helper Space roundtrip completed", "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                            "receipt": after, "state": state()])
+                        checks.append("same paused floating panel survives an observed other-application fullscreen Space roundtrip")
+                        checks.append("paused active floating host retained for external asynchronous teardown")
+                        return
+                    }
+                }
+                try await Task.sleep(for: .milliseconds(100))
+            }
         }
         if fullscreenDiagnostic {
             // Exercise real AppKit callbacks; no physical key/titlebar/Space claim.
@@ -1413,5 +1669,18 @@ private final class FloatingFullscreenSmokeCallbacks: NSObject {
     @objc private func observed(_ notification: Notification) {
         if let event = notification.userInfo?["event"] as? String { receive(event) }
     }
+    func stop() { NotificationCenter.default.removeObserver(self) }
+}
+
+@MainActor
+private final class FloatingSpaceSmokeCallbacks: NSObject {
+    private let receive: () -> Void
+    init(window: NSWindow, receive: @escaping () -> Void) {
+        self.receive = receive
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(observed(_:)),
+            name: Notification.Name("HDRPlayer.FloatingSpaceDiagnostic"), object: window)
+    }
+    @objc private func observed(_ notification: Notification) { receive() }
     func stop() { NotificationCenter.default.removeObserver(self) }
 }

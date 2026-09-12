@@ -150,6 +150,10 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         }
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didWake), name: NSWorkspace.didWakeNotification, object: nil)
+        if ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_SPACE_DIRECTORY"] != nil {
+            NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(activeSpaceChanged),
+                name: NSWorkspace.activeSpaceDidChangeNotification, object: nil)
+        }
         let args = Array(CommandLine.arguments.dropFirst())
         if let url = pendingOpenURL { player.load(url); pendingOpenURL = nil }
         else if let path = args.first(where: { !$0.hasPrefix("--") }) { player.load(URL(fileURLWithPath: path)) }
@@ -226,6 +230,12 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
             return floatingVideo?.isActive == true || floatingVideo?.state["canEnter"] as? Bool == true
         }
         return true
+    }
+    @objc private func activeSpaceChanged() {
+        guard !terminating else { return }
+        publish(player.state)
+        lifecycle?.record("NSWorkspace.activeSpaceDidChange", origin: "NSWorkspace")
+        NotificationCenter.default.post(name: Notification.Name("HDRPlayer.FloatingSpaceDiagnostic"), object: window)
     }
     @objc private func willSleep() {
         lifecycle?.record("will-sleep.before-pause")
