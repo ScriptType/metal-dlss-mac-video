@@ -87,6 +87,186 @@ uv run --frozen python scripts/review-reference-sequence.py --self-test
 
 These checks cover raw-value preservation, malformed timing, corruption, length mismatch, directory/symlink escape, nonfinite data, fixed mapping, proxy transfer handling and complete/incomplete review publication. They use synthetic CPU data and do not substitute for a real neural sequence capture.
 
+## Controlled pan and occlusion input
+
+`scripts/prepare-occlusion-reference.py` creates a synthetic working-image sequence for testing temporal behavior where source motion and visibility are known. It generates pixels on the CPU, with no media decoder, model or display. Grain and flashes are excluded so they cannot confound the pan/occlusion case.
+
+```sh
+uv run --frozen python scripts/prepare-occlusion-reference.py \
+  --output artifacts/occlusion-reference-input
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/occlusion-reference-input/manifest.json
+```
+
+The canonical sequence contains 48 frames at exact 30-fps timestamps. Default geometry is 960 × 540; `--scale 1` produces a smaller 160 × 90 input for CPU checks. Frames 0–7 are static. Frames 8–35 pan across a deterministic background while an opaque foreground object moves independently. The object is fully outside the viewport at frame 35; frames 36–47 hold the revealed background still. Direct linear BT.2020 Float32 values include dark gradients, coloured detail and HDR highlights in cd/m². These are defined working-image values, not a mastered HDR10/HLG source or a physical colour reference.
+
+At the default scale, the background moves six pixels left and the foreground moves 24 pixels right per moving frame. A current background pixel corresponds to the previous image at `x + 6`; a current foreground pixel corresponds at `x - 24`. Saved masks distinguish foreground/background ownership, valid previous-frame correspondence, object disocclusion and pixels entering at the viewport edge. A background pixel is newly revealed by the object only when its previous background-material coordinate was in bounds and occupied by the foreground. Subtracting foreground masks at the same screen coordinates would give a different, incorrect reveal region.
+
+The manifest pins the generator, recipe, exact timing, RGB payloads and auxiliary masks. Its RGB frames use the existing reference input contract; masks describe the source scene and are not supplied to the neural processor as optical flow or history hints. The first frame has no previous-frame correspondence. Static RGB/ownership can remain identical while transition-derived masks change, including between frames 35 and 36.
+
+Use a new output directory. Incomplete preparation is retained on failure; the final input manifest is published only after the payload checks complete. The default RGB input occupies 298,598,400 bytes, plus masks and metadata. A later four-view capture requires another 1,194,393,600 bytes plus metadata and fits the existing default capture allowance. Use the normal reference capture/review commands above, keeping their model/runtime provenance.
+
+The [M3 input validation](evidence/m3-occlusion-reference-input.json) accepted all 48 frames through the existing CPU preflight. An independent audit checked 240 masks and 72,014,184 corresponding Float32 components with no differences, including 19 exact static comparisons. A deliberately incorrect same-screen reveal mask was rejected with 2,088 missed pixels. Two small-scale generations reproduced their complete manifests exactly in the same pinned runtime; existing output and dangling-symlink controls preserved the prior evidence. The raw input, audit source and reports are retained locally at the paths and hashes recorded in the evidence. That report covers input preparation. The subsequent neural capture is described below.
+
+Preparation and exact source correspondence do not establish neural motion estimation, absence of ghosting, accepted temporal quality or native playback. Those require a subsequent capture and review. The natural animation and live-action references below retain their separate content and provenance.
+
+## Paired global-flash input
+
+`scripts/generate-flash-reference.py` prepares two 48-frame inputs at exact 30 fps: a static control and a matching single-frame global flash. Both reuse frame 0 of the pinned occlusion scene, including its coloured detail, dark gradients and HDR highlights. Supported scales are 1, 2 and 4 to preserve exact dyadic arithmetic. Default `--scale 4` produces 640 × 360; `--scale 1` provides 160 × 90 CPU controls. The scene and camera stay still throughout both arms.
+
+```sh
+uv run --frozen python scripts/generate-flash-reference.py \
+  --output artifacts/global-flash-input
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/global-flash-input/control/manifest.json
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/global-flash-input/flash/manifest.json
+```
+
+Only frame 24 in the flash arm differs: every source RGB component is multiplied by exactly 1.5 in Float32, without clipping. Frame 25 returns to the same original bytes as the control. All other paired frames have identical source bytes, ordinals, PTS and durations. Each arm retains 48 uniquely named RGB files and its own source/runtime/recipe pins. Separate `event-groundtruth.json` files identify the input event; they are not reset or discontinuity instructions. A complete `pair.json` is published only after both persisted inputs pass checks. Existing directories and dangling symlinks are refused; failed preparation remains available for inspection.
+
+At the default size, paired RGB inputs occupy 265,420,800 bytes. Two later four-view captures require 1,061,683,200 bytes more. Including a 2 GiB free-space reserve and 12 MiB metadata allowance across preparation and both captures requires 3,487,170,560 free bytes before starting the whole sequence. Preparation itself checks only its input payload and 4 MiB metadata requirement; a capture runner must enforce its own remaining-space and execution limits.
+
+For a matched neural observation, use a separate fresh persistent processor per arm and supply all 48 frames with the same pinned model/runtime and 512 × 288 processing, Float16 precision, strength/colour strength 1, ratio 2, white 203 nits and automatic motion. Keep normal noise/history evolution and automatic reset decisions. Compare outputs at the same frame ordinal in the control and flash captures, retaining both reset inventories and all pre-event, event and returned-input frames. Comparing a post-flash output only with a different earlier noise/history position would confound the experiment. This fixture supplies the explicit flash corpus case; it does not establish neural recovery, an ideal enhanced target, perceived flicker, a defect or source-rate performance.
+
+### Matched flash analysis
+
+```sh
+uv run --frozen python scripts/analyze-flash-reference.py \
+  --input-pair artifacts/global-flash-input/pair.json \
+  --control artifacts/global-flash-control-capture/manifest.json \
+  --flash artifacts/global-flash-flash-capture/manifest.json \
+  --output artifacts/global-flash-analysis
+```
+
+The analysis first requires both complete 48-frame captures, their original input pair, exact source/timing/model/runtime pairing and all four finite, hashed views per frame. All four views at each pre-flash ordinal 0–23 must match between arms before post-flash interpretation is admitted. A failure is retained without selecting only matching frames. Automatic history-reset flags are observations, not prescribed results.
+
+For each RGB component at the same pixel and ordinal, define control residual `R_control = E_control − O_control`, flash residual `R_flash = E_flash − O_flash`, and paired residual difference `D = R_flash − R_control`. Each arm's original is subtracted before comparing enhancement, including frame 24 where the flash original is deliberately brighter. Once original pixels return to their matched values at frame 25, `D` also equals the difference between enhanced outputs. The control retains its own natural temporal variation.
+
+Report whole-frame signed mean, mean absolute, RMS and maximum absolute component values in nits for all 48 ordinals. Summaries retain the pre-event interval 0–23, event frame 24 and returned-input interval 25–47 separately. Component RMS weights red, green and blue equally; it is not luminance or a perceptual score. Any recovery zoom supplements the full series without removing the event. A later output or the control is an empirical comparison, not an ideal enhanced target or an accepted recovery threshold.
+
+### M3 paired flash observation
+
+The [paired capture evidence](evidence/m3-global-flash.json) retains both complete 48-frame runs at 640 × 360 source/reference resolution and 512 × 288 neural processing. All 384 raw views were finite and matched their recorded hashes; all 96 original views matched the prepared source bytes. The 96 pre-event view pairs were byte-identical. Both runs reported a history reset only at frame 0, with no reset at the flash. Maximum identity-minus-original component errors were 0.000003814697265625 nit for control and 0.0000152587890625 nit for flash.
+
+The [complete scalar CSV](evidence/m3-global-flash.csv) preserves 144 residual records across all 48 ordinals. Independent saved-pixel recomputation matched every per-frame metric and all pooled mean/RMS values exactly. Three CPU controls separately exercise known paired residuals and rejection of resealed pre-event or source-event mismatches; their fabricated captures are not model evidence.
+
+| Interval | Control E−O RMS (nit) | Flash E−O RMS (nit) | Paired D RMS (nit) |
+| --- | ---: | ---: | ---: |
+| Pre-event 0–23 | 40.452169 | 40.452169 | 0 |
+| Event 24 | 39.838066 | 49.686404 | 10.331803 |
+| Returned input 25–47 | 41.034586 | 41.148813 | 3.128464 |
+
+These interval values pool squared component residuals before taking the square root. At frame 24, maximum absolute paired D was 722.585449 nit. The returned-input series was nonmonotonic: its largest frame RMS was 7.118499 nit at frame 25, and frame 47 was 2.241336 nit. This records a response relative to the matched evolving control; it does not isolate individual noise/history contributions or establish a perceptual, defect, recovery or throughput threshold.
+
+![All 48 frames of control and flash RGB residual RMS, with the event at frame 24 and the returned-input interval at frames 25–47.](evidence/m3-global-flash.png)
+
+The [standalone PDF](evidence/m3-global-flash.pdf) contains the same complete series. The figure uses equal-weight RGB component RMS throughout, with no frame filtering or luminance conversion.
+
+## Synthetic grain-like contrast input
+
+`scripts/generate-grain-reference.py` prepares one 48-frame input at exact 30 fps using the same static canonical scene as the flash control. Frames 0–23 and 36–47 retain the clean scene bytes. Frames 24–35 apply a new deterministic sign field at each ordinal: every 2 × 2 source-pixel cell selects a nominal achromatic multiplier of `31/32` or `33/32`. The source operation is Float32 multiplication without clipping. Supported scales are 1, 2 and 4; default scale 4 is 640 × 360. This is a synthetic grain-like contrast stimulus, not a natural film-grain model.
+
+```sh
+uv run --frozen python scripts/generate-grain-reference.py \
+  --output artifacts/grain-input
+.build/debug/hdr-benchmark --reference-sequence-validate \
+  artifacts/grain-input/manifest.json
+```
+
+For each active ordinal, the field concatenates SHA256 digests of the ASCII seed `hdr-grain-reference-v1`, followed by the ordinal and block counter as UInt32 little-endian values. Digest bytes are read least-significant bit first into row-major cells; bits 0 and 1 select signs −1 and +1. The saved source-sized Int8 fields, source RGB files, event timing and generator/environment pins make that construction inspectable. Signs are not rebalanced: each realized mean is recorded, with no exact zero-mean claim. The two factors are exactly representable, while any Float32 product rounding is measured and retained. Event metadata does not force a history reset or input discontinuity.
+
+At 640 × 360 the input contains 132,710,400 RGB bytes and 2,764,800 sign-field bytes, plus metadata. A four-view 48-frame capture adds 530,841,600 bytes. The generator requires a fresh output path, including rejection of dangling symlinks, and checks space for its payloads plus 4 MiB metadata. A capture runner must separately enforce its runtime and remaining-space limits.
+
+Compare the grain capture with the existing clean control from the paired flash fixture, using all 48 matching ordinals and a fresh persistent processor for each arm. Require the same source geometry, model/runtime and settings: 512 × 288 neural processing, Float16, strength/colour strength 1, ratio 2, white 203 nits, temporal processing and automatic motion. Keep normal noise/history progression and automatic reset decisions. Before interpretation, all four view pairs at ordinals 0–23 must be byte-identical; a failure rejects the comparison rather than shortening the prefix. Capture both arms from the same frozen runtime checkout: the recorded identity includes repository revision, status and diff hash as well as binary/source hashes. Input generation and analysis can run from a separate checkout. A retained control with different runtime metadata requires a separately matched capture; the analyzer does not discard that provenance.
+
+### Grain input, output and residual analysis
+
+Run the analysis after both complete captures are available:
+
+```sh
+uv run --frozen python scripts/analyze-grain-reference.py \
+  --grain-input artifacts/grain-input/manifest.json \
+  --control-input artifacts/global-flash-input/control/manifest.json \
+  --control artifacts/global-flash-control-capture/manifest.json \
+  --grain artifacts/grain-capture/manifest.json \
+  --output artifacts/grain-analysis
+```
+
+The analyzer enforces the canonical experiment settings independently of recipe metadata, then verifies both complete captures, exact input/timing/runtime pairing, all source and four-view payload hashes, and finite components. It independently reconstructs the SHA256 sign stream, checks the saved 2 × 2 fields and Float32 source products, and verifies clean source bytes outside frames 24–35. Define the following fields at the same source pixel and ordinal, converting RGB components to Float64 before subtraction:
+
+| Field | Definition | Observation |
+| --- | --- | --- |
+| C | E_control − O_control | Control enhancement residual |
+| R | E_grain − O_grain | Grain-arm enhancement residual |
+| G | O_grain − O_control | Actual source-input difference |
+| Q | E_grain − E_control | Paired enhanced-output difference |
+| D | R − C = Q − G | Paired residual difference |
+
+Whole-frame signed mean, mean absolute, RMS and maximum absolute component values retain all 48 ordinals. Source and output differences remain separate so the deliberately added contrast is not mistaken for an enhancement residual. Once the clean input returns at frame 36, G is zero and D equals Q. No output/input gain ratio or grain-retention threshold is prescribed.
+
+Adjacent observations retain all 47 pairs using `ΔG_i = G_i − G_(i−1)`, and likewise ΔQ and ΔD. These are differences of component arrays before aggregation, not differences of frame RMS values. Summaries keep prefix pairs 1–23, onset pair 23→24, active interior pairs 25–35, removal pair 35→36 and returned-input interior pairs 37–47 separate. Pooled RMS comes from total squared components and component counts, not mean frame RMS. A successful analysis produces a 381-row CSV with 240 frame records and 141 adjacent records.
+
+All metrics weight RGB components equally; they are not luminance or perceptual scores. Matched-control differences retain the control's natural temporal variation and do not independently attribute results to noise, history, estimated flow or reconstruction. Public reset/model/motion-request fields remain observations, without implying a selected flow backend, reset cause, visual acceptance or source-rate qualification.
+
+The 640 × 360 preparation passes the independent saved-input audit and benchmark CPU preflight. Analyzer CPU controls use fabricated captures to check known fields, pooled and adjacent metrics, and rejection of resealed prefix, sign-field and capture-setting mismatches. Run them with `uv run --frozen python scripts/test_grain_reference_analysis.py`; they do not execute a model.
+
+### M3 grain observation
+
+The [M3 evidence](evidence/m3-grain-reference.json) compares one new 48-frame grain capture with the retained static flash control. Both use the same frozen production runtime/model, 640 × 360 source/output and 512 × 288 processing. All 384 views pass finite-value and integrity checks, all 96 pre-event view pairs match exactly, and all 351 frozen files remain unchanged. Both runs report a history reset only at frame 0.
+
+Pooled equal-weight RGB component RMS, in nits:
+
+| Interval | Control residual C | Grain residual R | Input difference G | Output difference Q | Residual difference D |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Active input, 24–35 | 41.616915 | 25.549125 | 4.092336 | 18.163264 | 17.955842 |
+| Returned clean input, 36–47 | 40.344058 | 39.379273 | 0 | 4.429987 | 4.429987 |
+
+After the clean input returns, G is zero and D equals Q exactly. D has RMS 11.702154 nits at frame 36 and 1.214953 at frame 47. It is not monotonic: frame 44 is 2.368609 nits and frame 45 is 5.205892 nits. Lower R than C during the active interval measures distance from each arm's own original; it establishes neither an ideal enhancement target nor a quality improvement. The paired differences do not isolate noise, history, motion estimation or reconstruction as their sole cause.
+
+The independent raw audit and scalar comparison reproduce all 240 frame and 141 adjacent metric records, all phase pools and all 9,144 CSV cells exactly. The [complete CSV](evidence/m3-grain-reference.csv) and figure retain all 48 frames and 47 adjacent pairs, including onset at 24 and removal at 36.
+
+![All frame and adjacent RGB component RMS observations for the synthetic grain input](evidence/m3-grain-reference.png)
+
+The [standalone PDF](evidence/m3-grain-reference.pdf) contains the same four panels. These measurements define no perceptual threshold, accepted recovery deadline or natural film-grain result.
+
+The new capture completed in 39.252 seconds, with Battery Power recorded at 99% before and after. The historical control ran on AC Power. Power conditions were not controlled as a matched pair, and diagnostic readback/I/O is included; the durations and RSS observations are not compared as performance results. An initial AC-only attempt refused before launch. Its failure, the unused second freeze and the explicit recorded-power protocol amendment are retained under `artifacts/grain-reference-1/`. Exactly one grain model process ran. Native playback, physical HDR, source-rate Live and M5 acceptance remain separate requirements.
+
+## Motion-aligned occlusion analysis
+
+The controlled source has exact integer motion. After capturing its complete 48 frames, compare neural residuals at the corresponding material coordinates:
+
+```sh
+uv run --frozen python scripts/analyze-occlusion-reference.py \
+  --input artifacts/occlusion-reference-input/manifest.json \
+  --capture artifacts/occlusion-reference-capture/manifest.json \
+  --output artifacts/occlusion-reference-analysis
+```
+
+The analysis requires the original prepared directory because its mask sidecars are referenced by the capture's input-manifest copy but are not copied into the capture. It checks complete four-view pairing, input identity, timing, saved masks and exact original-pixel correspondence. Proxy pixels are encoded sRGB and do not enter the nit-domain residual calculations.
+
+For background and foreground, it measures the change in enhanced-minus-original and identity-minus-original residuals at the same visible surface in adjacent frames. Pixels must be inside both viewports and visible as the same surface in both images. Newly revealed and entering-viewport pixels have no visible predecessor; their temporal measurements are unavailable. Empty regions are also unavailable, rather than zero error.
+
+Reveal cohorts follow fixed background world coordinates at ages 0, 1, 2, 4 and 8, and at final frame 47 where still visible. These compare each later residual with its value when the pixel was revealed. Final-frame measurements describe later context; they do not supply an ideal enhanced target. Static intervals and public history-reset flags remain in the results.
+
+The report and CSV contain signed mean, mean absolute, RMS and maximum absolute RGB-component residuals in nits. These describe changes in enhancement; intended enhancement can also produce nonzero residuals. They do not classify ghosting, establish perceived flicker or impose an accepted quality threshold. Use the raw views and fixed-mapping visual review alongside these measurements.
+
+## M3 controlled occlusion observation
+
+The [48-frame neural capture and analysis](evidence/m3-occlusion-temporal.json) uses the canonical 960 × 540 input with 512 × 288 processing, automatic motion requested, strength and colour strength 1, ratio 2 and reference white 203 nits. All 192 views pass complete-capture integrity and finite-value checks; all 48 originals match the inputs exactly. Identity reconstruction differs by at most 0.000003815 nit per component. Only cold-start frame 0 reports a history reset.
+
+Residual variation remains after matching the same visible source material. The largest background temporal RMS is 15.1426 nits at frames 11→12; the largest background component change is 964.342 nits at 12→13. Foreground temporal RMS peaks at 2.18575 nits at 16→17. During the final static interval, frames 45→46 have identical original pixels yet an 8.38175-nit RMS change in enhancement residual. These are equal-weight RGB-component measurements, not luminance or perceived-flicker scores.
+
+The 10,440 background pixels revealed at frame 21 show a 51.6538-nit RMS residual change two frames later, while their original pixels remain bit-identical. The later frame is an empirical context comparison; it does not define ideal enhancement or isolate a cause. All 384 regional/residual rows and 168 reveal-cohort observations are retained, including cold history, static intervals and empty regions.
+
+![Motion-aligned residual trajectories and all reveal cohorts](evidence/m3-occlusion-temporal.png)
+
+[Regional CSV](evidence/m3-occlusion-temporal.csv), [cohort CSV](evidence/m3-occlusion-cohorts.csv), [standalone PDF](evidence/m3-occlusion-temporal.pdf). Five CPU tests use explicitly fabricated captures: material-attached residuals yield exact zero aligned change despite nonzero fixed-screen variation; unit frame drift yields exact unit aligned change and cohort changes equal to age. Resealed mask corruption, exact-time mismatches and existing-output controls also pass. These tests are included in CI.
+
+The capture process exits successfully in 77.192 seconds, with peak sampled RSS 639,041,536 bytes and at least 6,602,280,960 free disk bytes; both power readings show AC. All 311 frozen input/runtime/source pins remain unchanged. The original wrapper's final model check reports failure because it compared absolute and relative directory paths literally. That failed report is preserved. A separate audit verifies the paths resolve to the same directory, both model hashes match and the completed capture passes the remaining checks; no capture was repeated or rewritten. Process duration includes preflight, inference, readback and writes and differs from the manifest's later timing origin.
+
+The observations identify temporal residual variation for further investigation. They do not establish its cause, acceptable temporal quality, absence of ghosting, source-rate Live, physical HDR or native playback. The paired observation above extends flash coverage; grain and natural-scene quality retain their separate requirements. Raw views and the fixed SDR review remain at `artifacts/temporal-occlusion-reference-1/capture-1` and `review-1` respectively.
+
 ## M3 natural-sequence observation
 
 The [48-frame capture](evidence/m3-temporal-reference.json) processed Cosmos Laundromat source frames 10000–10047 at 320 × 134, using 160 × 96 neural processing and the declared 2997/125 derivative frame rate. All 48 originals matched the input Float32 bytes exactly, and every view remained finite. Identity reconstruction differed by at most 0.0009765625 nit. The process completed in 10.225 seconds, including diagnostic work; this is not a playback benchmark.
@@ -190,3 +370,41 @@ At frames 1526→1527, aligned original mean luminance falls by 0.039–0.041 ni
 Two independent fresh-frame runs at 1526 and 1527 use the same benchmark binary, model, source payloads and processing settings as the continuous capture. Original, proxy and identity views match byte for byte; enhanced views differ. Across the whole historical wall region, the adjacent enhancement-residual change is −1.999 nits fresh versus −0.926 nit continuous. Fresh processing changes both history and the noise index, so it isolates neither mechanism. Both processes exit cleanly and all frozen files remain unchanged.
 
 The tested translations do not explain the extra variation. The smooth wall, uncertain local motion/parallax and absence of captured internal model output, flow and confidence prevent a sole-cause diagnosis. These measurements establish neither a reconstruction/model defect nor acceptable flicker. Broader temporal content, full-resolution quality and physical HDR inspection remain open; no runtime algorithm or perceptual threshold changes follow from this audit.
+
+## Captured noise and history diagnostic
+
+The [controlled-state evidence](evidence/m3-occlusion-state.json) investigates the static occlusion pair 45→46 with an opt-in diagnostic published in [MLX commit `7529fd4`](https://github.com/ScriptType/MLX-DLSS/commit/7529fd460bfc90624205a8cec4e2cc6d88a7be7a). It retains the canonical 960 × 540 source, 512 × 288 logical processing, padded 512 × 320 network extent, Float16 precision and automatic motion request. Strength and colour strength remain 1, ratio 2 and reference white 203 nits. The evidence identifies the executed source and binary hashes separately from the source publication commit.
+
+One unchanged traversal processes all 48 frames before any intervention. The harness compares all 192 full original/proxy/identity/enhanced views byte for byte with the retained capture, including exact timing, generation and reset inventory. Only frame 0 resets history. Any mismatch stops the diagnostic before the four replays and retains the failing output. Captured private arrays from frames 45 and 46 are exported only after that baseline completes, preserving their actual dtype, shape and bytes.
+
+The four noncommitting replays keep frame-45 colour, motion, confidence, depth and full-resolution proxy fixed. They combine the naturally reached noise indices 45 and 46 with incoming histories H44 and H45: the postprocessed histories produced by frames 44 and 45 respectively. The original combination must reproduce captured features, model heads, composed model output and enhanced HDR bytes exactly before other combinations proceed. Each replay must leave the retained temporal state unchanged. The ordinary HDR codec resolves every replay back to the full source dimensions.
+
+For this captured static pair, the actual frame-45 and frame-46 originals, colour, motion, confidence, depth and proxy are also byte-identical; that equality is observed rather than assumed. The [complete scalar CSV](evidence/m3-occlusion-state.csv) retains the comparisons. The table reports whole-frame, equal-weight RGB-component RMS differences in nits; these are neither luminance scores nor perceptual thresholds.
+
+| Noise index | Incoming history | RMS versus actual 45 | RMS versus actual 46 |
+| --- | --- | ---: | ---: |
+| 45 | H44 | 0 | 8.381745 |
+| 46 | H44 | 10.750322 | 2.876358 |
+| 45 | H45 | 8.770974 | 2.043750 |
+| 46 | H45 | 8.381745 | 0 |
+
+Using both next-frame values reproduces every captured frame-46 tensor and enhanced output byte exactly. Changing either value alone produces a different result. Their effects are not additive: the joint change minus the sum of the two single changes has an 11.258242-nit component RMS. This is a fixed-input intervention on one static pair, not a percentage attribution of noise/history contributions or an explanation of all earlier disocclusion variation. No noise, history, reset or playback policy is tuned, and no temporal-quality, source-rate or physical-HDR acceptance follows.
+
+The run completes 52 model evaluations and preserves all 706 wrapper pins. The independent CPU audit verifies all 132 saved state/replay payloads at their native dtype and recomputes the scalar comparisons. For the unchanged 48-frame baseline, it verifies the harness's equality records against independently rehashed historical references; matching full baseline outputs are not duplicated. Raw tensors, model files and executable binaries remain local rather than part of the public scalar evidence.
+
+### Reproduction requirements
+
+Use a separate checkout of the diagnostic commit, the pinned model package, and both retained directories: `artifacts/temporal-occlusion-reference-1/input` and `capture-1`. Their manifest SHA-256 values are `08790dec58ec181e927072400d9defcffd6b974b26e51b816d9558a2cdbb6262` and `fa1747a8432fb229e7890dea060f7486b7e679909411500bca7cc73e49f8c1fa`. A newly generated or differently captured sequence does not satisfy this exact reproduction gate. The public scalar files alone are insufficient.
+
+The diagnostic APIs and test compile only with `MLXDLSS_TEMPORAL_DIAGNOSTICS`. Build the release test bundle with the recorded dependency and Metal-library pins:
+
+```sh
+source scripts/env.sh
+task_checkout="$PWD/artifacts/occlusion-state-checkout"
+swift build --package-path "$task_checkout" -c release --build-tests --jobs 2 \
+  -Xswiftc -DMLXDLSS_TEMPORAL_DIAGNOSTICS -Xswiftc -enable-testing
+```
+
+Select only `DLSSMediaTests.NativeHDRTemporalStateReplayTests/testCapturedOcclusionStateReplay` through `xctest -XCTest`. Supply all four explicit environment paths: `MLXDLSS_TEMPORAL_STATE_INPUT` and `MLXDLSS_TEMPORAL_STATE_CAPTURE` name the manifests, `MLXDLSS_TEMPORAL_STATE_MODEL` names the model directory, and `MLXDLSS_TEMPORAL_STATE_OUTPUT` names a new output directory. With no opt-in paths the selected test skips; incomplete opt-in is an error. The process sets a 256 MiB soft MLX cache policy before model initialization. This is not a hard memory ceiling or a parent-process cache restoration.
+
+The retained `artifacts/occlusion-state-diagnostic-1/run-watched.py` and `wrapper-config.json`, pinned by the evidence, freeze the successful build and inputs before launching that single test. They allow only the five inherited environment keys `DEVELOPER_DIR`, `PATH`, `HOME`, `TMPDIR`, `LANG`, plus the four explicit paths. The wrapper requires external power and samples process-tree RSS/free disk each second, with a 4 GiB RSS guard, 2 GiB free-space reserve and 300/180/90-second total/first-progress/subsequent-progress deadlines. It preserves failed or interrupted output without retry. Reproduction needs a newly named output/report set and a reviewed freeze of the intended build; existing evidence is never overwritten. These watchdog limits protect the diagnostic and do not measure playback performance.

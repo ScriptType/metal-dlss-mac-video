@@ -1,0 +1,831 @@
+{
+  "acceptanceCriteriaClosed": [],
+  "analysis": {
+    "allAnalysisPinsUnchanged": true,
+    "captureReport": {
+      "bytes": 165478,
+      "path": "artifacts/temporal-occlusion-reference-1/capture-1/manifest.json",
+      "sha256": "fa1747a8432fb229e7890dea060f7486b7e679909411500bca7cc73e49f8c1fa"
+    },
+    "cohortDefinition": "Newly revealed background world coordinates at ages0/1/2/4/8 and frame47. E-O and change from reveal are empirical later-context observations, not an ideal target or isolated history/noise effect.",
+    "execution": {
+      "bytes": 907,
+      "path": "artifacts/temporal-occlusion-reference-1/analysis-run.json",
+      "sha256": "53c3a9093b678f6b3766d05e4523824b7c1d72f304dc0013c1f254648c104dec"
+    },
+    "executionResult": {
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/temporal-occlusion-analysis-checkout/scripts/analyze-occlusion-reference.py",
+        "--input",
+        "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/temporal-occlusion-reference-1/input/manifest.json",
+        "--capture",
+        "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/temporal-occlusion-reference-1/capture-1/manifest.json",
+        "--output",
+        "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/artifacts/temporal-occlusion-reference-1/analysis-1"
+      ],
+      "exitCode": 0,
+      "scope": "CPU analysis of the completed real neural capture; no new model/GPU work",
+      "scriptSHA256": "5c17dea4a49b97d9a882679a5f8d3a56c0bc25cfade1f6d7c4455dfccb52bbae",
+      "wallSeconds": 10.35623100004159
+    },
+    "frames": 48,
+    "largestCohortRMSChange": {
+      "ageFrames": 2,
+      "changeFromReveal": {
+        "maximumAbsoluteNits": 894.31640625,
+        "meanAbsoluteNits": 13.86986343006902,
+        "rmsNits": 51.6538098652404,
+        "signedMeanNits": 13.580415633077214
+      },
+      "cohortPixels": 10440,
+      "enhancedMinusOriginal": {
+        "maximumAbsoluteNits": 1860.3289184570312,
+        "meanAbsoluteNits": 52.8950302469129,
+        "rmsNits": 155.45967973162425,
+        "signedMeanNits": -51.826974660664376
+      },
+      "finalObservation": false,
+      "observedSourceFrameIndex": 23,
+      "originalCorrespondenceBitExact": true,
+      "reason": null,
+      "revealSourceFrameIndex": 21,
+      "supportPixels": 10440
+    },
+    "limitations": [
+      "Empty regions and missing visible predecessors are null, never zero error.",
+      "Only source geometry establishes correspondence; no estimated flow or interpolation is used.",
+      "historyReset/usedModel/motionRequested are declared capture fields, not an independently established backend or reset cause.",
+      "All48 frames including preroll are reported. No phase/reset samples are excluded from metrics.",
+      "One previous full frame plus compact reveal coordinates/original bits/residuals is retained; no full sequence arrays."
+    ],
+    "maximumBackgroundAlignedComponent": {
+      "currentFrame": 13,
+      "metrics": {
+        "maximumAbsoluteNits": 964.341552734375,
+        "meanAbsoluteNits": 0.5875832564786218,
+        "rmsNits": 8.1366468554159,
+        "signedMeanNits": -0.2466558173712603
+      },
+      "previousFrame": 12,
+      "supportPixels": 421200
+    },
+    "maximumBackgroundAlignedRMS": {
+      "currentFrame": 12,
+      "metrics": {
+        "maximumAbsoluteNits": 627.4346923828125,
+        "meanAbsoluteNits": 1.3674707254825156,
+        "rmsNits": 15.142631920581321,
+        "signedMeanNits": 1.1431830815861537
+      },
+      "previousFrame": 11,
+      "supportPixels": 421200
+    },
+    "maximumForegroundAlignedRMS": {
+      "currentFrame": 17,
+      "metrics": {
+        "maximumAbsoluteNits": 27.911255836486816,
+        "meanAbsoluteNits": 1.3059936178479425,
+        "rmsNits": 2.1857547150576178,
+        "signedMeanNits": -0.8519435626256017
+      },
+      "previousFrame": 16,
+      "supportPixels": 83520
+    },
+    "metricDefinition": "All three RGB components, equal weight, Float64 subtraction/accumulation. Temporal=(E-O)current-(E-O)previous at exact same-material coordinates; I-O analogous.",
+    "regionalResidualRows": 384,
+    "report": {
+      "bytes": 839329,
+      "path": "artifacts/temporal-occlusion-reference-1/analysis-1/report.json",
+      "sha256": "04789042300376288819a77f2af051126eb2132fa904cb56b774bdc4b89f2912"
+    },
+    "revealCohortObservations": 168,
+    "source": {
+      "bytes": 17712,
+      "path": "artifacts/temporal-occlusion-analysis-checkout/scripts/analyze-occlusion-reference.py",
+      "sha256": "5c17dea4a49b97d9a882679a5f8d3a56c0bc25cfade1f6d7c4455dfccb52bbae"
+    },
+    "static45to46": {
+      "enhancedMinusOriginal": {
+        "maximumAbsoluteNits": 275.5301513671875,
+        "meanAbsoluteNits": 0.6997588416960829,
+        "rmsNits": 8.381745200364385,
+        "signedMeanNits": -0.5945667782478711
+      },
+      "identityMinusOriginal": {
+        "maximumAbsoluteNits": 0.0,
+        "meanAbsoluteNits": 0.0,
+        "rmsNits": 0.0,
+        "signedMeanNits": 0.0
+      },
+      "originalCorrespondenceBitExact": true,
+      "reason": null,
+      "supportPixels": 518400
+    },
+    "tools": {
+      "numpy": "2.5.3",
+      "python": "3.12.14"
+    }
+  },
+  "captureValidation": {
+    "allViewsFinite": true,
+    "auditSource": {
+      "bytes": 6931,
+      "path": "artifacts/temporal-occlusion-reference-1/audit-capture.py",
+      "sha256": "34cd72fc264bdb37f16353f893c33bc4d01754f4b4cc050387f1a18194ba28db"
+    },
+    "auditWallSeconds": 0.6010558328125626,
+    "captureManifest": {
+      "bytes": 165478,
+      "path": "artifacts/temporal-occlusion-reference-1/capture-1/manifest.json",
+      "sha256": "fa1747a8432fb229e7890dea060f7486b7e679909411500bca7cc73e49f8c1fa"
+    },
+    "captureProcessExitCode": 0,
+    "captureProcessWallSeconds": 77.19247387512587,
+    "capturedOriginalsMatchInput": true,
+    "completeFrames": 48,
+    "frozenFilesUnchanged": true,
+    "frozenPinsRechecked": 311,
+    "historyResetOrdinals": [
+      0
+    ],
+    "inputManifest": {
+      "bytes": 120572,
+      "path": "artifacts/temporal-occlusion-reference-1/input/manifest.json",
+      "sha256": "08790dec58ec181e927072400d9defcffd6b974b26e51b816d9558a2cdbb6262"
+    },
+    "limitations": [
+      "Recorded public reset flags do not reveal cut scores, actual automatic flow backend, or private noise index.",
+      "Source is synthetic linear BT.2020 working pixels, not decoded HDR10/HLG media.",
+      "Mapped previews and fixed-screen residual statistics are inspection aids, not accepted temporal quality.",
+      "Process wall includes preflight, inference, readback and file writes; manifest elapsed has a later origin. Neither is playback throughput.",
+      "No physical display, native playback, audio/video timing, sustained Live or M5 result is established."
+    ],
+    "manifestElapsedSeconds": 66.851626458,
+    "maximumIdentityComponentDifferenceNits": 3.814697265625e-06,
+    "maximumSampledTreeRSSBytes": 639041536,
+    "minimumSampledFreeBytes": 6602280960,
+    "modelFileHashes": {
+      "manifest.json": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32",
+      "weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+    },
+    "passed": true,
+    "powerAfter": {
+      "batt": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=22741091)\t12%; charging; 1:50 remaining present: true\n",
+      "therm": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n"
+    },
+    "powerBefore": {
+      "batt": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=22741091)\t9%; charging; 1:53 remaining present: true\n",
+      "therm": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n"
+    },
+    "proxyBoundedEncodedSRGB": true,
+    "rawPayloadBytes": 1194393600,
+    "retainedWrapperFailure": {
+      "captureRepeated": false,
+      "cause": "The wrapper compared full model dictionaries literally: the capture stored an absolute path and expected metadata used a repository-relative path.",
+      "error": "ValueError('Captured model differs')",
+      "originalReportRewritten": false,
+      "report": {
+        "bytes": 79613,
+        "path": "artifacts/temporal-occlusion-reference-1/capture-run.json",
+        "sha256": "7fd9b38e16f612c071d9376cea7c1ecfecd7a34e92ce1f272e5cb206426306f3"
+      },
+      "validation": "Both paths resolve to the same existing directory; both model-file hashes match the pre-capture pins. Remaining post-capture checks were completed here without rerunning or rewriting the original capture/wrapper.",
+      "wrapper": {
+        "bytes": 8373,
+        "path": "artifacts/temporal-occlusion-reference-1/run-capture.py",
+        "sha256": "b70ab68e0b1d88d028941df7a49d3ecb6b6797302c71d29a96d6b7c9ba406dae"
+      }
+    },
+    "reviewExecution": {
+      "bytes": 598,
+      "path": "artifacts/temporal-occlusion-reference-1/review-run.json",
+      "sha256": "919a1b048d46c2ba0a8edd636239b128df7cfda3dd48aa8747bd2d2eae450bcd"
+    },
+    "reviewReport": {
+      "bytes": 138196,
+      "path": "artifacts/temporal-occlusion-reference-1/review-1/review.json",
+      "sha256": "58b0f58638e4f5146de295ff4062f018e9b1f4cdce6fb021062725ab5edfa10d"
+    },
+    "schemaVersion": 1,
+    "scope": "Completed four-view neural capture integrity and identity validation plus CPU mapped review; no perceptual or physical qualification.",
+    "settings": {
+      "colourStrength": 1,
+      "maximumLuminanceRatio": 2,
+      "mlxCacheBytes": 268435456,
+      "modelInputRange": "bounded-sRGB-after-resample",
+      "motionRequested": "automatic",
+      "precision": "float16",
+      "processingHeight": 288,
+      "processingWidth": 512,
+      "referenceWhiteNits": 203,
+      "sceneCutThreshold": 0.3,
+      "strength": 1,
+      "temporal": true
+    },
+    "validatedViews": 192
+  },
+  "cpuTests": {
+    "CI": "The workflow now invokes this test file in the frozen Python environment; this record contains the local CPU results.",
+    "elapsedSeconds": 2.12828675,
+    "errors": [],
+    "execution": {
+      "bytes": 3808,
+      "path": "artifacts/temporal-occlusion-reference-1/analysis-cpu-controls-1/execution.json",
+      "sha256": "6d3085c98e8439519eef080a12f287d3e3554a67241df7ae87baf8cc14ab3fa0"
+    },
+    "failures": [],
+    "observations": [
+      {
+        "case": "existing/dangling output",
+        "originalEntryPreserved": true,
+        "rejectedBeforeInputRead": 2
+      },
+      {
+        "captureWasFabricated": true,
+        "case": "unit temporal drift",
+        "expectedAlignedDelta": 1,
+        "expectedRevealDelta": "observed index minus reveal index",
+        "revealObservations": 168,
+        "validAlignedRegions": 81
+      },
+      {
+        "alignedMaximumError": 0,
+        "captureWasFabricated": true,
+        "case": "material-attached residual",
+        "fixedScreenRMS": 3.35186162711401,
+        "revealObservations": 168,
+        "validAlignedRegions": 81
+      },
+      {
+        "allChangesInTemporaryFabricatedFixture": true,
+        "case": "updated-hash wrong reveal",
+        "error": "ValueError: Geometric mask/partition mismatch at8",
+        "modifiedPixels": 1,
+        "rejected": true
+      },
+      {
+        "case": "source/capture exact-time mismatch",
+        "rejected": true
+      }
+    ],
+    "passed": true,
+    "report": {
+      "bytes": 4921,
+      "path": "artifacts/temporal-occlusion-reference-1/analysis-cpu-controls-1/report.json",
+      "sha256": "a12f023fbe35e4d63718444c5a0d97f6dae8f0d0c828fe72bdc4d7225e1195b9"
+    },
+    "scope": "Generated synthetic inputs and fabricated four-view captures only; no model, GPU, native player, or window executed.",
+    "skipped": [],
+    "source": {
+      "bytes": 17649,
+      "path": "artifacts/temporal-occlusion-analysis-checkout/scripts/test_occlusion_reference_analysis.py",
+      "sha256": "ff48e212b72f56a1756b3a33ab9151f32e73fa8f0d25da01b409c9cb6f538223"
+    },
+    "testsRun": 5
+  },
+  "independentRawAudit": {
+    "allConsumedFilesUnchanged": true,
+    "cohorts": [
+      {
+        "ageFrames": 2,
+        "changeFromReveal": {
+          "maximumAbsoluteNits": 894.31640625,
+          "meanAbsoluteNits": 13.86986343006902,
+          "rmsNits": 51.6538098652404,
+          "signedMeanNits": 13.580415633077214
+        },
+        "cohortPixels": 10440,
+        "enhancedMinusOriginal": {
+          "maximumAbsoluteNits": 1860.3289184570312,
+          "meanAbsoluteNits": 52.8950302469129,
+          "rmsNits": 155.45967973162425,
+          "signedMeanNits": -51.826974660664376
+        },
+        "maximumAbsoluteChangeLocation": {
+          "channel": "B",
+          "currentEnhancedRGB": [
+            342.4872131347656,
+            1281.7039794921875,
+            2134.9736328125
+          ],
+          "currentOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "currentXY": [
+            611,
+            350
+          ],
+          "previousOrRevealEnhancedRGB": [
+            198.3661346435547,
+            739.5309448242188,
+            1240.6572265625
+          ],
+          "previousOrRevealOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "previousOrRevealXY": [
+            623,
+            350
+          ],
+          "signedResidualChangeNits": 894.31640625
+        },
+        "observedSourceFrameIndex": 23,
+        "originalCorrespondenceBitExact": true,
+        "revealSourceFrameIndex": 21,
+        "supportPixels": 10440
+      }
+    ],
+    "execution": {
+      "bytes": 2089,
+      "path": "artifacts/temporal-occlusion-reference-1/numeric-audit-1/execution.json",
+      "sha256": "e19bb899e9fad16637dc95482617169c8773784bc69048fb92930071d4af7945"
+    },
+    "limitations": [
+      "Selected extrema concern only the nine raw frames replayed here, not all48 capture frames.",
+      "Temporal metrics aggregate all RGB components equally in nits; they are not luminance or perceptual error scores.",
+      "Every temporal comparison uses visible same-surface support and exact original bits; new reveal support is derived from previous foreground at the background-material coordinate.",
+      "Reveal-to-later comparison measures residual change on the same visible source material; later output is not an ideal target.",
+      "These observations establish residual variation, including unchanged-input variation. They do not identify a cause, prove ghosting or a defect, or establish quality acceptance."
+    ],
+    "pairs": [
+      {
+        "currentRegionPixels": 434880,
+        "currentToPreviousOffset": [
+          6,
+          0
+        ],
+        "enhancedMinusOriginal": {
+          "maximumAbsoluteNits": 627.4346923828125,
+          "meanAbsoluteNits": 1.3674707254825156,
+          "rmsNits": 15.142631920581321,
+          "signedMeanNits": 1.1431830815861537
+        },
+        "identityMinusOriginal": {
+          "maximumAbsoluteNits": 0.0,
+          "meanAbsoluteNits": 0.0,
+          "rmsNits": 0.0,
+          "signedMeanNits": 0.0
+        },
+        "maximumAbsoluteChangeLocation": {
+          "channel": "B",
+          "currentEnhancedRGB": [
+            334.00811767578125,
+            1241.10205078125,
+            2082.54296875
+          ],
+          "currentOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "currentXY": [
+            692,
+            336
+          ],
+          "previousOrRevealEnhancedRGB": [
+            232.53411865234375,
+            861.7376098632812,
+            1455.1082763671875
+          ],
+          "previousOrRevealOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "previousOrRevealXY": [
+            698,
+            336
+          ],
+          "signedResidualChangeNits": 627.4346923828125
+        },
+        "originalCorrespondenceBitExact": true,
+        "previousSourceFrameIndex": 11,
+        "region": "background",
+        "sourceFrameIndex": 12,
+        "supportPixels": 421200
+      },
+      {
+        "currentRegionPixels": 434880,
+        "currentToPreviousOffset": [
+          6,
+          0
+        ],
+        "enhancedMinusOriginal": {
+          "maximumAbsoluteNits": 964.341552734375,
+          "meanAbsoluteNits": 0.5875832564786218,
+          "rmsNits": 8.1366468554159,
+          "signedMeanNits": -0.2466558173712603
+        },
+        "identityMinusOriginal": {
+          "maximumAbsoluteNits": 0.0,
+          "meanAbsoluteNits": 0.0,
+          "rmsNits": 0.0,
+          "signedMeanNits": 0.0
+        },
+        "maximumAbsoluteChangeLocation": {
+          "channel": "B",
+          "currentEnhancedRGB": [
+            143.78219604492188,
+            527.8837890625,
+            888.979736328125
+          ],
+          "currentOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "currentXY": [
+            672,
+            328
+          ],
+          "previousOrRevealEnhancedRGB": [
+            296.60919189453125,
+            1105.1851806640625,
+            1853.3212890625
+          ],
+          "previousOrRevealOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "previousOrRevealXY": [
+            678,
+            328
+          ],
+          "signedResidualChangeNits": -964.341552734375
+        },
+        "originalCorrespondenceBitExact": true,
+        "previousSourceFrameIndex": 12,
+        "region": "background",
+        "sourceFrameIndex": 13,
+        "supportPixels": 421200
+      },
+      {
+        "currentRegionPixels": 518400,
+        "currentToPreviousOffset": [
+          0,
+          0
+        ],
+        "enhancedMinusOriginal": {
+          "maximumAbsoluteNits": 275.5301513671875,
+          "meanAbsoluteNits": 0.6997588416960829,
+          "rmsNits": 8.381745200364385,
+          "signedMeanNits": -0.5945667782478711
+        },
+        "identityMinusOriginal": {
+          "maximumAbsoluteNits": 0.0,
+          "meanAbsoluteNits": 0.0,
+          "rmsNits": 0.0,
+          "signedMeanNits": 0.0
+        },
+        "maximumAbsoluteChangeLocation": {
+          "channel": "B",
+          "currentEnhancedRGB": [
+            237.18704223632812,
+            881.8987426757812,
+            1480.945556640625
+          ],
+          "currentOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "currentXY": [
+            522,
+            298
+          ],
+          "previousOrRevealEnhancedRGB": [
+            281.1653747558594,
+            1047.35205078125,
+            1756.4757080078125
+          ],
+          "previousOrRevealOriginalRGB": [
+            400.0,
+            1500.0,
+            2500.0
+          ],
+          "previousOrRevealXY": [
+            522,
+            298
+          ],
+          "signedResidualChangeNits": -275.5301513671875
+        },
+        "originalCorrespondenceBitExact": true,
+        "previousSourceFrameIndex": 45,
+        "region": "background",
+        "sourceFrameIndex": 46,
+        "supportPixels": 518400
+      },
+      {
+        "currentRegionPixels": 83520,
+        "currentToPreviousOffset": [
+          -24,
+          0
+        ],
+        "enhancedMinusOriginal": {
+          "maximumAbsoluteNits": 27.911255836486816,
+          "meanAbsoluteNits": 1.3059936178479425,
+          "rmsNits": 2.1857547150576178,
+          "signedMeanNits": -0.8519435626256017
+        },
+        "identityMinusOriginal": {
+          "maximumAbsoluteNits": 0.0,
+          "meanAbsoluteNits": 0.0,
+          "rmsNits": 0.0,
+          "signedMeanNits": 0.0
+        },
+        "maximumAbsoluteChangeLocation": {
+          "channel": "G",
+          "currentEnhancedRGB": [
+            13.42900276184082,
+            31.773900985717773,
+            19.61053466796875
+          ],
+          "currentOriginalRGB": [
+            3.0,
+            4.0,
+            6.0
+          ],
+          "currentXY": [
+            528,
+            443
+          ],
+          "previousOrRevealEnhancedRGB": [
+            3.6148345470428467,
+            3.862645149230957,
+            4.45999002456665
+          ],
+          "previousOrRevealOriginalRGB": [
+            3.0,
+            4.0,
+            6.0
+          ],
+          "previousOrRevealXY": [
+            504,
+            443
+          ],
+          "signedResidualChangeNits": 27.911255836486816
+        },
+        "originalCorrespondenceBitExact": true,
+        "previousSourceFrameIndex": 16,
+        "region": "foreground",
+        "sourceFrameIndex": 17,
+        "supportPixels": 83520
+      }
+    ],
+    "report": {
+      "bytes": 75856,
+      "path": "artifacts/temporal-occlusion-reference-1/numeric-audit-1/report.json",
+      "sha256": "e4e28a0849a945d5a0bef41693111514c5a21f6c9919a0da138c629dd0842036"
+    },
+    "scope": "Independent CPU raw-pixel replay of four named temporal pairs and one reveal cohort. No analyzer/generator import, neural execution, window or GPU work.",
+    "source": {
+      "bytes": 19117,
+      "path": "artifacts/temporal-occlusion-reference-1/numeric-audit-1/audit.py",
+      "sha256": "cbf5192d48f6efe79635642620fbc48b581be72733e297410191e4e122c1ff1e"
+    },
+    "summary": {
+      "allMetricsExactlyEqual": true,
+      "maximumMetricAbsoluteDifference": 0.0,
+      "metricDictionariesCompared": 18,
+      "metricScalarsCompared": 72,
+      "rawCapturedViewsChecked": 27,
+      "rawSourceOriginalsChecked": 9,
+      "revealCohorts": 1,
+      "selectedFrameExtrema": {
+        "enhanced": {
+          "above10000Components": 0,
+          "maximumRGB": [
+            1251.969970703125,
+            1477.49462890625,
+            2458.785400390625
+          ],
+          "minimumRGB": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "negativeComponents": 0
+        },
+        "identity": {
+          "above10000Components": 0,
+          "maximumRGB": [
+            1200.0,
+            1500.0,
+            2500.0
+          ],
+          "minimumRGB": [
+            0.1875,
+            0.390625,
+            0.59375
+          ],
+          "negativeComponents": 0
+        },
+        "original": {
+          "above10000Components": 0,
+          "maximumRGB": [
+            1200.0,
+            1500.0,
+            2500.0
+          ],
+          "minimumRGB": [
+            0.1875,
+            0.390625,
+            0.59375
+          ],
+          "negativeComponents": 0
+        }
+      },
+      "selectedFrameIdentityMaximumAbsoluteComponentNits": 3.814697265625e-06,
+      "selectedFrameIndices": [
+        11,
+        12,
+        13,
+        16,
+        17,
+        21,
+        23,
+        45,
+        46
+      ],
+      "temporalPairs": 4
+    },
+    "tolerance": {
+      "absolute": 1e-12,
+      "relative": 1e-12,
+      "rule": "abs(actual-expected) <= max(absTolerance, relativeTolerance*max(abs(actual),abs(expected)))"
+    }
+  },
+  "limits": [
+    "Residual observations do not identify noise, temporal history, motion/confidence or reconstruction as the cause.",
+    "The measured original source material is identical on each temporal/cohort support; intended enhancement may still change its residual.",
+    "Only a bounded synthetic sequence and selected fixed-mapped stills were reviewed. No broad temporal-quality or ghost-free acceptance follows.",
+    "Native floating-video/Erika visibility, physical HDR/A-V, source-rate Live, grain/global-flash corpus and M5 results retain separate requirements."
+  ],
+  "machine": "Apple M3, 16 GB",
+  "model": {
+    "files": {
+      "manifest.json": "ee51f73ce5fb34a066d76e387871d8332c48890c3f8935c568b3bcc521cdee32",
+      "weights.safetensors": "b6c94e4403d55a0f7308d4521880082fe391efa84d6fbfcfd104b318a854948f"
+    },
+    "path": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/models/neural-rendering/NeuralRendering.dlssmodel"
+  },
+  "publication": {
+    "cohortCSV": "All168 records exported with exact Float64 decimal round trip.",
+    "files": [
+      {
+        "bytes": 75880,
+        "path": "artifacts/temporal-occlusion-analysis-checkout/docs/evidence/m3-occlusion-temporal.csv",
+        "sha256": "316196dc622a4969a912cfadea623911a9fe1abb47f46ec2c95cafee3d1f8baf"
+      },
+      {
+        "bytes": 29700,
+        "path": "artifacts/temporal-occlusion-analysis-checkout/docs/evidence/m3-occlusion-cohorts.csv",
+        "sha256": "b242982d3f433907f606a9606661f85cf64924660b8295658f074b0060faa910"
+      },
+      {
+        "bytes": 30680,
+        "path": "artifacts/temporal-occlusion-analysis-checkout/docs/evidence/m3-occlusion-temporal.pdf",
+        "sha256": "a9fc91f20312ac7dca1385983de0fdbab0d3544d1ff54bb03dec1847431f08cf"
+      },
+      {
+        "bytes": 188668,
+        "path": "artifacts/temporal-occlusion-analysis-checkout/docs/evidence/m3-occlusion-temporal.png",
+        "sha256": "779ddfbe4ee69300d5d6c50aacee876586f2312a1ed42bce002a6cfef22b5e21"
+      }
+    ],
+    "regionalCSVNormalization": "CSV line endings normalized to LF; all parsed cells exactly preserved from the analyzer CSV."
+  },
+  "reproduce": {
+    "analysis": [
+      "uv",
+      "run",
+      "--frozen",
+      "python",
+      "scripts/analyze-occlusion-reference.py",
+      "--input",
+      "INPUT/manifest.json",
+      "--capture",
+      "CAPTURE/manifest.json",
+      "--output",
+      "NEW_ANALYSIS_DIRECTORY"
+    ],
+    "tests": [
+      "uv",
+      "run",
+      "--frozen",
+      "python",
+      "scripts/test_occlusion_reference_analysis.py"
+    ]
+  },
+  "runtimeProvenance": {
+    "arguments": [
+      ".build/debug/hdr-benchmark",
+      "--reference-sequence",
+      "artifacts/temporal-occlusion-reference-1/input/manifest.json",
+      "--output",
+      "artifacts/temporal-occlusion-reference-1/capture-1",
+      "--model",
+      "models/neural-rendering/NeuralRendering.dlssmodel",
+      "--frames",
+      "48",
+      "--width",
+      "512",
+      "--height",
+      "288",
+      "--strength",
+      "1",
+      "--colour-strength",
+      "1",
+      "--maximum-luminance-ratio",
+      "2",
+      "--reference-white",
+      "203",
+      "--motion",
+      "automatic"
+    ],
+    "binary": "/Users/PHAL/Documents/Manual_Library/Projekte/metal-dlss-mac-video/.build/arm64-apple-macosx/debug/hdr-benchmark",
+    "binarySHA256": "96a97cc92a6c3f870e9d7d18793a3831df3d7052d3d7a86019cde63c21063e83",
+    "diffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mlxDLSSRevision": "465783af9cc1e763089589db801e6a118f8c107a",
+    "mpvRevision": "f9213292afed1caa77827e66fe9c9216ee5ec513",
+    "os": "Version 26.5 (Build 25F71)",
+    "rootRevision": "45234e9985a397ef14bf3de3b8ac6e628a5014a1",
+    "rootStatus": "",
+    "sourceSHA256": {
+      "tools/FrameBenchmark/FrameBenchmarkCommand.swift": "fb3a2d88965cf0528270891b105265406d72c7bfaceaf88107e47030a8368a36",
+      "tools/FrameBenchmark/FrameReferenceSequence.swift": "120badd7e6bc9dc790d0cac42d286935e4dda1b1a6a38d1406fd1cf26457c0d2",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDeviceTemporalBackend.swift": "9f662b490cedd2ec8e8719cbdb862acccbe7a52614e78cca31de7941a6e5f37e",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXNeuralRenderingDisplayCodec.swift": "0069997732bf1c3bd7d334276b0ebe162f28000c4b014ce23d1f541d22a6f3b8",
+      "vendor/MLX-DLSS/Sources/DLSSMLX/MLXVideoOutput.swift": "5c3ba05fac4d9d22b4a6d38046f588a61edbc77c144d10a38a88de8fde8b98a6",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeHDRProcessor.swift": "7a66e04760623582c0f1848ca1437a6724fcce7b4ada69088454143bebce8155",
+      "vendor/MLX-DLSS/Sources/DLSSMedia/NativeOpticalFlow.swift": "9b705fc307cc46dec9d50453a0066e57970c806e92ff5111d0aba4f465fc590d"
+    }
+  },
+  "schemaVersion": 1,
+  "scope": "M3 controlled synthetic occlusion neural capture and motion-aligned RGB residual observations. No perceptual, physical HDR or source-rate playback qualification.",
+  "settings": {
+    "colourStrength": 1,
+    "maximumLuminanceRatio": 2,
+    "mlxCacheBytes": 268435456,
+    "modelInputRange": "bounded-sRGB-after-resample",
+    "motionRequested": "automatic",
+    "precision": "float16",
+    "processingHeight": 288,
+    "processingWidth": 512,
+    "referenceWhiteNits": 203,
+    "sceneCutThreshold": 0.3,
+    "strength": 1,
+    "temporal": true
+  },
+  "sourceGeneratorCommit": "b9720e266c4ef7c7473aaa5fa14dbd4a839c2ebb",
+  "visualInspection": {
+    "figureProvenance": {
+      "bytes": 1021,
+      "path": "artifacts/temporal-occlusion-reference-1/figures-2/provenance.json",
+      "sha256": "4d363b6a367b4d1a59991785d99ea356b3ef223c5047246a41455ba25b488bd3"
+    },
+    "figureSource": {
+      "bytes": 3946,
+      "path": "artifacts/temporal-occlusion-reference-1/plot-analysis-v2.py",
+      "sha256": "51b810809074329e9e3f61f82bac1e51f8e9a18e94dec1ca11f389bce01bd62a"
+    },
+    "inspectedFrames": [
+      {
+        "bytes": 416705,
+        "path": "artifacts/temporal-occlusion-reference-1/review-1/frame-0008.png",
+        "sha256": "ad91d93e9255caa289ef70b4ebd449b475079aefab8ccc737df674053ef305de"
+      },
+      {
+        "bytes": 411167,
+        "path": "artifacts/temporal-occlusion-reference-1/review-1/frame-0035.png",
+        "sha256": "949707e5c7957449f993bb7defda00aabdc25917e0797c87c6bf6f0c30a39c5a"
+      }
+    ],
+    "layoutHistory": "Initial figure and source remain in figures-1/plot-analysis.py. Version2 separates overlapping title/annotation text and shortens the vertical label; source scalar data is unchanged.",
+    "reviewExecution": {
+      "bytes": 598,
+      "path": "artifacts/temporal-occlusion-reference-1/review-run.json",
+      "sha256": "919a1b048d46c2ba0a8edd636239b128df7cfda3dd48aa8747bd2d2eae450bcd"
+    },
+    "reviewIndex": {
+      "bytes": 112416,
+      "path": "artifacts/temporal-occlusion-reference-1/review-1/index.html",
+      "sha256": "2ea596db14fa94717f2cfd38fea3c7c72c137d03e5ebf0f5b73eaadce08116e3"
+    },
+    "reviewReport": {
+      "bytes": 138196,
+      "path": "artifacts/temporal-occlusion-reference-1/review-1/review.json",
+      "sha256": "58b0f58638e4f5146de295ff4062f018e9b1f4cdce6fb021062725ab5edfa10d"
+    },
+    "scope": "Two fixed-mapped still contact sheets (frames8 and35) and the scalar-only figure layout were inspected. This is not motion/perceptual or physical HDR acceptance."
+  }
+}
