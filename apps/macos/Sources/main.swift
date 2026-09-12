@@ -311,38 +311,49 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
                  decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void) {
         decisionHandler(navigationAction.request.url?.isFileURL == true ? .allow : .cancel)
     }
+    private func publishFullscreenDiagnostic(_ event: String) {
+        guard ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_FULLSCREEN_DIAGNOSTIC"] == "1" else { return }
+        NotificationCenter.default.post(name: Notification.Name("HDRPlayer.FloatingFullscreenDiagnostic"),
+            object: window, userInfo: ["event": event])
+    }
     func windowWillEnterFullScreen(_ notification: Notification) {
         guard notification.object as? NSWindow === window else { return }
         mainFullscreenTransitioning = true
         floatingVideo?.restore(activateMain: false)
         publish(player.state)
+        publishFullscreenDiagnostic("will-enter")
     }
     func windowWillExitFullScreen(_ notification: Notification) {
         guard notification.object as? NSWindow === window else { return }
         mainFullscreenTransitioning = true
         publish(player.state)
+        publishFullscreenDiagnostic("will-exit")
     }
     func windowDidEnterFullScreen(_ notification: Notification) {
         guard notification.object as? NSWindow === window else { return }
         mainFullscreenTransitioning = false
         player.fullscreenChanged(true); lifecycle?.record("window-fullscreen-enter")
         publish(player.state)
+        publishFullscreenDiagnostic("did-enter")
     }
     func windowDidExitFullScreen(_ notification: Notification) {
         guard notification.object as? NSWindow === window else { return }
         mainFullscreenTransitioning = false
         player.fullscreenChanged(false); lifecycle?.record("window-fullscreen-exit")
         publish(player.state)
+        publishFullscreenDiagnostic("did-exit")
     }
     func windowDidFailToEnterFullScreen(_ window: NSWindow) {
         guard window === self.window else { return }
         mainFullscreenTransitioning = false
         publish(player.state)
+        publishFullscreenDiagnostic("failed-enter")
     }
     func windowDidFailToExitFullScreen(_ window: NSWindow) {
         guard window === self.window else { return }
         mainFullscreenTransitioning = false
         publish(player.state)
+        publishFullscreenDiagnostic("failed-exit")
     }
     func windowDidResize(_ notification: Notification) { pictureInPicture?.layout(); lifecycle?.record("window-resized") }
     func windowDidChangeScreen(_ notification: Notification) { lifecycle?.record("window-screen-changed") }

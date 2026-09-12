@@ -48,7 +48,13 @@ final class PlayerSmokeCheck {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
     }
     private func runFloatingVideo() async throws {
+        let fullscreenDiagnostic = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_FULLSCREEN_DIAGNOSTIC"] == "1"
+        let fullscreenDeadline = ProcessInfo.processInfo.systemUptime + 90
+        var fullscreenStageDeadline: Double? = nil
         let capturePath = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_CAPTURE_DIRECTORY"]
+        guard !fullscreenDiagnostic || capturePath == nil else {
+            throw Failure(message: "Select only one floating capture or fullscreen diagnostic")
+        }
         let captureStarted = ProcessInfo.processInfo.systemUptime
         let captureDeadline = captureStarted + 105
         let captureDirectory: URL?
@@ -62,6 +68,9 @@ final class PlayerSmokeCheck {
             captureDirectory = directory
         } else { captureDirectory = nil }
         func checkCaptureDeadline() throws {
+            if fullscreenDiagnostic && ProcessInfo.processInfo.systemUptime >= min(fullscreenDeadline, fullscreenStageDeadline ?? fullscreenDeadline) {
+                throw Failure(message: "Floating fullscreen diagnostic exceeded its stage or overall deadline")
+            }
             if let phaseDeadline = capturePhaseDeadline, ProcessInfo.processInfo.systemUptime >= phaseDeadline {
                 throw Failure(message: "Floating capture exceeded its 30-second phase deadline")
             }
@@ -70,8 +79,10 @@ final class PlayerSmokeCheck {
             }
         }
         func floatingWait(_ label: String, seconds: Double = 8, until condition: () -> Bool) async throws {
-            guard captureDirectory != nil else { try await self.wait(label, seconds: seconds, until: condition); return }
-            let deadline = min(min(captureDeadline, capturePhaseDeadline ?? captureDeadline), ProcessInfo.processInfo.systemUptime + seconds)
+            guard captureDirectory != nil || fullscreenDiagnostic else { try await self.wait(label, seconds: seconds, until: condition); return }
+            let overall = fullscreenDiagnostic ? fullscreenDeadline : captureDeadline
+            let stage = fullscreenDiagnostic ? fullscreenStageDeadline : capturePhaseDeadline
+            let deadline = min(min(overall, stage ?? overall), ProcessInfo.processInfo.systemUptime + seconds)
             while true {
                 guard ProcessInfo.processInfo.systemUptime < deadline else { throw Failure(message: "Timed out: " + label) }
                 if condition() { break }
@@ -164,8 +175,10 @@ final class PlayerSmokeCheck {
                             "targetPID": Int(ProcessInfo.processInfo.processIdentifier),
                             "queryStartUptime": queryStart, "queryEndUptime": queryEnd,
                             "windows": [["windowID": number, "onScreen": true, "alpha": 1, "bounds": bounds]]]
-                        snapshots.append(["check": requestLabel + "-observer-window-ready", "hostSeconds": now,
-                            "waitStartedUptime": started, "windowObservation": proof, "state": state()])
+                        var ready: [String: Any] = ["check": requestLabel + "-observer-window-ready", "hostSeconds": now,
+                            "waitStartedUptime": started, "windowObservation": proof, "state": state()]
+                        if fullscreenDiagnostic { ready["actionWindowNumber"] = number }
+                        snapshots.append(ready)
                         return
                     }
                 }
@@ -291,6 +304,132 @@ final class PlayerSmokeCheck {
                 return eligible && seen.count >= 3 && integer(value, "completed-frames") >= (start["completed-frames"] ?? Int64.max) + 3
             }
             try checkObjects(label)
+        }
+        if fullscreenDiagnostic {
+            // Exercise real AppKit callbacks; no physical key/titlebar/Space claim.
+            var callbackRows: [[String: Any]] = []
+            var callbackFailure: String?
+            var expectedEvents: [String] = []
+            var receivedEvents: [String] = []
+            var route = ""
+            var detachedPanel: NSPanel?
+            func fullscreenMenu(in menu: NSMenu) -> (NSMenu, Int)? {
+                for (index, item) in menu.items.enumerated() {
+                    if item.action == NSSelectorFromString("toggleFullscreen") { return (menu, index) }
+                    if let submenu = item.submenu, let found = fullscreenMenu(in: submenu) { return found }
+                }
+                return nil
+            }
+            func checkHome(_ label: String) throws {
+                try checkObjects(label)
+                guard identity() == initial, self.state()["paused"] as? Bool == true,
+                      native()["compare-ready"] as? Bool == true, native()["preview-pending"] as? Bool == false,
+                      video.superview === home, video.window === window,
+                      floating()["active"] as? Bool == false, floating()["phase"] as? String == "home",
+                      integer(floating(), "homeConstraintsActive") == 4, integer(floating(), "floatingConstraintsActive") == 0,
+                      let panel = detachedPanel, !panel.isVisible, panel.contentView == nil else {
+                    throw Failure(message: "Fullscreen changed the held identity or failed to detach its panel: " + label)
+                }
+            }
+            let settingsKeys = ["muted", "volume", "subtitleScale", "subtitleDelay", "nativeSubtitleColor", "tracks"]
+            let processingKeys = ["enabled", "mode", "width", "height", "strength", "colorStrength", "subtitleBrightness", "comparison"]
+            func settings() -> NSDictionary {
+                let current = state(), processing = current["processing"] as? [String: Any] ?? [:]
+                var result = Dictionary(uniqueKeysWithValues: settingsKeys.map { ($0, current[$0] ?? NSNull()) })
+                result["processing"] = Dictionary(uniqueKeysWithValues: processingKeys.map { ($0, processing[$0] ?? NSNull()) })
+                return result as NSDictionary
+            }
+            let initialSettings = settings()
+            let callbacks = FloatingFullscreenSmokeCallbacks(window: window) { event in
+                let now = ProcessInfo.processInfo.systemUptime
+                let row: [String: Any] = ["check": "fullscreen-delegate-" + event, "hostSeconds": now,
+                    "route": route, "event": event, "callbackIndex": callbackRows.count,
+                    "actualFullscreen": self.window.styleMask.contains(.fullScreen), "state": self.state()]
+                callbackRows.append(row)
+                self.snapshots.append(row)
+                do {
+                    try checkCaptureDeadline()
+                    guard receivedEvents.count < expectedEvents.count,
+                          expectedEvents[receivedEvents.count] == event else {
+                        throw Failure(message: "Unexpected, duplicate or failed fullscreen callback: " + event)
+                    }
+                    receivedEvents.append(event)
+                    try checkHome(event)
+                    guard settings().isEqual(initialSettings),
+                          let main = NSApp.mainMenu, let (menu, index) = menuEntry(main) else {
+                        throw Failure(message: "Fullscreen callback changed settings or lost the floating menu")
+                    }
+                    menu.update()
+                    let transitioning = event.hasPrefix("will-")
+                    let blocked = transitioning || event == "did-enter"
+                    guard floating()["mainFullscreenTransitioning"] as? Bool == transitioning,
+                          floating()["canEnter"] as? Bool == !blocked, menu.items[index].isEnabled == !blocked,
+                          transitioning || self.window.styleMask.contains(.fullScreen) == (event == "did-enter") else {
+                        throw Failure(message: "Floating entry guard disagrees with actual fullscreen callback: " + event)
+                    }
+                    self.checks.append("actual " + event + " callback preserves held state and correct floating-entry availability")
+                } catch {
+                    if callbackFailure == nil { callbackFailure = error.localizedDescription }
+                }
+            }
+            defer { callbacks.stop() }
+            func transition(_ selectedRoute: String, entering: Bool, panel: NSPanel) async throws {
+                fullscreenStageDeadline = min(fullscreenDeadline, ProcessInfo.processInfo.systemUptime + 15)
+                defer { fullscreenStageDeadline = nil }
+                try checkCaptureDeadline()
+                route = selectedRoute
+                detachedPanel = panel
+                expectedEvents = entering ? ["will-enter", "did-enter"] : ["will-exit", "did-exit"]
+                receivedEvents = []
+                let operation = entering ? "enter" : "exit"
+                let label = selectedRoute == "menu-shared-handler"
+                    ? "fullscreen-menu-" + operation + "-menu-requested"
+                    : "fullscreen-direct-" + operation + "-window-requested"
+                try await observeWindowBeforeAction(window, requestLabel: label)
+                try checkCaptureDeadline()
+                guard settings().isEqual(initialSettings), identity() == initial,
+                      self.window.styleMask.contains(.fullScreen) != entering else {
+                    throw Failure(message: "Unexpected held state before fullscreen request")
+                }
+                snapshots.append(["check": label, "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                    "route": selectedRoute, "entering": entering, "actionWindowNumber": window.windowNumber, "state": state()])
+                if selectedRoute == "menu-shared-handler" {
+                    guard let main = NSApp.mainMenu, let (menu, index) = fullscreenMenu(in: main) else {
+                        throw Failure(message: "Native fullscreen menu is unavailable")
+                    }
+                    menu.update()
+                    guard menu.items[index].isEnabled else { throw Failure(message: "Native fullscreen menu is disabled") }
+                    menu.performActionForItem(at: index)
+                } else {
+                    window.toggleFullScreen(nil)
+                }
+                try await floatingWait(selectedRoute + " " + operation + " completes actual fullscreen callbacks", seconds: 15) {
+                    callbackFailure != nil || receivedEvents == expectedEvents
+                }
+                if let callbackFailure { throw Failure(message: callbackFailure) }
+                try checkCaptureDeadline()
+                try checkHome(selectedRoute + " " + operation)
+                try await preserved(initial, selectedRoute + " " + operation + " settles paused identity")
+                guard settings().isEqual(initialSettings) else {
+                    throw Failure(message: "Fullscreen changed native playback or processing settings")
+                }
+            }
+            let firstPanel = try await enter("fullscreen shared-handler floating entry")
+            try await preserved(initial, "paused before shared fullscreen handler")
+            try await transition("menu-shared-handler", entering: true, panel: firstPanel)
+            try await transition("menu-shared-handler", entering: false, panel: firstPanel)
+            let secondPanel = try await enter("fullscreen direct-callback floating re-entry")
+            try await preserved(initial, "paused before direct fullscreen callback")
+            try await transition("direct-appkit-api", entering: true, panel: secondPanel)
+            try await transition("direct-appkit-api", entering: false, panel: secondPanel)
+            guard callbackRows.count == 8 else { throw Failure(message: "Expected eight actual fullscreen callbacks") }
+            _ = try await enter("floating entry before asynchronous quit")
+            try await preserved(initial, "paused active floating host before asynchronous quit")
+            try checkCaptureDeadline()
+            if let callbackFailure { throw Failure(message: callbackFailure) }
+            guard callbackRows.count == 8 else { throw Failure(message: "Unexpected fullscreen callback during final floating re-entry") }
+            checks.append("both fullscreen routes restore and preserve the same paused native host; external asynchronous teardown remains required")
+            return
         }
         if let directory = captureDirectory {
             // Caller-coordinated compositor diagnostic only: the application never captures pixels.
@@ -1258,4 +1397,21 @@ final class PlayerSmokeCheck {
         fputs("HDRPlayer UI smoke: \(failure ?? "passed")\n", stderr)
         NSApp.terminate(nil)
     }
+}
+
+/// A synchronous diagnostic tap invoked only after the real main-window delegate
+/// has updated and published its fullscreen guard. It never dispatches an action.
+@MainActor
+private final class FloatingFullscreenSmokeCallbacks: NSObject {
+    private let receive: (String) -> Void
+    init(window: NSWindow, receive: @escaping (String) -> Void) {
+        self.receive = receive
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(observed(_:)),
+            name: Notification.Name("HDRPlayer.FloatingFullscreenDiagnostic"), object: window)
+    }
+    @objc private func observed(_ notification: Notification) {
+        if let event = notification.userInfo?["event"] as? String { receive(event) }
+    }
+    func stop() { NotificationCenter.default.removeObserver(self) }
 }
