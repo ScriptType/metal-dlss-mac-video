@@ -3,6 +3,69 @@ import CryptoKit
 import QuartzCore
 import WebKit
 
+/// Records only a smoke-registered NSEvent object while the existing app monitor handles it.
+/// Unregistered events are neither retained nor described.
+@MainActor
+final class PlayerSyntheticKeyReceipt {
+    static weak var active: PlayerSyntheticKeyReceipt?
+    let event: NSEvent
+    let eventID: String
+    let sessionID: String
+    let sequence: Int
+    let context: () -> [String: Any]
+    private(set) var arrivalCount = 0
+    private(set) var returnCount = 0
+    private(set) var commandCount = 0
+    private(set) var arrivals: [[String: Any]] = []
+    private(set) var returns: [[String: Any]] = []
+    private(set) var commands: [[String: Any]] = []
+
+    init(event: NSEvent, eventID: String, sessionID: String, sequence: Int,
+         context: @escaping () -> [String: Any]) {
+        self.event = event; self.eventID = eventID; self.sessionID = sessionID
+        self.sequence = sequence; self.context = context
+    }
+    var eventIdentity: String { String(describing: ObjectIdentifier(event)) }
+    var registration: [String: Any] {
+        ["eventID": eventID, "sessionID": sessionID, "sequence": sequence, "eventIdentity": eventIdentity,
+         "type": Int(event.type.rawValue), "keyCode": Int(event.keyCode),
+         "characters": event.characters ?? "", "charactersIgnoringModifiers": event.charactersIgnoringModifiers ?? "",
+         "modifierFlags": event.modifierFlags.rawValue, "isRepeat": event.isARepeat,
+         "timestamp": event.timestamp, "windowNumber": event.windowNumber]
+    }
+    private func record(_ kind: String) -> [String: Any] {
+        let target = event.window
+        return ["eventID": eventID, "sessionID": sessionID, "sequence": sequence, "eventIdentity": eventIdentity,
+            "kind": kind, "hostSeconds": ProcessInfo.processInfo.systemUptime,
+            "eventWindowNumber": event.windowNumber,
+            "resolvedEventWindowNumber": target.map { $0.windowNumber as Any } ?? NSNull(),
+            "resolvedEventWindowIdentity": target.map { String(describing: ObjectIdentifier($0)) as Any } ?? NSNull(),
+            "type": Int(event.type.rawValue), "keyCode": Int(event.keyCode),
+            "characters": event.characters ?? "", "charactersIgnoringModifiers": event.charactersIgnoringModifiers ?? "",
+            "modifierFlags": event.modifierFlags.rawValue, "isRepeat": event.isARepeat,
+            "eventTimestamp": event.timestamp, "context": context()]
+    }
+    static func willHandle(_ event: NSEvent) {
+        guard let active, active.event === event else { return }
+        active.arrivalCount += 1
+        if active.arrivals.count < 2 { active.arrivals.append(active.record("monitor-before-handleKey")) }
+    }
+    static func didHandle(_ event: NSEvent, consumed: Bool) {
+        guard let active, active.event === event else { return }
+        active.returnCount += 1
+        var row = active.record("monitor-after-handleKey")
+        row["consumed"] = consumed
+        if active.returns.count < 2 { active.returns.append(row) }
+    }
+    static func didInvoke(_ event: NSEvent, command: String, value: Any) {
+        guard let active, active.event === event else { return }
+        active.commandCount += 1
+        var row = active.record("command-returned")
+        row["command"] = command; row["value"] = value
+        if active.commands.count < 2 { active.commands.append(row) }
+    }
+}
+
 /// Opt-in integration check. It drives the shipped DOM and checks independently
 /// polled mpv state, with isolated preferences; normal launches never create it.
 @MainActor
@@ -55,6 +118,18 @@ final class PlayerSmokeCheck {
         let fullscreenDeadline = ProcessInfo.processInfo.systemUptime + 90
         var fullscreenStageDeadline: Double? = nil
         let capturePath = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_CAPTURE_DIRECTORY"]
+        let keyDiagnostic = ProcessInfo.processInfo.environment["HDRPLAYER_FLOATING_KEYBOARD_DIAGNOSTIC"] == "1"
+        let keyStarted = ProcessInfo.processInfo.systemUptime
+        let keyDeadline = keyStarted + 90
+        var keyStageDeadline: Double? = keyDiagnostic ? min(keyDeadline, keyStarted + 15) : nil
+        guard !keyDiagnostic || (spacePath == nil && !fullscreenDiagnostic && capturePath == nil) else {
+            throw Failure(message: "Select only one floating keyboard, Space, fullscreen or capture diagnostic")
+        }
+        if keyDiagnostic {
+            guard PlayerSyntheticKeyReceipt.active == nil,
+                  let path = ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_WINDOW_OBSERVATIONS"],
+                  !path.isEmpty else { throw Failure(message: "Synthetic keyboard diagnostic requires the external window observer") }
+        }
         guard !fullscreenDiagnostic || capturePath == nil else {
             throw Failure(message: "Select only one floating capture or fullscreen diagnostic")
         }
@@ -83,6 +158,9 @@ final class PlayerSmokeCheck {
             captureDirectory = directory
         } else { captureDirectory = nil }
         func checkCaptureDeadline() throws {
+            if keyDiagnostic && ProcessInfo.processInfo.systemUptime >= min(keyDeadline, keyStageDeadline ?? keyDeadline) {
+                throw Failure(message: "Floating keyboard diagnostic exceeded its fifteen-second phase or ninety-second overall deadline")
+            }
             if spaceDirectory != nil && ProcessInfo.processInfo.systemUptime >= min(spaceDeadline, spaceStageDeadline ?? spaceDeadline) {
                 throw Failure(message: "Floating Space diagnostic exceeded its stage or overall deadline")
             }
@@ -97,9 +175,9 @@ final class PlayerSmokeCheck {
             }
         }
         func floatingWait(_ label: String, seconds: Double = 8, until condition: () -> Bool) async throws {
-            guard captureDirectory != nil || fullscreenDiagnostic || spaceDirectory != nil else { try await self.wait(label, seconds: seconds, until: condition); return }
-            let overall = spaceDirectory != nil ? spaceDeadline : fullscreenDiagnostic ? fullscreenDeadline : captureDeadline
-            let stage = spaceDirectory != nil ? spaceStageDeadline : fullscreenDiagnostic ? fullscreenStageDeadline : capturePhaseDeadline
+            guard captureDirectory != nil || fullscreenDiagnostic || spaceDirectory != nil || keyDiagnostic else { try await self.wait(label, seconds: seconds, until: condition); return }
+            let overall = keyDiagnostic ? keyDeadline : spaceDirectory != nil ? spaceDeadline : fullscreenDiagnostic ? fullscreenDeadline : captureDeadline
+            let stage = keyDiagnostic ? keyStageDeadline : spaceDirectory != nil ? spaceStageDeadline : fullscreenDiagnostic ? fullscreenStageDeadline : capturePhaseDeadline
             let deadline = min(min(overall, stage ?? overall), ProcessInfo.processInfo.systemUptime + seconds)
             while true {
                 guard ProcessInfo.processInfo.systemUptime < deadline else { throw Failure(message: "Timed out: " + label) }
@@ -195,7 +273,7 @@ final class PlayerSmokeCheck {
                             "windows": [["windowID": number, "onScreen": true, "alpha": 1, "bounds": bounds]]]
                         var ready: [String: Any] = ["check": requestLabel + "-observer-window-ready", "hostSeconds": now,
                             "waitStartedUptime": started, "windowObservation": proof, "state": state()]
-                        if fullscreenDiagnostic { ready["actionWindowNumber"] = number }
+                        if fullscreenDiagnostic || keyDiagnostic { ready["actionWindowNumber"] = number }
                         snapshots.append(ready)
                         return
                     }
@@ -220,18 +298,33 @@ final class PlayerSmokeCheck {
                 floating()["diagnosticOnly"] as? Bool == true && self.number("duration") >= 59 &&
                 self.number("duration") <= 61 && !self.webView.isLoading && !self.video.subviews.isEmpty
         }
-        if state()["paused"] as? Bool != true { try await click("play") }
+        if keyDiagnostic { try checkCaptureDeadline() }
+        if state()["paused"] as? Bool != true {
+            try await click("play")
+            if keyDiagnostic { try checkCaptureDeadline() }
+        }
         try await floatingWait("native core paused before floating setup") { self.state()["paused"] as? Bool == true }
-        if state()["muted"] as? Bool != true { try await click("mute") }
+        if keyDiagnostic { try checkCaptureDeadline() }
+        if state()["muted"] as? Bool != true {
+            try await click("mute")
+            if keyDiagnostic { try checkCaptureDeadline() }
+        }
         try await change("sub", value: captureDirectory == nil ? "no" : "1")
+        if keyDiagnostic { try checkCaptureDeadline() }
         if captureDirectory != nil {
             try await change("subtitleBrightness", value: "1")
             try await change("subtitleScale", value: "1")
             try await change("subtitleDelay", value: "0")
         }
+        if keyDiagnostic { try checkCaptureDeadline() }
         try await change("quality", value: "160x96")
+        if keyDiagnostic { try checkCaptureDeadline() }
         try await change("timeline", value: captureDirectory == nil ? "20" : "4")
-        if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true { try await click("enhancement") }
+        if keyDiagnostic { try checkCaptureDeadline() }
+        if (state()["processing"] as? [String: Any])?["enabled"] as? Bool != true {
+            try await click("enhancement")
+            if keyDiagnostic { try checkCaptureDeadline() }
+        }
         try await floatingWait(captureDirectory == nil ? "160x96 Adaptive enhancement reaches exact twenty-second frame" : "160x96 Adaptive enhancement reaches exact four-second frame", seconds: 25) {
             let processing = self.state()["processing"] as? [String: Any] ?? [:]
             return processing["enabled"] as? Bool == true && processing["mode"] as? String == "adaptive" &&
@@ -322,6 +415,270 @@ final class PlayerSmokeCheck {
                 return eligible && seen.count >= 3 && integer(value, "completed-frames") >= (start["completed-frames"] ?? Int64.max) + 3
             }
             try checkObjects(label)
+        }
+        if keyDiagnostic {
+            guard PlayerSyntheticKeyReceipt.active == nil,
+                  let observations = ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_WINDOW_OBSERVATIONS"],
+                  !observations.isEmpty else {
+                throw Failure(message: "Synthetic keys require a fresh external window observer and no active registration")
+            }
+            guard exactSeconds(20), initial["pending-frames"] == 0,
+                  state()["paused"] as? Bool == true, state()["muted"] as? Bool == true,
+                  !(state()["tracks"] as? [[String: Any]] ?? []).contains(where: {
+                      $0["type"] as? String == "sub" && $0["selected"] as? Bool == true
+                  }) else { throw Failure(message: "Synthetic keyboard setup is not the paused muted subtitle-off exact twenty-second control") }
+            let sessionID = UUID().uuidString
+            var sequence = 0
+            var dispatchReceipts: [[String: Any]] = []
+            var temporaryField: NSTextField?
+            func phase(_ name: String) throws {
+                try checkCaptureDeadline()
+                let deadline = min(keyDeadline, ProcessInfo.processInfo.systemUptime + 15)
+                keyStageDeadline = deadline
+                snapshots.append(["check": "synthetic-key-phase-" + name, "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                    "sessionID": sessionID, "overallDeadlineUptime": keyDeadline,
+                    "stageDeadlineUptime": deadline])
+            }
+            try phase("right-seek")
+            let panel = try await enter("synthetic keyboard floating entry")
+            let panelNumber = panel.windowNumber
+            defer {
+                PlayerSyntheticKeyReceipt.active = nil
+                if let field = temporaryField {
+                    panel.endEditing(for: field)
+                    if panel.contentView != nil { _ = panel.makeFirstResponder(nil) }
+                    field.removeFromSuperview()
+                }
+            }
+            try await preserved(initial, "paused before synthetic keyboard dispatch")
+            func settings() -> NSDictionary {
+                let current = state(), processing = current["processing"] as? [String: Any] ?? [:]
+                var result = Dictionary(uniqueKeysWithValues:
+                    ["muted", "volume", "subtitleScale", "subtitleDelay", "nativeSubtitleColor", "tracks"].map {
+                        ($0, current[$0] ?? NSNull())
+                    })
+                let keys = ["enabled", "mode", "width", "height", "strength", "colorStrength", "subtitleBrightness", "comparison"]
+                result["processing"] = Dictionary(uniqueKeysWithValues: keys.map { ($0, processing[$0] ?? NSNull()) })
+                return result as NSDictionary
+            }
+            let initialSettings = settings()
+            func sameSettings() -> Bool { settings().isEqual(initialSettings) }
+            func focus() -> [String: Any] {
+                let responder = panel.firstResponder
+                let view = responder as? NSView
+                return ["targetWindowNumber": panel.windowNumber,
+                    "targetWindowIdentity": String(describing: ObjectIdentifier(panel)),
+                    "targetIsKey": panel.isKeyWindow, "targetVisible": panel.isVisible,
+                    "targetOnActiveSpace": panel.isOnActiveSpace,
+                    "targetOcclusionVisible": panel.occlusionState.contains(.visible),
+                    "targetNonactivatingPanel": panel.styleMask.contains(.nonactivatingPanel),
+                    "applicationActive": NSApp.isActive,
+                    "keyWindowNumber": NSApp.keyWindow.map { $0.windowNumber as Any } ?? NSNull(),
+                    "keyWindowIdentity": NSApp.keyWindow.map { String(describing: ObjectIdentifier($0)) as Any } ?? NSNull(),
+                    "firstResponderIdentity": responder.map { String(describing: ObjectIdentifier($0)) as Any } ?? NSNull(),
+                    "firstResponderClass": responder.map { String(describing: type(of: $0)) as Any } ?? NSNull(),
+                    "firstResponderIsWindow": responder === panel,
+                    "firstResponderIsNSControl": responder is NSControl,
+                    "firstResponderIsNSTextView": responder is NSTextView,
+                    "firstResponderIsControlsDescendant": view?.isDescendant(of: webView) ?? false]
+            }
+            func ownedEditorState() -> Any {
+                guard let field = temporaryField, let editor = field.currentEditor() as? NSTextView else { return NSNull() }
+                let selection = editor.selectedRange()
+                let known = ["ab", "a b"]
+                return ["fieldIdentity": String(describing: ObjectIdentifier(field)),
+                    "editorIdentity": String(describing: ObjectIdentifier(editor)),
+                    "editorIsActualFirstResponder": panel.firstResponder === editor,
+                    "editorIsEditable": editor.isEditable,
+                    "editorString": known.contains(editor.string) ? editor.string as Any : NSNull(),
+                    "editorStringIsKnown": known.contains(editor.string),
+                    "selectedRange": ["location": selection.location, "length": selection.length],
+                    "fieldStringValue": known.contains(field.stringValue) ? field.stringValue as Any : NSNull(),
+                    "fieldStringValueIsKnown": known.contains(field.stringValue),
+                    "textScope": "Only known owned diagnostic strings are retained; NSTextField value may lag its field editor."]
+            }
+            func context() -> [String: Any] {
+                ["ownedEditor": ownedEditorState(), "nativePID": Int(ProcessInfo.processInfo.processIdentifier), "focus": focus(),
+                 "identity": identity().map { $0 as Any } ?? NSNull(),
+                 "paused": state()["paused"] ?? NSNull(), "playing": state()["playing"] ?? NSNull(),
+                 "source": state()["source"] ?? NSNull(), "coreLibrary": state()["coreLibrary"] ?? NSNull(),
+                 "configurationID": state()["configurationID"] ?? NSNull(),
+                 "hostIdentity": String(describing: ObjectIdentifier(video)),
+                 "hostWindowNumber": video.window.map { $0.windowNumber as Any } ?? NSNull()]
+            }
+            func requireFocus(_ expected: NSResponder) throws {
+                try checkCaptureDeadline()
+                guard panel.windowNumber == panelNumber, panel.isKeyWindow, NSApp.keyWindow === panel,
+                      panel.firstResponder === expected, panel.styleMask.contains(.nonactivatingPanel),
+                      panel.isVisible, !panel.isMiniaturized, panel.isOnActiveSpace,
+                      panel.occlusionState.contains(.visible), video.window === panel,
+                      sameSettings() else { throw Failure(message: "Actual synthetic-key target or focus is not ready") }
+            }
+            func windowFocus() throws {
+                try checkCaptureDeadline()
+                guard panel.makeFirstResponder(nil), panel.firstResponder === panel else {
+                    throw Failure(message: "Panel refused window first-responder focus; no settings were changed")
+                }
+                try requireFocus(panel)
+            }
+            func dispatch(_ name: String, code: UInt16, characters: String, responder: NSResponder,
+                          consumed: Bool, command expectedCommand: String?, value expectedValue: Any?) async throws -> [String: Any] {
+                let label = "native-key-" + name + "-requested"
+                try requireFocus(responder)
+                try await observeWindowBeforeAction(panel, requestLabel: label)
+                try requireFocus(responder)
+                if let editor = responder as? NSTextView {
+                    guard temporaryField?.currentEditor() === editor, editor.string == "ab",
+                          editor.selectedRange() == NSRange(location: 1, length: 0) else {
+                        throw Failure(message: "Owned editor changed before synthetic Space dispatch")
+                    }
+                }
+                guard PlayerSyntheticKeyReceipt.active == nil,
+                      let event = NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: [],
+                        timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: panelNumber, context: nil,
+                        characters: characters, charactersIgnoringModifiers: characters, isARepeat: false, keyCode: code),
+                      event.window === panel else { throw Failure(message: "Cannot register an exact owned synthetic key event") }
+                sequence += 1
+                let probe = PlayerSyntheticKeyReceipt(event: event, eventID: UUID().uuidString,
+                    sessionID: sessionID, sequence: sequence, context: context)
+                let registration = probe.registration
+                snapshots.append(["check": label, "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                    "actionWindowNumber": panelNumber, "eventID": probe.eventID, "sessionID": sessionID,
+                    "sequence": sequence, "registeredEvent": registration, "focus": focus(), "state": state()])
+                try checkCaptureDeadline()
+                PlayerSyntheticKeyReceipt.active = probe
+                defer { PlayerSyntheticKeyReceipt.active = nil }
+                let began = ProcessInfo.processInfo.systemUptime
+                NSApp.sendEvent(event)
+                let ended = ProcessInfo.processInfo.systemUptime
+                PlayerSyntheticKeyReceipt.active = nil
+                let receipt: [String: Any] = [
+                    "check": label + "-dispatch-returned", "hostSeconds": ended,
+                    "eventID": probe.eventID, "sessionID": sessionID, "sequence": sequence,
+                    "actionWindowNumber": panelNumber, "registeredEvent": registration,
+                    "sendEventStartedUptime": began, "sendEventReturnedUptime": ended,
+                    "monitorArrivalCount": probe.arrivalCount, "monitorReturnCount": probe.returnCount,
+                    "commandCount": probe.commandCount, "monitorBefore": probe.arrivals,
+                    "monitorAfter": probe.returns, "commands": probe.commands,
+                    "expectedConsumed": consumed, "afterContext": context(), "state": state(),
+                    "scope": "Registered in-process NSApp.sendEvent injection; no WindowServer, physical input or queue-retrieval proof."]
+                snapshots.append(receipt)
+                dispatchReceipts.append(receipt)
+                try checkCaptureDeadline()
+                guard probe.arrivalCount == 1, probe.returnCount == 1,
+                      let arrival = probe.arrivals.first,
+                      arrival["resolvedEventWindowNumber"] as? Int == panelNumber,
+                      arrival["resolvedEventWindowIdentity"] as? String == String(describing: ObjectIdentifier(panel)),
+                      arrival["eventWindowNumber"] as? Int == panelNumber,
+                      let arrivalContext = arrival["context"] as? [String: Any],
+                      let arrivalFocus = arrivalContext["focus"] as? [String: Any],
+                      arrivalFocus["targetWindowNumber"] as? Int == panelNumber,
+                      arrivalFocus["keyWindowIdentity"] as? String == String(describing: ObjectIdentifier(panel)),
+                      arrivalFocus["firstResponderIdentity"] as? String == String(describing: ObjectIdentifier(responder)),
+                      probe.returns.first?["consumed"] as? Bool == consumed else {
+                    throw Failure(message: "Synthetic event did not traverse the original local key monitor exactly once as expected")
+                }
+                if let expectedCommand, let expectedValue {
+                    guard probe.commandCount == 1, probe.commands.first?["command"] as? String == expectedCommand,
+                          let actual = probe.commands.first?["value"],
+                          NSDictionary(dictionary: ["value": actual]).isEqual(to: ["value": expectedValue]) else {
+                        throw Failure(message: "Synthetic event has no matching actual handler command receipt")
+                    }
+                } else if probe.commandCount != 0 {
+                    throw Failure(message: "Focused control/text event unexpectedly invoked a player shortcut")
+                }
+                return receipt
+            }
+            func settled(_ receipt: [String: Any], _ expected: [String: Int64], text: String? = nil) async throws {
+                try await preserved(expected, "synthetic key " + String(describing: receipt["sequence"]!) + " settles")
+                try checkCaptureDeadline()
+                guard sameSettings() else { throw Failure(message: "Synthetic key changed unrelated settings") }
+                var row: [String: Any] = ["check": (receipt["check"] as! String).replacingOccurrences(of: "-dispatch-returned", with: "-settled"),
+                    "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                    "eventID": receipt["eventID"]!, "sessionID": sessionID, "sequence": receipt["sequence"]!,
+                    "actionWindowNumber": panelNumber, "identity": expected, "context": context(), "state": state()]
+                if let text {
+                    guard let editor = temporaryField?.currentEditor() as? NSTextView,
+                          panel.firstResponder === editor, editor.string == text,
+                          editor.selectedRange() == NSRange(location: 2, length: 0) else {
+                        throw Failure(message: "Owned field editor text or selection changed before settled receipt")
+                    }
+                    row["verifiedOwnedFieldText"] = text
+                }
+                snapshots.append(row)
+            }
+            try windowFocus()
+            let right = try await dispatch("seekRight", code: 124, characters: "\u{F703}", responder: panel,
+                consumed: true, command: "seek", value: Double(25))
+            try await floatingWait("synthetic Right Arrow reaches exact paused twenty-five-second frame") {
+                exactSeconds(25) && self.state()["paused"] as? Bool == true &&
+                    integer(native(), "generation") > (initial["generation"] ?? Int64.max) &&
+                    integer(native(), "displayed-generation") == integer(native(), "generation")
+            }
+            let held = try await settle("synthetic Right Arrow completes paused replacement")
+            guard held["submitted-frames"] == (initial["submitted-frames"] ?? 0) + 1,
+                  held["completed-frames"] == (initial["completed-frames"] ?? 0) + 1,
+                  held["pending-frames"] == 0 else { throw Failure(message: "Synthetic Right Arrow did not produce exactly one accepted/emitted replacement") }
+            try await settled(right, held)
+
+            try phase("focused-button")
+            guard let content = panel.contentView, let control = button("return", in: content),
+                  control.isEnabled, !control.isHidden, panel.makeFirstResponder(control),
+                  panel.firstResponder === control else {
+                throw Failure(message: "Existing button cannot receive actual focus under current settings")
+            }
+            let buttonEvent = try await dispatch("focusedButtonRight", code: 124, characters: "\u{F703}", responder: control,
+                consumed: false, command: nil, value: nil)
+            try await settled(buttonEvent, held)
+
+            try phase("field-editor")
+            let field = NSTextField(string: "ab")
+            field.identifier = NSUserInterfaceItemIdentifier("HDRPlayer.syntheticKeyField")
+            field.setAccessibilityLabel("Synthetic key diagnostic field")
+            field.frame = NSRect(x: 8, y: 52, width: 120, height: 24)
+            panel.contentView?.addSubview(field)
+            temporaryField = field
+            guard panel.makeFirstResponder(field), let editor = field.currentEditor() as? NSTextView,
+                  panel.firstResponder === editor, editor.window === panel, editor.isEditable else {
+                throw Failure(message: "Owned diagnostic field editor did not become the actual first responder")
+            }
+            editor.setSelectedRange(NSRange(location: 1, length: 0))
+            guard editor.string == "ab", editor.selectedRange() == NSRange(location: 1, length: 0) else {
+                throw Failure(message: "Owned diagnostic editor did not retain its known initial text and insertion selection")
+            }
+            let textEvent = try await dispatch("fieldEditorSpace", code: 49, characters: " ", responder: editor,
+                consumed: false, command: nil, value: nil)
+            guard editor.string == "a b", editor.selectedRange() == NSRange(location: 2, length: 0) else {
+                throw Failure(message: "Synthetic Space was not inserted at the owned field editor selection")
+            }
+            try await settled(textEvent, held, text: "a b")
+            try windowFocus()
+            panel.endEditing(for: field)
+            field.removeFromSuperview()
+            guard field.superview == nil, field.window == nil, field.currentEditor() == nil else {
+                throw Failure(message: "Owned diagnostic text field did not detach before Escape")
+            }
+            temporaryField = nil
+            snapshots.append(["check": "synthetic-key-field-cleanup", "hostSeconds": ProcessInfo.processInfo.systemUptime,
+                "sessionID": sessionID, "fieldDetached": true, "fieldEditingEnded": true, "context": context()])
+
+            try phase("escape-return")
+            try windowFocus()
+            let escape = try await dispatch("escapeReturn", code: 53, characters: "\u{1B}", responder: panel,
+                consumed: true, command: "restoreFloating", value: true)
+            try await returned(panel, "synthetic Escape restores the same host to main", minimized: false)
+            guard (floating()["lastRestore"] as? [String: Any])?["activateMain"] as? Bool == true else {
+                throw Failure(message: "Synthetic Escape did not request explicit main restoration")
+            }
+            try await settled(escape, held)
+            try phase("final-floating-teardown")
+            _ = try await enter("floating entry before asynchronous quit")
+            try await preserved(held, "paused active floating host before asynchronous quit")
+            try checkCaptureDeadline()
+            guard sequence == 4, dispatchReceipts.count == 4, PlayerSyntheticKeyReceipt.active == nil,
+                  temporaryField == nil else { throw Failure(message: "Synthetic key diagnostic did not cleanly finish four registered events") }
+            checks.append("four registered NSApp.sendEvent key events prove local monitor consumption, focused-control forwarding and correlated transport; physical input remains unqualified")
+            return
         }
         if let directory = spaceDirectory {
             let sessionID = UUID().uuidString, pid = Int(ProcessInfo.processInfo.processIdentifier)

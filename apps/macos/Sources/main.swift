@@ -145,7 +145,12 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            let consumed = MainActor.assumeIsolated { self?.handleKey(event) == nil }
+            let consumed = MainActor.assumeIsolated {
+                PlayerSyntheticKeyReceipt.willHandle(event)
+                let result = self?.handleKey(event) == nil
+                PlayerSyntheticKeyReceipt.didHandle(event, consumed: result)
+                return result
+            }
             return consumed ? nil : event
         }
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
@@ -253,13 +258,20 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         if let responder = event.window?.firstResponder as? NSView,
            responder.isDescendant(of: controls) || responder is NSControl || responder is NSTextView { return event }
         switch event.keyCode {
-        case 49: togglePlay()
+        case 49:
+            togglePlay()
+            PlayerSyntheticKeyReceipt.didInvoke(event, command: "togglePause", value: NSNull())
         case 123, 124:
             let current = latestState["position"] as? Double ?? 0
             let delta: Double = event.modifierFlags.contains(.shift) ? 60 : 5
-            player.command("seek", value: max(0, current + (event.keyCode == 123 ? -delta : delta)))
+            let target = max(0, current + (event.keyCode == 123 ? -delta : delta))
+            player.command("seek", value: target)
+            PlayerSyntheticKeyReceipt.didInvoke(event, command: "seek", value: target)
         case 53:
-            if floatingVideo?.isActive == true { floatingVideo?.restore(activateMain: true) }
+            if floatingVideo?.isActive == true {
+                floatingVideo?.restore(activateMain: true)
+                PlayerSyntheticKeyReceipt.didInvoke(event, command: "restoreFloating", value: true)
+            }
             else if window.styleMask.contains(.fullScreen) { toggleFullscreen() } else { return event }
         default:
             switch event.charactersIgnoringModifiers?.lowercased() {
