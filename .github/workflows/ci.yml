@@ -67,6 +67,8 @@ jobs:
       - run: npm --prefix apps/controls run build
       - name: Check native pause intent, lifecycle recorder and PiP clock (CPU only)
         run: bash scripts/test-player-lifecycle.sh
+      - name: Build owned Space reference helper (no launch)
+        run: bash tools/FloatingSpaceReference/build-helper.sh "$RUNNER_TEMP/FloatingSpaceReference.app"
       - name: Check Live qualification policy (CPU only)
         run: bash scripts/test-mpv-live-policy.sh
       - name: Check enhancement audio-tail policy (CPU only)

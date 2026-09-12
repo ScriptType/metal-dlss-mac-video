@@ -20,3 +20,6 @@ artifacts/player-lifecycle-checks/pip-clock | tee artifacts/player-lifecycle-che
 swiftc -swift-version 6 apps/macos/Sources/PiPRequestState.swift scripts/test-player-pip-requests.swift \
   -o artifacts/player-lifecycle-checks/pip-requests
 artifacts/player-lifecycle-checks/pip-requests | tee artifacts/player-lifecycle-checks/pip-requests.log
+swiftc -swift-version 6 apps/macos/Sources/PlayerSessionConfiguration.swift scripts/test-player-transient-session.swift \
+  -o artifacts/player-lifecycle-checks/transient-session
+artifacts/player-lifecycle-checks/transient-session | tee artifacts/player-lifecycle-checks/transient-session.log

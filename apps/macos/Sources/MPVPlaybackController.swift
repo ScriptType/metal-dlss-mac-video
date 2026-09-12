@@ -278,7 +278,7 @@ final class MPVPlaybackController {
     var pictureInPictureClock: NativePiPCoreClock?
     let pictureInPictureDiagnosticEnabled = ProcessInfo.processInfo.environment["HDRPLAYER_ENABLE_PIP"] == "1"
     private var frameMailbox: NativePiPMailbox?
-    private let defaults: UserDefaults
+    private let preferences: PlayerSessionPreferences
     private var worker: MPVPlayerWorker?
     private var source = ""
     private var modelURL: URL?
@@ -299,19 +299,29 @@ final class MPVPlaybackController {
     private var pauseIntent = PlayerPauseIntent()
     private(set) var state: [String: Any] = [:]
 
-    init(hostView: NSView) {
+    init(hostView: NSView, session: PlayerSessionConfiguration) {
         self.hostView = hostView
-        if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] != nil {
-            defaults = UserDefaults(suiteName: "HDRPlayer.Smoke")!
-            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES"] != "1" { defaults.removePersistentDomain(forName: "HDRPlayer.Smoke") }
-        } else { defaults = .standard }
-        let cacheBase = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first ?? FileManager.default.temporaryDirectory
-        if let override = ProcessInfo.processInfo.environment["HDRPLAYER_CACHE_DIRECTORY"] {
-            cacheDirectory = URL(fileURLWithPath: override, isDirectory: true)
-        } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] != nil {
-            cacheDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("HDRPlayer-smoke-cache-\(UUID().uuidString)", isDirectory: true)
-        } else { cacheDirectory = cacheBase.appendingPathComponent("HDRPlayer/Prepared", isDirectory: true) }
-        let saved = defaults.dictionary(forKey: "HDRPlayer.preferences.v1") ?? [:]
+        preferences = PlayerSessionPreferences(transient: session.isTransient) {
+            let defaults: UserDefaults
+            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] != nil {
+                defaults = UserDefaults(suiteName: "HDRPlayer.Smoke")!
+                if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES"] != "1" { defaults.removePersistentDomain(forName: "HDRPlayer.Smoke") }
+            } else { defaults = .standard }
+            return (defaults.dictionary(forKey: "HDRPlayer.preferences.v1") ?? [:], {
+                defaults.set($0, forKey: "HDRPlayer.preferences.v1")
+            })
+        }
+        if let transientCache = session.cacheDirectory {
+            cacheDirectory = transientCache
+        } else {
+            let cacheBase = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first ?? FileManager.default.temporaryDirectory
+            if let override = ProcessInfo.processInfo.environment["HDRPLAYER_CACHE_DIRECTORY"] {
+                cacheDirectory = URL(fileURLWithPath: override, isDirectory: true)
+            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_REPORT"] != nil {
+                cacheDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("HDRPlayer-smoke-cache-\(UUID().uuidString)", isDirectory: true)
+            } else { cacheDirectory = cacheBase.appendingPathComponent("HDRPlayer/Prepared", isDirectory: true) }
+        }
+        let saved = preferences.values
         enabled = saved["enabled"] as? Bool ?? false
         strength = min(1, max(0, saved["strength"] as? Double ?? 1))
         colorStrength = min(1, max(0, saved["colorStrength"] as? Double ?? 1))
@@ -581,9 +591,9 @@ final class MPVPlaybackController {
     }
     private func publish() { updateProcessing(); onState?(state) }
     private func persist() {
-        defaults.set(["enabled": enabled, "strength": strength, "colorStrength": colorStrength, "width": width, "height": height,
+        preferences.replace(["enabled": enabled, "strength": strength, "colorStrength": colorStrength, "width": width, "height": height,
             "mode": mode, "volume": state["volume"] as? Double ?? 100, "muted": state["muted"] as? Bool ?? false,
             "subtitleBrightness": subtitleBrightness, "subtitleScale": subtitleScale, "subtitleDelay": subtitleDelay,
-            "cacheCapacityGiB": Double(capacityBytes) / 1_073_741_824], forKey: "HDRPlayer.preferences.v1")
+            "cacheCapacityGiB": Double(capacityBytes) / 1_073_741_824])
     }
 }

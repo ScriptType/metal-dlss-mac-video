@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the existing real DOM/media smoke and verify native recorder teardown.
+"""Run the selected native/media smoke and verify native recorder teardown.
 
 Uses the GPU/window. Run only in a coordinated test window. This never requests
 sleep, posts a lifecycle notification, or changes VoiceOver preferences.
@@ -22,33 +22,85 @@ def sha256(path: Path) -> str:
         return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
+def floating_teardown(rows: list[dict], begin: int, destroyed: int, finish: int) -> dict:
+    events = [row["event"] for row in rows]
+    prepared = events.index("floating-video-termination-prepared")
+    finished = events.index("floating-video-termination-finished")
+    assert begin < prepared < finished < destroyed < finish, "Floating/native teardown order is incomplete"
+    entered_indices = [index for index, event in enumerate(events) if event == "floating-video-entered"]
+    assert entered_indices and entered_indices[-1] < begin, "No final floating entry before termination"
+    entered = rows[entered_indices[-1]]["details"]
+    retained = rows[prepared]["details"]
+    released = rows[finished]["details"]
+    assert entered["active"] is True and entered["phase"] == "floating"
+    assert retained["active"] is True and retained["phase"] == "terminating"
+    for key in ("nativeChildIdentities", "nativeChildLayerIdentities"):
+        identities = entered[key]
+        assert isinstance(identities, list) and identities and all(isinstance(value, str) and value for value in identities), \
+            f"Missing native identities at entry: {key}"
+        assert retained[key] == identities, f"Native identity changed before worker teardown: {key}"
+        assert released[key] == [], f"Native identity survived worker teardown: {key}"
+    host = entered["hostIdentity"]
+    assert isinstance(host, str) and host
+    assert retained["hostIdentity"] == released["hostIdentity"] == host, "Video host identity changed"
+    for window in ("mainWindow", "floatingWindow"):
+        identity = entered[window]["identity"]
+        assert isinstance(identity, str) and identity and entered[window]["attached"] is True
+        assert retained[window]["attached"] is True and retained[window]["identity"] == identity, \
+            f"Window ownership changed before native teardown: {window}"
+    assert retained["hostWindow"]["attached"] is True
+    assert retained["hostWindow"]["identity"] == retained["floatingWindow"]["identity"]
+    assert released["phase"] == "finished" and released["active"] is False
+    assert released["floatingWindow"]["attached"] is False
+    assert released["mainWindow"]["attached"] is True and released["hostWindow"]["attached"] is True
+    assert released["hostWindow"]["identity"] == released["mainWindow"]["identity"] == entered["mainWindow"]["identity"], \
+        "Finished host is not back in the same main window"
+    assert released["mainSlotIdentity"] == entered["mainSlotIdentity"]
+    assert released["homeConstraintsActive"] == 4 and released["floatingConstraintsActive"] == 0
+    return {"lastEntered": entered, "terminationPrepared": retained, "terminationFinished": released,
+            "eventIndices": {"entered": entered_indices[-1], "terminationRequested": begin,
+                             "prepared": prepared, "finished": finished, "nativeWorkerDestroyed": destroyed,
+                             "diagnosticFinish": finish}}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--executable", type=Path, default=ROOT / ".build/debug/HDRPlayer")
-    parser.add_argument("--source", type=Path, default=ROOT / "assets/test-clips/player-controls.mkv")
+    parser.add_argument("--source", type=Path, help="Override the repository fixture (player-controls.mkv by default; playback/pq-30-60s.mkv for floating-video)")
     parser.add_argument("--mpv", type=Path, default=ROOT / "artifacts/mpv-build/libmpv.2.dylib")
-    parser.add_argument("--shared", type=Path, default=ROOT / ".build/debug/libFrameEngineShared.dylib")
+    parser.add_argument("--shared", type=Path, default=ROOT / ".build/debug/libFrameEngineShared.dylib",
+                        help="Shared binary to hash; its loaded path is selected by native linkage, not this argument")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/player-lifecycle-playback")
-    parser.add_argument("--scenario", choices=("controls", "pip", "pip-prepared", "pip-reconfigure"), default="controls")
+    parser.add_argument("--scenario", choices=("controls", "pip", "pip-prepared", "pip-reconfigure", "floating-video"), default="controls")
     args = parser.parse_args()
+    if args.source is None:
+        args.source = (ROOT / "assets/test-clips/playback/pq-30-60s.mkv" if args.scenario == "floating-video"
+                       else ROOT / "assets/test-clips/player-controls.mkv")
+    output = args.output.absolute()
+    # Check before resolving symlinks or touching any retained evidence.
+    if output.is_symlink() or (output.exists() and (not output.is_dir() or any(output.iterdir()))):
+        parser.error(f"Refusing existing nonempty output or symlink: {output}")
     executable, source, mpv, shared = (getattr(args, key).resolve() for key in ("executable", "source", "mpv", "shared"))
-    output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    report: dict = {"passed": False, "scope": "Actual DOM/media teardown; no physical sleep or VoiceOver qualification", "checks": []}
+    scope = ("Programmatic native window/button dispatch and recorded teardown; no physical input, HDR, compositor, sleep or VoiceOver proof"
+             if args.scenario == "floating-video" else "Actual DOM/media teardown; no physical sleep or VoiceOver qualification")
+    report: dict = {"passed": False, "scenario": args.scenario, "source": str(source), "scope": scope, "checks": []}
     paths = {"HDRPlayer": executable, "libmpv": mpv, "FrameEngineShared": shared}
     report["binaries"] = {name: {"path": str(path), "beforeSHA256": sha256(path)} for name, path in paths.items()}
     env = dict(os.environ)
     env.update(METAL_DLSS_MPV_LIBRARY=str(mpv), HDRPLAYER_UI_SMOKE_KIND="lifecycle",
                HDRPLAYER_UI_SMOKE_REPORT=str(output / "dom.json"), HDRPLAYER_LIFECYCLE_LOG=str(output / "lifecycle.jsonl"))
     env.pop("HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES", None)
+    env.pop("HDRPLAYER_FLOATING_VIDEO", None)
+    env.pop("HDRPLAYER_ENABLE_PIP", None)
+    env.pop("HDRPLAYER_PIP_REPORT", None)
     if args.scenario.startswith("pip"):
         env.update(HDRPLAYER_ENABLE_PIP="1", HDRPLAYER_UI_SMOKE_KIND=args.scenario,
                    HDRPLAYER_PIP_REPORT=str(output / "pip.json"))
-    # Avoid accepting stale success after a launch failure.
-    for name in ("dom.json", "lifecycle.jsonl", "pip.json"):
-        (output / name).unlink(missing_ok=True)
+    elif args.scenario == "floating-video":
+        env.update(HDRPLAYER_FLOATING_VIDEO="1", HDRPLAYER_UI_SMOKE_KIND="floating-video")
     try:
-        with (output / "player.log").open("w") as log:
+        with (output / "player.log").open("x") as log:
             process = subprocess.run([str(executable), str(source)], cwd=ROOT, env=env,
                                      stdout=log, stderr=subprocess.STDOUT, timeout=120, check=False)
         report["exitCode"] = process.returncode
@@ -56,7 +108,7 @@ def main() -> int:
         dom = json.loads((output / "dom.json").read_text())
         assert dom.get("passed") is True, dom.get("failure", "DOM smoke failed")
         report["domChecksPassed"] = len(dom["checks"])
-        report["checks"].append("Existing DOM/media smoke passed and the process exited cleanly")
+        report["checks"].append("Actual native/media smoke passed and the process exited cleanly")
         rows = [json.loads(line) for line in (output / "lifecycle.jsonl").read_text().splitlines()]
         events = [row["event"] for row in rows]
         begin, destroyed, finish = (events.index(name) for name in
@@ -78,6 +130,9 @@ def main() -> int:
         report["checks"].append("Source, paused transport state and native rational displayed timestamps were recorded")
         assert all(row["kernelSleepWakeCycles"] == 0 and row["physicalSleepWakeObserved"] is False for row in rows)
         report["checks"].append("No physical sleep cycle was inferred during the media-only check")
+        if args.scenario == "floating-video":
+            report["floatingTeardown"] = floating_teardown(rows, begin, destroyed, finish)
+            report["checks"].append("The floating native host/child/layer survive termination preparation, then detach before final worker-destroyed recording")
         if args.scenario.startswith("pip"):
             pip = json.loads((output / "pip.json").read_text())
             pip_events = [event["event"] for event in pip["events"]]
@@ -100,7 +155,8 @@ def main() -> int:
         if not unchanged:
             report["passed"] = False
             report["failure"] = "A measured binary changed during the smoke"
-        (output / "report.json").write_text(json.dumps(report, indent=2) + "\n")
+        with (output / "report.json").open("x") as handle:
+            handle.write(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
     return 0 if report["passed"] else 1
 
