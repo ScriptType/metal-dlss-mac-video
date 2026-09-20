@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "validationDate": "2026-09-20",
+  "machine": {
+    "chip": "Apple M3",
+    "memoryGB": 16,
+    "macOS": "27.0",
+    "macOSBuild": "26A428",
+    "xcode": "27.0",
+    "xcodeBuild": "27A266a"
+  },
+  "mpv": {
+    "base": "f9213292afed1caa77827e66fe9c9216ee5ec513",
+    "commit": "8d24633c530228ac4d3ea30fd9e263ad601763cc",
+    "change": "AudioChannelLayout property on input scope replaces ChannelMap on global scope"
+  },
+  "propertyProbes": {
+    "mono": {
+      "formerSetStatus": -50,
+      "correctedSetStatus": 0,
+      "correctedLayoutTag": 6553601,
+      "correctedMap": [0, 0]
+    },
+    "stereo": {
+      "leftRight": {"setStatus": 0, "labels": [1, 2], "map": [0, 1]},
+      "rightLeft": {"setStatus": 0, "labels": [2, 1], "map": [0, 1]}
+    }
+  },
+  "library": {
+    "path": "artifacts/coreaudio-layout-fix-1-build/libmpv.2.dylib",
+    "bytes": 5636272,
+    "sha256": "3313d16e728e294360366f7000fb027ceebb4e4b26c3b7e9f26f60d005c7abcb",
+    "buildPassed": true,
+    "existingRuntimePinsUnchanged": true,
+    "sourceUnchangedDuringBuild": true
+  },
+  "smoke": {
+    "loadedExactLibrary": true,
+    "exitCode": 0,
+    "elapsedSeconds": 3.283836375005194,
+    "coreaudio": {"sampleRate": 48000, "channels": 1, "format": "s16"},
+    "position": {"first": 58.0, "last": 59.397581292},
+    "naturalEOF": {"reason": 0, "error": 0},
+    "cleanDestruction": true,
+    "inputPinsUnchanged": true
+  },
+  "scope": {
+    "audibilityQualified": false,
+    "physicalChannelOrderQualified": false,
+    "fullApplicationUIQualified": false,
+    "macOS26CompatibilityQualified": false,
+    "upstreamLGUltraFineReproductionQualified": false
+  },
+  "validationCommands": {
+    "propertyProbe1": {
+      "invocationSource": "artifacts/pip-appkit-prototype-1/coreaudio-property-probe-1/run_probe_reviewed.py",
+      "commands": [
+        "xcrun --sdk macosx clang -std=c11 -Wall -Wextra -Werror coreaudio_property_probe.c -framework AudioToolbox -framework CoreAudio -o coreaudio_property_probe",
+        "coreaudio_property_probe result.json"
+      ]
+    },
+    "propertyProbe2": {
+      "invocationSource": "artifacts/pip-appkit-prototype-1/coreaudio-property-probe-2/run_probe_reviewed.py",
+      "commands": [
+        "xcrun --sdk macosx clang -std=c11 -Wall -Wextra -Werror coreaudio_stereo_property_probe.c -framework AudioToolbox -framework CoreAudio -o coreaudio_stereo_property_probe",
+        "coreaudio_stereo_property_probe result.json"
+      ]
+    },
+    "librarySmoke": {
+      "invocationSources": [
+        "artifacts/pip-appkit-prototype-1/coreaudio-library-smoke-1/build/invocation.json",
+        "artifacts/pip-appkit-prototype-1/coreaudio-library-smoke-1/run/invocation.json"
+      ],
+      "commands": ["python3 driver.py build", "python3 driver.py run"]
+    }
+  },
+  "records": [
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-property-probe-1/result.json", "bytes": 2092, "sha256": "a3f201ceb5b843562f29d56195bc503ccc3b17f8cfecd69965dc4e19e8473747"},
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-property-probe-2/result.json", "bytes": 813, "sha256": "ff63a386f1c78ab375f3fa332d73950bc04b89468404d374190a28a3ca4346e0"},
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-library-build-1/report.json", "bytes": 549, "sha256": "f770edcc1d8ff7b19336ec7983180b8764b61a5ab5e92e1bf11ba2e5530ced9f"},
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-library-smoke-1/run/result.json", "bytes": 1477, "sha256": "d0215638c4e00e95c201cf597e9e3ca68424be40139315f7f22bb048e10b3220"},
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-library-smoke-1/run/stdout.log", "bytes": 23396, "sha256": "b51d59067656fe515be3b47e7b0383e96d7ad6effd0b94040eb53ae0848aca6a"},
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-library-smoke-1/run/stderr.log", "bytes": 0, "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-library-smoke-1/client.c", "bytes": 6238, "sha256": "e98588336814ac01a1bab2b9d226f0d5972337bdf84b2d2960396bcfd22a8459"},
+    {"path": "artifacts/pip-appkit-prototype-1/coreaudio-library-smoke-1/driver.py", "bytes": 4442, "sha256": "135d42c3c45e6638a1fe3db0ff27960649917ff6cbec5e035fc0081528889069"}
+  ]
+}
