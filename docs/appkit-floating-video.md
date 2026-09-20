@@ -35,7 +35,18 @@ Transient mode neither constructs nor accesses the player's standard or smoke `U
 
 An absent transient flag or explicit `0` retains ordinary behavior; `1` enables isolation. Any other present value, including an empty value or surrounding whitespace, exits with code 2 before AppKit, native playback or diagnostic CLI forwarding. Transient mode also rejects the presence of `HDRPLAYER_UI_SMOKE_*`, `HDRPLAYER_FLOATING_*` except `HDRPLAYER_FLOATING_VIDEO`, `HDRPLAYER_ENABLE_PIP`, `HDRPLAYER_PIP`, `HDRPLAYER_PIP_*`, and `HDRPLAYER_SYSTEM_PIP_*`, even when their values are empty or `0`. The diagnostic CLI options `--headless`, `--capture-dir`, `--capture-every`, `--headroom`, `--report`, `--frames` and `--exit-after-playback`, including `--option=value` forms, are rejected. An explicit lifecycle log remains allowed.
 
-Input routing, focus behavior and panel controls remain unchanged. No input is injected and no keyboard, Accessibility or saved-preference settings are changed. All 11 focused CPU/file check groups and the isolated M3 app-shell build pass. The checks cover startup validation, exclusive cache creation, in-memory preferences and retained persistent-mode load/save behavior using an injected memory backing; they do not access saved preferences. A transient hands-on launch and physical mouse/keyboard checks are also pending; earlier synthetic keyboard evidence does not qualify physical delivery.
+Input routing, focus behavior and panel controls remain unchanged. No input is injected and no keyboard, Accessibility or saved-preference settings are changed. All 11 focused CPU/file check groups and the isolated M3 app-shell build pass. The checks cover startup validation, exclusive cache creation, in-memory preferences and retained persistent-mode load/save behavior using an injected memory backing; they do not access saved preferences.
+
+In the first transient hands-on run of source `504995b` on M3 with macOS 27, the user reported that Right and Escape did nothing. The native player exited with code 0. The recorder subsequently failed during Python shutdown. Physical input remains unqualified.
+
+## Trace physical Right and Escape delivery
+
+For a hands-on launch, add `HDRPLAYER_INPUT_TRACE=1` and `HDRPLAYER_LIFECYCLE_LOG=/absolute/new/lifecycle.jsonl` to the transient session environment above. Enter the floating window naturally, then press Right and Escape yourself. Do not run the synthetic keyboard diagnostic for this check.
+
+The existing local key monitor records `floating-input.before` and `floating-input.after` for the first 12 Right or Escape arrivals while floating is active. Each pair shares `traceSequence`, for at most 24 trace records per launch. Records include the event window, key window, app activation, responder class, native-control/text-view roles, WebKit-controls ancestry, and whether `handleKey` consumed the event. No characters or text values are recorded. Floating window snapshots also include the natural responder class and native roles. The trace does not change focus or event routing.
+
+Compare the before-row responder fields with the after-row `consumed` value. An absent arrival row does not establish why delivery failed. Keep the original capture and record the actual physical actions separately.
+
 ## Window and control behavior
 
 Entry requires a settled, non-fullscreen main window and a valid layout. Four retained constraints attach the host to its main-window slot; entry replaces them with four constraints in the floating slot. Return reverses that move. The main slot displays a Return button while its video is floating.

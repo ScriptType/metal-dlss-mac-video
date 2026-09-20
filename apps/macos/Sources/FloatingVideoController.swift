@@ -370,6 +370,10 @@ final class FloatingVideoController: NSObject, NSWindowDelegate {
         return ["attached": true, "identity": identity(window), "number": window.windowNumber,
             "visible": window.isVisible, "minimized": window.isMiniaturized, "key": window.isKeyWindow,
             "onActiveSpace": window.isOnActiveSpace, "occlusionVisible": window.occlusionState.contains(.visible),
+            "firstResponderClass": window.firstResponder.map { String(describing: type(of: $0)) } ?? "none",
+            "firstResponderIsWindow": window.firstResponder === window,
+            "firstResponderIsNSControl": window.firstResponder is NSControl,
+            "firstResponderIsNSTextView": window.firstResponder is NSTextView,
             "frame": rect(window.frame), "backingScale": window.backingScaleFactor,
             "screen": window.screen?.localizedName ?? "Unknown"]
     }

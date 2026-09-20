@@ -31,6 +31,8 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
     private var controls: WKWebView!
     private var player: MPVPlaybackController!
     private var keyMonitor: Any?
+    private let inputTraceEnabled = ProcessInfo.processInfo.environment["HDRPLAYER_INPUT_TRACE"] == "1"
+    private var inputTraceCount = 0
     private var terminating = false
     private var terminated = false
     private var latestState: [String: Any] = [:]
@@ -153,9 +155,16 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         NSApp.activate(ignoringOtherApps: true)
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             let consumed = MainActor.assumeIsolated {
+                let trace = self?.beginInputTrace(event)
                 PlayerSyntheticKeyReceipt.willHandle(event)
                 let result = self?.handleKey(event) == nil
                 PlayerSyntheticKeyReceipt.didHandle(event, consumed: result)
+                if let trace, let self {
+                    var details = self.inputTraceState(event)
+                    details["traceSequence"] = trace
+                    details["consumed"] = result
+                    self.lifecycle?.record("floating-input.after", extra: details)
+                }
                 return result
             }
             return consumed ? nil : event
@@ -259,6 +268,40 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         player.wake()
         lifecycle?.record("did-wake.restore-enqueued")
     }
+    private func beginInputTrace(_ event: NSEvent) -> Int? {
+        guard inputTraceEnabled, lifecycle != nil, inputTraceCount < 12,
+              floatingVideo?.isActive == true, event.keyCode == 124 || event.keyCode == 53 else { return nil }
+        inputTraceCount += 1
+        var details = inputTraceState(event)
+        details["traceSequence"] = inputTraceCount
+        lifecycle?.record("floating-input.before", extra: details)
+        return inputTraceCount
+    }
+
+    private func inputTraceState(_ event: NSEvent) -> [String: Any] {
+        func windowRole(_ candidate: NSWindow?) -> String {
+            guard let candidate else { return "none" }
+            if candidate === window { return "main" }
+            if candidate === floatingVideo?.window { return "floating" }
+            return "other"
+        }
+        let responder = event.window?.firstResponder
+        let responderView = responder as? NSView
+        return [
+            "eventTimestamp": event.timestamp, "keyCode": Int(event.keyCode),
+            "modifierFlags": event.modifierFlags.rawValue, "isRepeat": event.isARepeat,
+            "eventWindowNumber": event.windowNumber, "eventWindowRole": windowRole(event.window),
+            "eventWindowIsKey": event.window?.isKeyWindow ?? false,
+            "keyWindowNumber": NSApp.keyWindow?.windowNumber ?? 0, "keyWindowRole": windowRole(NSApp.keyWindow),
+            "appActive": NSApp.isActive, "floatingActive": floatingVideo?.isActive == true,
+            "firstResponderClass": responder.map { String(describing: type(of: $0)) } ?? "none",
+            "firstResponderIsWindow": responder != nil && responder === event.window,
+            "firstResponderIsNSControl": responder is NSControl,
+            "firstResponderIsNSTextView": responder is NSTextView,
+            "firstResponderInWKControls": responderView?.isDescendant(of: controls) ?? false
+        ]
+    }
+
     private func handleKey(_ event: NSEvent) -> NSEvent? {
         guard event.window === window || (floatingVideo?.isActive == true && event.window === floatingVideo?.window),
               !event.modifierFlags.contains(.command), !event.modifierFlags.contains(.control), !event.modifierFlags.contains(.option) else { return event }
