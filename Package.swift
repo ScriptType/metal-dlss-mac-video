@@ -5,7 +5,6 @@ let package = Package(
     name: "MetalDLSSVideo",
     platforms: [.macOS(.v26)],
     products: [
-        .library(name: "FrameEngine", targets: ["FrameEngine"]),
         .library(name: "FrameEngineShared", type: .dynamic, targets: ["FrameEngine"]),
         .executable(name: "hdr-probe", targets: ["HDRProbe"]),
         .executable(name: "hdr-benchmark", targets: ["FrameBenchmark"]),
