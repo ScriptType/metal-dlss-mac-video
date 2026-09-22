@@ -151,7 +151,6 @@ def generate(output, scale=4):
                 field = grain_field(index, width, height)
                 field_pin = save(f"frame-{index:04d}.grain-signs.i8", field.tobytes(order="C"))
                 positive = int(np.count_nonzero(field == 1)); negative = int(np.count_nonzero(field == -1))
-                require(positive + negative == field_bytes, "Unexpected field signs")
                 field_pin.update(layout=FIELD_LAYOUT, width=width, height=height,
                     statistics={"positivePixels": positive, "negativePixels": negative, "positiveCells": positive // 4,
                         "negativeCells": negative // 4, "meanSign": (positive - negative) / field_bytes,

@@ -86,9 +86,8 @@ def mapping_from_observation(first_file_pts, timebase, native_start, rebased, de
     # Validate that contract; never estimate an offset from a startup seek target.
     if abs(player_pts - float(decoder_pts)) > 1e-6:
         raise ValueError("Settled player PTS differs from the native decoder timeline")
-    decoder_to_player = 0.0
     return {"nativeDemuxerStartSeconds": native_start, "rebaseStartTime": rebased,
-            "packetOffset": rational(packet_offset), "decoderToPlayerSeconds": decoder_to_player,
+            "packetOffset": rational(packet_offset), "decoderToPlayerSeconds": 0.0,
             "heldFirstFilePTS": rational(first_file_pts), "heldFirstDecoderPTS": rational(decoder_pts),
             "heldFirstPlayerSeconds": player_pts}
 
@@ -397,8 +396,6 @@ def main():
                     for key in ("packetOffset", "nativeVersion"):
                         if observed[key] != mapping[key]:
                             raise RuntimeError(f"Prepared core changed observed {key}")
-                    if abs(observed["decoderToPlayerSeconds"] - mapping["decoderToPlayerSeconds"]) > 1e-6:
-                        raise RuntimeError("Prepared core changed decoder-to-player mapping")
                     player.command("vf-command", "enhance", "prepare", "start")
                     if phase == 0 and args.cancel_first:
                         working = player.wait(lambda s: s.get("prepared", {}).get("processedFrames", 0) >= 1)

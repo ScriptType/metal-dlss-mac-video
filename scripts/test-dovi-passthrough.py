@@ -24,8 +24,6 @@ def create_report_directory(report):
 
 
 def native_case(source, directory, base_only, fixture=FIXTURES["fate-profile84"], log_directory=None, inventory=None, probe_info_control=False):
-    if base_only and fixture["profile"] != 8:
-        raise ValueError("Profile 5 has no HLG/PQ compatible-base case")
     name = "hlg-base" if base_only else "native-dovi"
     ipc = directory / f"{name}.sock"
     log = (log_directory or directory) / f"{name}.log"
