@@ -122,7 +122,7 @@ enum FrameStressHarness {
         try check((4...100).contains(cycles) && warmup >= 1 && cycles - warmup >= 3, "cycles/warmup must leave at least three measured cycles")
         try check((1...16384).contains(width) && (1...16384).contains(height) && UInt64(width) * UInt64(height) <= HDRRuntimeResources.shared.snapshot().policy.maximumProcessingPixels,
             "processing geometry exceeds configured admission policy")
-        try check(rssMiB <= 4096 && activeMiB <= 4096, "growth tolerances must be at most4096MiB")
+        try check(rssMiB <= 4096 && activeMiB <= 4096, "growth tolerances must be at most 4096 MiB")
         let source = URL(fileURLWithPath: video), replacement = URL(fileURLWithPath: alternate), model = URL(fileURLWithPath: modelPath)
         let sourceHash = try HDRCacheSource.fingerprint(url: source, streamIndex: 0).contentSHA256
         let replacementHash = try HDRCacheSource.fingerprint(url: replacement, streamIndex: 0).contentSHA256
@@ -139,11 +139,12 @@ enum FrameStressHarness {
                     var cycle = try await runCycle(source: source, replacement: replacement, model: model,
                         modelHash: modelHash, mode: mode, index: index, width: width, height: height, revision: report.revision)
                     try await eventually { HDRRuntimeResources.shared.snapshot().residentModels == initialModels }
-                    cycle.drained = StressMemory.sample()
-                    try check(cycle.drained!.models.residentModelPayloadBytes == 0, "model payload credits remained after actual session drain/destruction")
-                    try check(cycle.drained!.mlxCacheLimitBytes == cycle.drained!.models.policy.mlxCacheBytes, "effective MLX cache limit differs from runtime policy")
+                    let drained = StressMemory.sample()
+                    cycle.drained = drained
+                    try check(drained.models.residentModelPayloadBytes == 0, "model payload credits remained after actual session drain/destruction")
+                    try check(drained.mlxCacheLimitBytes == drained.models.policy.mlxCacheBytes, "effective MLX cache limit differs from runtime policy")
                     report.cycles.append(cycle)
-                    print("stress mode=\(mode) cycle=\(index + 1)/\(cycles) rss=\(cycle.drained!.residentBytes) active=\(cycle.drained!.mlxActiveBytes) cache=\(cycle.drained!.mlxCacheBytes)")
+                    print("stress mode=\(mode) cycle=\(index + 1)/\(cycles) rss=\(drained.residentBytes) active=\(drained.mlxActiveBytes) cache=\(drained.mlxCacheBytes)")
                 }
                 let measured = report.cycles.filter { $0.mode == mode && $0.index >= warmup }.compactMap(\.drained)
                 let early = measured.prefix(max(1, measured.count / 2)), late = measured.suffix(max(1, measured.count / 2))
@@ -180,7 +181,6 @@ enum FrameStressHarness {
             processingWidth: width, processingHeight: height), processor: processor, measurements: recorder)
         var consumer: StressConsumer?
         var held: [CompletedFrame] = []
-        defer { producerGate.signaledValue = 1; consumer?.releaseGPU(); session.close() }
         do {
             var input = first
             for frameID in 0..<3 {

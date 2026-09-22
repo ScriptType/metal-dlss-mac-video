@@ -2,8 +2,8 @@ import Cocoa
 import Metal
 import QuartzCore
 
-// Built with libmpv/client.h as the bridging header. All libmpv calls, including
-// destruction, run off AppKit's main thread; macvk dispatches native work to it.
+// All libmpv calls, including destruction, run off AppKit's main thread;
+// macvk dispatches native work to it.
 final class PlaybackWorker: @unchecked Sendable {
     let viewPointer: Int64
     let media: String
