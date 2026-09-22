@@ -289,9 +289,7 @@ public final class HDRMetalView: NSView {
     public private(set) var currentFrame: HDRSurfaceFrame?
     public private(set) var displayConfiguration = HDRDisplayConfiguration()
     public var captureDirectory: URL?
-    public var onCompletion: (@Sendable (HDRPresentationCompletion) -> Void)?
     private let slots = DispatchSemaphore(value: 3)
-    private var needsCapture = false
     private var metalLayer: CAMetalLayer { layer as! CAMetalLayer }
 
     public init(device: (any MTLDevice)? = MTLCreateSystemDefaultDevice()) throws {
@@ -321,23 +319,18 @@ public final class HDRMetalView: NSView {
         redraw()
     }
 
-    public func present(_ frame: HDRSurfaceFrame, capture: Bool = false) {
-        currentFrame = frame; needsCapture = capture; redraw()
-    }
-
-    /// Development harness completion boundary. Suspension yields the main actor;
-    /// production adapters can use present/redraw with their own playback clock.
+    /// Development harness completion boundary. Suspension yields the main actor.
     public func presentAndWait(_ frame: HDRSurfaceFrame, capture: Bool = false) async throws -> HDRPresentationCompletion {
         currentFrame = frame
         displayConfiguration = HDRDisplayConfiguration(screen: window?.screen)
         guard acquireSlot() else { throw ProbeError.unavailable("HDR presentation queue full") }
         guard let drawable = metalLayer.nextDrawable() else { slots.signal(); throw ProbeError.unavailable("HDR drawable unavailable") }
-        let callback = onCompletion, slots = slots
+        let slots = slots
         return try await withCheckedThrowingContinuation { continuation in
             do {
                 try renderer.render(frame, to: drawable.texture, display: displayConfiguration, drawable: drawable,
                                     captureDirectory: capture ? captureDirectory : nil) { result in
-                    slots.signal(); callback?(result)
+                    slots.signal()
                     if let error = result.error { continuation.resume(throwing: ProbeError.unavailable(error)) }
                     else { continuation.resume(returning: result) }
                 }
@@ -345,7 +338,7 @@ public final class HDRMetalView: NSView {
         }
     }
 
-    public func clear() { currentFrame = nil; needsCapture = false }
+    public func clear() { currentFrame = nil }
 
     private func acquireSlot() -> Bool { slots.wait(timeout: .now()) == .success }
 
@@ -353,17 +346,9 @@ public final class HDRMetalView: NSView {
         guard let frame = currentFrame, acquireSlot() else { return }
         displayConfiguration = HDRDisplayConfiguration(screen: window?.screen)
         guard let drawable = metalLayer.nextDrawable() else { slots.signal(); return }
-        let completion = onCompletion, slots = slots
+        let slots = slots
         do {
-            try renderer.render(frame, to: drawable.texture, display: displayConfiguration, drawable: drawable,
-                                captureDirectory: needsCapture ? captureDirectory : nil) { result in
-                slots.signal(); completion?(result)
-            }
-            needsCapture = false
-        } catch {
-            slots.signal()
-            completion?(HDRPresentationCompletion(frameIndex: frame.frameIndex, generation: frame.generation,
-                                                  gpuSeconds: 0, captureURL: nil, error: error.localizedDescription))
-        }
+            try renderer.render(frame, to: drawable.texture, display: displayConfiguration, drawable: drawable) { _ in slots.signal() }
+        } catch { slots.signal() }
     }
 }
