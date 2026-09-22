@@ -31,7 +31,6 @@ def main():
         path = OUTPUT / f"{name}.mp4"
         matrix = "bt709" if primaries == "bt709" else "bt2020nc"
         if not path.exists():
-            # Synthetic pattern contains motion, saturated colours, and fine detail.
             filters = "format=yuv420p10le,zscale=pin=bt709:tin=bt709:min=bt709:rin=limited"
             filters += f":p={primaries}:t={transfer}:m={matrix}:r=limited:npl=1000,format=yuv420p10le"
             params = "pools=1:frame-threads=1:log-level=error:keyint=120"

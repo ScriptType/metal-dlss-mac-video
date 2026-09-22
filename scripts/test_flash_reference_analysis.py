@@ -204,7 +204,7 @@ class FlashReferenceAnalysisTests(unittest.TestCase):
                         sourceIdentity="sha256:" + pin(source_path)["sha256"], provenance=incoming["provenance"])
                     write(target / "manifest.json", outgoing)
                     helper.validate_capture(target / "manifest.json")
-                    # All cases pass the former recipe-led predicate, including True == 1.
+                    # A recipe-only predicate would admit all cases, including True == 1.
                     self.assertEqual(outgoing["settings"]["modelInputRange"], "bounded-sRGB-after-resample")
                     self.assertTrue(all(outgoing["settings"][key] == value for key, value in recipe["intendedCaptureSettings"].items()))
                     captures[arm] = target / "manifest.json"

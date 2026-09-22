@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CPU same-ordinal input/output/residual observations for one grain-like arm.
 
-All48 frames and47 adjacent pairs are retained. No inference or quality limit.
+All 48 frames and 47 adjacent pairs are retained. No inference or quality limit.
 """
 import argparse
 import csv

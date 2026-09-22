@@ -129,7 +129,7 @@ class GrainReferenceAnalysisTests(unittest.TestCase):
             g = np.zeros_like(base)
             if 24 <= index <= 35:
                 field = np.fromfile(self.grain / inputs["frames"][index]["grainField"]["path"], dtype=np.int8).reshape(90, 160)
-                g = base * field[:, :, None] / 32  # Exact dyadic source at selected scale1.
+                g = base * field[:, :, None] / 32  # Exact dyadic source at selected scale 1.
             expected = {"C": weights * (index**2 / 1024), "R": weights * (index**2 / 1024 + drift(index)),
                         "G": g, "Q": g + weights * drift(index), "D": weights * drift(index)}
             frame_sums.append({name: self.assert_metric(frame["metrics"][name], values, index) for name, values in expected.items()})
@@ -205,7 +205,7 @@ class GrainReferenceAnalysisTests(unittest.TestCase):
                         sourceIdentity="sha256:" + pin(source / "manifest.json")["sha256"], provenance=incoming["provenance"])
                     write(target / "manifest.json", outgoing)
                     helper.validate_capture(target / "manifest.json")
-                    # The former recipe-led settings predicate admits all three cases.
+                    # A recipe-only settings predicate would admit all three cases.
                     self.assertEqual(outgoing["settings"]["modelInputRange"], "bounded-sRGB-after-resample")
                     self.assertTrue(all(outgoing["settings"][key] == value for key, value in recipe["intendedCaptureSettings"].items()))
                     if setting != "temporal":
