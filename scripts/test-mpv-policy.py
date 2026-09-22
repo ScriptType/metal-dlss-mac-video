@@ -26,11 +26,8 @@ CORE_SOURCES = ("demux/demux_lavf.c", "demux/lavf_timing.h", "player/video.c", "
 
 
 def digest(path):
-    hasher = hashlib.sha256()
     with path.open("rb") as source:
-        while block := source.read(1024 * 1024):
-            hasher.update(block)
-    return hasher.hexdigest()
+        return hashlib.file_digest(source, "sha256").hexdigest()
 
 
 def revision(path):

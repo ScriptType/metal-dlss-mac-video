@@ -106,7 +106,7 @@ def evaluate(output, ffmpeg, ffprobe):
         "default_cache": "float32; HDR10 remains an evaluated lossy candidate",
         "cases": [],
     }
-    for name, encode_options in (("lossless", ["-x265-params", "lossless=1"]), ("crf12", ["-crf", "12"])):
+    for name, encode_options in (("lossless", []), ("crf12", ["-crf", "12"])):
         movie = output / f"hdr10-{name}.mp4"
         decoded = output / f"decoded-{name}.yuv420p10le"
         parameters = ("pools=1:frame-threads=1:hdr10=1:repeat-headers=1:colorprim=9:transfer=16:colormatrix=9:range=limited:"
@@ -114,7 +114,6 @@ def evaluate(output, ffmpeg, ffprobe):
                       f"max-cll={cll}")
         if name == "lossless":
             parameters += ":lossless=1"
-            encode_options = []
         run([ffmpeg, "-v", "error", "-y", "-f", "rawvideo", "-pixel_format", "yuv420p10le", "-video_size", "64x64",
              "-framerate", "24", "-color_primaries", "bt2020", "-color_trc", "smpte2084", "-colorspace", "bt2020nc",
              "-color_range", "tv", "-chroma_sample_location", "center", "-i", str(raw_path),
