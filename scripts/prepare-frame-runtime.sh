@@ -8,3 +8,5 @@ while IFS= read -r destination; do destinations+=("$destination"); done < <(
   find "$frame_bin" -type d -path '*.xctest/Contents/MacOS' -print
 )
 MLXDLSS_PREPARE_SKIP_SWIFT_BUILD=1 vendor/MLX-DLSS/scripts/prepare-mlx-metallib.sh "${destinations[@]}" "$@"
+# SwiftPM re-signs a test bundle when it relinks and rejects an unsigned metallib inside it.
+for destination in "${destinations[@]:1}"; do codesign --force --sign - "$destination/mlx.metallib"; done
