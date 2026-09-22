@@ -107,14 +107,15 @@ public final class FrameMeasurementRecorder: @unchecked Sendable {
     public init(configuration: MeasurementConfiguration, maximumSamples: Int = 36_000) {
         self.configuration = configuration; self.maximumSamples = max(2, maximumSamples)
     }
+    private func keep<T>(_ value: T, in ring: inout [T], next: inout Int) {
+        if ring.count == maximumSamples {
+            ring[next] = value
+            next = (next + 1) % maximumSamples
+        } else { ring.append(value) }
+    }
     public func recordSubmission(seconds: Double) {
         guard seconds.isFinite, seconds >= 0 else { return }
-        lock.withLock {
-            if submissionSeconds.count == maximumSamples {
-                submissionSeconds[nextSubmissionIndex] = seconds
-                nextSubmissionIndex = (nextSubmissionIndex + 1) % maximumSamples
-            } else { submissionSeconds.append(seconds) }
-        }
+        lock.withLock { keep(seconds, in: &submissionSeconds, next: &nextSubmissionIndex) }
     }
     public func recordCompletion(_ frame: FrameMeasurement) {
         lock.withLock {
@@ -123,10 +124,7 @@ public final class FrameMeasurementRecorder: @unchecked Sendable {
             sample.warmup = completedInGeneration < configuration.warmupFrames
             completedInGeneration += 1
             completedTotal += 1
-            if frames.count == maximumSamples {
-                frames[nextFrameIndex] = sample
-                nextFrameIndex = (nextFrameIndex + 1) % maximumSamples
-            } else { frames.append(sample) }
+            keep(sample, in: &frames, next: &nextFrameIndex)
         }
     }
     /// Audio offset is video PTS minus the adapter's audio clock at presentation.
@@ -155,12 +153,7 @@ public final class FrameMeasurementRecorder: @unchecked Sendable {
     }
     public func recordSeek(seconds: Double) {
         guard seconds.isFinite, seconds >= 0 else { return }
-        lock.withLock {
-            if seekSeconds.count == maximumSamples {
-                seekSeconds[nextSeekIndex] = seconds
-                nextSeekIndex = (nextSeekIndex + 1) % maximumSamples
-            } else { seekSeconds.append(seconds) }
-        }
+        lock.withLock { keep(seconds, in: &seekSeconds, next: &nextSeekIndex) }
     }
     /// Supply measured energy over the retained warmed interval, excluding startup.
     public func recordEnergy(joules: Double) {

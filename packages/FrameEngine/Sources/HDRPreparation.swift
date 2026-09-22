@@ -205,19 +205,16 @@ public actor HDRPreparationCoordinator {
             let duration = try HDRCacheTime(value: descriptor.duration.value, timescale: descriptor.duration.timescale)
             let buffer = output.pixelBuffer
             CVPixelBufferLockBaseAddress(buffer, .readOnly)
-            let rgba: [Float]
-            if let address = CVPixelBufferGetBaseAddress(buffer) {
-                let rowBytes = CVPixelBufferGetBytesPerRow(buffer)
-                let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
-                var values: [Float] = []; values.reserveCapacity(width * height * 4)
-                for y in 0..<height {
-                    let row = address.advanced(by: y * rowBytes).assumingMemoryBound(to: Float16.self)
-                    values.append(contentsOf: UnsafeBufferPointer(start: row, count: width * 4).map(Float.init))
-                }
-                rgba = values
-            } else {
+            guard let address = CVPixelBufferGetBaseAddress(buffer) else {
                 CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
                 throw HDRCacheError.invalidFrame("Missing completed float storage")
+            }
+            let rowBytes = CVPixelBufferGetBytesPerRow(buffer)
+            let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
+            var rgba: [Float] = []; rgba.reserveCapacity(width * height * 4)
+            for y in 0..<height {
+                let row = address.advanced(by: y * rowBytes).assumingMemoryBound(to: Float16.self)
+                rgba.append(contentsOf: UnsafeBufferPointer(start: row, count: width * 4).map(Float.init))
             }
             CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
             try await cache.append(HDRCacheFloatFrame(timing: .init(presentationTime: pts, duration: duration), rgba: rgba), to: writer)
