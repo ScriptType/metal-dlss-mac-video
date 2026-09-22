@@ -5,7 +5,7 @@ cd "$PROJECT_ROOT"
 mkdir -p artifacts/hdr-native-color-probe
 swiftc -swift-version 5 -O \
   -import-objc-header vendor/mpv/include/mpv/hdr_frame.h \
-  tools/HDRNativeColorProbe/main.swift apps/macos/Sources/PiPBufferSnapshot.swift \
+  tools/HDRNativeColorProbe/main.swift tools/Shared/PixelBufferSnapshot.swift \
   -o artifacts/hdr-native-color-probe/HDRNativeColorProbe \
   -L "$PROJECT_ROOT/artifacts/mpv-build" -lmpv \
   -Xlinker -rpath -Xlinker "$PROJECT_ROOT/artifacts/mpv-build" \

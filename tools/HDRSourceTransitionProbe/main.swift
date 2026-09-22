@@ -51,20 +51,20 @@ final class SourceTransitionProbe: NSObject, NSApplicationDelegate {
             "windowID": window.windowNumber, "visible": window.isVisible,
             "occlusionVisible": window.occlusionState.contains(.visible), "miniaturized": window.isMiniaturized,
             "onActiveSpace": window.isOnActiveSpace, "appActive": NSApp.isActive,
-            "windowFrame": PiPBufferSnapshot.rect(window.frame), "hostBounds": PiPBufferSnapshot.rect(host.bounds),
-            "hostFrameInWindow": PiPBufferSnapshot.rect(host.convert(host.bounds, to: nil)),
+            "windowFrame": PixelBufferSnapshot.rect(window.frame), "hostBounds": PixelBufferSnapshot.rect(host.bounds),
+            "hostFrameInWindow": PixelBufferSnapshot.rect(host.convert(host.bounds, to: nil)),
             "backingScale": window.backingScaleFactor, "hostSeconds": CACurrentMediaTime()]
         if let layer = host.subviews.first?.layer as? CAMetalLayer {
             result["metalLayer"] = ["pixelFormat": layer.pixelFormat.rawValue,
-                "colorspace": layer.colorspace.map { PiPBufferSnapshot.json($0) } ?? NSNull(),
+                "colorspace": layer.colorspace.map { PixelBufferSnapshot.json($0) } ?? NSNull(),
                 "edrMetadata": layer.edrMetadata.map { String(describing: $0) } ?? "none",
                 "wantsExtendedDynamicRangeContent": layer.wantsExtendedDynamicRangeContent,
                 "drawableSize": [layer.drawableSize.width, layer.drawableSize.height],
-                "frame": PiPBufferSnapshot.rect(layer.frame), "bounds": PiPBufferSnapshot.rect(layer.bounds),
-                "contentsRect": PiPBufferSnapshot.rect(layer.contentsRect), "contentsScale": layer.contentsScale]
+                "frame": PixelBufferSnapshot.rect(layer.frame), "bounds": PixelBufferSnapshot.rect(layer.bounds),
+                "contentsRect": PixelBufferSnapshot.rect(layer.contentsRect), "contentsScale": layer.contentsScale]
         }
         if let screen = window.screen {
-            result["screen"] = ["frame": PiPBufferSnapshot.rect(screen.frame),
+            result["screen"] = ["frame": PixelBufferSnapshot.rect(screen.frame),
                 "currentHeadroom": screen.maximumExtendedDynamicRangeColorComponentValue,
                 "potentialHeadroom": screen.maximumPotentialExtendedDynamicRangeColorComponentValue,
                 "referenceHeadroom": screen.maximumReferenceExtendedDynamicRangeColorComponentValue]
@@ -158,7 +158,7 @@ final class SourceTransitionProbe: NSObject, NSApplicationDelegate {
                     do {
                         phase["sourcePath"] = descriptor.source_path.map { String(cString: $0) } ?? ""
                         try require(phase["sourcePath"] as? String == c.sourcePath, "Export source identity differs from the opened pinned file")
-                        phase["exported"] = try PiPBufferSnapshot.write(Unmanaged<CVPixelBuffer>.fromOpaque(pixel).takeUnretainedValue(), name: "exported", directory: directory)
+                        phase["exported"] = try PixelBufferSnapshot.write(Unmanaged<CVPixelBuffer>.fromOpaque(pixel).takeUnretainedValue(), name: "exported", directory: directory)
                     } catch { mainError = error }
                 }
             }

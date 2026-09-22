@@ -40,7 +40,7 @@ final class NativeColorProbe: NSObject, NSApplicationDelegate {
         var result: [String: Any] = ["windowID": window.windowNumber, "pid": ProcessInfo.processInfo.processIdentifier,
             "visible": window.isVisible, "occlusionVisible": window.occlusionState.contains(.visible),
             "miniaturized": window.isMiniaturized, "appActive": NSApp.isActive,
-            "contentBounds": PiPBufferSnapshot.rect(host.bounds), "backingScale": window.backingScaleFactor]
+            "contentBounds": PixelBufferSnapshot.rect(host.bounds), "backingScale": window.backingScaleFactor]
         if let windows = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] {
             result["onScreenBounds"] = windows.first { ($0[kCGWindowNumber as String] as? Int) == self.window.windowNumber }?[kCGWindowBounds as String] ?? NSNull()
             let keys = [kCGWindowNumber, kCGWindowOwnerPID, kCGWindowOwnerName, kCGWindowLayer, kCGWindowBounds, kCGWindowAlpha, kCGWindowIsOnscreen].map { $0 as String }
@@ -50,15 +50,15 @@ final class NativeColorProbe: NSObject, NSApplicationDelegate {
         }
         if let layer = host.subviews.first?.layer as? CAMetalLayer {
             result["metalLayer"] = ["pixelFormat": layer.pixelFormat.rawValue,
-                "colorspace": layer.colorspace.map { PiPBufferSnapshot.json($0) } ?? NSNull(),
+                "colorspace": layer.colorspace.map { PixelBufferSnapshot.json($0) } ?? NSNull(),
                 "wantsExtendedDynamicRangeContent": layer.wantsExtendedDynamicRangeContent,
                 "edrMetadata": layer.edrMetadata.map { String(describing: $0) } ?? "none",
                 "drawableSize": [layer.drawableSize.width, layer.drawableSize.height],
-                "contentsScale": layer.contentsScale, "contentsRect": PiPBufferSnapshot.rect(layer.contentsRect)]
+                "contentsScale": layer.contentsScale, "contentsRect": PixelBufferSnapshot.rect(layer.contentsRect)]
         }
         if let screen = window.screen {
             result["screen"] = ["displayID": screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] ?? NSNull(),
-                "frame": PiPBufferSnapshot.rect(screen.frame), "currentHeadroom": screen.maximumExtendedDynamicRangeColorComponentValue,
+                "frame": PixelBufferSnapshot.rect(screen.frame), "currentHeadroom": screen.maximumExtendedDynamicRangeColorComponentValue,
                 "potentialHeadroom": screen.maximumPotentialExtendedDynamicRangeColorComponentValue,
                 "referenceHeadroom": screen.maximumReferenceExtendedDynamicRangeColorComponentValue]
         }
@@ -167,7 +167,7 @@ final class NativeColorProbe: NSObject, NSApplicationDelegate {
                 DispatchQueue.main.sync {
                     viewState = self.surface()
                     if let frame, let opaque = mpv_hdr_frame_get(frame)?.pointee.pixel_buffer {
-                        do { phase["exported"] = try PiPBufferSnapshot.write(Unmanaged<CVPixelBuffer>.fromOpaque(opaque).takeUnretainedValue(), name: "exported", directory: directory) }
+                        do { phase["exported"] = try PixelBufferSnapshot.write(Unmanaged<CVPixelBuffer>.fromOpaque(opaque).takeUnretainedValue(), name: "exported", directory: directory) }
                         catch { mainError = error }
                     }
                 }
@@ -281,7 +281,7 @@ final class NativeColorProbe: NSObject, NSApplicationDelegate {
                 DispatchQueue.main.sync {
                     do {
                         phase["surface"] = self.surface()
-                        phase["exported"] = try PiPBufferSnapshot.write(currentBuffer, name: "exported", directory: directory)
+                        phase["exported"] = try PixelBufferSnapshot.write(currentBuffer, name: "exported", directory: directory)
                     } catch { mainError = error }
                 }
                 if let mainError { throw mainError }
