@@ -95,10 +95,10 @@ final class NativeHDRPlayback {
             guard let self else { return }
             do {
                 let result = try await run(url: url, generation: currentGeneration)
-                guard generation == currentGeneration, !Task.isCancelled else { return }
+                guard !Task.isCancelled else { return }
                 onFinish?(.success(result))
             } catch {
-                guard generation == currentGeneration, !Task.isCancelled else { return }
+                guard !Task.isCancelled else { return }
                 onFinish?(.failure(error))
             }
         }
@@ -106,7 +106,6 @@ final class NativeHDRPlayback {
 
     func play() { paused = false; onStatus?("Playing · original HDR · video harness") }
     func pause() { paused = true; onStatus?("Paused · original HDR") }
-    func stop() { task?.cancel(); generation &+= 1; surface.clear() }
 
     private func run(url: URL, generation: UInt64) async throws -> HDRHarnessReport {
         onStatus?("Importing HDR original…")
@@ -119,7 +118,6 @@ final class NativeHDRPlayback {
         let started = ProcessInfo.processInfo.systemUptime
         while let imported = try await reader.next() {
             try Task.checkCancellation()
-            guard self.generation == generation else { throw CancellationError() }
             let metadata = imported.metadata
             let original = imported.original
             if writer == nil { writer = try MLXPixelBufferWriter(width: original.width, height: original.height, halfOutput: true) }

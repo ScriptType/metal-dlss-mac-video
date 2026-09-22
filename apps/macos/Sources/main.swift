@@ -5,14 +5,12 @@ import WebKit
 
 /// Keep the numeric/original diagnostic CLI isolated from the libmpv process so
 /// the application cannot accidentally load two copies of the MLX runtime.
-func runDiagnosticHarnessIfRequested() -> Never? {
+func runDiagnosticHarnessIfRequested() {
     let arguments = Array(CommandLine.arguments.dropFirst())
     let diagnostic = Set(["--headless", "--capture-dir", "--capture-every", "--headroom", "--report", "--frames", "--exit-after-playback"])
-    guard arguments.contains(where: diagnostic.contains) else { return nil }
-    let executableDirectory = URL(fileURLWithPath: CommandLine.arguments[0]).standardized.deletingLastPathComponent()
-    let candidates = [executableDirectory.appendingPathComponent("HDRHarness"),
-        Bundle.main.bundleURL.deletingLastPathComponent().appendingPathComponent("HDRHarness.app/Contents/MacOS/HDRHarness")]
-    guard let executable = candidates.first(where: { FileManager.default.isExecutableFile(atPath: $0.path) }) else {
+    guard arguments.contains(where: diagnostic.contains) else { return }
+    let executable = URL(fileURLWithPath: CommandLine.arguments[0]).standardized.deletingLastPathComponent().appendingPathComponent("HDRHarness")
+    guard FileManager.default.isExecutableFile(atPath: executable.path) else {
         fputs("HDRHarness is unavailable. Run scripts/build-harness.sh or build the HDRHarness product.\n", stderr)
         exit(2)
     }
@@ -186,7 +184,6 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         return nil
     }
     private func publish(_ state: [String: Any]) {
-        latestState = state
         window.title = (state["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "HDR Player"
         var displayed = state
         if let layer = video.subviews.first?.layer as? CAMetalLayer {
@@ -244,7 +241,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
     }
 }
 
-if let never = runDiagnosticHarnessIfRequested() { switch never {} }
+runDiagnosticHarnessIfRequested()
 let app = NSApplication.shared
 let delegate = PlayerDelegate()
 app.delegate = delegate

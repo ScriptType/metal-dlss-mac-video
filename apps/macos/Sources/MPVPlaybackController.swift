@@ -254,7 +254,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
         } catch { publish(["initialized": false, "loading": false, "error": error.localizedDescription]) }
     }
     static func subtitleColor(_ brightness: Double) -> String {
-        let component = Int((max(0.1, min(1, brightness)) * 255).rounded())
+        let component = Int((brightness * 255).rounded())
         return String(format: "#%02X%02X%02X", component, component, component)
     }
 }
@@ -446,8 +446,7 @@ final class MPVPlaybackController {
         if mode == "prepared" {
             let json: [String: Any] = ["sourcePath": source, "cacheDirectory": cacheDirectory.path,
                 "capacityBytes": capacityBytes, "segmentFrames": 60, "prerollFrames": 8]
-            request = try? JSONSerialization.data(withJSONObject: json, options: [.sortedKeys])
-            guard request != nil else { state["error"] = "Cannot encode preparation configuration"; return }
+            request = try! JSONSerialization.data(withJSONObject: json, options: [.sortedKeys])
         }
         let removingPrepared = mode == "prepared" || (state["nativeEnhancement"] as? [String: Any])?["policy"] as? String == "prepared"
         worker?.enqueue(["vf", "set", filter()], preparedRequest: request, configurationID: configurationID,
@@ -564,7 +563,7 @@ final class MPVPlaybackController {
     private func publish() { updateProcessing(); onState?(state) }
     private func persist() {
         defaults.set(["enabled": enabled, "strength": strength, "colorStrength": colorStrength, "width": width, "height": height,
-            "mode": mode, "volume": state["volume"] as? Double ?? 100, "muted": state["muted"] as? Bool ?? false,
+            "volume": state["volume"] as? Double ?? 100, "muted": state["muted"] as? Bool ?? false,
             "subtitleBrightness": subtitleBrightness, "subtitleScale": subtitleScale, "subtitleDelay": subtitleDelay,
             "cacheCapacityGiB": Double(capacityBytes) / 1_073_741_824], forKey: "HDRPlayer.preferences.v1")
     }
