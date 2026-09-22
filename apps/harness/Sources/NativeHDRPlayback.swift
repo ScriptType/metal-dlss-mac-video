@@ -68,9 +68,7 @@ struct HDRHarnessReport: Codable, Sendable {
     let audio: String
 }
 
-/// One decoded frame and one presentation submission at a time. This diagnostic
-/// controller exercises import/packing/native display while selected-core audio,
-/// seeking and temporal scheduling are implemented independently.
+/// Diagnostic video-only playback: one decoded frame and one presentation submission at a time.
 @MainActor
 final class NativeHDRPlayback {
     private var task: Task<Void, Never>?
@@ -133,8 +131,7 @@ final class NativeHDRPlayback {
             let pts = metadata.time.seconds
             if firstPTS == nil { firstPTS = pts }
             if epoch == nil { epoch = ProcessInfo.processInfo.systemUptime - pts }
-            // The video-only harness does not discard a late frame: all captured
-            // originals keep their exact source PTS. Decode and GPU waits suspend.
+            // Late frames are never dropped, so every captured original keeps its exact source PTS.
             if !options.headless {
                 while true {
                     if paused {

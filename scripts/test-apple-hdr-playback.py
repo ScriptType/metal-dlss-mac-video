@@ -292,7 +292,7 @@ def main():
                            for name, path in {"root": ROOT, "mpv": ROOT / "vendor/mpv", "libplacebo": ROOT / "vendor/libplacebo"}.items()}
     report["workingState"] = {name: subprocess.check_output(["git", "-C", str(path), "status", "--short"], text=True)
                               for name, path in {"root": ROOT, "mpv": ROOT / "vendor/mpv"}.items()}
-    report["sourceHashes"] = {str(path.relative_to(ROOT)): sha(path) for path in [Path(__file__), ROOT / "tools/HDRSourceTransitionProbe/main.swift", ROOT / "apps/macos/Sources/PiPBufferSnapshot.swift", ROOT / "vendor/mpv/video/out/vulkan/context_mac.m", ROOT / "vendor/mpv/video/out/mac_common.swift", ROOT / "vendor/mpv/demux/lavf_timing.h", ROOT / "vendor/mpv/demux/demux_lavf.c", ROOT / "vendor/mpv/video/filter/metal_hdr_decoder.m"]}
+    report["sourceHashes"] = {str(path.relative_to(ROOT)): sha(path) for path in [Path(__file__), ROOT / "tools/HDRSourceTransitionProbe/main.swift", ROOT / "tools/Shared/PixelBufferSnapshot.swift", ROOT / "vendor/mpv/video/out/vulkan/context_mac.m", ROOT / "vendor/mpv/video/out/mac_common.swift", ROOT / "vendor/mpv/demux/lavf_timing.h", ROOT / "vendor/mpv/demux/demux_lavf.c", ROOT / "vendor/mpv/video/filter/metal_hdr_decoder.m"]}
     process = None
     try:
         if not args.metadata_only:

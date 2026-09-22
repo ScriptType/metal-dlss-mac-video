@@ -226,7 +226,6 @@ def app_case(source, directory, fixture, inventory_path=None, probe_info_control
     if inventory_path:
         env["HDRPLAYER_DV_INVENTORY"] = str(inventory_path.resolve())
     env.pop("HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES", None)
-    env.pop("HDRPLAYER_ENABLE_PIP", None)
     for name in ("dom.json", "lifecycle.jsonl", "player.log"):
         if (directory / name).exists():
             raise FileExistsError(f"Refusing to overwrite an existing app capture: {directory / name}")

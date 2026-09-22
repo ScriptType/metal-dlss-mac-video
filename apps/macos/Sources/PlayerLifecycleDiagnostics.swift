@@ -71,7 +71,7 @@ final class PlayerLifecycleDiagnostics {
     }
 
     private func powerMessage(_ message: UInt32, argument: UnsafeMutableRawPointer?) {
-        // Acknowledge immediately. The diagnostic never vetoes or delays sleep.
+        // The diagnostic never vetoes or delays sleep.
         if message == hdr_player_power_can_sleep() || message == hdr_player_power_will_sleep() {
             IOAllowPowerChange(powerPort, Int(bitPattern: argument))
         }

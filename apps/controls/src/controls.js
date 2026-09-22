@@ -39,10 +39,6 @@ function update(next) {
   if (!next || next.version !== 1) return;
   state = { ...state, ...next };
   const processing = next.processing ?? {};
-  element('pip').hidden = !next.pip?.diagnosticEnabled;
-  element('pip').disabled = !next.pip?.active && !next.capabilities?.pip;
-  element('pip').title = next.pip?.reason || 'Picture in Picture';
-  element('pip').setAttribute('aria-label', next.pip?.active ? 'Exit Picture in Picture' : 'Enter Picture in Picture');
   const enhancementAvailable = Boolean(processing.modelAvailable) && processing.enhancementAvailable !== false;
   const loaded = Number.isFinite(state.duration) && state.duration > 0;
   element('title').textContent = state.title || 'Open a video';
@@ -117,8 +113,8 @@ function update(next) {
   const ranges = prepared.availableRanges ?? [];
   const rangeSignature = JSON.stringify(ranges);
   if (optionSignatures.get('prepared-ranges') !== rangeSignature) {
-    // Coalesce contiguous ranges for navigation; exact segment identities remain
-    // native. Limit displayed buttons while keeping every section seekable.
+    // Display-only merge; the core keeps exact segment boundaries. Sections past
+    // the 64-button cap stay reachable from the timeline.
     const merged = [];
     for (const range of ranges) {
       if (!Number.isFinite(range.startSeconds) || !Number.isFinite(range.endSeconds)) continue;

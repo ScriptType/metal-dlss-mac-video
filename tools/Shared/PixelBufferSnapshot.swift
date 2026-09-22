@@ -1,12 +1,10 @@
 import AppKit
-import AVFoundation
 import CoreMedia
 import CoreVideo
 import CryptoKit
 
-/// Explicit diagnostic readback only. Normal playback never calls this helper.
 @MainActor
-enum PiPBufferSnapshot {
+enum PixelBufferSnapshot {
     struct Failure: LocalizedError {
         let message: String
         init(_ message: String) { self.message = message }
@@ -47,34 +45,6 @@ enum PiPBufferSnapshot {
             "cleanApertureTopLeft": rect(CMVideoFormatDescriptionGetCleanAperture(description, originIsAtTopLeft: true)),
             "presentationDimensions": [presentation.width, presentation.height],
             "extensions": json(CMFormatDescriptionGetExtensions(description) as Any)]
-    }
-    static func layer(_ layer: AVSampleBufferDisplayLayer, host: NSView?) -> [String: Any] {
-        let t = layer.transform, a = layer.affineTransform()
-        var result: [String: Any] = ["frame": rect(layer.frame), "bounds": rect(layer.bounds),
-            "contentsRect": rect(layer.contentsRect), "contentsCenter": rect(layer.contentsCenter),
-            "contentsScale": layer.contentsScale, "contentsGravity": layer.contentsGravity.rawValue,
-            "videoGravity": layer.videoGravity.rawValue, "position": [layer.position.x, layer.position.y],
-            "anchorPoint": [layer.anchorPoint.x, layer.anchorPoint.y], "masksToBounds": layer.masksToBounds,
-            "hidden": layer.isHidden, "opacity": layer.opacity,
-            "affineTransform": [a.a, a.b, a.c, a.d, a.tx, a.ty],
-            "transform": [t.m11,t.m12,t.m13,t.m14,t.m21,t.m22,t.m23,t.m24,t.m31,t.m32,t.m33,t.m34,t.m41,t.m42,t.m43,t.m44],
-            "rendererStatus": layer.sampleBufferRenderer.status.rawValue]
-        if let host {
-            result["host"] = ["frame": rect(host.frame), "bounds": rect(host.bounds), "flipped": host.isFlipped,
-                "backingScale": host.window?.backingScaleFactor ?? 0,
-                "layerContentsScale": host.layer?.contentsScale ?? 0,
-                "frameInWindow": rect(host.convert(host.bounds, to: nil))]
-            result["superlayerIsHostLayer"] = layer.superlayer === host.layer
-        }
-        if let parent = layer.superlayer {
-            result["superlayer"] = ["class": String(describing: type(of: parent)), "frame": rect(parent.frame),
-                "bounds": rect(parent.bounds), "contentsScale": parent.contentsScale]
-        }
-        if let presentation = layer.presentation() {
-            result["presentation"] = ["frame": rect(presentation.frame), "bounds": rect(presentation.bounds),
-                "contentsScale": presentation.contentsScale, "contentsRect": rect(presentation.contentsRect)]
-        }
-        return result
     }
     static func write(_ pixel: CVPixelBuffer, name: String, directory: URL) throws -> [String: Any] {
         let width = CVPixelBufferGetWidth(pixel), height = CVPixelBufferGetHeight(pixel)
