@@ -32,7 +32,7 @@ def window_events(text, adapter):
         if not isinstance(event["hostSeconds"], (int, float)) or not math.isfinite(event["hostSeconds"]):
             raise ValueError("invalid native window host timestamp")
         events.append(event)
-    return sorted(events, key=lambda event: event["hostSeconds"])
+    return events
 
 
 def completed_window(engine):

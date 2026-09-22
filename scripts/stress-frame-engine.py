@@ -3,7 +3,6 @@
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 import subprocess
 import time
@@ -134,7 +133,7 @@ def main():
         "--active-growth-mib", str(args.active_growth_mib)]
     try:
         with (output / "run.log").open("w") as log:
-            process = subprocess.run(arguments, cwd=project, env=dict(os.environ), stdout=log,
+            process = subprocess.run(arguments, cwd=project, stdout=log,
                                      stderr=subprocess.STDOUT, timeout=args.timeout_seconds)
         provenance["exitCode"] = process.returncode
         provenance["binaryUnchanged"] = digest(executable) == provenance["benchmarkSHA256"]

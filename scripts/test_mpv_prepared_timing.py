@@ -1,4 +1,3 @@
-import copy
 from fractions import Fraction
 import hashlib
 import importlib.util

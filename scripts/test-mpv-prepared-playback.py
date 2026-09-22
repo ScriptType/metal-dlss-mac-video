@@ -8,7 +8,6 @@ import hashlib
 import importlib.util
 import json
 import math
-import os
 from pathlib import Path
 import re
 import socket
@@ -21,16 +20,12 @@ ROOT = Path(__file__).resolve().parents[1]
 _spec = importlib.util.spec_from_file_location("mpv_policy_helpers", ROOT / "scripts/test-mpv-policy.py")
 helpers = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(helpers)
-digest, rational, displayed_time = helpers.digest, helpers.rational, helpers.displayed_time
+digest, rational, displayed_time, seconds = helpers.digest, helpers.rational, helpers.displayed_time, helpers.seconds
 
 
 def require(value, message):
     if not value:
         raise RuntimeError(message)
-
-
-def seconds(value):
-    return Fraction(value["value"], value["timescale"])
 
 
 def finite_number(value):
@@ -137,7 +132,7 @@ class Player:
             "--ao=coreaudio", "--mute=yes", "--pause=yes", "--keep-open=yes", "--osc=no", "--geometry=960x496",
             "--keepaspect-window=no", "--input-default-bindings=no", "--input-builtin-bindings=no", "--input-vo-keyboard=no",
             "--input-terminal=no", f"--input-ipc-server={ipc}", f"--vf={options}", f"--log-file={self.log}", str(source)],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=ROOT, env=dict(os.environ))
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=ROOT)
         self.socket = socket.socket(socket.AF_UNIX)
         try:
             deadline = time.monotonic() + 30
