@@ -298,7 +298,7 @@ private func writeSegment(_ cache: HDRSegmentCache, identity: HDRCacheIdentity, 
     let writer = try FileHandle(forWritingTo: source)
     try writer.seekToEnd()
     let appending = Task.detached {
-        while !Task.isCancelled { try writer.write(contentsOf: Data(repeating: 2, count: 4_096)) }
+        for _ in 0..<(1 << 18) where !Task.isCancelled { try writer.write(contentsOf: Data(repeating: 2, count: 4_096)) }
     }
     defer { appending.cancel() }
     while try FileManager.default.attributesOfItem(atPath: source.path)[.size] as? Int == initialSize { await Task.yield() }
