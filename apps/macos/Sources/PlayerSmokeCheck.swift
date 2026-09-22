@@ -3,8 +3,6 @@ import CryptoKit
 import QuartzCore
 import WebKit
 
-/// Opt-in integration check. It drives the shipped DOM and checks independently
-/// polled mpv state, with isolated preferences; normal launches never create it.
 @MainActor
 final class PlayerSmokeCheck {
     let webView: WKWebView

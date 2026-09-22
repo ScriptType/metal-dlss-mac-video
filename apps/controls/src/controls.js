@@ -113,8 +113,8 @@ function update(next) {
   const ranges = prepared.availableRanges ?? [];
   const rangeSignature = JSON.stringify(ranges);
   if (optionSignatures.get('prepared-ranges') !== rangeSignature) {
-    // Coalesce contiguous ranges for navigation; exact segment identities remain
-    // native. Limit displayed buttons while keeping every section seekable.
+    // Display-only merge; the core keeps exact segment boundaries. Sections past
+    // the 64-button cap stay reachable from the timeline.
     const merged = [];
     for (const range of ranges) {
       if (!Number.isFinite(range.startSeconds) || !Number.isFinite(range.endSeconds)) continue;

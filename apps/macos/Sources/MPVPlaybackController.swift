@@ -304,7 +304,7 @@ final class MPVPlaybackController {
         width = min(512, max(16, saved["width"] as? Int ?? 32))
         height = min(288, max(16, saved["height"] as? Int ?? 24))
         capacityBytes = Int64(min(64, max(1, saved["cacheCapacityGiB"] as? Double ?? 8)) * 1_073_741_824)
-        // Qualification belongs to this running model/source session.
+        // Live qualification belongs to this model/source session, so the saved mode is not restored.
         mode = "adaptive"
         subtitleBrightness = min(1, max(0.1, saved["subtitleBrightness"] as? Double ?? 1))
         subtitleScale = min(3, max(0.5, saved["subtitleScale"] as? Double ?? 1))
