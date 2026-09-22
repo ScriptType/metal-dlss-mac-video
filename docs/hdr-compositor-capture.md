@@ -1,16 +1,9 @@
 # HDR compositor capture
 
-The public ScreenCaptureKit helper captures one explicitly identified HDR Player,
-workspace player or `com.apple.PIPAgent` window. It supports relative compositor
+The public ScreenCaptureKit helper captures one explicitly identified HDR Player
+or workspace player window. It supports relative compositor
 diagnostics. It does not measure panel luminance, physical scanout or acoustic
 synchronization, and successful capture does not qualify HDR playback.
-
-The sample-buffer PiP experiment is unsupported on macOS. In June 2026, Apple
-Developer Technical Support stated that `AVSampleBufferDisplayLayer` to
-`AVPictureInPictureController` is supported only on iOS and that the availability
-annotations for other platforms are inaccurate. The successful macOS entry,
-transport and lifecycle probes do not override that support boundary.
-[Apple DTS clarification](https://developer.apple.com/forums/thread/830764)
 
 ## Capture contract
 
@@ -33,8 +26,7 @@ probe=artifacts/hdr-capture-probe/hdr-capture-probe
 without requesting permission or changing privacy settings. Listing returns
 metadata for the specified owner and omits window titles. Capture revalidates the
 PID, bundle, executable allowlist and window ownership before and after the
-request. Unbundled workspace executables require `--owner-bundle unbundled`;
-PIPAgent requires its actual PID and `com.apple.PIPAgent`.
+request. Unbundled workspace executables require `--owner-bundle unbundled`.
 
 The default is the public local-display HDR screenshot preset, a desktop-independent
 single-window filter, native backing dimensions, no cursor, child windows or
@@ -95,72 +87,13 @@ hash. Geometry controls evolved between sessions. The final source additionally
 checks the optional reference-file size before reading it; that bounded CPU-only
 change was compiled after the captures.
 
-The existing system-PiP inspection launcher supplied the paused PQ fixture at
-exact source PTS `20000000/1000000`, generation 3, revision 14, enhanced content
-kind 2 and clock rate 0. These identities remained equal before and after every
-capture. The launcher uses real NR at 32×24 for instrumentation; this is not an
-intended-quality workload. Reproduce setup with
-`python3 scripts/start-system-pip-check.py --output artifacts/new-session`, then
-use its `live.json` and title-free owner discovery to select the explicit window
-IDs. Creating `artifacts/new-session/finish` requests orderly teardown.
-
-All HDR buffers carried the same actual Display P3 ICC profile
+All HDR buffers carried the same Display P3 ICC profile
 (`0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0`),
-IOSurface headroom 1, and no RGB components above 1. The screen reported current
-and potential EDR 16. Alpha mode, reference-white nits and per-sample attachments
-were absent. Local and canonical PiP captures were byte-identical. These facts
-do not establish that the capture retained the original HDR brightness domain.
+IOSurface headroom 1, and no RGB components above 1, while the screen reported
+current and potential EDR 16. Alpha mode, reference-white nits and per-sample
+attachments were absent. These captures therefore do not establish that the
+capture retained the original HDR brightness domain.
 
-The native window captured the full fixture with dark encoded video values.
-PiP captured a bright, enlarged red/green subregion. Both SDR and HDR captures,
-with scaling enabled and disabled, reproduced the geometry discrepancy. The
-PIPAgent AX bounds and SCK frame matched at 444×245 points; its rightmost four
-points were outside the 1800-point display. A target-only display capture of the
-visible 440×245-point intersection matched the desktop-independent capture
-exactly across all 372,624 paired opaque pixels in the shared 880×490-pixel ROI;
-58,576 nonopaque pixels were excluded. This rules out row-stride handling,
-`scalesToFit` and the independent-window filter as sole explanations. It does
-not yet locate the discrepancy among producer, AVSampleBufferDisplayLayer and
-system PiP.
-
-The first wrong-bundle enumeration and two stricter whole-display requests were
-rejected before pixel capture and remain in the evidence. All raw captures,
-metadata and clipped review previews are retained under
-`artifacts/sck-hdr-compositor-*`. Preview PNGs are convenience views of encoded
-values; they are not HDR reference images. Native/PiP geometry and color
-equivalence remain unqualified; the following buffer isolation narrows the cause.
-
-## Buffer and layer isolation
-
-[Three subsequent controlled sessions](evidence/m3-pip-compositor-isolation.json)
-captured the retained export, the public renderer's `displayedPixelBuffer()`,
-their format descriptions, and the same paused native/PiP windows. All exported
-and displayed pixel payloads were byte-identical: 320×192 RGhA, 2560-byte stride,
-full clean aperture and presentation dimensions, linear BT.2020 tags. Their RGB
-maxima were `[8.984375, 5.1328125, 10.140625]`; the producer contract is relative
-linear light with `1 = 203` source nits. This is not a measured panel luminance.
-
-The PiP compositor capture still contained only an enlarged red/green region,
-while the native window contained the full dark fixture. Two separate diagnostic
-controls—setting the source layer's contents scale to the actual backing scale
-of 2, and preserving its layout while PiP starts or is active—left the PiP HDR
-capture byte-identical to baseline. The source layer retained full 1060×524
-bounds, full contents rectangle and identity transforms. These failed controls
-and all three clean exits are preserved in the report. They justify no rendering
-workaround.
-
-The mpv source audit found a fresh normalized float pool, no inherited P010 crop
-or pixel-aspect attachments, and a retained export of that same buffer. Native
-libplacebo accepts the normalized linear input without a second transfer decode.
-This isolates the observed crop beyond the exported pixel payload and its clean
-aperture. The two SCK filter variants share OS media-capture machinery, so their
-agreement alone still does not distinguish physical display behavior from a
-capture-specific video-plane transform.
-
-A separate developer report describes the same lower-left clipping on macOS
-26.4. It corroborates the symptom; its explanations and private view-hierarchy
-workarounds were not adopted as verified causes or supported implementation.
-Further sample-buffer PiP probes stopped after the Apple support clarification.
-Native renderer brightness remains a separate investigation, and a supported
-macOS PiP architecture remains open.
-[macOS clipping report](https://developer.apple.com/forums/thread/821582)
+These sessions also compared the native window with the system picture-in-picture
+window. That route was dropped; [picture-in-picture](picture-in-picture.md)
+records why.

@@ -2,6 +2,10 @@
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 cd "$PROJECT_ROOT"
+if [[ ! -f vendor/MLX-DLSS/.build/release/mlx.metallib ]]; then
+  echo "MLX metallib is missing; run scripts/build-mlx.sh first." >&2
+  exit 1
+fi
 mkdir -p artifacts/mpv-host
 swiftc -swift-version 5 -O -import-objc-header vendor/mpv/include/mpv/client.h \
   tools/MpvHDRHost/main.swift -o artifacts/mpv-host/MpvHDRHost \
