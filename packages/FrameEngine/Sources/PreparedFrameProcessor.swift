@@ -1,6 +1,5 @@
 import CFrameEngine
 import CoreVideo
-import CryptoKit
 import Darwin
 import Foundation
 import QuartzCore
@@ -303,11 +302,7 @@ public actor PreparedHDRContext {
         }
         try Task.checkCancellation()
         var configuration = original
-        if let model = configuration.modelURL {
-            configuration.modelVersion = try HDRCacheSource.fingerprint(url: model.appendingPathComponent("weights.safetensors"), streamIndex: 0).contentSHA256
-        } else {
-            configuration.modelVersion = SHA256.hash(data: Data("original-hdr-v1".utf8)).map { String(format: "%02x", $0) }.joined()
-        }
+        configuration.modelVersion = try preparedModelSHA256(configuration.modelURL)
         let inventory = try await decoderProvider.inventory(sourceURL: sourceURL, videoStreamIndex: 0)
         let settings = HDRCacheSettings(modelSHA256: configuration.modelVersion,
             implementationVersion: cacheImplementationVersion,
@@ -398,7 +393,6 @@ public actor PreparedFrameProcessor: FrameProcessor {
     }
 
     private static func pack(_ rgba: [Float], width: Int, height: Int) throws -> CVPixelBuffer {
-        guard rgba.count == width * height * 4 else { throw HDRCacheError.invalidFrame("Prepared payload geometry mismatch") }
         var buffer: CVPixelBuffer?
         let result = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_64RGBAHalf,
             [kCVPixelBufferIOSurfacePropertiesKey: [:], kCVPixelBufferMetalCompatibilityKey: true] as CFDictionary, &buffer)

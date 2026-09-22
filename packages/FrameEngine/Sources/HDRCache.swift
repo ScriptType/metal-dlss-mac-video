@@ -347,11 +347,10 @@ public actor HDRSegmentCache {
 
     public func begin(identity: HDRCacheIdentity, expectedFrameCount: Int) throws -> HDRCacheWrite {
         guard recovered else { throw HDRCacheError.unavailable }
-        try identity.validate()
+        let key = try identity.key()
         guard expectedFrameCount > 0, expectedFrameCount <= maximumManifestBytes / 128 else {
             throw HDRCacheError.invalidFrame("Invalid frame count")
         }
-        let key = try identity.key()
         guard !stages.values.contains(where: { (try? $0.identity.key()) == key }) else {
             throw HDRCacheError.alreadyWriting
         }
@@ -546,8 +545,7 @@ public actor HDRSegmentCache {
         try validateTiming(manifest.frames.map(\.timing), identity: manifest.identity)
         let frameBytes = try manifest.identity.frameByteCount
         for (index, frame) in manifest.frames.enumerated() {
-            guard frame.fileName == String(format: "%08d.rgba32f", index), frame.byteCount == frameBytes,
-                  frame.timing.duration.value > 0 else {
+            guard frame.fileName == String(format: "%08d.rgba32f", index), frame.byteCount == frameBytes else {
                 throw HDRCacheError.corruptSegment("Invalid frame inventory or timing")
             }
             let pixels = try readVerified(frame, from: directory)
@@ -600,7 +598,7 @@ private func cacheJSON<T: Encodable>(_ value: T) throws -> Data {
     return try encoder.encode(value)
 }
 
-private func cacheDigest(_ data: Data) -> String {
+func cacheDigest(_ data: Data) -> String {
     SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
 }
 
