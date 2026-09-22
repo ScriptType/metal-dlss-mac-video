@@ -118,10 +118,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHand
         decisionHandler(navigationAction.request.url?.isFileURL == true ? .allow : .cancel)
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        NSLog("Local playback controls loaded")
-        setStatus(status)
-    }
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) { setStatus(status) }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         NSLog("Playback controls failed: %@", error.localizedDescription)

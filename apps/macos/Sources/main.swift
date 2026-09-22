@@ -186,7 +186,6 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, W
         return nil
     }
     private func publish(_ state: [String: Any]) {
-        latestState = state
         window.title = (state["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "HDR Player"
         var displayed = state
         if let layer = video.subviews.first?.layer as? CAMetalLayer {
