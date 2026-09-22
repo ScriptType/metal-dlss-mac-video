@@ -51,7 +51,7 @@ artifacts/erika-target/debug/macos_native_demo assets/test-clips/hdr10-30.mp4
 artifacts/erika-target/debug/metal_import_videotoolbox assets/test-clips/hdr10-30.mp4
 ```
 
-The mpv build links the locally built, pinned libplacebo 7.371.0. Build scripts supply a missing dav1d include directory for libplacebo's upstream header tests. Use `scripts/build-mpv-adapter.sh` and `scripts/build-erika-adapter.sh` for the shared HDR integrations. Unpackaged build outputs use local absolute paths; rebuild them after moving the checkout.
+The mpv build links the locally built, pinned libplacebo 7.371.0. Build scripts supply a missing dav1d include directory for libplacebo's upstream header tests. `scripts/build-harness.sh` and `scripts/build-playback-cores.sh` build both through `scripts/build-mpv-adapter.sh`. Use `scripts/build-erika-adapter.sh` for the Erika integration. Unpackaged build outputs use local absolute paths; rebuild them after moving the checkout.
 
 ## Models
 

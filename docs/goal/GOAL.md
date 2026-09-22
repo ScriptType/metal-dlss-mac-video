@@ -50,7 +50,7 @@ Build the base first, then the features:
 ## One issue at a time
 
 1. Re-read the issue and its comments. Its "Done when" list is the contract. Do not edit it. If an item is vague, state your stricter reading in an issue comment before coding.
-2. Create a branch from `origin/main`. Use a worktree under `artifacts/` if a long build must keep running elsewhere. A new worktree needs `git submodule update --init vendor/MLX-DLSS vendor/mpv`, `npm --prefix apps/controls ci`, and its own `bash scripts/build-mpv-adapter.sh` before any app check.
+2. Create a branch from `origin/main`. Use a worktree under `artifacts/` if a long build must keep running elsewhere. A new worktree needs `git submodule update --init vendor/MLX-DLSS vendor/mpv vendor/libplacebo`, libplacebo's nested `3rdparty` submodules (the second command in `scripts/fetch-sources.py`), and its own `bash scripts/build-harness.sh` before any app check.
 3. Make the smallest change that meets the contract. Commit in small steps that each build.
 4. Verify on the real artifact. For app behavior, build the app and drive it with the existing smoke and lifecycle tooling. Paste the relevant command output into the issue.
 5. Spawn a fresh reviewer subagent that sees only the diff and the issue. Tell it to assume the code is wrong and to report only correctness gaps. Fix real findings and dismiss noise with a reason.
