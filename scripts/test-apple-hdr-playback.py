@@ -246,7 +246,7 @@ def main():
     parser.add_argument("--height", type=int, default=96)
     args = parser.parse_args()
     if args.width <= 0 or args.height <= 0 or args.width * args.height > 512 * 288:
-        parser.error("Diagnostic processing dimensions must be positive and at most512×288 pixels")
+        parser.error("Diagnostic processing dimensions must be positive and at most 512×288 pixels")
     output, source = args.output.resolve(), args.source.resolve()
     wrapper = output.with_name(output.name + "-wrapper.json")
     inputs = output.with_name(output.name + "-inputs")

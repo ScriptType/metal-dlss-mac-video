@@ -89,9 +89,9 @@ def main():
     if not (1 <= args.width <= 16384 and 1 <= args.height <= 16384):
         parser.error("invalid processing geometry")
     if not (0 <= args.rss_growth_mib <= 4096 and 0 <= args.active_growth_mib <= 4096):
-        parser.error("growth tolerances must be0…4096MiB")
+        parser.error("growth tolerances must be 0…4096 MiB")
     if not 30 <= args.timeout_seconds <= 7200:
-        parser.error("timeout must be30…7200seconds")
+        parser.error("timeout must be 30…7200 seconds")
     relevant = ["Package.swift", "Package.resolved", "packages/CFrameEngine", "packages/FrameEngine/Sources",
                 "tools/FrameBenchmark", "vendor/MLX-DLSS", "scripts/stress-frame-engine.py"]
     dirty = command(["git", "status", "--porcelain", "--", *relevant], project)

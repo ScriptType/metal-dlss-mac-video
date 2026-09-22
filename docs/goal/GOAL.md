@@ -38,11 +38,12 @@ Build the base first, then the features:
 2. #34 Playback-mode policy.
 3. #37 Attribute the ~90 ms per-frame enhancement floor.
 4. #49 Store mastering-display primaries in R/G/B order.
-5. #35 10-bit HEVC Prepared cache.
-6. #36 Whole-file background preparation with resume.
-7. #17 Floating video window. Start from the core of PR #22, not its branch. The PR comment explains what to take.
-8. #39 Re-read EDR headroom on screen change.
-9. #3 and #16. Write the agent parts and `docs/human-checks.md`.
+5. #57 Fingerprint symlinked sources by their target.
+6. #35 10-bit HEVC Prepared cache.
+7. #36 Whole-file background preparation with resume.
+8. #17 Floating video window. Start from the core of PR #22, not its branch. The PR comment explains what to take.
+9. #39 Re-read EDR headroom on screen change.
+10. #3 and #16. Write the agent parts and `docs/human-checks.md`.
 
 #38, #40 and #41 were finished during the 2026-09-22 cleanup.
 
