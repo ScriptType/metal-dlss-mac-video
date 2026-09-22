@@ -598,7 +598,7 @@ private func cacheJSON<T: Encodable>(_ value: T) throws -> Data {
     return try encoder.encode(value)
 }
 
-private func cacheDigest(_ data: Data) -> String {
+func cacheDigest(_ data: Data) -> String {
     SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
 }
 

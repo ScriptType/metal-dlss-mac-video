@@ -1,6 +1,5 @@
 import CFrameEngine
 import CoreVideo
-import CryptoKit
 import Foundation
 
 public struct HDRPreparationSegment: Sendable {
@@ -13,6 +12,12 @@ public struct HDRPreparationSegment: Sendable {
     init(identity: HDRCacheIdentity, frameCount: Int, decodeTimingsSlice: ArraySlice<HDRCacheFrameTiming>) {
         self.identity = identity; self.frameCount = frameCount; self.decodeTimings = decodeTimingsSlice
     }
+}
+
+/// Cache identity of the model weights. Context setup and the preparation job must agree.
+func preparedModelSHA256(_ modelURL: URL?) throws -> String {
+    guard let modelURL else { return cacheDigest(Data("original-hdr-v1".utf8)) }
+    return try HDRCacheSource.fingerprint(url: modelURL.appendingPathComponent("weights.safetensors"), streamIndex: 0).contentSHA256
 }
 
 public struct HDRPreparationProgress: Sendable {
@@ -83,13 +88,7 @@ public actor HDRPreparationCoordinator {
             guard try PreparedSourceSignature.read(sourceURL.path) == sourceSignature else {
                 throw HDRCacheError.invalidIdentity("Source changed while preparation was fingerprinting it")
             }
-            let modelHash: String
-            if let modelURL = configuration.modelURL {
-                modelHash = try HDRCacheSource.fingerprint(url: modelURL.appendingPathComponent("weights.safetensors"), streamIndex: 0).contentSHA256
-            } else {
-                modelHash = SHA256.hash(data: Data("original-hdr-v1".utf8)).map { String(format: "%02x", $0) }.joined()
-            }
-            guard configuration.modelVersion == modelHash else {
+            guard try configuration.modelVersion == preparedModelSHA256(configuration.modelURL) else {
                 throw HDRCacheError.invalidIdentity("Model version does not match actual weights")
             }
             for segment in segments {

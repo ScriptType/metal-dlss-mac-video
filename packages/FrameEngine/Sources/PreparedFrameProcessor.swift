@@ -1,6 +1,5 @@
 import CFrameEngine
 import CoreVideo
-import CryptoKit
 import Darwin
 import Foundation
 import QuartzCore
@@ -303,11 +302,7 @@ public actor PreparedHDRContext {
         }
         try Task.checkCancellation()
         var configuration = original
-        if let model = configuration.modelURL {
-            configuration.modelVersion = try HDRCacheSource.fingerprint(url: model.appendingPathComponent("weights.safetensors"), streamIndex: 0).contentSHA256
-        } else {
-            configuration.modelVersion = SHA256.hash(data: Data("original-hdr-v1".utf8)).map { String(format: "%02x", $0) }.joined()
-        }
+        configuration.modelVersion = try preparedModelSHA256(configuration.modelURL)
         let inventory = try await decoderProvider.inventory(sourceURL: sourceURL, videoStreamIndex: 0)
         let settings = HDRCacheSettings(modelSHA256: configuration.modelVersion,
             implementationVersion: cacheImplementationVersion,
