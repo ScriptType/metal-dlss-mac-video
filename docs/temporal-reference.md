@@ -213,7 +213,7 @@ The 640 × 360 preparation passes the independent saved-input audit and benchmar
 
 ### M3 grain observation
 
-The [M3 evidence](evidence/m3-grain-reference.json) compares one new 48-frame grain capture with the retained static flash control. Both use the same frozen production runtime/model, 640 × 360 source/output and 512 × 288 processing. All 384 views pass finite-value and integrity checks, all 96 pre-event view pairs match exactly, and all 351 frozen files remain unchanged. Both runs report a history reset only at frame 0.
+The M3 grain capture compares one new 48-frame grain capture with the retained static flash control. Both use the same frozen production runtime/model, 640 × 360 source/output and 512 × 288 processing. All 384 views pass finite-value and integrity checks, all 96 pre-event view pairs match exactly, and all 351 frozen files remain unchanged. Both runs report a history reset only at frame 0.
 
 Pooled equal-weight RGB component RMS, in nits:
 
@@ -224,11 +224,9 @@ Pooled equal-weight RGB component RMS, in nits:
 
 After the clean input returns, G is zero and D equals Q exactly. D has RMS 11.702154 nits at frame 36 and 1.214953 at frame 47. It is not monotonic: frame 44 is 2.368609 nits and frame 45 is 5.205892 nits. Lower R than C during the active interval measures distance from each arm's own original; it establishes neither an ideal enhancement target nor a quality improvement. The paired differences do not isolate noise, history, motion estimation or reconstruction as their sole cause.
 
-The independent raw audit and scalar comparison reproduce all 240 frame and 141 adjacent metric records, all phase pools and all 9,144 CSV cells exactly. The [complete CSV](evidence/m3-grain-reference.csv) and figure retain all 48 frames and 47 adjacent pairs, including onset at 24 and removal at 36.
+The independent raw audit and scalar comparison reproduce all 240 frame and 141 adjacent metric records, all phase pools and all 9,144 CSV cells exactly. The [complete CSV](evidence/m3-grain-reference.csv) and the four-panel [PDF figure](evidence/m3-grain-reference.pdf) retain all 48 frames and 47 adjacent pairs, including onset at 24 and removal at 36.
 
-![All frame and adjacent RGB component RMS observations for the synthetic grain input](evidence/m3-grain-reference.png)
-
-The [standalone PDF](evidence/m3-grain-reference.pdf) contains the same four panels. These measurements define no perceptual threshold, accepted recovery deadline or natural film-grain result.
+These measurements define no perceptual threshold, accepted recovery deadline or natural film-grain result.
 
 The new capture completed in 39.252 seconds, with Battery Power recorded at 99% before and after. The historical control ran on AC Power. Power conditions were not controlled as a matched pair, and diagnostic readback/I/O is included; the durations and RSS observations are not compared as performance results. An initial AC-only attempt refused before launch. Its failure, the unused second freeze and the explicit recorded-power protocol amendment are retained under `artifacts/grain-reference-1/`. Exactly one grain model process ran. Native playback, physical HDR, source-rate Live and M5 acceptance remain separate requirements.
 
