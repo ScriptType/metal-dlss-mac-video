@@ -1,7 +1,7 @@
 # v1.0 progress
 
-Current issue: #42. Branch: `fix/42-toolchain-fresh-build`.
-Next step: merge the #42 PR, then start #34.
+Current issues: #57 on `fix/57-symlink-fingerprint` (PR open). #34 on `feat/34-prepared-only`, built in the worktree `artifacts/wt-42`.
+Next step: merge #57, then #49, then finish #34. #37 needs the GPU to itself, so it waits until the #34 runs are done.
 
 ## Blocked
 
