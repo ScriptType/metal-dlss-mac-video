@@ -1,5 +1,6 @@
 import CFrameEngine
 import CoreVideo
+import DLSSMedia
 import Foundation
 @testable import FrameEngine
 import Testing
@@ -202,4 +203,18 @@ private func fixtureProvider(_ owner: DecoderFixture) throws -> CFramePreparatio
         #expect(context.status.snapshot().jobState == "cancelled")
         #expect(fixture.locked { fixture.opens == fixture.closes })
     }
+}
+
+@Test func nativeDecoderDescriptorStoresMasteringPrimariesInRGBWhiteOrder() async throws {
+    let source = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        .appendingPathComponent("assets/test-clips/hdr10-30.mp4")
+    let reader = try await NativeHDRVideoReader(url: source)
+    let decoded = try #require(try await reader.nextDecoded())
+    await reader.cancel()
+    let xy = DecoderFrameDescriptor.make(pixelBuffer: decoded.pixelBuffer.buffer, metadata: decoded.metadata,
+                                         sourceID: 1, generation: 1).colour.mastering_xy
+    // ffprobe: red 35400/14600, green 8500/39850, blue 6550/2300, white 15635/16450, in units of 1/50000.
+    let expected: [Double] = [35_400, 14_600, 8_500, 39_850, 6_550, 2_300, 15_635, 16_450].map { $0 / 50_000 }
+    #expect([xy.0, xy.1, xy.2, xy.3, xy.4, xy.5, xy.6, xy.7] == expected)
 }
