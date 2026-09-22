@@ -1,23 +1,22 @@
 # Implementation boundaries
 
-The [roadmap status](implementation-status.md) tracks remaining requirements against the unchanged [implementation plan](../mac-hdr-player-plan.md).
+These boundaries hold on `main` today. [Implementation status](implementation-status.md) lists the open work, and the [original plan](../mac-hdr-player-plan.md) is the architecture reference.
 
-## Shared pipeline
+## Decided
 
-`vendor/MLX-DLSS` provides `NativeHDRVideoReader.nextDecoded()` for retained decoder planes and metadata, `MLXHDRImporter` for completed linear BT.2020 originals in nits, and persistent `NativeHDRProcessor` for bounded sRGB proxy inference plus original-based HDR reconstruction. Its `hdr-player` branch owns these changes. `NativeHDRVideoReader.next()` combines decode/import for diagnostic callers. SDR media export has a separate explicit output policy.
+- **Playback core is mpv.** [#11](https://github.com/ScriptType/metal-dlss-mac-video/issues/11) selected it from the [matched M3 comparison](adapter-comparison.md). The Erika adapter is frozen. Reopen the decision only if the M5 run in [#8](https://github.com/ScriptType/metal-dlss-mac-video/issues/8) shows an mpv-specific bottleneck.
+- **System picture-in-picture is dropped.** Apple DTS states that sample-buffer PiP is supported only on iOS ([forum thread](https://developer.apple.com/forums/thread/830764)). [#38](https://github.com/ScriptType/metal-dlss-mac-video/issues/38) removes the disabled code path. The app-owned floating video window in [#17](https://github.com/ScriptType/metal-dlss-mac-video/issues/17) replaces it.
+- **Direct Metal libplacebo and a custom playback core are not planned** ([#19](https://github.com/ScriptType/metal-dlss-mac-video/issues/19), [#20](https://github.com/ScriptType/metal-dlss-mac-video/issues/20)).
 
-The root `FrameSession` implements bounded admission, serial temporal execution, generation cancellation and completed-output leases. `HDRPipelineProcessor` connects the fork to its C ABI. Player adapters share `packages/CFrameEngine/include/frame_engine.h`; [ownership and measurements](frame-engine.md) apply equally to both candidates.
+## Pipeline ownership
 
-`HDRMetalView` presents completed floating-point nits through the separate video-only HDRHarness's native extended-linear P3 EDR layer. Its [display policy and diagnostic commands](hdr-presentation.md) define the bypass boundary and capture interpretation. The integrated [native player](native-player.md) embeds mpv and routes video, audio, tracks, subtitle composition and playback commands through its native worker.
+- `vendor/MLX-DLSS` owns decoding into retained planes (`NativeHDRVideoReader.nextDecoded()`), import to linear BT.2020 nits (`MLXHDRImporter`) and neural proxy inference with HDR reconstruction (`NativeHDRProcessor`).
+- `packages/FrameEngine` owns bounded scheduling and output leases (`FrameSession`), the bridge to the fork (`HDRPipelineProcessor`) and the Prepared cache (`HDRSegmentCache`, `HDRPreparationCoordinator`). [Frame engine](frame-engine.md) and [cache policy](hdr-cache.md) describe the contracts.
+- `packages/CFrameEngine/include/frame_engine.h` is the C boundary that mpv calls.
+- The app embeds mpv and routes video, audio, tracks, subtitles and playback commands through its native worker ([native player](native-player.md)).
 
-`HDRSegmentCache` publishes only validated complete float HDR ranges. `HDRPreparationCoordinator` cancels/coalesces jobs, resets temporal history at deterministic preroll and reuses completed segments. [Prepared playback](prepared-playback.md) integrates those segments under mpv's clock, preserves exact source identity and falls back to Original on misses. The sustained M3 case passes source-cadence, boundary-seek, reuse and resource checks; larger workloads and physical display/audio accuracy retain separate gates. See the [cache policy](hdr-cache.md).
+## Repository rules
 
-The [diagnostic PiP consumer](picture-in-picture.md) uses the optional `vendor/mpv/include/mpv/hdr_frame.h` selected-frame/clock interface. It shares the existing decoder, audio and completed float surfaces, including valid Original cache misses. Its exported and renderer-displayed buffers match, but scoped compositor captures show a cropped/brighter system image. [Apple DTS](https://developer.apple.com/forums/thread/830764) identifies this sample-buffer PiP route as supported only on iOS despite broader API annotations. Ordinary PiP remains disabled; a supported macOS route must be established before further HDR and presented A/V qualification.
-
-## Candidate integration and selection
-
-Keep mpv as the provisional core. Both adapter prototypes must preserve the shared ownership/timing boundaries, native HDR output and comparable completed-work instrumentation. Compare identical source/model/settings/display dimensions with sequential, alternating runs. M3 evidence supports development; final core selection and sustainable configurations require M5 Max results.
-
-Land MLX-DLSS, mpv and Erika changes on their published forks' `hdr-player` branches before updating root pointers. Keep generated media, weights, private traces and build products outside tracked source. Do not close candidate evaluations or the parent roadmap from compilation alone.
-
-Direct Metal libplacebo and custom FFmpeg/VideoToolbox core work retain their measured activation gates. PiP and Dolby Vision require separate processed-output/profile qualification. The original plan's acceptance corpus includes VFR, 24/30/60 fps, long-GOP seeking, sustained A/V drift, temporal scenes, styled subtitles, multiple tracks and display/lifecycle transitions.
+- Changes to `vendor/MLX-DLSS`, `vendor/mpv` or `vendor/Erika` land on the fork's `hdr-player` branch before the root pin moves.
+- Generated media, model weights, run logs and build products stay out of Git. They go in `artifacts/` or `models/`, which Git ignores. `scripts/audit-public-tree.py` rejects tracked model, media and build files and any `docs/evidence` file over 256 KB.
+- Close an issue only on the evidence its "Done when" list asks for, not on a successful build.

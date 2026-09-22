@@ -43,43 +43,9 @@ The `hvc1` sample entry is required by the evaluated AVFoundation path; FFmpeg's
 
 The [mpv adapter](mpv-adapter.md) records controlled Adaptive runs, audio-clock offsets, original-first seeks and same-frame comparison. Its longer HLG 60-fps and PQ variable-rate runs each exceeded the 20-ms target briefly, without progressive median drift. The [Erika adapter](erika-adapter.md) records native drawable presentation, numerical HDR captures and overload behaviour. Their initial runs differed in display size, visibility and timing conditions and do not establish a playback-core winner. Playback qualification and physical presentation remain separate from this offscreen baseline.
 
-## Rejected VideoToolbox flow-output pool
-
-A four-buffer CoreVideo pool for the forward/backward RG16F destinations preserved the compared motion results but increased completed motion time on this M3 run. The candidate was removed, restoring the measured sources to `7af47d64b36b551ba091bedde0437c93ac92ff65`; that experiment left the production runtime unchanged. [Evidence](evidence/m3-flow-output-pool.json), [all 288 calls](evidence/m3-flow-output-pool.csv) and the [rejected candidate patch](evidence/m3-flow-output-pool-candidate.patch) retain the result for roadmap #8.
-
-The actual `NativeOpticalFlow.prepare` comparison used twelve consecutive 1920 × 1080 SDR proxy frames, indices 1496–1507 from the [corrected full-resolution HDR reference](temporal-reference.md#regression-with-bounded-resized-model-input). Two persistent estimators explicitly selected VideoToolbox. Four alternating matched pairs each traversed the inputs three times, excluding the first three calls of every traversal: 288 total calls, 216 warmed, 108 warmed per strategy. The source-size half conversion, CI resize to 960 × 540, 240 × 135 flow extent and motion calculations were unchanged. Repeated 1507 → 1496 boundaries were recorded as artificial discontinuities.
-
-| Completed prepare wall | Fresh destinations | Pooled destinations |
-|---|---:|---:|
-| Warmed mean | 22.870 ms | 24.243 ms |
-| Warmed median | 22.294 ms | 23.268 ms |
-| Warmed p95, nearest rank | 27.013 ms | 29.912 ms |
-| Warmed sum, 108 calls | 2.469942 s | 2.618296 s |
-
-Warmed total time increased 6.01%. Pooled sums and p95 were higher in all four pairs; medians were higher in three. The 99.039-ms pooled outlier remains included. Individual traversal sums were mixed. This short shared-process measurement does not establish why pooling was slower or predict other machines or workloads.
-
-All 144 matched signatures agreed, including one initial no-motion result and 143 vector/confidence hashes with scalar bit patterns and reset state. All 24 direct full-array byte controls agreed. Eleven focused release tests passed, covering retained-buffer capacity/reuse, partial-pair failure cleanup, lazy MLX ownership through pool destruction, retained-motion immutability and existing VT/automatic/Vision behavior. The actual benchmark test passed separately. Production code was restored only after the independent frozen-source audit; applying the archived patch to the base reproduces all three candidate source files exactly.
-
-An earlier CPU-only allocation probe measured a flow-pair median of 44.083 µs with fresh allocations and 6.333 µs with pooling. Its six balanced rounds contained 4,608 measured iterations and 576 warmups across three cases. It performed no pixel writes, CI rendering, VT processing or MLX work, and used default pool age-out; the actual candidate disabled age-out. These allocation-call savings did not translate to faster completed motion. Recycled IOSurface IDs in fresh allocations also prevent interpreting unique ID counts as persistent backing-allocation counts.
-
-The actual benchmark process took 18.961 seconds and reached 876,527,616 bytes of sampled process-tree RSS; the peak was its final sampled row after all calls were published. All 37 resource samples remain in the evidence. MLX peak-active allocation reached 396,491,024 bytes in the shared process, with a 256-MiB cache policy restored to its prior value afterward. RSS, MLX counters and allocation measurements have different scopes. Array readback and hashing were outside the prepare timer but affected process resources and operating conditions. No model or player ran; no source-rate Live, full-model quality or M5 acceptance follows from this experiment.
-
-To reproduce the rejected candidate, use an experimental checkout at the recorded base and apply the patch inside `vendor/MLX-DLSS`. The evidence's `design.inputManifest` contains exact proxy paths, hashes and rational timestamps; its payloads come from the retained corrected reference and are local artifacts. Reconstruct the byte-pinned manifest with Python `json.dumps(object, indent=2) + "\n"` using the default ASCII escaping; verify SHA256 `3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181`. Build and run the opt-in test with new output paths:
-
-```sh
-source scripts/env.sh
-git -C vendor/MLX-DLSS apply ../../docs/evidence/m3-flow-output-pool-candidate.patch
-MLXDLSS_FLOW_POOL_INPUTS=/absolute/path/to/inputs.json \
-MLXDLSS_FLOW_POOL_BENCH_OUTPUT=/absolute/path/to/new-output \
-swift test --package-path vendor/MLX-DLSS -c release \
-  --filter NativeFlowOutputPoolBenchmarkTests/testMatchedFullResolutionVideoToolboxPoolBenchmark
-```
-
-The test also pins the root debug benchmark/shared library/metallib as contamination controls; those files must be present, but the executed code is the release XCTest and its bundled metallib. Preserve hashes and run under the recorded process/resource limits for a comparable capture. Do not adopt the patch without new evidence of benefit.
-
 ## Runtime HDR effect controls
 
-The display codec now passes transfer and colour strength as two immutable Float32 inputs to the Metal resolve kernel. Changing either control no longer creates a distinct shader template specialization. Each lazy resolve owns its parameter array, and zero strength still returns the original object directly. White point, primaries, display-referred mode and maximum luminance ratio retain their existing specialization. [Evidence](evidence/m3-runtime-hdr-controls.json) and [all 192 calls](evidence/m3-runtime-hdr-controls.csv) record the M3 comparison.
+The display codec now passes transfer and colour strength as two immutable Float32 inputs to the Metal resolve kernel. Changing either control no longer creates a distinct shader template specialization. Each lazy resolve owns its parameter array, and zero strength still returns the original object directly. White point, primaries, display-referred mode and maximum luminance ratio retain their existing specialization. [All 192 calls](evidence/m3-runtime-hdr-controls.csv) record the M3 comparison.
 
 Two persistent codecs processed the same synthetic 1920 × 1080 HDR inputs with 32 distinct positive control pairs. Four groups each ran eight settings once, then repeated them twice, alternating which implementation ran first. The timer includes native output construction and completed MLX evaluation; readback, hashing and comparison occur afterward. The frozen baseline reverses exactly to the codec source at MLX `7af47d64b36b551ba091bedde0437c93ac92ff65` after removing its test import and restoring four names.
 
@@ -102,7 +68,7 @@ The benchmark process completed in 15.252 seconds with peak sampled process-tree
 
 The rebuilt integration passes the complete root check, including 40 Swift tests, and all 23 bundled-app controls/lifecycle checks. Two separate natural HDR controls reproduce source frames 1498 and 1528 at 1920 × 1080 with 512 × 288 neural processing. All eight new original/proxy/identity/enhanced views are finite and match both the prior fresh controls and their continuous-reference cut frames byte for byte. These sixteen comparisons preserve exact source timing, model and settings; two fresh frames do not establish continuous temporal quality. The published MLX change is [2fc9bf6](https://github.com/ScriptType/MLX-DLSS/commit/2fc9bf6dbf8b43f2db6683a7bd3afa3b554a4920).
 
-A subsequent [continuous preservation check](evidence/m3-runtime-hdr-controls-temporal.json) uses the same production binary and the first twenty frames of the earlier 512 × 288 reference, preserving its original sequence start. All [80 frame/view pairs](evidence/m3-runtime-hdr-controls-temporal.csv) are byte-identical and finite across source frames 1488–1507. Original, proxy, identity and enhanced views retain exact PTS, duration, generation and model settings. Initial state and cut resets remain at frames 1488 and 1498, with eighteen non-reset frames and nine frames following the cut. This extends the fresh-cut checks to evolving history without accepting the reference's remaining perceptual temporal variation.
+A subsequent continuous preservation check uses the same production binary and the first twenty frames of the earlier 512 × 288 reference, preserving its original sequence start. All [80 frame/view pairs](evidence/m3-runtime-hdr-controls-temporal.csv) are byte-identical and finite across source frames 1488–1507. Original, proxy, identity and enhanced views retain exact PTS, duration, generation and model settings. Initial state and cut resets remain at frames 1488 and 1498, with eighteen non-reset frames and nine frames following the cut. This extends the fresh-cut checks to evolving history without accepting the reference's remaining perceptual temporal variation.
 
 The standalone capture takes 151.010 seconds including input preflight; the manifest's 100.183-second elapsed value starts later. The separate CPU comparison takes 4.876 seconds. All 292 process-resource samples remain recorded, with peak sampled RSS of 523,042,816 bytes and at least 10,920,173,568 free disk bytes; battery changes from 80% to 78%. All 161 frozen pins remain unchanged. Four views per frame produce 1,990,656,000 raw bytes. The unchanged 56-frame input manifest still requires the 6-GiB preflight ceiling when invoking `hdr-benchmark --reference-sequence … --frames 20`; the evidence preserves the complete command and exact runtime archive. These times include capture/readback/writing and do not measure inference throughput. Broader temporal quality, Live, physical HDR and M5 acceptance remain open.
 
@@ -119,7 +85,7 @@ The test is opt-in and uses no model. Preserve the source, executed XCTest and m
 
 ## Optical-flow stage attribution
 
-Completed operation timings put VideoToolbox processing and MLX motion assessment ahead of input packing/resizing in this M3 workload. The production optical-flow algorithm is unchanged. A test-only copy adds clocks around its existing calls; removing the marked blocks and reversing two type names reproduces the production `NativeOpticalFlow.swift` bytes exactly. [Evidence](evidence/m3-flow-stage-attribution.json) and [all 288 calls](evidence/m3-flow-stage-attribution.csv) retain the measurements and comparisons.
+Completed operation timings put VideoToolbox processing and MLX motion assessment ahead of input packing/resizing in this M3 workload. The production optical-flow algorithm is unchanged. A test-only copy adds clocks around its existing calls; removing the marked blocks and reversing two type names reproduces the production `NativeOpticalFlow.swift` bytes exactly. [All 288 calls](evidence/m3-flow-stage-attribution.csv) retain the measurements and comparisons.
 
 The input is the same twelve 1920 × 1080 natural SDR proxy frames, 1496–1507, used for the rejected output-pool experiment. Two persistent estimators explicitly select VideoToolbox. Four alternating matched pairs each traverse the frames three times, retaining all calls and excluding each traversal's first three from warmed summaries: 108 warmed calls per arm. Repeated 1507 → 1496 boundaries remain explicit discontinuities.
 
@@ -142,7 +108,7 @@ The measured process completes in 22.927 seconds with peak sampled process-tree 
 
 Packing and resizing together account for 2.941 ms in the measured warmed mean. The next bounded investigation is motion assessment, with individual operation timing required before assigning its cost to erosion. Replacing the existing colour-managed resize or sharing command buffers remains an unmeasured candidate. No source-rate Live, temporal-quality, physical-display or M5 gate is closed by this attribution.
 
-To reproduce, obtain the retained proxy inputs and reconstruct the exact input manifest described in the output-pool section, then run one fresh release test process with a new output directory:
+To reproduce, obtain the retained proxy inputs and reconstruct their input manifest. The `design.inputManifest` object in [the output-pool result](evidence/m3-flow-output-pool.json) lists exact proxy paths, hashes and rational timestamps. Serialize it with Python `json.dumps(object, indent=2) + "\n"` and verify SHA256 `3c376d69b898a7fa0ee2474e233438c9071dbe3d63b3cece57d9b8e1bfa68181`. Then run one fresh release test process with a new output directory:
 
 ```sh
 source scripts/env.sh
@@ -154,107 +120,14 @@ swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
 
 The test pins the actual executed XCTest, metallib, source and inputs. Existing root debug binaries are required as contamination controls. Preserve the raw reports, recorded operational bounds and hashes when interpreting a repeat.
 
-## Original motion-confidence erosion
+## Rejected optimizations
 
-The existing 7 × 7 erosion operation takes enough time on the retained natural masks to justify a separate candidate comparison. [Evidence](evidence/m3-motion-erosion-cost.json) and [all 112 calls](evidence/m3-motion-erosion-cost.csv) record this measurement of the unchanged kernel. Production code remains unchanged.
+Both candidates below were measured on the M3 and rejected. Production code is unchanged. [PR #46](https://github.com/ScriptType/metal-dlss-mac-video/pull/46) removed the erosion measurement tests from the MLX-DLSS fork.
 
-One traversal of the twelve 1920 × 1080 proxy frames produces eleven actual pre-erosion masks; the initial frame has no motion. A source-identical test copy computes these masks from the same completed VideoToolbox buffers as production. All eleven complete vector/confidence outputs, scalar bits and reset decisions match production. The probe preserves production history ownership and retains each mask after the existing joint evaluation. It does not access production's private pre-erosion storage. All masks, confidence references and 22 logical RG16F flow payloads are retained with hashes.
+### VideoToolbox flow-output pool
 
-After capture, the test releases the flow session and materializes the masks as independent MLX arrays. Every timed call constructs a fresh output from the original kernel and waits for completed evaluation. Readback, comparison and report writes follow the timer. Four measured passes follow one initial isolated pass and three warmup passes, alternating mask order. The initial isolated pass is already after kernel use during capture; it is not cold compilation.
+A four-buffer CoreVideo pool for the forward and backward RG16F flow destinations replaced fresh allocations in `NativeOpticalFlow.prepare`. Over 108 warmed calls per arm on twelve 1920 × 1080 proxy frames, the pool was 6.01% slower in total. Warmed mean rose from 22.870 to 24.243 ms, and p95 from 27.013 to 29.912 ms. Motion outputs matched. The [result](evidence/m3-flow-output-pool.json), [all 288 calls](evidence/m3-flow-output-pool.csv) and the [rejected patch](evidence/m3-flow-output-pool-candidate.patch) remain.
 
-| Input group | Measured calls | Mean | Median | p95, nearest rank |
-|---|---:|---:|---:|---:|
-| Eleven natural masks | 44 | 4.465 ms | 3.833 ms | 6.560 ms |
-| All-positive control | 4 | 6.108 ms | 6.127 ms | 8.102 ms |
-| Sparse-zero control | 4 | 6.803 ms | 7.555 ms | 7.829 ms |
-| Dense-zero control | 4 | 1.296 ms | 1.258 ms | 1.494 ms |
+### Separable confidence erosion
 
-All 112 outputs match their full-byte references. All fourteen mask/reference pairs also match an independent CPU Boolean-erosion calculation. Synthetic references exercise nonbinary confidence preservation and the radius-three effect of sparse/dense zeros. The erosion predicate is `input > 0`, distinct from the later `confidence > 0.5` reliable-fraction calculation. The two existing motion tests also pass in the newly built release XCTest.
-
-The process completes in 10.168 seconds, with 21 resource samples, peak sampled process-tree RSS of 1,136,099,328 bytes and at least 12,732,391,424 free disk bytes. Before/after power readings both show battery power at 97%; the earlier flow-stage attribution ran on AC. All frozen pins remain unchanged, and the temporary 256-MiB MLX cache policy is restored. Different power, materialization, allocation and scheduling conditions prevent treating these isolated times as a fraction of, or subtraction from, the earlier bundled assessment measurement.
-
-The [separable Boolean candidate](#separable-confidence-erosion-candidate) preserves the compared centre confidence bits and improves isolated/full-assessment timing, but its full prepare benefit gate is not met. This measurement retains no optimization and closes no playback, temporal, physical-display or M5 acceptance gate.
-
-To reproduce with the same input manifest described above, use a new output directory:
-
-```sh
-source scripts/env.sh
-MLXDLSS_EROSION_COST_INPUTS=/absolute/path/to/inputs.json \
-MLXDLSS_EROSION_COST_OUTPUT=/absolute/path/to/new-output \
-swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
-  --filter NativeMotionErosionCostTests/testCurrentErosionOnActualConfidence
-```
-
-Preserve the executed XCTest, metallib, source and input pins, and record the power state and process limits with each repeat. Existing root debug binaries serve as contamination controls.
-
-## Separable confidence-erosion candidate
-
-A test-only two-pass Boolean erosion improves the measured natural-mask and complete motion-assessment workloads on M3. [Evidence](evidence/m3-separable-motion-erosion.json) and [all 312 timed calls](evidence/m3-separable-motion-erosion.csv) preserve the two runs separately. Production still uses the original kernel: the [full prepare comparison](#separable-erosion-through-full-flow-preparation) does not establish a repeatable benefit.
-
-The candidate computes seven clamped horizontal `input > 0` predicates into a UInt8 mask, then seven vertical predicates. Valid pixels preserve the original Float32 centre bits; invalid pixels become positive zero. This adds one dispatch and a 2,073,600-byte logical intermediate at 1920 × 1080. Both passes remain lazy until the existing evaluation, with no intermediate wait.
-
-| Separate workload | Measured pairs | Original mean | Candidate mean | Change in summed time |
-|---|---:|---:|---:|---:|
-| Isolated, eleven natural masks | 44 | 4.781 ms | 2.373 ms | −50.37% |
-| Isolated, all-positive synthetic | 4 | 6.019 ms | 2.775 ms | −53.90% |
-| Isolated, sparse-zero synthetic | 4 | 5.819 ms | 2.957 ms | −49.19% |
-| Isolated, dense-zero synthetic | 4 | 1.353 ms | 1.740 ms | +28.62% |
-| Complete motion assessment, eleven natural pairs | 44 | 15.175 ms | 12.677 ms | −16.46% |
-
-The isolated run uses fourteen retained masks, eight passes and alternating arm order: 224 calls, including 112 measured calls. All 112 paired outputs match their full-byte references. Twenty preflight controls also preserve candidate/original GPU parity. One 17 × 19 control containing the smallest positive subnormal differs from the CPU oracle at 49 positions: both GPU implementations produce identical positive zeros, while the CPU retains the subnormal centre and 48 ordinary positive centres. The mechanism is unestablished. Normal finite CPU controls agree; no general CPU/IEEE equivalence is claimed.
-
-The complete assessment run restores 22 retained RG16F flow buffers and twelve source RGB frames. All eleven preflight production results reproduce historical vectors, confidence, scalar bits and reset decisions before candidate evaluation. Four balanced passes then measure 88 complete constructors. All 44 pairs are exact, and source/flow owners remain unchanged. This exercises flow import, confidence, erosion, reductions, completed evaluation and scalar readback; it does not estimate new VideoToolbox flow or exercise its session transitions.
-
-The candidate is faster in 42/44 isolated natural pairs and 31/44 complete-assessment pairs. Every measured natural round has a lower summed time in both runs. Regressions remain visible: the isolated candidate has a 10.069-ms outlier, the dense-zero control is slower, complete-assessment pass 2 (the third measured round) has a higher p95, and source pairs 1498 and 1503 have higher candidate means. Repetition of eleven inputs does not establish broad scene coverage.
-
-Both release builds pass the two existing motion tests. The isolated/full-assessment processes take 10.513/13.931 seconds, with peak sampled RSS of 855,638,016/703,643,648 bytes and 22/28 resource samples. Power readings show battery at 92%/89%, respectively, unchanged within each run. Frozen pins remain intact, temporary cache policies are restored, and exact tested sources/executables are archived. Each run has its own preflight and allocation conditions; do not subtract their timings or compare them as equivalent to earlier runs. The production baseline and test-copy assessment also use different Swift modules.
-
-These probes replay the retained cost report (`4bbca008…`), its payloads and the source manifest (`3c376d69…`) at the recorded source revision. Their provenance guards deliberately reject different captures or changed production sources. With those retained inputs available, choose a fresh output directory for each run:
-
-```sh
-source scripts/env.sh
-MLXDLSS_EROSION_COMPARISON_INPUT_REPORT=/absolute/path/to/cost-output/report.json \
-MLXDLSS_EROSION_COMPARISON_OUTPUT=/absolute/path/to/new-isolated-output \
-swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
-  --filter NativeMotionErosionComparisonTests/testMatchedSeparableErosion
-
-MLXDLSS_SEPARABLE_MOTION_INPUT_REPORT=/absolute/path/to/cost-output/report.json \
-MLXDLSS_SEPARABLE_MOTION_INPUTS=/absolute/path/to/inputs.json \
-MLXDLSS_SEPARABLE_MOTION_OUTPUT=/absolute/path/to/new-assessment-output \
-swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
-  --filter NativeSeparableMotionComparisonTests/testMatchedFullMotion
-```
-
-Preserve hashes, power observations and operational bounds. Preflight means neither run establishes cold compilation. Full prepare, player throughput, temporal quality, physical display and M5 acceptance remain separate gates.
-
-## Separable erosion through full flow preparation
-
-The separable candidate does not establish a repeatable benefit through complete `NativeOpticalFlow.prepare`, so it remains test-only. [Evidence](evidence/m3-separable-flow-prepare.json) and [all 288 calls](evidence/m3-separable-flow-prepare.csv) retain the actual VideoToolbox comparison and its mixed timing results.
-
-One production estimator and one candidate estimator persist across four paired cases. Each arm processes the twelve original source indices through three traversals per case; block order alternates between cases. The candidate wrapper reverses exactly to production except for type/import names and its use of the previously tested separable motion assessment. Packing, Core Image resize, fresh VideoToolbox allocation/processing, scene-cut policy, session ownership and completion waits remain unchanged. The timer encloses the complete `prepare` call; output readback and comparisons follow it.
-
-| Warmed population | Original mean | Candidate mean | Change in summed time |
-|---|---:|---:|---:|
-| All 108 pairs | 28.665 ms | 28.485 ms | −0.63% |
-| Case 0, original first | 24.653 ms | 26.012 ms | +5.51% |
-| Case 1, candidate first | 29.834 ms | 26.983 ms | −9.55% |
-| Case 2, original first | 29.462 ms | 31.193 ms | +5.88% |
-| Case 3, candidate first | 30.710 ms | 29.752 ms | −3.12% |
-
-The candidate is faster in 57/108 warmed pairs. Warmed median increases from 28.647 to 28.999 ms, and p95 from 36.508 to 36.572 ms. Both cases with the candidate second are slower; both with it first are faster. This observed order pattern does not identify its cause. The 0.63% aggregate reduction, mixed case totals and slightly worse median/p95 do not justify production adoption. Earlier isolated and restored-flow gains do not substitute for this result.
-
-All 144 paired full-array hashes, scalar bits and reset decisions match, including 143 motion pairs and one initial no-motion pair. All 24 selected direct byte comparisons pass. There are two initial nil calls, 22 index-wrap calls, 22 wrap resets and 24 scene-cut resets. Reset-derived expectations for private random-access hints are inferred from the unchanged source and public history; they are not new internal measurements. The first three calls of every traversal are excluded only from warmed summaries, leaving 216 warmed calls. All startup, cut, wrap and outlier timings remain in the record.
-
-The three existing optical-flow release tests pass. The process finishes in 21.164 seconds with peak sampled RSS of 836,714,496 bytes, at least 12,597,321,728 free disk bytes, unchanged frozen pins and restored cache policy. Power readings show battery at 86% before and 85% afterward. Exact tested sources and executable are archived. No model or player runs, and no sustained throughput, temporal-quality, physical-display or M5 gate closes.
-
-With the retained source manifest and recorded source revision, reproduce into a fresh output directory:
-
-```sh
-source scripts/env.sh
-MLXDLSS_SEPARABLE_FLOW_INPUTS=/absolute/path/to/inputs.json \
-MLXDLSS_SEPARABLE_FLOW_OUTPUT=/absolute/path/to/new-output \
-swift test --package-path vendor/MLX-DLSS -c release --jobs 2 \
-  --filter NativeSeparableFlowComparisonTests/testMatchedNativePrepare
-```
-
-The probe checks its original input/source hashes and actual executed runtime. Preserve the operating conditions, resource bounds and all observations when interpreting a repeat.
+A two-pass Boolean erosion (seven horizontal predicates, then seven vertical) replaced the original 7 × 7 motion-confidence erosion. The original kernel took 4.465 ms mean on eleven natural masks. In isolation the candidate cut that to about half (4.781 to 2.373 ms mean in its paired run) and cut complete motion assessment by 16.46%. Through complete `NativeOpticalFlow.prepare`, the gain almost vanished. Warmed mean fell 0.63% over 108 pairs, the four case totals ranged from −9.55% to +5.88%, and median and p95 got slightly worse (28.647 to 28.999 ms and 36.508 to 36.572 ms). Outputs matched bit for bit. Production keeps the original kernel.
