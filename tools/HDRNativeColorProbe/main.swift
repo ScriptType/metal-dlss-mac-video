@@ -197,7 +197,6 @@ final class NativeColorProbe: NSObject, NSApplicationDelegate {
             return phases
         }
         do {
-            try require(!FileManager.default.fileExists(atPath: output.path), "Output directory already exists")
             try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
             client = mpv_create(); try require(client != nil, "mpv_create")
             let options = ["config": "no", "vo": "gpu-next", "gpu-api": "vulkan", "gpu-context": "macvk",

@@ -180,7 +180,6 @@ enum FrameStressHarness {
             processingWidth: width, processingHeight: height), processor: processor, measurements: recorder)
         var consumer: StressConsumer?
         var held: [CompletedFrame] = []
-        defer { producerGate.signaledValue = 1; consumer?.releaseGPU(); session.close() }
         do {
             var input = first
             for frameID in 0..<3 {

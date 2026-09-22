@@ -228,7 +228,6 @@ enum FrameReferenceSequence {
 
     /// Includes all four views and reserved metadata, without allocating payloads.
     static func checkedPayloadBytes(frameBytes: UInt64, frameCount: UInt64, budget: UInt64) throws -> UInt64 {
-        try validateBudget(budget)
         let (sequenceBytes, sequenceOverflow) = frameBytes.multipliedReportingOverflow(by: frameCount)
         let (payloadBytes, viewsOverflow) = sequenceBytes.multipliedReportingOverflow(by: 4)
         let (totalBytes, metadataOverflow) = payloadBytes.addingReportingOverflow(metadataAllowanceBytes)
