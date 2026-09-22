@@ -102,9 +102,7 @@ func verifyProcess(_ options: Options) throws -> NSRunningApplication {
     guard let application = NSRunningApplication(processIdentifier: options.pid), !application.isTerminated,
           let executable = application.executableURL else { throw CaptureError("Target process unavailable") }
     let bundled: [String: String] = [
-        "io.github.scripttype.hdr-player": "HDRPlayer",
-        "dev.scripttype.HDRPiPProbe": "HDRPiPProbe",
-        "com.apple.PIPAgent": "PIPAgent"
+        "io.github.scripttype.hdr-player": "HDRPlayer"
     ]
     let project = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     let allowedCLI = ["artifacts/mpv-build/mpv", "artifacts/erika-target/debug/macos_native_demo", ".build/debug/HDRPlayer",
@@ -113,7 +111,7 @@ func verifyProcess(_ options: Options) throws -> NSRunningApplication {
     let actualBundle = bundleName(application.bundleIdentifier)
     guard actualBundle == options.bundle else { throw CaptureError("Target bundle mismatch: expected \(options.bundle), observed \(actualBundle)") }
     guard bundled[actualBundle] == executable.lastPathComponent || allowedCLI.contains(canonical(executable)) else {
-        throw CaptureError("Only HDR Player, HDRPiPProbe, PIPAgent or the workspace player executables are allowed")
+        throw CaptureError("Only HDR Player or the workspace player executables are allowed")
     }
     return application
 }
