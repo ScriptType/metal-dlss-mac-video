@@ -25,6 +25,17 @@ def rpaths(path):
     return re.findall(r"cmd LC_RPATH\n\s+cmdsize \d+\n\s+path (.*?) \(offset", commands)
 
 
+def source_revisions():
+    git = ("git", "-C", str(ROOT))
+    submodules = {}
+    for line in output(*git, "submodule", "status").splitlines():
+        commit, path = line[1:].split()[:2]
+        submodules[path] = None if line.startswith("-") else commit
+    return {"root": output(*git, "rev-parse", "HEAD").strip(),
+        "rootDirty": bool(output(*git, "status", "--porcelain", "--ignore-submodules=none").strip()),
+        "submodules": submodules}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("app", type=Path)
@@ -108,7 +119,7 @@ def main():
         shutil.copytree(source, destination, dirs_exist_ok=True)
         bundled_model = "Models/NeuralRendering.dlssmodel"
     manifest = {"architecture": output("uname", "-m").strip(), "libraries": sorted(rows, key=lambda row: row["library"]),
-        "model": bundled_model, "driver": "vulkan/icd.d/MoltenVK_icd.json",
+        "model": bundled_model, "driver": "vulkan/icd.d/MoltenVK_icd.json", "sources": source_revisions(),
         "scope": "Locally built development bundle; not a signed/notarized distribution"}
     (resources / "NativeRuntime.json").write_text(json.dumps(manifest, indent=2) + "\n")
     print(f"Bundled {len(staged)} native libraries; model {'included' if bundled_model else 'external'}")

@@ -2,6 +2,7 @@
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 cd "$PROJECT_ROOT"
+bash scripts/doctor.sh --toolchain
 for script in scripts/*.sh; do bash -n "$script"; done
 python3 -m compileall -q scripts
 python3 -m unittest discover -s scripts -p test_adapter_visibility.py

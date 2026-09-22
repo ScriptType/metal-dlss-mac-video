@@ -5,10 +5,7 @@ cd "$PROJECT_ROOT"
 npm --prefix apps/controls ci
 npm --prefix apps/controls run build
 swift build --jobs "$BUILD_JOBS"
-if [[ ! -f artifacts/mpv-build/libmpv.2.dylib ]]; then
-  echo "Patched mpv is missing; run scripts/build-mpv-adapter.sh first." >&2
-  exit 1
-fi
+bash scripts/build-mpv-adapter.sh
 app="$PROJECT_ROOT/artifacts/HDR Player.app"
 # Rebuild the generated bundle so removed libraries/resources cannot survive.
 rm -rf "$app/Contents"

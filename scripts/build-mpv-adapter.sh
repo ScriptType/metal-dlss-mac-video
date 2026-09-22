@@ -21,16 +21,30 @@ Cflags: -I\${includedir}
 EOF
 
 brew_prefix="$(brew --prefix)"
-if [[ -f artifacts/mpv-build/build.ninja ]]; then
-  # Refresh newly introduced Meson options before setting one on an older build.
-  meson setup --reconfigure artifacts/mpv-build vendor/mpv
-  meson setup --reconfigure artifacts/mpv-build vendor/mpv \
-    --pkg-config-path "$pkg_dir,$brew_prefix/lib/pkgconfig" \
-    -Dframe-engine=enabled -Dlibmpv=true
-else
-  meson setup artifacts/mpv-build vendor/mpv --buildtype=debugoptimized \
-    --pkg-config-path "$pkg_dir,$brew_prefix/lib/pkgconfig" \
-    -Dframe-engine=enabled -Dlibmpv=true -Dtests=true -Dvulkan=enabled \
-    -Dvideotoolbox-pl=enabled -Dcocoa=enabled -Dswift-build=enabled
-fi
+sources="$(git -C vendor/libplacebo rev-parse HEAD) $(git -C vendor/mpv rev-parse HEAD)
+$(ls -d "$brew_prefix"/Cellar/*/*)"
+# A configured build caches versioned Homebrew Cellar paths, so any source or
+# Homebrew change configures from scratch.
+configure() {
+  local build="$1"
+  local inputs="$sources
+$*"
+  if [[ "$(cat "$build/build-inputs.txt" 2>/dev/null)" != "$inputs" ]]; then
+    rm -rf "$build"
+    meson setup "$@"
+    printf '%s\n' "$inputs" > "$build/build-inputs.txt"
+  fi
+}
+
+# The pinned upstream include-header test omits dav1d's include directory.
+configure artifacts/libplacebo-build vendor/libplacebo \
+  --prefix "$PROJECT_ROOT/artifacts/local" -Dtests=true -Ddemos=false \
+  -Dopengl=disabled -Dvulkan=enabled -Dshaderc=enabled \
+  "-Dc_args=-I$brew_prefix/opt/dav1d/include" "-Dcpp_args=-I$brew_prefix/opt/dav1d/include"
+meson compile -C artifacts/libplacebo-build -j "$BUILD_JOBS"
+meson install -C artifacts/libplacebo-build
+configure artifacts/mpv-build vendor/mpv --buildtype=debugoptimized \
+  --pkg-config-path "$pkg_dir,$brew_prefix/lib/pkgconfig" \
+  -Dframe-engine=enabled -Dlibmpv=true -Dtests=true -Dvulkan=enabled \
+  -Dvideotoolbox-pl=enabled -Dcocoa=enabled -Dswift-build=enabled
 meson compile -C artifacts/mpv-build -j "$BUILD_JOBS"
