@@ -55,8 +55,6 @@ public final class HDRRuntimeResources: @unchecked Sendable {
         }
     }
 
-    /// Configure before creating neural sessions. Reconfiguration while any
-    /// neural processor retains a model is rejected without changing limits.
     public func configure(_ requested: HDRRuntimeResourcePolicy) throws {
         guard (1...16).contains(requested.maximumResidentModels), requested.maximumResidentModelBytes > 0,
               (1...UInt64(16384 * 16384)).contains(requested.maximumProcessingPixels),

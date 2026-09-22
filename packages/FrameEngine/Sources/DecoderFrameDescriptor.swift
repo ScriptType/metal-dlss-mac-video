@@ -3,8 +3,7 @@ import CoreVideo
 import DLSSMLX
 import Foundation
 
-/// Converts the native decoder's metadata into the same descriptor used by the
-/// C adapters. The caller retains the pixel buffer through submit's return.
+/// The caller retains the pixel buffer through submit's return.
 public enum DecoderFrameDescriptor {
     public static func make(pixelBuffer: CVPixelBuffer, metadata: MLXHDRFrameMetadata,
                             sourceID: UInt64, generation: UInt64) -> fe_frame {

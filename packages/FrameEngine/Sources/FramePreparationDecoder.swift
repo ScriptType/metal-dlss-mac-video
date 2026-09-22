@@ -4,9 +4,6 @@ import CoreVideo
 import DLSSMedia
 import Foundation
 
-/// Exact decoded-frame timing and fixed coded geometry for one selected stream.
-/// At most one million timing records are retained; pixel storage is never kept
-/// by the inventory. Duplicate PTS and changing geometry are unsupported.
 public struct FramePreparationInventory: Sendable {
     public let timings: [HDRCacheFrameTiming]
     public let width, height: Int
@@ -15,6 +12,7 @@ public struct FramePreparationInventory: Sendable {
               !timings.isEmpty, timings.count <= 1_000_000 else {
             throw FrameEngineError.invalid("Invalid Prepared inventory geometry/count; maximum one million frames")
         }
+        // Providers report samples in decode order; B-frames arrive out of PTS order.
         let sorted = timings.sorted { $0.presentationTime < $1.presentationTime }
         for (index, frame) in sorted.enumerated() {
             guard frame.duration.value > 0,
@@ -75,8 +73,8 @@ public protocol FramePreparationDecoderProvider: Sendable {
     func decoder(sourceURL: URL, videoStreamIndex: Int, range: HDRCacheRange) async throws -> any FramePreparationDecoder
 }
 
-/// Standalone native harness backend. Selected playback cores can supply their
-/// own provider without linking a second copy of their decoder into this library.
+/// Selected playback cores supply their own provider so this library never links
+/// a second copy of their decoder.
 public struct NativeFramePreparationProvider: FramePreparationDecoderProvider {
     public let identifier = "NativeHDRVideoReader-planar-output-timing-v2"
     public init() {}

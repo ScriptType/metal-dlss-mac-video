@@ -95,7 +95,6 @@ int main(void) {
     free(json);
     assert(fe_session_reset(session) != result->generation);
     fe_session_destroy(session);
-    // Both leases survive teardown, including the buffer returned by the C ABI.
     assert(CVPixelBufferGetWidth(fe_output_frame(redraw)->pixel_buffer) == 4);
     assert(fe_output_content_kind(redraw) == FE_CONTENT_ORIGINAL);
     fe_output_release(output); fe_output_release(redraw);

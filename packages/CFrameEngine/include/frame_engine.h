@@ -65,7 +65,8 @@ typedef struct {
     uint64_t memory_limit_bytes;
     uint32_t processing_width, processing_height;
     double reference_white_nits, effect_strength, colour_strength, maximum_luminance_ratio;
-    // UTF-8 strings are copied by create. NULL weights selects HDR bypass.
+    // UTF-8 strings are copied by create. NULL model_path or zero effect_strength
+    // selects HDR bypass.
     const char *model_path, *model_version;
 } fe_config;
 typedef struct {

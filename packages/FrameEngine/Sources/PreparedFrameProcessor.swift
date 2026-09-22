@@ -291,8 +291,6 @@ public actor PreparedHDRContext {
         return identity.range.start <= pts ? (resources.cache, identity) : nil
     }
 
-    /// The selected provider supplies exact frame timing. Sorting handles decode
-    /// order/B-frames without rounding timestamps or retaining pixel data.
     private static func buildResources(request: PreparedHDRRequest,
                                        configuration original: HDRPipelineConfiguration,
                                        decoderProvider: any FramePreparationDecoderProvider) async throws -> PreparedHDRResources {

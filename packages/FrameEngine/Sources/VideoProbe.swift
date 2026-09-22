@@ -14,7 +14,6 @@ public struct VideoReport: Codable, Sendable {
 }
 
 public enum VideoProbe {
-    /// Decode one sample into 10-bit bi-planar CoreVideo storage and retain its colour tags.
     public static func run(url: URL) async throws -> VideoReport {
         let asset = AVURLAsset(url: url)
         guard let track = try await asset.loadTracks(withMediaType: .video).first else {

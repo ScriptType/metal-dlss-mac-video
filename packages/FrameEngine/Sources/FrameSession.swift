@@ -13,8 +13,7 @@ public enum FrameEngineError: Error, LocalizedError {
     }
 }
 
-/// Decoded storage plus an immutable adapter-neutral descriptor. Retains the
-/// producer's buffer and optional owner until processing has completed.
+/// Retains the producer's buffer and optional owner until processing has completed.
 public final class EngineInput: @unchecked Sendable {
     public let descriptor: fe_frame
     public let pixelBuffer: CVPixelBuffer

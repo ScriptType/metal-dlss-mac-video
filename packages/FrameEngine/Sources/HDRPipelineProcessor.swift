@@ -6,8 +6,6 @@ import DLSSMLX
 import Foundation
 import Metal
 
-/// Immutable session settings, copied at the C boundary. Resource construction
-/// takes place on the worker's first frame, including model loading/compilation.
 public struct HDRPipelineConfiguration: Sendable {
     public var modelURL: URL?
     public var modelVersion: String
@@ -25,9 +23,7 @@ public struct HDRPipelineConfiguration: Sendable {
     }
 }
 
-/// Real shared path: decoder planes -> retained linear BT.2020 original -> sRGB
-/// proxy -> persistent NR -> HDR reconstruction -> completed RGBA16F nit output.
-/// Presentation/display mapping is intentionally downstream of this boundary.
+/// Output is linear BT.2020 RGBA16F in absolute nits; display mapping happens downstream.
 public actor HDRPipelineProcessor: FrameProcessor {
     private let configuration: HDRPipelineConfiguration
     private var importer: MLXHDRImporter?

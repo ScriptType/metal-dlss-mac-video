@@ -2,8 +2,7 @@ import Accelerate
 import CFrameEngine
 import Foundation
 
-/// CPU cache serialization and presentation conversion. Keeping the bulk work in
-/// memcpy/vImage avoids per-component Swift collection overhead in debug players.
+/// Bulk work stays in memcpy/vImage to avoid per-component Swift collection overhead in debug builds.
 enum HDRCachePixels {
     static func valid(_ bytes: UnsafeRawBufferPointer) -> Bool {
         hdr_cache_validate_rgba32f_le(bytes.baseAddress, bytes.count)
