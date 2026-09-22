@@ -95,10 +95,6 @@ public final class HDRRuntimeResources: @unchecked Sendable {
                   bytes <= policy.maximumResidentModelBytes - payloadBytes else {
                 throw FrameEngineError.invalid("Neural model residency is full; finish or cancel another processing session")
             }
-            if !cacheConfigured {
-                try MLXRuntimeDiagnostics.setCacheLimitBytes(policy.mlxCacheBytes)
-                cacheConfigured = true
-            }
             models += 1; bytes += payloadBytes
             peakModels = max(peakModels, models); peakBytes = max(peakBytes, bytes)
             return HDRModelReservation(owner: self, bytes: payloadBytes)

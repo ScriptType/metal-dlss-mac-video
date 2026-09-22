@@ -398,7 +398,6 @@ public actor PreparedFrameProcessor: FrameProcessor {
     }
 
     private static func pack(_ rgba: [Float], width: Int, height: Int) throws -> CVPixelBuffer {
-        guard rgba.count == width * height * 4 else { throw HDRCacheError.invalidFrame("Prepared payload geometry mismatch") }
         var buffer: CVPixelBuffer?
         let result = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_64RGBAHalf,
             [kCVPixelBufferIOSurfacePropertiesKey: [:], kCVPixelBufferMetalCompatibilityKey: true] as CFDictionary, &buffer)
