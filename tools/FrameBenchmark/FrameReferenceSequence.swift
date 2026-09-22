@@ -151,8 +151,6 @@ enum FrameReferenceSequence {
                 let path = try contained(source.path, in: input.url.deletingLastPathComponent())
                 guard path == input.paths[ordinal] else { throw Failure("Source path changed after preflight") }
                 let bytes = try payload(path, source.sha256, input.frameBytes)
-                // Original is already linear BT.2020 nits. No YCbCr importer or
-                // nominal timestamp synthesis is involved; matrix is unused.
                 let original = try MLXVideoFrame(rgb: bytes, width: input.manifest.width, height: input.manifest.height)
                 let metadata = MLXHDRFrameMetadata(time: source.pts.cm, duration: source.duration.cm,
                     sourceID: "sha256:\(digest(input.data))", streamID: 1, frameIndex: source.sourceFrameIndex,

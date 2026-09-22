@@ -3,8 +3,6 @@ import CoreVideo
 import Metal
 import QuartzCore
 
-// Diagnostic host only. Uses the existing public exporter and runtime target
-// options; it never changes the playback filter or opens a PiP window.
 struct ProbeFailure: Error { let message: String }
 func require(_ value: Bool, _ message: String) throws {
     if !value { throw ProbeFailure(message: message) }
