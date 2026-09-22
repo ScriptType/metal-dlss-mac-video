@@ -14,7 +14,7 @@ public struct GPUReport: Codable, Sendable {
     public let rgba16FloatSamples: [Float]
 }
 
-/// Small completed GPU-work check. This tests float storage, not HDR display accuracy.
+/// Tests float storage, not HDR display accuracy.
 public enum GPUProbe {
     public static func run() throws -> GPUReport {
         guard let device = MTLCreateSystemDefaultDevice(),

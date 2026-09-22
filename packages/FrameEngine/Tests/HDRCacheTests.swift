@@ -136,8 +136,6 @@ private func writeSegment(_ cache: HDRSegmentCache, identity: HDRCacheIdentity, 
     await #expect(throws: HDRCacheError.self) { try await cache.publish(writer) }
     #expect(try await cache.completedRanges(source: identity.source, settings: identity.settings).isEmpty)
     try await cache.cancel(writer)
-    // A terminated process may leave arbitrary partial files in staging. Recovery removes these,
-    // while rebuilding the completed range index from validated, atomically published directories.
     _ = try await writeSegment(cache, identity: identity)
     let abandoned = directory.appendingPathComponent("staging/abandoned")
     try FileManager.default.createDirectory(at: abandoned, withIntermediateDirectories: true)
@@ -235,7 +233,6 @@ private func writeSegment(_ cache: HDRSegmentCache, identity: HDRCacheIdentity, 
 @Test func cachePinnedReadersBlockEvictionWithinDiskBudget() async throws {
     let directory = try cacheDirectory()
     defer { try? FileManager.default.removeItem(at: directory) }
-    // A segment is ~4 KB at 8x8 RGBA32F. Determine its exact manifest size separately.
     let measureDirectory = try cacheDirectory()
     defer { try? FileManager.default.removeItem(at: measureDirectory) }
     let measure = try HDRSegmentCache(directory: measureDirectory, capacityBytes: 1_048_576)

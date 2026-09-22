@@ -323,8 +323,8 @@ public actor HDRSegmentCache {
         return cache
     }
 
-    /// Call once after opening. Rebuild the index from validated committed manifests; no separate
-    /// index transaction can accidentally publish a partial segment after a crash.
+    /// Rebuild the index from validated committed manifests; no separate index transaction
+    /// can accidentally publish a partial segment after a crash.
     public func recover() throws {
         guard stages.isEmpty, readers.isEmpty else { throw HDRCacheError.cacheInUse }
         recovered = false
