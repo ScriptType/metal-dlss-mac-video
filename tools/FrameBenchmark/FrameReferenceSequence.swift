@@ -85,14 +85,14 @@ enum FrameReferenceSequence {
         guard width > 0, height > 0, width <= 512 * 288 / height,
               (0...1).contains(strength), (0...1).contains(colour), ratio >= 1, white > 0,
               let motion = MediaMotion(rawValue: options["--motion"] ?? "automatic") else {
-            throw Failure("Invalid capture settings: processing at most512×288 pixels")
+            throw Failure("Invalid capture settings: processing at most 512×288 pixels")
         }
         // Every input payload is checked before any model/GPU allocation. Read
         // again immediately before processing, detecting edits after preflight.
         let input = try preflight(URL(fileURLWithPath: inputPath), maximumOutputBytes: budget)
         let count = try integer("--frames", input.manifest.frames.count)
         guard count > 0, count <= input.manifest.frames.count, count <= 120 else {
-            throw Failure("Capture count must be1...120 and available in the manifest")
+            throw Failure("Capture count must be 1...120 and available in the manifest")
         }
         let floatBytes = try checkedPayloadBytes(frameBytes: UInt64(input.frameBytes),
                                                 frameCount: UInt64(count), budget: budget)
@@ -244,7 +244,7 @@ enum FrameReferenceSequence {
         try validateBudget(maximumOutputBytes)
         let url = path.standardizedFileURL.resolvingSymlinksInPath()
         let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
-        guard size > 0, size <= 1024 * 1024 else { throw Failure("Manifest must be1...1048576 bytes") }
+        guard size > 0, size <= 1024 * 1024 else { throw Failure("Manifest must be 1...1048576 bytes") }
         let data = try Data(contentsOf: url)
         let manifest = try JSONDecoder().decode(Manifest.self, from: data)
         guard let object = try JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -331,9 +331,9 @@ enum FrameReferenceSequence {
         var result = [String: String](), total: UInt64 = 0
         for case let file as URL in enumerator {
             guard try file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true else { continue }
-            guard result.count < 128 else { throw Failure("Model package file count exceeds128") }
+            guard result.count < 128 else { throw Failure("Model package file count exceeds 128") }
             let size = try file.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
-            guard size >= 0, UInt64(size) <= 1024 * 1024 * 1024 - total else { throw Failure("Model package exceeds1GiB") }
+            guard size >= 0, UInt64(size) <= 1024 * 1024 * 1024 - total else { throw Failure("Model package exceeds 1 GiB") }
             total += UInt64(size)
             result[String(file.path.dropFirst(url.path.count + 1))] = try fileDigest(file)
         }
@@ -386,7 +386,7 @@ enum FrameReferenceSequence {
     }
     static func writeJSON(_ value: [String: Any], _ url: URL) throws {
         let data = try JSONSerialization.data(withJSONObject: value, options: [.prettyPrinted, .sortedKeys])
-        guard data.count <= 1024 * 1024 else { throw Failure("Diagnostic metadata exceeds1MiB") }
+        guard data.count <= 1024 * 1024 else { throw Failure("Diagnostic metadata exceeds 1 MiB") }
         try data.write(to: url, options: .atomic)
     }
 
