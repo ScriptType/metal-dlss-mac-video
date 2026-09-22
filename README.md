@@ -42,7 +42,6 @@ Bootstrap installs missing build dependencies without upgrading existing formula
 | `tools/HDRProbe` | JSON GPU and decoded-frame reports |
 | `tools/FrameBenchmark` | Native decoder/shared-engine completed-work benchmark |
 | `tools/CFrameConsumer` | Plain C HDR round trip and resource-lifetime check |
-| `tools/HDRPiPProbe` | Public AVKit float transport and paused-renderer diagnostics |
 | `vendor/MLX-DLSS` | HDR reader/import/reconstruction fork, branch `hdr-player` |
 | `vendor/mpv`, `vendor/libplacebo`, `vendor/Erika` | Pinned Git submodules for adapter work |
 | `references` | Pinned Windows reference sources, fetched locally |

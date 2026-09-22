@@ -32,24 +32,24 @@ A full run of `python3 scripts/goal-status.py` ends with a status line reading M
 
 ## Work order
 
-Build the base first, then remove dead weight, then build the features:
+Build the base first, then the features:
 
 1. #42 Fail fast on a missing toolchain, and build the app fresh from one command.
-2. #38 Remove the unsupported system PiP path.
-3. #40 Keep raw run logs out of `docs/evidence`.
-4. #41 Drop rejected-optimization tests from the MLX-DLSS fork.
-5. #34 Playback-mode policy.
-6. #37 Attribute the ~90 ms per-frame enhancement floor.
-7. #35 10-bit HEVC Prepared cache.
-8. #36 Whole-file background preparation with resume.
-9. #17 Floating video window. Start from the core of PR #22, not its branch. The PR comment explains what to take.
-10. #39 Re-read EDR headroom on screen change.
-11. #3 and #16. Write the agent parts and `docs/human-checks.md`.
+2. #34 Playback-mode policy.
+3. #37 Attribute the ~90 ms per-frame enhancement floor.
+4. #49 Store mastering-display primaries in R/G/B order.
+5. #35 10-bit HEVC Prepared cache.
+6. #36 Whole-file background preparation with resume.
+7. #17 Floating video window. Start from the core of PR #22, not its branch. The PR comment explains what to take.
+8. #39 Re-read EDR headroom on screen change.
+9. #3 and #16. Write the agent parts and `docs/human-checks.md`.
+
+#38, #40 and #41 were finished during the 2026-09-22 cleanup.
 
 ## One issue at a time
 
 1. Re-read the issue and its comments. Its "Done when" list is the contract. Do not edit it. If an item is vague, state your stricter reading in an issue comment before coding.
-2. Create a branch from `origin/main`. Use a worktree under `artifacts/` if a long build must keep running elsewhere.
+2. Create a branch from `origin/main`. Use a worktree under `artifacts/` if a long build must keep running elsewhere. A new worktree needs `git submodule update --init vendor/MLX-DLSS vendor/mpv`, `npm --prefix apps/controls ci`, and its own `bash scripts/build-mpv-adapter.sh` before any app check.
 3. Make the smallest change that meets the contract. Commit in small steps that each build.
 4. Verify on the real artifact. For app behavior, build the app and drive it with the existing smoke and lifecycle tooling. Paste the relevant command output into the issue.
 5. Spawn a fresh reviewer subagent that sees only the diff and the issue. Tell it to assume the code is wrong and to report only correctness gaps. Fix real findings and dismiss noise with a reason.
