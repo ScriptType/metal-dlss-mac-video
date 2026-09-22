@@ -139,10 +139,8 @@ final class PlayerLifecycleDiagnostics {
         finished = true
         for observer in observers { NSWorkspace.shared.notificationCenter.removeObserver(observer) }
         observers.removeAll()
-        if let notificationPort {
-            if let source = IONotificationPortGetRunLoopSource(notificationPort)?.takeUnretainedValue() {
-                CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
-            }
+        if let notificationPort, let source = IONotificationPortGetRunLoopSource(notificationPort)?.takeUnretainedValue() {
+            CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
         }
         if notifier != 0 { IODeregisterForSystemPower(&notifier) }
         if powerPort != 0 { IOServiceClose(powerPort) }

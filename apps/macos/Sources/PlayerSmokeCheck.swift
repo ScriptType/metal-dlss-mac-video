@@ -347,92 +347,92 @@ final class PlayerSmokeCheck {
               layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Prepared enhanced output is not float EDR") }
         checks.append("Prepared neural cache output uses float EDR with no playback error")
     }
+    private func runControls() async throws {
+        try await wait("media metadata and native view loaded", seconds: 20) {
+            self.number("duration") > 0 && (self.state()["tracks"] as? [[String: Any]] ?? []).count >= 4 && !self.video.subviews.isEmpty
+        }
+        let dom = try await script("return {audio:document.getElementById('audio').options.length,subtitles:document.getElementById('sub').options.length,chapters:document.getElementById('chapter').options.length,modeDisabled:document.getElementById('mode').disabled,canvas:document.querySelectorAll('canvas,video').length};")
+        guard let data = dom.data(using: .utf8), let contents = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              contents["audio"] as? Int == 2, contents["subtitles"] as? Int == 2, contents["chapters"] as? Int == 2,
+              contents["canvas"] as? Int == 0 else { throw Failure(message: "Controls did not reflect fixture tracks/chapters: \(dom)") }
+        checks.append("WK controls reflect native tracks and chapters; no web video surface")
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("pause via DOM") { self.state()["paused"] as? Bool == true }
+        _ = try await script("const e=document.getElementById('volume');for(let i=0;i<1000;i++){e.value=String(i%101);e.dispatchEvent(new Event('input',{bubbles:true}));}e.value='37';e.dispatchEvent(new Event('input',{bubbles:true}));return true;")
+        try await wait("latest volume survives 1000 queued input events") { abs(self.number("volume") - 37) < 0.01 }
+        try await click("mute")
+        try await wait("mute via DOM") { self.state()["muted"] as? Bool == true }
+        try await change("audio", value: "2")
+        try await wait("alternate audio selected") { self.selected("audio", id: 2) }
+        try await change("sub", value: "1")
+        try await wait("native subtitle selected") { self.selected("sub", id: 1) }
+        try await change("chapter", value: "1")
+        try await wait("chapter seek") { self.number("chapter") == 1 && self.number("position") >= 1.45 }
+        try await click("settings-open")
+        guard try await script("return document.getElementById('settings').open;") == "true" else { throw Failure(message: "Settings dialog failed to open") }
+        try await change("subtitleBrightness", value: "0.6")
+        try await change("subtitleScale", value: "1.2")
+        try await change("subtitleDelay", value: "0.3")
+        try await wait("subtitle scale and delay applied natively") { abs(self.number("subtitleScale") - 1.2) < 0.01 && abs(self.number("subtitleDelay") - 0.3) < 0.01 }
+        try await wait("subtitle brightness is opaque neutral gray in native mpv state") {
+            (self.state()["nativeSubtitleColor"] as? String)?.uppercased() == "#FF999999"
+        }
+        try await click("settings-close")
+        try await change("timeline", value: "0.7")
+        try await wait("exact paused timeline seek") { abs(self.number("position") - 0.7) < 0.05 && self.state()["paused"] as? Bool == true }
+        let beforeStep = number("position")
+        _ = try await script("document.querySelector('[data-command=frameStep][data-value=\"1\"]').click();return true;")
+        try await wait("frame step advances one frame while paused") { self.number("position") > beforeStep + 0.02 && self.number("position") < beforeStep + 0.05 && self.state()["paused"] as? Bool == true }
+        window.setContentSize(NSSize(width: 800, height: 620))
+        try await wait("embedded native view resizes") { abs((self.video.subviews.first?.bounds.width ?? 0) - 800) < 1 }
+        try await click("fullscreen")
+        try await wait("fullscreen via DOM") { self.state()["fullscreen"] as? Bool == true }
+        try await click("fullscreen")
+        try await wait("exit fullscreen via DOM") { self.state()["fullscreen"] as? Bool == false }
+        try await click("enhancement")
+        try await wait("enhancement command accepted") { (self.state()["processing"] as? [String: Any])?["enabled"] as? Bool == true }
+        try await click("play")
+        try await wait("neural playback advances", seconds: 20) { self.number("position") > 1.2 && self.state()["paused"] as? Bool == false }
+        try await click("play")
+        try await wait("neural pause") { self.state()["paused"] as? Bool == true }
+        try await wait("paused same-frame pair available", seconds: 20) {
+            (self.state()["capabilities"] as? [String: Any])?["sameFrameComparison"] as? Bool == true
+        }
+        try await Task.sleep(for: .milliseconds(500))
+        let paired = state()["nativeEnhancement"] as? [String: Any] ?? [:]
+        let identityKeys = ["displayed-source-pts", "displayed-timebase-num", "displayed-timebase-den", "displayed-generation", "submitted-frames"]
+        let identity = identityKeys.map { String(describing: paired[$0]) }
+        try await click("compare")
+        try await wait("compare original at retained timestamp") {
+            (self.state()["nativeEnhancement"] as? [String: Any])?["comparison"] as? String == "original"
+        }
+        var compared = state()["nativeEnhancement"] as? [String: Any] ?? [:]
+        guard identityKeys.map({ String(describing: compared[$0]) }) == identity else {
+            throw Failure(message: "Original comparison changed rational PTS, generation or submitted frames")
+        }
+        try await click("compare")
+        try await wait("compare enhanced at retained timestamp") {
+            (self.state()["nativeEnhancement"] as? [String: Any])?["comparison"] as? String == "enhanced"
+        }
+        compared = state()["nativeEnhancement"] as? [String: Any] ?? [:]
+        guard identityKeys.map({ String(describing: compared[$0]) }) == identity else {
+            throw Failure(message: "Enhanced comparison changed rational PTS, generation or submitted frames")
+        }
+        guard let layer = video.subviews.first?.layer as? CAMetalLayer, layer.pixelFormat == .rgba16Float,
+              layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Neural presentation is not float EDR") }
+        checks.append("retained comparison preserved rational PTS/generation without inference submission; float EDR active")
+        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Unknown playback error") }
+        checks.append("no native playback error")
+    }
     func start() { Task { await run() } }
     private func run() async {
         var failure: String?
         do {
-            if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "dolby-vision" {
-                try await runDolbyVision()
-            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "prepared" {
-                try await runPrepared()
-            } else if ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"]?.hasPrefix("preferences-") == true {
-                try await runPreferences(write: ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] == "preferences-write")
-            } else {
-            try await wait("media metadata and native view loaded", seconds: 20) {
-                self.number("duration") > 0 && (self.state()["tracks"] as? [[String: Any]] ?? []).count >= 4 && !self.video.subviews.isEmpty
-            }
-            let dom = try await script("return {audio:document.getElementById('audio').options.length,subtitles:document.getElementById('sub').options.length,chapters:document.getElementById('chapter').options.length,modeDisabled:document.getElementById('mode').disabled,canvas:document.querySelectorAll('canvas,video').length};")
-            guard let data = dom.data(using: .utf8), let contents = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  contents["audio"] as? Int == 2, contents["subtitles"] as? Int == 2, contents["chapters"] as? Int == 2,
-                  contents["canvas"] as? Int == 0 else { throw Failure(message: "Controls did not reflect fixture tracks/chapters: \(dom)") }
-            checks.append("WK controls reflect native tracks and chapters; no web video surface")
-            if state()["paused"] as? Bool != true { try await click("play") }
-            try await wait("pause via DOM") { self.state()["paused"] as? Bool == true }
-            _ = try await script("const e=document.getElementById('volume');for(let i=0;i<1000;i++){e.value=String(i%101);e.dispatchEvent(new Event('input',{bubbles:true}));}e.value='37';e.dispatchEvent(new Event('input',{bubbles:true}));return true;")
-            try await wait("latest volume survives 1000 queued input events") { abs(self.number("volume") - 37) < 0.01 }
-            try await click("mute")
-            try await wait("mute via DOM") { self.state()["muted"] as? Bool == true }
-            try await change("audio", value: "2")
-            try await wait("alternate audio selected") { self.selected("audio", id: 2) }
-            try await change("sub", value: "1")
-            try await wait("native subtitle selected") { self.selected("sub", id: 1) }
-            try await change("chapter", value: "1")
-            try await wait("chapter seek") { self.number("chapter") == 1 && self.number("position") >= 1.45 }
-            try await click("settings-open")
-            guard try await script("return document.getElementById('settings').open;") == "true" else { throw Failure(message: "Settings dialog failed to open") }
-            try await change("subtitleBrightness", value: "0.6")
-            try await change("subtitleScale", value: "1.2")
-            try await change("subtitleDelay", value: "0.3")
-            try await wait("subtitle scale and delay applied natively") { abs(self.number("subtitleScale") - 1.2) < 0.01 && abs(self.number("subtitleDelay") - 0.3) < 0.01 }
-            try await wait("subtitle brightness is opaque neutral gray in native mpv state") {
-                (self.state()["nativeSubtitleColor"] as? String)?.uppercased() == "#FF999999"
-            }
-            try await click("settings-close")
-            try await change("timeline", value: "0.7")
-            try await wait("exact paused timeline seek") { abs(self.number("position") - 0.7) < 0.05 && self.state()["paused"] as? Bool == true }
-            let beforeStep = number("position")
-            _ = try await script("document.querySelector('[data-command=frameStep][data-value=\"1\"]').click();return true;")
-            try await wait("frame step advances one frame while paused") { self.number("position") > beforeStep + 0.02 && self.number("position") < beforeStep + 0.05 && self.state()["paused"] as? Bool == true }
-            window.setContentSize(NSSize(width: 800, height: 620))
-            try await wait("embedded native view resizes") { abs((self.video.subviews.first?.bounds.width ?? 0) - 800) < 1 }
-            try await click("fullscreen")
-            try await wait("fullscreen via DOM") { self.state()["fullscreen"] as? Bool == true }
-            try await click("fullscreen")
-            try await wait("exit fullscreen via DOM") { self.state()["fullscreen"] as? Bool == false }
-            try await click("enhancement")
-            try await wait("enhancement command accepted") { (self.state()["processing"] as? [String: Any])?["enabled"] as? Bool == true }
-            try await click("play")
-            try await wait("neural playback advances", seconds: 20) { self.number("position") > 1.2 && self.state()["paused"] as? Bool == false }
-            try await click("play")
-            try await wait("neural pause") { self.state()["paused"] as? Bool == true }
-            try await wait("paused same-frame pair available", seconds: 20) {
-                (self.state()["capabilities"] as? [String: Any])?["sameFrameComparison"] as? Bool == true
-            }
-            try await Task.sleep(for: .milliseconds(500))
-            let paired = state()["nativeEnhancement"] as? [String: Any] ?? [:]
-            let identityKeys = ["displayed-source-pts", "displayed-timebase-num", "displayed-timebase-den", "displayed-generation", "submitted-frames"]
-            let identity = identityKeys.map { String(describing: paired[$0]) }
-            try await click("compare")
-            try await wait("compare original at retained timestamp") {
-                (self.state()["nativeEnhancement"] as? [String: Any])?["comparison"] as? String == "original"
-            }
-            var compared = state()["nativeEnhancement"] as? [String: Any] ?? [:]
-            guard identityKeys.map({ String(describing: compared[$0]) }) == identity else {
-                throw Failure(message: "Original comparison changed rational PTS, generation or submitted frames")
-            }
-            try await click("compare")
-            try await wait("compare enhanced at retained timestamp") {
-                (self.state()["nativeEnhancement"] as? [String: Any])?["comparison"] as? String == "enhanced"
-            }
-            compared = state()["nativeEnhancement"] as? [String: Any] ?? [:]
-            guard identityKeys.map({ String(describing: compared[$0]) }) == identity else {
-                throw Failure(message: "Enhanced comparison changed rational PTS, generation or submitted frames")
-            }
-            guard let layer = video.subviews.first?.layer as? CAMetalLayer, layer.pixelFormat == .rgba16Float,
-                  layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Neural presentation is not float EDR") }
-            checks.append("retained comparison preserved rational PTS/generation without inference submission; float EDR active")
-            guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Unknown playback error") }
-            checks.append("no native playback error")
+            switch ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] {
+            case "dolby-vision": try await runDolbyVision()
+            case "prepared": try await runPrepared()
+            case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")
+            default: try await runControls()
             }
         } catch { failure = error.localizedDescription }
         let layer = video.subviews.first?.layer as? CAMetalLayer
