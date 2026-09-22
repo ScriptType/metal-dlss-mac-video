@@ -28,7 +28,7 @@ def rpaths(path):
 def source_revisions():
     git = ("git", "-C", str(ROOT))
     submodules = {}
-    for line in output(*git, "submodule", "status").splitlines():
+    for line in output(*git, "submodule", "status", "--recursive").splitlines():
         commit, path = line[1:].split()[:2]
         submodules[path] = None if line.startswith("-") else commit
     return {"root": output(*git, "rev-parse", "HEAD").strip(),

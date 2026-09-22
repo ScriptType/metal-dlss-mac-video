@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
+# The on-disk spelling keeps the configure stamp stable across path case variants.
+PROJECT_ROOT="$(realpath "$PROJECT_ROOT")"
 cd "$PROJECT_ROOT"
 
 library_dir="$PROJECT_ROOT/.build/debug"
@@ -22,9 +24,10 @@ EOF
 
 brew_prefix="$(brew --prefix)"
 sources="$(git -C vendor/libplacebo rev-parse HEAD) $(git -C vendor/mpv rev-parse HEAD)
-$(ls -d "$brew_prefix"/Cellar/*/*)"
-# A configured build caches versioned Homebrew Cellar paths, so any source or
-# Homebrew change configures from scratch.
+$(shasum -a 256 scripts/build-mpv-adapter.sh scripts/env.sh)
+$(LC_ALL=C ls -d "$brew_prefix"/Cellar/*/*)"
+# A configured build caches versioned Homebrew Cellar paths and pkg-config
+# flags, so any source, script or Homebrew change configures from scratch.
 configure() {
   local build="$1"
   local inputs="$sources
