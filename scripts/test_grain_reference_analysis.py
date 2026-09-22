@@ -205,7 +205,7 @@ class GrainReferenceAnalysisTests(unittest.TestCase):
                         sourceIdentity="sha256:" + pin(source / "manifest.json")["sha256"], provenance=incoming["provenance"])
                     write(target / "manifest.json", outgoing)
                     helper.validate_capture(target / "manifest.json")
-                    # The recipe-led settings predicate admits all three cases.
+                    # A recipe-only settings predicate would admit all three cases.
                     self.assertEqual(outgoing["settings"]["modelInputRange"], "bounded-sRGB-after-resample")
                     self.assertTrue(all(outgoing["settings"][key] == value for key, value in recipe["intendedCaptureSettings"].items()))
                     if setting != "temporal":
