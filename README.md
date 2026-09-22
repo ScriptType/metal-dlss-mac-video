@@ -18,7 +18,7 @@ bash scripts/doctor.sh
 uv run --frozen scripts/smoke-models.py
 ```
 
-HDR Player embeds the patched mpv renderer and provides local playback controls; see [native player and packaging](docs/native-player.md). The separate HDRHarness executable provides video-only SDR/PQ/HLG playback and floating-point captures; see [presentation commands](docs/hdr-presentation.md). [Frame-engine commands](docs/frame-engine.md) exercise the integrated neural HDR path and completed-work instrumentation. MLX-DLSS's separate media exporter remains explicitly SDR.
+`scripts/build-harness.sh` builds the app from the current tree, including the pinned libplacebo and the patched mpv, and records the root and submodule revisions in `Contents/Resources/NativeRuntime.json`. HDR Player embeds the patched mpv renderer and provides local playback controls; see [native player and packaging](docs/native-player.md). The separate HDRHarness executable provides video-only SDR/PQ/HLG playback and floating-point captures; see [presentation commands](docs/hdr-presentation.md). [Frame-engine commands](docs/frame-engine.md) exercise the integrated neural HDR path and completed-work instrumentation. MLX-DLSS's separate media exporter remains explicitly SDR.
 
 On another Apple Silicon Mac with macOS 26+, full Xcode, and Homebrew:
 
@@ -28,7 +28,7 @@ cd metal-dlss-mac-video
 bash scripts/bootstrap.sh
 ```
 
-Bootstrap installs missing build dependencies without upgrading existing formulae, resolves pinned sources/packages, downloads checksummed model sources, extracts local models and generates fixtures. On a fresh clone it then stops at the app build, because `scripts/build-harness.sh` needs a patched libmpv that no earlier step builds. [#42](https://github.com/ScriptType/metal-dlss-mac-video/issues/42) tracks the one-command fresh build. Bootstrap uses two compiler jobs by default. See [setup](docs/setup.md) for individual steps, model provenance, and migration to M5.
+Bootstrap installs missing build dependencies without upgrading existing formulae, resolves pinned sources/packages, downloads checksummed model sources, extracts local models, generates fixtures and builds the app. Bootstrap uses two compiler jobs by default. See [setup](docs/setup.md) for individual steps, model provenance, and migration to M5.
 
 ## Layout
 
