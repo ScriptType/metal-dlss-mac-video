@@ -278,3 +278,31 @@ private func writeSegment(_ cache: HDRSegmentCache, identity: HDRCacheIdentity, 
         }
     }
 }
+
+@Test func cacheSourceFingerprintOfSymlinkMatchesTarget() throws {
+    let directory = try cacheDirectory()
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appendingPathComponent("source.bin")
+    try Data(repeating: 7, count: 5_000_000).write(to: source)
+    let link = directory.appendingPathComponent("link.bin")
+    try FileManager.default.createSymbolicLink(at: link, withDestinationURL: source)
+    #expect(try HDRCacheSource.fingerprint(url: link, streamIndex: 0) == HDRCacheSource.fingerprint(url: source, streamIndex: 0))
+}
+
+@Test func cacheSourceFingerprintRejectsSourceGrowingWhileHashed() async throws {
+    let directory = try cacheDirectory()
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appendingPathComponent("growing.bin")
+    let initialSize = 64 << 20
+    try Data(repeating: 1, count: initialSize).write(to: source)
+    let writer = try FileHandle(forWritingTo: source)
+    try writer.seekToEnd()
+    let appending = Task.detached {
+        while !Task.isCancelled { try writer.write(contentsOf: Data(repeating: 2, count: 4_096)) }
+    }
+    defer { appending.cancel() }
+    while try FileManager.default.attributesOfItem(atPath: source.path)[.size] as? Int == initialSize { await Task.yield() }
+    #expect(throws: HDRCacheError.invalidIdentity("Source changed while being fingerprinted")) {
+        try HDRCacheSource.fingerprint(url: source, streamIndex: 0)
+    }
+}
