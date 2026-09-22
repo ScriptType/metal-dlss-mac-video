@@ -2,9 +2,9 @@
 
 Development workspace for a native macOS HDR player with experimental MLX/Metal neural enhancement. Development and benchmarks currently run on an M3 with 16 GB. M5 Max with 64 GB is the next target; its performance remains unmeasured.
 
-**Status: implementation in progress.** Native NV12/P010 HDR import, retained-original neural reconstruction, an asynchronous C-compatible frame engine and both native playback adapters are implemented. The AppKit/WKWebView player uses provisional mpv with native video, audio, subtitles and chapters. Shared-clock Adaptive playback and persistent Prepared playback are integrated; the measured M3 Prepared case sustains source cadence.
+**Status.** `main` builds, and `bash scripts/check.sh` passes once the Xcode 27 Metal Toolchain is installed. The app plays SDR, HDR10, HLG and Dolby Vision files through mpv, with audio and subtitle tracks and chapters. Neural enhancement works end to end but is not usable daily on the M3. Live mode is refused at every measured processing size, Adaptive plays at about a quarter of source speed, and the Prepared cache holds seconds of video rather than a film. Nobody has judged enhanced output on an HDR display yet.
 
-The [experimental PiP consumer](docs/picture-in-picture.md) is deferred: Apple DTS identifies the tested sample-buffer route as unsupported on macOS. Lifecycle and system-control checks pass, but captured output retains a crop/brightness discrepancy; PiP stays disabled in ordinary playback. Physical HDR, sustained presented A/V and final M5 performance retain their acceptance gates. The [original plan](mac-hdr-player-plan.md) and [implementation status](docs/implementation-status.md) track the remaining work.
+The [v1.0 (M3) milestone](https://github.com/ScriptType/metal-dlss-mac-video/milestone/6) is the plan for a daily-usable player on this Mac, and the [roadmap issue](https://github.com/ScriptType/metal-dlss-mac-video/issues/1) lists what is decided and what is left. [Implementation status](docs/implementation-status.md) gives one line per issue. The [original plan](mac-hdr-player-plan.md) remains the architecture reference.
 
 ## Start here
 
@@ -28,7 +28,7 @@ cd metal-dlss-mac-video
 bash scripts/bootstrap.sh
 ```
 
-Bootstrap installs missing build dependencies without upgrading existing formulae, resolves pinned sources/packages, downloads checksummed model sources, extracts local models, generates fixtures, and builds the harness and both candidate playback cores. It uses two compiler jobs by default. See [setup](docs/setup.md) for individual steps, model provenance, and migration to M5.
+Bootstrap installs missing build dependencies without upgrading existing formulae, resolves pinned sources/packages, downloads checksummed model sources, extracts local models and generates fixtures. On a fresh clone it then stops at the app build, because `scripts/build-harness.sh` needs a patched libmpv that no earlier step builds. [#42](https://github.com/ScriptType/metal-dlss-mac-video/issues/42) tracks the one-command fresh build. Bootstrap uses two compiler jobs by default. See [setup](docs/setup.md) for individual steps, model provenance, and migration to M5.
 
 ## Layout
 
