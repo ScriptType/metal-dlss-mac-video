@@ -31,7 +31,6 @@ private final class MPVLibrary: @unchecked Sendable {
     let errorString: ErrorString
     let requestLog: Log
     let path: String
-    let frameExportAPI: MPVFrameExportAPI?
 
     init() throws {
         if let driver = Bundle.main.resourceURL?.appendingPathComponent("vulkan/icd.d/MoltenVK_icd.json"),
@@ -64,7 +63,6 @@ private final class MPVLibrary: @unchecked Sendable {
         destroy = try symbol("mpv_terminate_destroy", as: Destroy.self)
         errorString = try symbol("mpv_error_string", as: ErrorString.self)
         requestLog = try symbol("mpv_request_log_messages", as: Log.self)
-        frameExportAPI = MPVFrameExportAPI(library: library)
         // Keep the library loaded until process exit: AppKit/Vulkan may retain
         // deferred native callbacks after a particular player has been destroyed.
     }
@@ -90,7 +88,6 @@ private final class MPVPlayerWorker: @unchecked Sendable {
     let subtitleDelay: Double
     let onState: @Sendable (Data) -> Void
     let onFinish: @Sendable () -> Void
-    let frameMailbox: NativePiPMailbox?
     private let lock = NSLock()
     private struct QueuedCommand { let args: [String]; let preparedRequest: Data?; let configurationID: UInt64; let removeExistingFilter: Bool }
     private var commands: [QueuedCommand] = []
@@ -98,13 +95,12 @@ private final class MPVPlayerWorker: @unchecked Sendable {
     private var stopping = false
 
     init(host: NSView, filter: String, preparedRequestURL: URL, volume: Double, muted: Bool, subtitleBrightness: Double, subtitleScale: Double, subtitleDelay: Double,
-         frameMailbox: NativePiPMailbox?, onState: @escaping @Sendable (Data) -> Void, onFinish: @escaping @Sendable () -> Void) {
+         onState: @escaping @Sendable (Data) -> Void, onFinish: @escaping @Sendable () -> Void) {
         hostPointer = Int64(Int(bitPattern: Unmanaged.passUnretained(host).toOpaque()))
         self.preparedRequestURL = preparedRequestURL
         self.filter = filter; self.volume = volume; self.muted = muted; self.subtitleBrightness = subtitleBrightness
         self.subtitleScale = subtitleScale; self.subtitleDelay = subtitleDelay
         self.onState = onState; self.onFinish = onFinish
-        self.frameMailbox = frameMailbox
     }
     func enqueue(_ args: [String], preparedRequest: Data? = nil, configurationID: UInt64 = 0, removeExistingFilter: Bool = false) {
         lock.lock(); defer { lock.unlock() }
@@ -162,11 +158,6 @@ private final class MPVPlayerWorker: @unchecked Sendable {
             }
             let initialized = library.initialize(handle)
             guard initialized >= 0 else { throw MPVFailure(message: library.error(initialized)) }
-            let exporter = frameMailbox == nil ? nil : MPVFrameExporter(api: library.frameExportAPI, client: handle)
-            defer { exporter?.close() }
-            if frameMailbox != nil && exporter == nil {
-                frameMailbox?.submit(NativePiPSnapshot(unavailableReason: "This playback core has no compatible PiP frame exporter."))
-            }
             _ = library.requestLog(handle, "warn")
             var failure: String?
             var appliedConfigurationID: UInt64 = 0
@@ -200,7 +191,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                     else if args.first == "loadfile" || (args.first == "vf" && args.dropFirst().first == "set") { failure = nil }
                     if result >= 0, work.configurationID != 0 { appliedConfigurationID = work.configurationID }
                 }
-                if let event = library.waitEvent(handle, exporter == nil ? 0.04 : 0.01)?.pointee {
+                if let event = library.waitEvent(handle, 0.04)?.pointee {
                     switch event.event_id {
                     case MPV_EVENT_SHUTDOWN: running = false
                     case MPV_EVENT_LOG_MESSAGE:
@@ -219,7 +210,6 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                     default: break
                     }
                 }
-                if let exporter { frameMailbox?.submit(exporter.poll()) }
                 if Date() >= nextState {
                     nextState = Date().addingTimeInterval(0.12)
                     func number(_ key: String, fallback: Double = 0) -> Double {
@@ -274,10 +264,6 @@ final class MPVPlaybackController {
     let hostView: NSView
     var onState: (([String: Any]) -> Void)?
     var onStopped: (() -> Void)?
-    var onPiPSnapshot: ((NativePiPSnapshot) -> Void)?
-    var pictureInPictureClock: NativePiPCoreClock?
-    let pictureInPictureDiagnosticEnabled = ProcessInfo.processInfo.environment["HDRPLAYER_ENABLE_PIP"] == "1"
-    private var frameMailbox: NativePiPMailbox?
     private let defaults: UserDefaults
     private var worker: MPVPlayerWorker?
     private var source = ""
@@ -335,18 +321,14 @@ final class MPVPlaybackController {
     }
     func start() {
         guard worker == nil else { return }
-        if pictureInPictureDiagnosticEnabled {
-            frameMailbox = NativePiPMailbox(clock: pictureInPictureClock) { [weak self] snapshot in self?.onPiPSnapshot?(snapshot) }
-        }
         let worker = MPVPlayerWorker(host: hostView, filter: filter(), preparedRequestURL: preparedRequestURL, volume: state["volume"] as? Double ?? 100,
             muted: state["muted"] as? Bool ?? false, subtitleBrightness: subtitleBrightness, subtitleScale: subtitleScale, subtitleDelay: subtitleDelay,
-            frameMailbox: frameMailbox,
             onState: { [weak self] data in DispatchQueue.main.async { self?.receive(data) } },
             onFinish: { [weak self] in DispatchQueue.main.async { self?.worker = nil; self?.onStopped?() } })
         self.worker = worker
         DispatchQueue.global(qos: .userInitiated).async { worker.run() }
     }
-    func stop() { frameMailbox?.close(); frameMailbox = nil; if let worker { worker.stop() } else { onStopped?() } }
+    func stop() { if let worker { worker.stop() } else { onStopped?() } }
     func load(_ url: URL) {
         if worker == nil { start() }
         if mode == "prepared" { mode = "adaptive"; reconfigure() }
@@ -576,7 +558,7 @@ final class MPVPlaybackController {
             "completedP95Seconds": native["completed-p95-seconds"] ?? 0,
             "bufferCount": native["buffer-count"] ?? 0, "bufferSeconds": native["buffer-seconds"] ?? 0,
             "comparison": native["comparison"] ?? "enhanced", "displayedContentKind": displayedKind] as [String: Any]
-        state["capabilities"] = ["enhancement": enhancementAvailable, "prepared": preparedAvailable, "preparedUnavailableReason": preparedReason ?? "", "pip": false, "sameFrameComparison": native["compare-ready"] as? Bool ?? false,
+        state["capabilities"] = ["enhancement": enhancementAvailable, "prepared": preparedAvailable, "preparedUnavailableReason": preparedReason ?? "", "sameFrameComparison": native["compare-ready"] as? Bool ?? false,
             "playbackModes": !modes.isEmpty]
     }
     private func publish() { updateProcessing(); onState?(state) }
