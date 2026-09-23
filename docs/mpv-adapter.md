@@ -100,7 +100,7 @@ Inventory scanning decodes one frame at a time and retains timing records rather
 
 Cache lookup uses exact source PTS and duration. A miss returns the HDR original through the same output lease and renderer path. The displayed frame's immutable `displayed-content-kind` distinguishes a cached enhanced frame from original fallback; the progress node's `lastOutput` describes background processing and must not label the currently displayed frame. `prepared-original` explicitly identifies a cached zero-strength reference. Prepared cache speed never qualifies neural Live mode.
 
-The current float reference cache reads Float32 pixels from disk and packs a CPU-complete RGBA16F IOSurface before native hardware import. Measurements expose cache-read and packing wall time. This path preserves linear HDR precision; the separately evaluated HDR10 codec policy is not yet the production cache backend.
+The production cache stores 10-bit HEVC. A hit decodes it with VideoToolbox and writes a complete RGBA16F IOSurface before native hardware import ([format](hdr-cache.md#hevc-storage)). `prepared_cache_read` measures that whole read.
 
 ## Timing, cancellation and ownership
 
@@ -114,7 +114,7 @@ The engine's completed buffer contains absolute-nit RGB. Libplacebo's linear wor
 
 Native macvk output preserves the supplied linear BT.2020 target range and explicitly describes float unity as 203 nits with public Core Animation HDR metadata. It completes pending Vulkan color recreation and validates RGBA16F/extended-linear BT.2020/EDR before assigning metadata, ahead of drawable acquisition. Metadata ownership stays on the renderer thread; display/profile/backing changes request a refresh without a synchronous AppKit call per frame. Original PQ/HLG transitions return metadata ownership to Vulkan, and original SDR clears stale HDR metadata. The [native color audit](native-hdr-color-audit.md) records ten successful metadata transitions and the separate, still-open requirement for a compositor comparison with stable visibility. No physical HDR calibration is claimed.
 
-The VideoToolbox mapper imports packed float Metal textures through libplacebo's existing `PL_HANDLE_MTL_TEX` path. The mapper permits floating-point textures and uses packed-buffer dimensions for RGBA16F. The direct decoder/neural adapter path performs no CPU pixel upload/download. Resource counts include one full-frame GPU normalization pass and one four-byte CPU peak readback per output; Prepared additionally performs its documented disk read and Float32-to-RGBA16F packing. Import and rendering follow libplacebo's retained texture lifetimes.
+The VideoToolbox mapper imports packed float Metal textures through libplacebo's existing `PL_HANDLE_MTL_TEX` path. The mapper permits floating-point textures and uses packed-buffer dimensions for RGBA16F. The direct decoder/neural adapter path performs no CPU pixel upload/download. Resource counts include one full-frame GPU normalization pass and one four-byte CPU peak readback per output; Prepared additionally performs its documented disk read, hardware HEVC decode and GPU conversion to RGBA16F. Import and rendering follow libplacebo's retained texture lifetimes.
 
 Shutdown closes session admission, cancels pending generations, drains the final normalization command and waits for actual engine idleness on mpv's core thread before destroying the session. AppKit remains responsive because the native host runs libmpv calls on its worker. Process or dylib teardown must not race MLX's global Metal resource destruction.
 
