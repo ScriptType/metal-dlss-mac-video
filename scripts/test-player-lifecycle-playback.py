@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Run the existing real DOM/media smoke and verify native recorder teardown.
 
-Uses the GPU/window. Run only in a coordinated test window. This never requests
-sleep, posts a lifecycle notification, or changes VoiceOver preferences.
+Runs the smoke twice: ordinary playback, then HDRPLAYER_DEVELOPER_MODES=1 for the
+Adaptive checks. Uses the GPU/window. Run only in a coordinated test window. This
+never requests sleep, posts a lifecycle notification, or changes VoiceOver
+preferences.
 """
 from __future__ import annotations
 
@@ -22,24 +24,18 @@ def sha256(path: Path) -> str:
         return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--executable", type=Path, default=ROOT / ".build/debug/HDRPlayer")
-    parser.add_argument("--source", type=Path, default=ROOT / "assets/test-clips/player-controls.mkv")
-    parser.add_argument("--mpv", type=Path, default=ROOT / "artifacts/mpv-build/libmpv.2.dylib")
-    parser.add_argument("--shared", type=Path, default=ROOT / ".build/debug/libFrameEngineShared.dylib")
-    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/player-lifecycle-playback")
-    args = parser.parse_args()
-    executable, source, mpv, shared = (getattr(args, key).resolve() for key in ("executable", "source", "mpv", "shared"))
-    output = args.output.resolve()
+def run_smoke(output: Path, developer: bool, executable: Path, source: Path, mpv: Path, shared: Path) -> dict:
     output.mkdir(parents=True, exist_ok=True)
-    report: dict = {"passed": False, "scope": "Actual DOM/media teardown; no physical sleep or VoiceOver qualification", "checks": []}
+    report: dict = {"passed": False, "developerModes": developer, "checks": []}
     paths = {"HDRPlayer": executable, "libmpv": mpv, "FrameEngineShared": shared}
     report["binaries"] = {name: {"path": str(path), "beforeSHA256": sha256(path)} for name, path in paths.items()}
     env = dict(os.environ)
     env.update(METAL_DLSS_MPV_LIBRARY=str(mpv), HDRPLAYER_UI_SMOKE_KIND="lifecycle",
                HDRPLAYER_UI_SMOKE_REPORT=str(output / "dom.json"), HDRPLAYER_LIFECYCLE_LOG=str(output / "lifecycle.jsonl"))
     env.pop("HDRPLAYER_UI_SMOKE_KEEP_PREFERENCES", None)
+    env.pop("HDRPLAYER_DEVELOPER_MODES", None)
+    if developer:
+        env["HDRPLAYER_DEVELOPER_MODES"] = "1"
     # Avoid accepting stale success after a launch failure.
     for name in ("dom.json", "lifecycle.jsonl"):
         (output / name).unlink(missing_ok=True)
@@ -85,7 +81,25 @@ def main() -> int:
         if not unchanged:
             report["passed"] = False
             report["failure"] = "A measured binary changed during the smoke"
-        (output / "report.json").write_text(json.dumps(report, indent=2) + "\n")
+    return report
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--executable", type=Path, default=ROOT / ".build/debug/HDRPlayer")
+    parser.add_argument("--source", type=Path, default=ROOT / "assets/test-clips/player-controls.mkv")
+    parser.add_argument("--mpv", type=Path, default=ROOT / "artifacts/mpv-build/libmpv.2.dylib")
+    parser.add_argument("--shared", type=Path, default=ROOT / ".build/debug/libFrameEngineShared.dylib")
+    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/player-lifecycle-playback")
+    args = parser.parse_args()
+    executable, source, mpv, shared = (getattr(args, key).resolve() for key in ("executable", "source", "mpv", "shared"))
+    output = args.output.resolve()
+    runs = {name: run_smoke(output / name, developer, executable, source, mpv, shared)
+            for name, developer in (("ordinary", False), ("developer", True))}
+    report = {"passed": all(run["passed"] for run in runs.values()),
+              "scope": "Actual DOM/media teardown; no physical sleep or VoiceOver qualification", "runs": runs}
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "report.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
     return 0 if report["passed"] else 1
 
