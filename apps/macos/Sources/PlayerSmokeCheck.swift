@@ -41,6 +41,18 @@ final class PlayerSmokeCheck {
         _ = try await script("const e=document.getElementById('\(id)');e.value='\(value)';e.dispatchEvent(new Event('\(event)',{bubbles:true}));return true;")
     }
     private func click(_ id: String) async throws { _ = try await script("document.getElementById('\(id)').click();return true;") }
+    /// The DOM renders one dispatch after the native state it reflects.
+    private func waitForDOM(_ label: String, _ expression: String, equals expected: String, seconds: Double = 8) async throws {
+        let deadline = Date().addingTimeInterval(seconds)
+        var actual = try await script("return \(expression);")
+        while actual != expected {
+            if Date() >= deadline { throw Failure(message: "Timed out: \(label); DOM returned \(actual)") }
+            try await Task.sleep(for: .milliseconds(100))
+            actual = try await script("return \(expression);")
+        }
+        checks.append(label)
+    }
+    private func processing() -> [String: Any] { state()["processing"] as? [String: Any] ?? [:] }
     private func number(_ key: String) -> Double { (state()[key] as? NSNumber)?.doubleValue ?? 0 }
     private func selected(_ type: String, id: Int) -> Bool {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
@@ -275,6 +287,15 @@ final class PlayerSmokeCheck {
     }
     private func runPreferences(write: Bool) async throws {
         try await wait("empty player and controls initialized", seconds: 20) { self.state()["initialized"] as? Bool == true && !self.webView.isLoading }
+        if !EnhancementMode.developerModesEnabled {
+            try await waitForDOM("controls render the empty player's native state", "!document.getElementById('quality').disabled", equals: "true")
+            let empty = try await script("const m=document.getElementById('mode');return {options:m.options.length,modeDisabled:m.disabled,enhancementDisabled:document.getElementById('enhancement').disabled};")
+            guard let data = empty.data(using: .utf8), let controls = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  controls["options"] as? Int == 0, controls["modeDisabled"] as? Bool == true, controls["enhancementDisabled"] as? Bool == true else {
+                throw Failure(message: "Empty ordinary player offers a mode or an enabled enhancement switch: \(empty)")
+            }
+            checks.append("empty ordinary player offers no mode and disables the enhancement switch")
+        }
         if write {
             try await change("volume", value: "37", event: "input")
             if state()["muted"] as? Bool != true { try await click("mute") }
@@ -389,6 +410,31 @@ final class PlayerSmokeCheck {
         try await wait("fullscreen via DOM") { self.state()["fullscreen"] as? Bool == true }
         try await click("fullscreen")
         try await wait("exit fullscreen via DOM") { self.state()["fullscreen"] as? Bool == false }
+        if EnhancementMode.developerModesEnabled { try await runDeveloperEnhancement() }
+        else { try await runOrdinaryEnhancement() }
+        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Unknown playback error") }
+        checks.append("no native playback error")
+    }
+    private func runOrdinaryEnhancement() async throws {
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        try await wait("native state offers only Prepared", seconds: 20) { self.processing()["availableModes"] as? [String] == ["prepared"] }
+        try await waitForDOM("ordinary controls offer only Prepared; Live and Adaptive are absent",
+            "Array.from(document.getElementById('mode').options,o=>o.value)", equals: "[\"prepared\"]")
+        try await waitForDOM("enhancement switch is enabled for Prepared", "document.getElementById('enhancement').disabled", equals: "false")
+        try await click("enhancement")
+        try await wait("enhancement switch turns Prepared on", seconds: 20) {
+            self.processing()["enabled"] as? Bool == true && self.processing()["mode"] as? String == "prepared" &&
+                native()["policy"] as? String == "prepared"
+        }
+    }
+    private func runDeveloperEnhancement() async throws {
+        try await wait("developer state offers Adaptive", seconds: 20) {
+            (self.processing()["availableModes"] as? [String] ?? []).contains("adaptive")
+        }
+        try await waitForDOM("developer controls offer Adaptive",
+            "Array.from(document.getElementById('mode').options,o=>o.value).includes('adaptive')", equals: "true")
+        try await change("mode", value: "adaptive")
+        try await wait("explicit switch to Adaptive") { self.processing()["mode"] as? String == "adaptive" }
         try await click("enhancement")
         try await wait("enhancement command accepted") { (self.state()["processing"] as? [String: Any])?["enabled"] as? Bool == true }
         try await click("play")
@@ -421,8 +467,6 @@ final class PlayerSmokeCheck {
         guard let layer = video.subviews.first?.layer as? CAMetalLayer, layer.pixelFormat == .rgba16Float,
               layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Neural presentation is not float EDR") }
         checks.append("retained comparison preserved rational PTS/generation without inference submission; float EDR active")
-        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Unknown playback error") }
-        checks.append("no native playback error")
     }
     func start() { Task { await run() } }
     private func run() async {
