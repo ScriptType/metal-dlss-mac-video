@@ -35,6 +35,42 @@ private func pqCodeStepNits(atNits nits: Double) -> Double {
     pqNits(signal: pqSignal(nits: nits) + 1.0 / 876) - nits
 }
 
+/// NativeHDRVideoReader gives decoded frames 1/nominal-rate durations at a 60,000 timescale
+/// (2502/60000 here), while the native inventory reads the exact sample durations (1001/24000),
+/// so native preparation of this 23.976 fps source fails its exact timing check at frame 0.
+/// This provider keeps the native decoder's pixels and PTS and takes each duration from the
+/// inventory. mpv's own provider, which the app uses, reports exact durations.
+private struct InventoryDurationProvider: FramePreparationDecoderProvider {
+    let native = NativeFramePreparationProvider()
+    let scanned: FramePreparationInventory
+    var identifier: String { native.identifier + ";inventory-durations" }
+
+    init(source: URL) async throws { scanned = try await native.inventory(sourceURL: source, videoStreamIndex: 0) }
+
+    func inventory(sourceURL: URL, videoStreamIndex: Int) async throws -> FramePreparationInventory { scanned }
+
+    func decoder(sourceURL: URL, videoStreamIndex: Int, range: HDRCacheRange) async throws -> any FramePreparationDecoder {
+        InventoryDurationDecoder(inner: try await native.decoder(sourceURL: sourceURL, videoStreamIndex: videoStreamIndex, range: range),
+            durations: Dictionary(uniqueKeysWithValues: scanned.timings.map { ($0.presentationTime, $0.duration) }))
+    }
+}
+
+private actor InventoryDurationDecoder: FramePreparationDecoder {
+    let inner: any FramePreparationDecoder
+    let durations: [HDRCacheTime: HDRCacheTime]
+    init(inner: any FramePreparationDecoder, durations: [HDRCacheTime: HDRCacheTime]) { self.inner = inner; self.durations = durations }
+
+    func next() async throws -> EngineInput? {
+        guard let decoded = try await inner.next() else { return nil }
+        var descriptor = decoded.descriptor
+        let duration = try #require(durations[try HDRCacheTime(value: descriptor.pts.value, timescale: descriptor.pts.timescale)])
+        descriptor.duration = fe_time(value: duration.value, timescale: duration.timescale)
+        return withExtendedLifetime(decoded) { EngineInput(descriptor) }
+    }
+
+    func cancel() async { await inner.cancel() }
+}
+
 private func percentile(_ values: [Double], _ fraction: Double) -> Double {
     let sorted = values.sorted()
     return sorted[min(sorted.count - 1, Int((Double(sorted.count) * fraction).rounded(.up)) - 1)]
@@ -67,8 +103,8 @@ struct PreparedHEVCReferenceTests {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("hdr-hevc-reference-\(UUID())")
         defer { try? FileManager.default.removeItem(at: directory) }
         let cache = try await HDRSegmentCache.open(directory: directory, capacityBytes: 4 * 1_073_741_824)
-        let provider = NativeFramePreparationProvider()
-        let inventory = try await provider.inventory(sourceURL: referenceSource, videoStreamIndex: 0)
+        let provider = try await InventoryDurationProvider(source: referenceSource)
+        let inventory = provider.scanned
         #expect(inventory.timings.count == 2_360 && inventory.width == 1_920 && inventory.height == 1_080)
         let modelURL = strength > 0 ? referenceModel : nil
         let configuration = HDRPipelineConfiguration(modelURL: modelURL, modelVersion: try preparedModelSHA256(modelURL),
@@ -158,7 +194,8 @@ struct PreparedHEVCReferenceTests {
         defer { try? FileManager.default.removeItem(at: directory) }
         let context = try PreparedHDRContext(request: .init(sourcePath: referenceSource.path, cacheDirectory: directory.path,
             capacityBytes: defaultCapacityBytes, segmentFrames: 60, prerollFrames: 8),
-            configuration: .init(processingWidth: 32, processingHeight: 24, strength: 0))
+            configuration: .init(processingWidth: 32, processingHeight: 24, strength: 0),
+            decoderProvider: try await InventoryDurationProvider(source: referenceSource))
         let start = CACurrentMediaTime()
         try await context.waitUntilReady()
         await context.start(); await context.wait()
