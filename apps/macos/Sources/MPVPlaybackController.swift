@@ -291,6 +291,8 @@ final class MPVPlaybackController {
     private var mode: EnhancementMode
     private var preparedSource: String?
     private var requestedVideoTrack: String?
+    /// The filter wipes its Dolby Vision flag on destroy, so a rebuilt filter would briefly report an ordinary source.
+    private var dolbyVisionSource = false
     private var subtitleBrightness: Double
     private var subtitleScale: Double
     private var subtitleDelay: Double
@@ -351,6 +353,7 @@ final class MPVPlaybackController {
         if developerModes && mode == .prepared { mode = .adaptive }
         source = url.path
         requestedVideoTrack = nil
+        dolbyVisionSource = false
         preparationFailure = nil
         state.removeValue(forKey: "prepared")
         state.removeValue(forKey: "nativeEnhancement")
@@ -487,6 +490,8 @@ final class MPVPlaybackController {
     private func receive(_ data: Data) {
         guard let incoming = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { return }
         state.merge(incoming) { _, new in new }
+        if incoming["source"] as? String == source,
+           (incoming["nativeEnhancement"] as? [String: Any])?["source-dolby-vision"] as? Bool == true { dolbyVisionSource = true }
         if let paused = incoming["paused"] as? Bool { pauseIntent.observe(paused) }
         if incoming["configurationID"] as? UInt64 == configurationID || incoming["error"] != nil {
             state["configurationPending"] = false
@@ -509,7 +514,7 @@ final class MPVPlaybackController {
     private var dolbyVisionUnavailableReason: String? {
         let native = state["nativeEnhancement"] as? [String: Any] ?? [:]
         let selected = (state["tracks"] as? [[String: Any]] ?? []).first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
-        guard native["source-dolby-vision"] as? Bool == true || selected?["dolby-vision-profile"] != nil else { return nil }
+        guard dolbyVisionSource || native["source-dolby-vision"] as? Bool == true || selected?["dolby-vision-profile"] != nil else { return nil }
         switch native["native-color-path"] as? String {
         case "hdr10-base-layer": return "Playing the HDR10 base layer. Dolby Vision enhancement is unavailable."
         case "hlg-base-layer": return "Playing the HLG base layer. Dolby Vision enhancement is unavailable."
