@@ -127,12 +127,14 @@ The clip beeps once a second, and the main window's time display shows the posit
 5. Choose **View > Float Video** again, then click the panel's close button. The video returns to the main window, and the main window comes to the front.
 6. Press Cmd+Q.
 
-### 6. Keys work after you click the panel title bar from another app
+### 6. Keys and buttons work after you click the panel title bar from another app
 
 1. Choose **View > Float Video**.
 2. Click the Terminal window. The menu bar now shows Terminal. Move Terminal so that it does not cover the main window's controls.
 3. Click the panel's title bar once. Do not click the video.
 4. Press Space. The video and the beeps stop, and Terminal does not receive the key. Press Space again. They resume.
 5. Press Right. The time in the main window jumps about 5 seconds ahead. Press Left. It jumps back.
-6. Press Escape. The video returns to the main window.
-7. Press Cmd+Q.
+6. Click the Terminal window again, then click the panel's title bar once.
+7. Click **Pause**. The video and the beeps stop. Click **Play**. They resume. Click **+5 s**. The time jumps about 5 seconds ahead.
+8. Press Escape. The video returns to the main window.
+9. Press Cmd+Q.

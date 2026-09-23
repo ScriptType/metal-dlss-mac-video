@@ -4,7 +4,8 @@
 Scenarios:
   floating-video             float and return without a restart, close orders, quit while floating
   floating-video-close-main  close the panel, then the main window; the app must quit
-  floating-space             a helper app takes a fullscreen Space; the panel must stay on screen
+  floating-space             a helper app takes a fullscreen Space; the panel must stay on screen,
+                             and closing it there must pause playback
 
 Uses the GPU and the screen. floating-space takes over the screen for a few
 seconds. Run only while no other GPU tests run.
@@ -104,8 +105,9 @@ def run(kind: str, output: Path, args: argparse.Namespace, helper: Path | None) 
                 assert before_quit[-2:] == ["main", "quitting"], f"Unexpected placements {before_quit}"
                 report["checks"].append("Closing the main window after the panel requested termination itself")
             else:
-                assert before_quit[-1] == FLOATING, f"The video was not floating at quit: {before_quit}"
-                report["checks"].append("The video was in the panel when the app quit")
+                expected = "floating(mainHidden: true)" if kind == "floating-video" else FLOATING
+                assert before_quit[-1] == expected, f"The video was not floating at quit: {before_quit}"
+                report["checks"].append(f"The app quit with placement {expected}")
             if helper:
                 check_space(output, rows, report)
             report["passed"] = True

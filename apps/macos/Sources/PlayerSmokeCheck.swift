@@ -660,6 +660,7 @@ final class PlayerSmokeCheck {
     }
     private func startMutedPlayback() async throws {
         try await wait("media loaded", seconds: 20) { self.number("duration") > 0 && !self.video.subviews.isEmpty }
+        try await waitForDOM("controls loaded", "document.getElementById('mute')!==null", equals: "true")
         try await click("mute")
         try await wait("muted through the DOM and playing with a displayed source PTS", seconds: 20) {
             self.state()["muted"] as? Bool == true && self.playing && self.number("position") >= 2 && self.playhead() != nil
@@ -708,7 +709,11 @@ final class PlayerSmokeCheck {
         video.window?.performClose(nil)
         try await wait("closing the panel first returns the video to the main window") { self.home && self.playing }
         try chooseFloatVideo()
-        try await wait("floating when the check quits") { self.floating && self.playing }
+        try await wait("floating before closing the main window again") { self.floating }
+        window.performClose(nil)
+        try await wait("floating with the main window closed when the check quits") {
+            !self.window.isVisible && self.floating && self.playing
+        }
     }
     private func runFloatingCloseMain() async throws {
         try await startMutedPlayback()
@@ -724,8 +729,15 @@ final class PlayerSmokeCheck {
         try chooseFloatVideo()
         try await wait("floating before another app takes a fullscreen Space") { self.floating }
         try await wait("another app's fullscreen Space is active", seconds: 60) { !self.window.isOnActiveSpace }
-        try await wait("the desktop Space returns", seconds: 60) { self.window.isOnActiveSpace }
-        try await wait("the panel still holds the playing video") { self.floating && self.playing }
+        let helperReport = reportURL.deletingLastPathComponent().appendingPathComponent("helper.json")
+        try await wait("the helper listed the on-screen windows", seconds: 20) { FileManager.default.fileExists(atPath: helperReport.path) }
+        video.window?.performClose(nil)
+        try await wait("closing the panel over that Space returns the video to the main window, paused", seconds: 5) {
+            self.home && !self.window.isOnActiveSpace && self.state()["paused"] as? Bool == true
+        }
+        try await wait("the desktop Space returns", seconds: 20) { self.window.isOnActiveSpace }
+        try chooseFloatVideo()
+        try await wait("floating when the check quits") { self.floating }
     }
     func start() { Task { await run() } }
     private func run() async {
