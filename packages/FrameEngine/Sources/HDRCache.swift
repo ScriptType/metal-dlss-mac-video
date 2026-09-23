@@ -346,7 +346,7 @@ public struct HDRCacheManifest: Codable, Sendable {
 
 public struct HDRCacheWrite: Hashable, Sendable { fileprivate let id: UUID }
 public struct HDRCacheLease: Sendable {
-    fileprivate let id: UUID
+    let id: UUID
     public let manifest: HDRCacheManifest
 }
 

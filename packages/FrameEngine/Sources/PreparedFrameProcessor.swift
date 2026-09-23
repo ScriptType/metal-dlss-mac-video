@@ -308,7 +308,7 @@ public actor PreparedHDRContext {
             implementationVersion: cacheImplementationVersion,
             processingWidth: configuration.processingWidth, processingHeight: configuration.processingHeight,
             outputWidth: inventory.width, outputHeight: inventory.height,
-            colourPolicy: ["storage": HDRSegmentCache.storagePolicy, "referenceWhiteNits": String(configuration.referenceWhiteNits),
+            colourPolicy: ["storage": HDRCacheHEVC.storagePolicy, "referenceWhiteNits": String(configuration.referenceWhiteNits),
                 "hlgPeakNits": "1000", "proxy": "srgb-bt709-proxy-v1", "modelInputRange": "bounded-sRGB-after-resample",
                 "reconstruction": "linear-bt2020-nits-ratio-v1", "displayMapping": "none"],
             guides: ["motion": "NativeOpticalFlow-automatic-v1", "temporal": "persistent-neural-defaults-v1", "sceneCutThreshold": "0.3"],
@@ -328,11 +328,12 @@ public actor PreparedHDRContext {
 }
 
 /// Cache reads use source PTS and duration, never frame rate or a separate clock.
-/// Disk Float32 pixels are packed to CPU-complete IOSurface RGBA16F buffers; the
-/// ordinary output lease then owns them through the presenter's GPU completion.
+/// Cached frames come back as complete IOSurface RGBA16F buffers; the ordinary
+/// output lease then owns them through the presenter's GPU completion.
 public actor PreparedFrameProcessor: FrameProcessor {
     private let context: PreparedHDRContext
     private let original: HDRPipelineProcessor
+    private let frames = HDRCacheFrameReader()
     private var active: (HDRSegmentCache, HDRCacheLease)?
     public init(context: PreparedHDRContext) {
         self.context = context
@@ -365,9 +366,8 @@ public actor PreparedFrameProcessor: FrameProcessor {
             }
             if let (_, lease) = active,
                let index = lease.manifest.frames.firstIndex(where: { $0.timing.presentationTime == pts && $0.timing.duration == duration }) {
-                let cached = try await cache.read(lease, frameIndex: index)
+                let buffer = try await frames.frame(index, of: lease, in: cache).buffer
                 let readEnd = CACurrentMediaTime()
-                let buffer = try Self.pack(cached.rgba, width: identity.settings.outputWidth, height: identity.settings.outputHeight)
                 var colour = descriptor.colour
                 colour.primaries = FE_BT2020.rawValue; colour.transfer = FE_LINEAR.rawValue
                 colour.matrix = FE_RGB.rawValue; colour.range = FE_FULL_RANGE.rawValue; colour.chroma_location = 0
@@ -379,7 +379,7 @@ public actor PreparedFrameProcessor: FrameProcessor {
                     $0.lastFrameID = descriptor.frame_id; $0.lastPTS = pts
                 }
                 return ProcessedFrame(buffer: buffer, colour: colour,
-                    completedStageWallSeconds: ["prepared_cache_read": readEnd - start, "prepared_rgba16f_pack": CACurrentMediaTime() - readEnd],
+                    completedStageWallSeconds: ["prepared_cache_read": readEnd - start],
                     contentKind: context.configuration.modelURL != nil && context.configuration.strength > 0 ? .preparedEnhanced : .preparedOriginal)
             }
         } else if let (cache, lease) = active {
@@ -390,22 +390,5 @@ public actor PreparedFrameProcessor: FrameProcessor {
             $0.lastFrameID = descriptor.frame_id; $0.lastPTS = pts
         }
         return try await original.process(frame)
-    }
-
-    private static func pack(_ rgba: [Float], width: Int, height: Int) throws -> CVPixelBuffer {
-        var buffer: CVPixelBuffer?
-        let result = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_64RGBAHalf,
-            [kCVPixelBufferIOSurfacePropertiesKey: [:], kCVPixelBufferMetalCompatibilityKey: true] as CFDictionary, &buffer)
-        guard result == kCVReturnSuccess, let buffer,
-              CVPixelBufferLockBaseAddress(buffer, []) == kCVReturnSuccess else {
-            throw FrameEngineError.invalid("Cannot allocate Prepared RGBA16F storage")
-        }
-        defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
-        guard let address = CVPixelBufferGetBaseAddress(buffer) else { throw FrameEngineError.invalid("Prepared buffer has no storage") }
-        try HDRCachePixels.pack(rgba, width: width, height: height,
-            to: address, rowBytes: CVPixelBufferGetBytesPerRow(buffer))
-        CVBufferSetAttachment(buffer, kCVImageBufferColorPrimariesKey, kCVImageBufferColorPrimaries_ITU_R_2020, .shouldPropagate)
-        CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_Linear, .shouldPropagate)
-        return buffer
     }
 }
