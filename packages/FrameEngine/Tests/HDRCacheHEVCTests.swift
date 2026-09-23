@@ -296,7 +296,7 @@ func hevcSegmentRoundTripsVFRTimingAndEntersMidSegment() async throws {
             }
         }
     }
-    // Per channel, counting absolute error below 10 nits against 10 nits. Measured 7.49 % worst;
+    // Per channel, counting absolute error below 10 nits against 10 nits. Measured 6.28 % worst;
     // 4:2:0 and 10-bit PQ alone reach 3.6 %. A wrong matrix or swapped chroma channels
     // errs by tens of percent.
     #expect(worst <= 0.10, "worst relative channel error \(worst)")
