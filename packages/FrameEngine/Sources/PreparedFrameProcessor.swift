@@ -318,6 +318,8 @@ public actor PreparedHDRContext {
         let segments = try inventory.segments(source: source, settings: settings,
             rangeStart: request.rangeStart, rangeEnd: request.rangeEnd,
             segmentFrames: request.segmentFrames ?? 60, prerollFrames: request.prerollFrames ?? 8)
+        // HEVC 4:2:0 storage rejects odd geometry; refuse here rather than failing every segment later.
+        if let first = segments.first { _ = try HDRCacheStorage(first.identity) }
         guard try PreparedSourceSignature.read(request.sourcePath) == signature else {
             throw FrameEngineError.invalid("Prepared source changed while timestamps were being indexed")
         }
