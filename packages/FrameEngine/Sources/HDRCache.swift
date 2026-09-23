@@ -85,6 +85,7 @@ public struct HDRCacheSource: Codable, Hashable, Sendable {
     /// Hash the content, not just its URL or mtime. Streaming keeps RAM bounded.
     public static func fingerprint(url: URL, streamIndex: Int,
                                    interpretation: [String: String] = [:]) throws -> Self {
+        let url = url.resolvingSymlinksInPath()
         let before = try url.resourceValues(forKeys: [.fileSizeKey, .contentModificationDateKey])
         let handle = try FileHandle(forReadingFrom: url)
         defer { try? handle.close() }
