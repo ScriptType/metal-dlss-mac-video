@@ -482,6 +482,44 @@ final class PlayerSmokeCheck {
         try await click("play")
         try await wait("paused after the window") { self.state()["paused"] as? Bool == true }
     }
+    private func runDisplayHeadroom() async throws {
+        func layer() -> CAMetalLayer? { video.subviews.first?.layer as? CAMetalLayer }
+        func metadata() -> ObjectIdentifier? { layer()?.edrMetadata.map(ObjectIdentifier.init) }
+        // Paused, no new frame replaces the metadata, so only the notification can.
+        func pausedMetadataAfterParametersChange(_ label: String) async throws -> (stable: Bool, replaced: Bool) {
+            if state()["paused"] as? Bool != true { try await click("play") }
+            try await wait("paused for the \(label) check") { self.state()["paused"] as? Bool == true }
+            try await Task.sleep(for: .milliseconds(500))
+            let before = metadata()
+            try await Task.sleep(for: .seconds(1))
+            let stable = metadata() == before
+            NotificationCenter.default.post(name: NSApplication.didChangeScreenParametersNotification, object: NSApp)
+            let deadline = Date().addingTimeInterval(2)
+            while metadata() == before, Date() < deadline { try await Task.sleep(for: .milliseconds(50)) }
+            return (stable, metadata() != before)
+        }
+        try await wait("original PQ playing with EDR", seconds: 20) {
+            self.number("duration") > 0 && self.state()["paused"] as? Bool == false && layer()?.wantsExtendedDynamicRangeContent == true
+        }
+        let original = try await pausedMetadataAfterParametersChange("original PQ")
+        snapshots.append(["check": "original PQ path after a screen-parameters change",
+            "edrMetadataPresent": metadata() != nil, "stableWhilePaused": original.stable, "replaced": original.replaced])
+        try await waitForDOM("enhancement switch is enabled", "document.getElementById('enhancement').disabled", equals: "false")
+        try await click("enhancement")
+        try await click("play")
+        try await wait("enhanced linear output with EDR metadata", seconds: 30) {
+            self.processing()["enabled"] as? Bool == true && self.state()["paused"] as? Bool == false &&
+                layer()?.pixelFormat == .rgba16Float && metadata() != nil
+        }
+        try await Task.sleep(for: .seconds(1))
+        let enhanced = try await pausedMetadataAfterParametersChange("enhanced")
+        snapshots.append(["check": "enhanced linear path after a screen-parameters change",
+            "stableWhilePaused": enhanced.stable, "replaced": enhanced.replaced])
+        guard enhanced.stable else { throw Failure(message: "EDR metadata changed while paused before the notification") }
+        guard enhanced.replaced else { throw Failure(message: "A screen-parameters change did not replace the paused layer's EDR metadata") }
+        checks.append("a screen-parameters change replaces the paused enhanced layer's EDR metadata")
+        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Playback error") }
+    }
     private func runPreparedTooLarge() async throws {
         try await wait("large source opened", seconds: 20) {
             !self.webView.isLoading && self.number("duration") > 0 &&
@@ -755,6 +793,7 @@ final class PlayerSmokeCheck {
             case "dolby-vision": try await runDolbyVision()
             case "prepared": try await runPrepared()
             case "prepared-too-large": try await runPreparedTooLarge()
+            case "display-headroom": try await runDisplayHeadroom()
             case "prepared-playback": try await runPreparedPlayback()
             case "prepared-follows-source": try await runPreparedFollowsSource()
             case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")

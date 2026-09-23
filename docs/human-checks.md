@@ -139,3 +139,29 @@ The clip beeps once a second, and the main window's time display shows the posit
 7. Click **Pause**. The video and the beeps stop. Click **Play**. They resume. Click **+5 s**. The time jumps about 5 seconds ahead.
 8. Press Escape. The video returns to the main window.
 9. Press Cmd+Q.
+
+## EDR headroom after a display change (#39)
+
+The player re-reads the display's HDR headroom when the video's window changes screens or the display settings change. With enhancement on, mpv also refreshes the video layer's HDR metadata. With enhancement off, macOS's Vulkan layer owns that metadata, and the agent could not show that it is refreshed. So this step checks both. It needs the built-in XDR display's presets, or a second display. The clip is the retained Apple HDR10+ sample, whose highlights reach about 1,375 nits.
+
+### 7. HDR highlights survive a preset change
+
+```sh
+HDRPLAYER_LIFECYCLE_LOG="$PWD/artifacts/human/headroom.jsonl" \
+  "artifacts/HDR Player.app/Contents/MacOS/HDRPlayer" "$PWD/artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4"
+```
+
+1. Let the clip play for 20 seconds. Note how bright the brightest highlights look next to a white Finder window.
+2. Open System Settings > Displays and change **Preset** to **Apple Display (P3-500 nits)**. The highlights may dim, because that preset has less headroom.
+3. Change **Preset** back to **Apple XDR Display (P3-1600 nits)**. Within a few seconds the highlights should again be clearly brighter than the white Finder window.
+4. Switch **Neural enhancement** on in the player's controls and repeat steps 2 and 3.
+5. If a second display is attached, drag the player onto it and back, and check the highlights the same way.
+6. Press Cmd+Q, then run:
+
+   ```sh
+   grep display-headroom-changed artifacts/human/headroom.jsonl
+   ```
+
+   Expected: one line per preset change, with the old and new headroom values.
+
+In #39, note the preset names, whether the highlights recovered in step 3 with enhancement off and on, and the grep output.

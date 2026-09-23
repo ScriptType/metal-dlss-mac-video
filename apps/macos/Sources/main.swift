@@ -28,6 +28,7 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
     private var controls: WKWebView!
     private var player: MPVPlaybackController!
     private var floatingVideo: FloatingVideoController!
+    private var headroomMonitor: DisplayHeadroomMonitor!
     private var keyMonitor: Any?
     private var terminating = false
     private var terminated = false
@@ -79,6 +80,13 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         floatingVideo = FloatingVideoController(host: video, mainSlot: videoSlot, mainWindow: window,
             togglePlay: { [weak self] in self?.togglePlay() }, pause: { [weak self] in self?.player.command("pause", value: nil) },
             seek: { [weak self] delta in self?.seek(by: delta) })
+        headroomMonitor = DisplayHeadroomMonitor(
+            read: { [weak self] in Double(self?.video.window?.screen?.maximumExtendedDynamicRangeColorComponentValue ?? 1) },
+            reconfigure: { [weak self] old, new in
+                guard let self else { return }
+                self.lifecycle?.record("display-headroom-changed", extra: ["old": old ?? 0, "new": new])
+                if !self.latestState.isEmpty { self.publish(self.latestState) }
+            })
         floatingVideo.onChange = { [weak self] placement in
             guard let self else { return }
             self.lifecycle?.record("video-placement", extra: ["placement": String(describing: placement),
@@ -112,6 +120,9 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         }
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didWake), name: NSWorkspace.didWakeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSWindow.didChangeScreenNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
+        headroomMonitor.screenChanged()
         let args = Array(CommandLine.arguments.dropFirst())
         if let url = pendingOpenURL { player.load(url); pendingOpenURL = nil }
         else if let path = args.first(where: { !$0.hasPrefix("--") }) { player.load(URL(fileURLWithPath: path)) }
@@ -181,6 +192,10 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
     }
     private func seek(by delta: Double) {
         player.command("seek", value: max(0, (latestState["position"] as? Double ?? 0) + delta))
+    }
+    @objc private func screenChanged(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed !== video.window { return }
+        headroomMonitor.screenChanged()
     }
     @objc private func willSleep() {
         lifecycle?.record("will-sleep.before-pause")
