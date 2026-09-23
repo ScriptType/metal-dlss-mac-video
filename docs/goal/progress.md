@@ -1,7 +1,7 @@
 # v1.0 progress
 
-Current issue: #35 on `feat/35-hevc-cache` (PR #75). #37 (`perf/37-enhancement-floor`, worktree `artifacts/wt-37`) is with an implementer subagent. #16, #17 and #39 wait only on their Human items.
-Next step: merge #35, then #36 (brief in the coordinator's `artifacts/goal-run/36-brief.md`), then #3's agent parts (settled capture script and human steps).
+Current issue: #37 on `perf/37-enhancement-floor` (PR open). #36 (`feat/36-whole-file-preparation`, worktree `artifacts/wt-36`) and #3 (`feat/3-hdr-capture-check`, worktree `artifacts/wt-3`) are with implementer subagents. #16, #17 and #39 wait only on their Human items.
+Next step: merge #37, then land #36 and #3, then the final full oracle run with no background work.
 
 ## Blocked
 
@@ -16,6 +16,8 @@ None.
 - `HDRPLAYER_DEVELOPER_MODES=1` restores Live and Adaptive. The lifecycle smoke runs ordinary and developer modes; `prepared-playback` is the source-rate check.
 - `preferences-read` smoke fails intermittently (about 1 in 5) because volume and mute are saved from polled state; seen on main before #34.
 - Float Video is a `VideoPlacement` enum (`apps/macos/Sources/VideoPlacement.swift`); `scripts/test-floating-video.py` drives it on the real app, including over another app's fullscreen Space with the local helper in `tools/FloatingSpaceReference`.
+- The enhanced HEVC reference test's p99 varies from 6.0 to 9.5 nits between processes (limit 10.53), because neural output is not bit-identical across processes; the strength-0 row is stable.
+- Metal System Trace spools tens of GB to `$TMPDIR`; attach after warm-up with `--time-limit` (see `docs/m3-benchmarks.md`).
 - Give a worktree its fixtures with `cp -c` (APFS clones), never symlinks. `preparedReplacementSharesCacheAndRejectsChangedSource` appends a byte to its "copy" of `hdr10-30.mp4`, and `copyItem` copies a symlink as a symlink, so a symlinked worktree corrupts the main checkout's fixture (its SHA-256 must stay `8ae84e52…`, as in `assets/test-clips/manifest.json`).
 - The controls smoke (`scripts/test-player-lifecycle-playback.py`) can time out on its frame-step check right after a fresh mpv build; rerun it once before debugging (#59).
 - Many scripts are pinned by SHA-256 at runtime (for example `review-reference-sequence.py`, `analyze-flash-reference.py`). CI runs tests that check those pins; `check.sh` does not.
