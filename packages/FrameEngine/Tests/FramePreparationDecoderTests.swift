@@ -205,10 +205,13 @@ private func fixtureProvider(_ owner: DecoderFixture) throws -> CFramePreparatio
     }
 }
 
-@Test func nativeDecoderDescriptorStoresMasteringPrimariesInRGBWhiteOrder() async throws {
-    let source = URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-        .appendingPathComponent("assets/test-clips/hdr10-30.mp4")
+private let hdr10Fixture = URL(fileURLWithPath: #filePath)
+    .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+    .appendingPathComponent("assets/test-clips/hdr10-30.mp4")
+
+@Test(.enabled(if: FileManager.default.fileExists(atPath: hdr10Fixture.path), "Requires PQ fixture"))
+func nativeDecoderDescriptorStoresMasteringPrimariesInRGBWhiteOrder() async throws {
+    let source = hdr10Fixture
     let reader = try await NativeHDRVideoReader(url: source)
     let decoded = try #require(try await reader.nextDecoded())
     await reader.cancel()
