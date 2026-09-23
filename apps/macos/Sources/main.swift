@@ -195,15 +195,17 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
     private func handleKey(_ event: NSEvent) -> NSEvent? {
         guard event.window === window || event.window === video.window, !event.modifierFlags.contains(.command),
               !event.modifierFlags.contains(.control), !event.modifierFlags.contains(.option) else { return event }
-        if let responder = event.window?.firstResponder as? NSView, responder.isDescendant(of: controls) || responder is NSControl { return event }
+        if let responder = event.window?.firstResponder as? NSView, responder.isDescendant(of: controls) { return event }
+        // A focused panel button has no cancel action, so Escape must still leave the panel.
+        if event.keyCode == 53, case .floating = floatingVideo.placement { floatingVideo.perform(.returnToMain); return nil }
+        if event.window?.firstResponder is NSControl { return event }
         switch event.keyCode {
         case 49: togglePlay()
         case 123, 124:
             let delta: Double = event.modifierFlags.contains(.shift) ? 60 : 5
             seek(by: event.keyCode == 123 ? -delta : delta)
         case 53:
-            if case .floating = floatingVideo.placement { floatingVideo.perform(.returnToMain) }
-            else if window.styleMask.contains(.fullScreen) { toggleFullscreen() } else { return event }
+            if window.styleMask.contains(.fullScreen) { toggleFullscreen() } else { return event }
         default:
             switch event.charactersIgnoringModifiers?.lowercased() {
             case "f": toggleFullscreen()

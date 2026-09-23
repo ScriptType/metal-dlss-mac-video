@@ -125,7 +125,8 @@ The clip beeps once a second, and the main window's time display shows the posit
 3. Click **+5 s**, then **−5 s**. The time jumps about 5 seconds ahead, then back.
 4. Click **Return to Player**. The video returns to the main window.
 5. Choose **View > Float Video** again, then click the panel's close button. The video returns to the main window, and the main window comes to the front.
-6. Press Cmd+Q.
+6. Only if **Keyboard navigation** is on in System Settings > Keyboard: choose **View > Float Video**, press Tab until a panel button shows a focus ring, then press Escape. The video returns to the main window.
+7. Press Cmd+Q.
 
 ### 6. Keys and buttons work after you click the panel title bar from another app
 
