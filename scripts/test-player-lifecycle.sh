@@ -16,3 +16,6 @@ artifacts/player-lifecycle-checks/recorder artifacts/player-lifecycle-checks/rec
 swiftc -swift-version 6 apps/macos/Sources/VideoPlacement.swift scripts/test-video-placement.swift \
   -o artifacts/player-lifecycle-checks/video-placement
 artifacts/player-lifecycle-checks/video-placement | tee artifacts/player-lifecycle-checks/video-placement.log
+swiftc -swift-version 6 apps/macos/Sources/DisplayHeadroomMonitor.swift scripts/test-display-headroom.swift \
+  -o artifacts/player-lifecycle-checks/display-headroom
+artifacts/player-lifecycle-checks/display-headroom | tee artifacts/player-lifecycle-checks/display-headroom.log
