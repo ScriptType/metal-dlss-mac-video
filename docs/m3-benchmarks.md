@@ -39,6 +39,44 @@ The wrapper builds and verifies clean engine sources, runs sequentially, records
 
 The `hvc1` sample entry is required by the evaluated AVFoundation path; FFmpeg's default `hev1` remux was rejected. Source PTS and hashes describe the actual remux, including its millisecond-origin timestamp precision. Native mpv Prepared decoding has a separate source-timing contract.
 
+## Per-frame enhancement floor
+
+Metal System Traces of warmed frames on `pq-30-30s.mp4` split each frame into signposted stages. Each trace is attached to `hdr-benchmark` after its 30 warm-up frames and covers 79 to 105 frames. The build is the shipped debug configuration of main `32dc23a` with MLX-DLSS `5da817b`, which adds the stage signposts, on battery. Named stages cover 99.8% of the median frame's wall time in every trace. The GPU performance state was outside our control and changed between runs, so the table groups the traces by that state.
+
+| Median frame, ms (share) | 32×24, maximum GPU state | 320×192, maximum | 320×192, medium/minimum |
+|---|---:|---:|---:|
+| Motion: VideoToolbox flow, GPU mostly idle | 15.3 (20%) | 9.7 (15%) | 13.6 (14%) |
+| Network graph build on the CPU, GPU idle | 13.8 (18%) | 10.5 (16%) | 10.8 (11%) |
+| Network evaluation | 42.9 (57%) | 42.4 (65%) | 67.3 (70%) |
+| of which this process's GPU was busy | 39.1 | 38.5 | 63.4 |
+| of which CPU encoding and the completion wait | 3.9 | 3.9 | 3.9 |
+| Import, codec, resolve, pack | 2.7 (4%) | 2.6 (4%) | 4.4 (5%) |
+| Unattributed actor hops | 0.2 | 0.1 | 0.2 |
+| Frame wall time | 75.0 | 65.3 | 96.4 |
+
+The 32×24 median frame's motion stage is above that trace's 11.3-ms per-stage median. The network always runs at the padded 320×320 extent, so its GPU time is the same at 32×24 and 320×192. That GPU time is the fixed cost. At the maximum GPU state it is about 38.5 ms, and at the medium or minimum state about 60 ms. Other processes' GPU work, mostly the terminal and browser, ran for 38 ms of the slow median frame and 9 ms of the fast one.
+
+| Change, warmed completed work | Size | Before p50 / p95 | After p50 / p95 | Warmed frames per arm | Decision |
+|---|---|---:|---:|---:|---|
+| Schedule each network stage with `asyncEval` (MLX-DLSS `2d39a6c`) | 320×192 | 70.7 / 93.0 ms | 58.2 / 70.7 ms | 1,080 | Kept |
+| Same | 32×24 | 65.0 / 78.1 ms | 54.1 / 65.5 ms | 540 | Kept |
+| Release build (`-Os` MLX, `-O` Swift) | 320×192 | 84.4 / 106.6 ms | 82.2 / 107.8 ms | 540 | Not kept |
+| Same | 32×24 | 100.0 / 116.4 ms | 93.7 / 119.2 ms | 540 | Not kept |
+
+Arms alternated run by run under the same load and battery conditions. The median of per-run p50s gives the same ratio as the pooled p50: 68.9 to 57.5 ms at 320×192 and 65.1 to 54.4 ms at 32×24. The drop, about 11.4 ms by per-run medians, matches the 10.5 to 13.8 ms of graph build during which the GPU was idle before the change. No trace was taken after the change. All 80 frame/view pairs of the first 20 frames of the 512×288 Apple reference match main byte for byte, and identity error stays 0.0001220703125 nit. The release build showed no consistent gain, and its motion stage was slower in all four runs.
+
+The 320×192 p50 fell 1.21×, short of 1.5×. A 1.5× drop needs about 47 ms. The network's GPU time alone is about 38.5 ms at the best GPU state, and motion leaves the GPU idle for about 9 ms more before the network can start, so the floor is about 48 ms before any CPU work. Getting under it needs less network GPU work, which means a smaller network extent or cheaper kernels, or motion for the next frame computed while the current frame's network runs.
+
+To reproduce, run the benchmark from the reproduction section with `--frames 300 --warmup 30`. After at least 30 frames, attach a trace and attribute it:
+
+```sh
+xcrun xctrace record --template "Metal System Trace" --instrument os_signpost \
+  --attach "$(pgrep -n hdr-benchmark)" --time-limit 8s --output artifacts/floor.trace
+python3 scripts/attribute-frame-trace.py artifacts/floor.trace
+```
+
+The trace writes several GB of temporary files, so keep at least 25 GB free.
+
 ## Native playback evidence
 
 The [mpv adapter](mpv-adapter.md) records controlled Adaptive runs, audio-clock offsets, original-first seeks and same-frame comparison. Its longer HLG 60-fps and PQ variable-rate runs each exceeded the 20-ms target briefly, without progressive median drift. The [Erika adapter](erika-adapter.md) records native drawable presentation, numerical HDR captures and overload behaviour. Their initial runs differed in display size, visibility and timing conditions and do not establish a playback-core winner. Playback qualification and physical presentation remain separate from this offscreen baseline.
