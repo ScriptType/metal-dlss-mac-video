@@ -84,11 +84,12 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
             read: { [weak self] in Double(self?.video.window?.screen?.maximumExtendedDynamicRangeColorComponentValue ?? 1) },
             reconfigure: { [weak self] old, new in
                 guard let self else { return }
-                self.lifecycle?.record("display-headroom-changed", extra: ["old": old ?? 0, "new": new])
+                self.lifecycle?.record("display-headroom-changed", extra: old.map { ["old": $0, "new": new] } ?? ["first": new])
                 if !self.latestState.isEmpty { self.publish(self.latestState) }
             })
         floatingVideo.onChange = { [weak self] placement in
             guard let self else { return }
+            self.headroomMonitor.screenChanged()
             self.lifecycle?.record("video-placement", extra: ["placement": String(describing: placement),
                 "videoWindowNumber": self.video.window?.windowNumber ?? 0, "mainWindowNumber": self.window.windowNumber])
         }

@@ -162,6 +162,6 @@ HDRPLAYER_LIFECYCLE_LOG="$PWD/artifacts/human/headroom.jsonl" \
    grep display-headroom-changed artifacts/human/headroom.jsonl
    ```
 
-   Expected: one line per preset change, with the old and new headroom values.
+   Expected: a `first` line with the headroom at launch, then a few lines after each preset change, each with an `old` and `new` value, the last of each group at the settled headroom. macOS ramps headroom in steps, and the player logs a step only when it moves by at least 10 %.
 
 In #39, note the preset names, whether the highlights recovered in step 3 with enhancement off and on, and the grep output.
