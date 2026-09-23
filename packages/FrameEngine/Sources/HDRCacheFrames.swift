@@ -10,18 +10,19 @@ import VideoToolbox
 /// interpolated into `storagePolicy`, which is part of every key, so changing one
 /// invalidates old segments instead of misreading them.
 public enum HDRCacheHEVC {
-    static let averageBitsPerSecondAt1080p = 8_000_000
-    static let peakBitsPerSecondAt1080p = 9_000_000
+    static let variableBitsPerSecondAt1080p = 8_000_000
+    static let bufferMaximumBitsPerSecondAt1080p = 9_000_000
+    static let lookAheadFrames = 40
     public static let storagePolicy =
         "hevc-main10-videotoolbox-hw;st2084-bt2020nc-video-range-420-chroma-topleft-decimated;"
         + "rgb-clip-0-10000-nits;opaque;"
-        + "abr-\(averageBitsPerSecondAt1080p)-peak-\(peakBitsPerSecondAt1080p)-1s-per-1080p-area;"
-        + "one-idr-per-segment;no-reordering;nal-length-4;v1"
+        + "vbr-\(variableBitsPerSecondAt1080p)-vbv-max-\(bufferMaximumBitsPerSecondAt1080p)-per-1080p-area;"
+        + "lookahead-\(lookAheadFrames);spatial-aq-off;idr-at-segment-start;no-reordering;nal-length-4;v2"
 
     /// Scales with output area, never below the 1080p rates.
-    static func bitRates(width: Int, height: Int) -> (average: Int, peak: Int) {
+    static func bitRates(width: Int, height: Int) -> (variable: Int, bufferMaximum: Int) {
         let scale = max(1, Double(width) * Double(height) / (1920 * 1080))
-        return (Int(Double(averageBitsPerSecondAt1080p) * scale), Int(Double(peakBitsPerSecondAt1080p) * scale))
+        return (Int(Double(variableBitsPerSecondAt1080p) * scale), Int(Double(bufferMaximumBitsPerSecondAt1080p) * scale))
     }
 
     /// Index: the Float16 bit pattern of a linear-nits channel. Value: the ST 2084 E′ of that
@@ -222,6 +223,8 @@ final class HEVCEncoder: @unchecked Sendable {
 
     /// Every property below is fixed by `HDRCacheHEVC.storagePolicy`. No mastering or
     /// content-light metadata: transformed output must not claim the source's maxima.
+    /// Average bit rate under a data-rate cap spent a third of its target on the reference; VBR
+    /// with look-ahead spends it. Look-ahead also puts an IDR on scene cuts, which decode in order.
     init(width: Int, height: Int, frameCount: Int) throws {
         exporter = try PQExporter.shared.get()
         var created: VTCompressionSession?
@@ -241,8 +244,10 @@ final class HEVCEncoder: @unchecked Sendable {
             (kVTCompressionPropertyKey_RealTime, kCFBooleanFalse),
             (kVTCompressionPropertyKey_AllowFrameReordering, kCFBooleanFalse),
             (kVTCompressionPropertyKey_MaxKeyFrameInterval, frameCount as CFNumber),
-            (kVTCompressionPropertyKey_AverageBitRate, rates.average as CFNumber),
-            (kVTCompressionPropertyKey_DataRateLimits, [rates.peak / 8, 1] as CFArray),
+            (kVTCompressionPropertyKey_VariableBitRate, rates.variable as CFNumber),
+            (kVTCompressionPropertyKey_VBVMaxBitRate, rates.bufferMaximum as CFNumber),
+            (kVTCompressionPropertyKey_SuggestedLookAheadFrameCount, HDRCacheHEVC.lookAheadFrames as CFNumber),
+            (kVTCompressionPropertyKey_SpatialAdaptiveQPLevel, kVTQPModulationLevel_Disable as CFNumber),
             (kVTCompressionPropertyKey_ColorPrimaries, kCVImageBufferColorPrimaries_ITU_R_2020),
             (kVTCompressionPropertyKey_TransferFunction, kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ),
             (kVTCompressionPropertyKey_YCbCrMatrix, kCVImageBufferYCbCrMatrix_ITU_R_2020),

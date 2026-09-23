@@ -274,7 +274,7 @@ func hevcSegmentRoundTripsVFRTimingAndEntersMidSegment() async throws {
             #expect(sample.data[sps.lowerBound + 3] & 0x1f == 2, "Main 10 profile")
         }
     }
-    #expect(irapFrames == [0], "one IDR per segment")
+    #expect(irapFrames.first == 0, "IDR at segment start")
 
     let sequential = HDRCacheFrameReader()
     var decoded: [[Float16]] = []

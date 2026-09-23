@@ -204,7 +204,7 @@ struct PreparedHEVCReferenceTests {
         #expect(context.status.snapshot().completedSegments == 40)
 
         let segments = directory.appendingPathComponent("segments")
-        var bytes: Int64 = 0, frames = 0, extraIRAP: [String] = []
+        var bytes: Int64 = 0, frames = 0, sceneCutIDRs = 0
         var first: HDRCacheTime?, end: HDRCacheTime?
         for folder in try FileManager.default.contentsOfDirectory(at: segments, includingPropertiesForKeys: nil) {
             let manifest = try JSONDecoder().decode(HDRCacheManifest.self, from: Data(contentsOf: folder.appendingPathComponent("manifest.json")))
@@ -212,12 +212,11 @@ struct PreparedHEVCReferenceTests {
             for file in try FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: [.fileSizeKey]) {
                 bytes += Int64(try file.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0)
             }
-            for (index, record) in manifest.frames.enumerated() where index > 0 {
+            for record in manifest.frames.dropFirst() {
                 let sample = try Data(contentsOf: folder.appendingPathComponent(record.fileName))
-                let irap = sample.withUnsafeBytes { raw in
+                if sample.withUnsafeBytes({ raw in
                     HDRCacheHEVCSample.nalUnits(raw)!.contains { (16...21).contains(HDRCacheHEVCSample.nalType(raw, $0)) }
-                }
-                if irap { extraIRAP.append("\(manifest.key.prefix(8))/\(index)") }
+                }) { sceneCutIDRs += 1 }
             }
             frames += manifest.frames.count
             first = min(first ?? manifest.frames[0].timing.presentationTime, manifest.frames[0].timing.presentationTime)
@@ -229,11 +228,10 @@ struct PreparedHEVCReferenceTests {
         let bytesPerMinute = Double(bytes) / (seconds / 60), twoHours = 120 * bytesPerMinute
         print(String(format: "Prepared HEVC size: %d frames, %.2f s of 1080p23.976, %lld bytes including manifests; "
             + "%.0f bytes (%.1f MiB) per prepared minute; 2-hour projection %.2f GiB of %.0f GiB default; "
-            + "%.3f Mbit/s; extra IRAP samples %d; preparation %.0f s (strength 0, debug build)",
+            + "%.3f Mbit/s; %d scene-cut IDRs after frame 0; preparation %.0f s (strength 0, debug build)",
             frames, seconds, bytes, bytesPerMinute, bytesPerMinute / 1_048_576, twoHours / 1_073_741_824,
-            Double(defaultCapacityBytes) / 1_073_741_824, Double(bytes) * 8 / seconds / 1_000_000, extraIRAP.count, preparationSeconds))
+            Double(defaultCapacityBytes) / 1_073_741_824, Double(bytes) * 8 / seconds / 1_000_000, sceneCutIDRs, preparationSeconds))
         #expect(frames == 2_360)
-        #expect(extraIRAP.isEmpty, "one IDR per segment: \(extraIRAP.prefix(5))")
         #expect(twoHours <= Double(defaultCapacityBytes))
         await context.cancel()
     }
