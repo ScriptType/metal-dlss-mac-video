@@ -227,7 +227,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                     let tracks: [[String: Any]] = array("track-list").map { track in
                         ["id": track["id"] ?? 0, "type": track["type"] ?? "unknown", "title": track["title"] ?? track["codec"] ?? "Track",
                          "language": track["lang"] ?? (track["metadata"] as? [String: Any])?["language"] ?? "", "selected": track["selected"] ?? false, "external": track["external"] ?? false]
-                            .merging(track.filter { $0.key.hasPrefix("dolby-vision-") }) { _, metadata in metadata }
+                            .merging(track.filter { $0.key.hasPrefix("dolby-vision-") || ["demux-w", "demux-h"].contains($0.key) }) { _, metadata in metadata }
                     }
                     let chapters: [[String: Any]] = array("chapter-list").enumerated().map { index, chapter in
                         ["index": index, "title": chapter["title"] ?? "Chapter \(index + 1)", "time": chapter["time"] ?? 0]
@@ -350,7 +350,8 @@ final class MPVPlaybackController {
     func stop() { if let worker { worker.stop() } else { onStopped?() } }
     func load(_ url: URL) {
         if worker == nil { start() }
-        if developerModes && mode == .prepared { mode = .adaptive }
+        let leavingPrepared = developerModes && mode == .prepared
+        if leavingPrepared { mode = .adaptive }
         source = url.path
         requestedVideoTrack = nil
         dolbyVisionSource = false
@@ -361,7 +362,7 @@ final class MPVPlaybackController {
         state["source"] = source; state["title"] = url.lastPathComponent; state["loading"] = true
         state.removeValue(forKey: "error")
         // Remove Prepared before loadfile: the new chain is built from the `vf` option, whose request names the old file.
-        if preparedSource != preparedTarget { applyFilter() }
+        if leavingPrepared || preparedSource != preparedTarget { applyFilter() }
         worker?.enqueue(["loadfile", url.path, "replace"])
         pauseIntent.request(false)
         worker?.enqueue(["set", "pause", "no"])
@@ -404,9 +405,9 @@ final class MPVPlaybackController {
                 if let id, Int(id) != nil || ["no", "auto"].contains(id) {
                     if type == "video" {
                         requestedVideoTrack = id
-                        if developerModes, mode == .prepared, id != "1" { mode = .adaptive }
+                        if developerModes, mode == .prepared, id != "1" { mode = .adaptive; applyFilter() }
                         // Prepared accepts only the first video stream, so remove it before `set vid`; publish() reinstalls after.
-                        if preparedSource != nil && preparedTarget == nil { applyFilter() }
+                        else if preparedSource != nil && preparedTarget == nil { applyFilter() }
                     }
                     worker?.enqueue(["set", property, id])
                 }
@@ -527,6 +528,8 @@ final class MPVPlaybackController {
         default: return "Dolby Vision uses native playback. Neural enhancement is unavailable."
         }
     }
+    /// The frame engine only advances while two frame reservations fit its memory budget (#67).
+    private static let maximumEnhancedPixels = 3840 * 1920
     private var preparedUnavailableReason: String? {
         if let reason = dolbyVisionUnavailableReason { return reason }
         if modelURL == nil { return "A neural model is required." }
@@ -543,6 +546,10 @@ final class MPVPlaybackController {
         let selectedVideo = tracks.first { $0["type"] as? String == "video" && $0["selected"] as? Bool == true }
         if (requestedVideoTrack ?? (selectedVideo?["id"] as? NSNumber)?.stringValue) != "1" {
             return "Prepared mode supports the first video track only."
+        }
+        if let width = selectedVideo?["demux-w"] as? Int, let height = selectedVideo?["demux-h"] as? Int,
+           width * height > Self.maximumEnhancedPixels {
+            return "Neural enhancement supports frames up to 3840 × 1920 on this Mac."
         }
         return preparationFailure
     }

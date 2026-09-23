@@ -451,6 +451,9 @@ final class PlayerSmokeCheck {
               samples.allSatisfy({ value($0, "bufferCount").isNaN || value($0, "bufferCount") <= (bufferCountBefore.isNaN ? 0 : bufferCountBefore) }) else {
             throw Failure(message: "Playback paused its clocks while enabling enhancement or preparing")
         }
+        guard worstLag <= 0.5 else {
+            throw Failure(message: "Video fell \(worstLag) s behind the clock while enabling or preparing")
+        }
         guard (0.97...1.03).contains(ratio), (0.97...1.03).contains(preparingRatio) else {
             throw Failure(message: "Position advanced \(ratio) s per wall second overall and \(preparingRatio) while preparing")
         }
@@ -478,6 +481,20 @@ final class PlayerSmokeCheck {
         checks.append("switching enhancement off and on again during playback holds no clocks")
         try await click("play")
         try await wait("paused after the window") { self.state()["paused"] as? Bool == true }
+    }
+    private func runPreparedTooLarge() async throws {
+        try await wait("large source opened", seconds: 20) {
+            !self.webView.isLoading && self.number("duration") > 0 &&
+                (self.state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == "video" && $0["demux-w"] != nil }
+        }
+        try await wait("Prepared is unavailable above 3840 × 1920") {
+            self.processing()["availableModes"] as? [String] == [] &&
+                (self.processing()["unavailableReason"] as? String ?? "").contains("3840 × 1920")
+        }
+        try await waitForDOM("enhancement switch is disabled for the large source", "document.getElementById('enhancement').disabled", equals: "true")
+        guard state()["nativeEnhancement"] == nil || (state()["nativeEnhancement"] as? [String: Any])?["policy"] as? String != "prepared" else {
+            throw Failure(message: "A Prepared filter was installed for a source the engine cannot process")
+        }
     }
     private func runPreparedFollowsSource() async throws {
         let sources = Array(CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("--") })
@@ -629,6 +646,7 @@ final class PlayerSmokeCheck {
             switch ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] {
             case "dolby-vision": try await runDolbyVision()
             case "prepared": try await runPrepared()
+            case "prepared-too-large": try await runPreparedTooLarge()
             case "prepared-playback": try await runPreparedPlayback()
             case "prepared-follows-source": try await runPreparedFollowsSource()
             case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")
