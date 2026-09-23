@@ -43,6 +43,8 @@ public actor HDRPipelineProcessor: FrameProcessor {
     public func resetHistory() async { await processor?.reset() }
 
     public func process(_ frame: EngineInput) async throws -> ProcessedFrame {
+        let signpost = MLXRuntimeDiagnostics.signposter.beginInterval("frame")
+        defer { MLXRuntimeDiagnostics.signposter.endInterval("frame", signpost) }
         try HDRRuntimeResources.shared.prepareAllocator()
         let descriptor = frame.descriptor
         if let event = frame.readyEvent {
@@ -74,7 +76,9 @@ public actor HDRPipelineProcessor: FrameProcessor {
                                    metadata: metadata, sourcePixelBuffer: MLXPixelBuffer(frame.pixelBuffer))
         } else {
             if importer == nil { importer = try MLXHDRImporter() }
-            original = try await importer!.importFrame(pixelBuffer: MLXPixelBuffer(frame.pixelBuffer), metadata: metadata)
+            original = try await MLXRuntimeDiagnostics.stage("import") {
+                try await importer!.importFrame(pixelBuffer: MLXPixelBuffer(frame.pixelBuffer), metadata: metadata)
+            }
         }
         if processor == nil {
             let reservation = try HDRRuntimeResources.shared.reserve(configuration: configuration)
@@ -90,7 +94,7 @@ public actor HDRPipelineProcessor: FrameProcessor {
             writer = try MLXPixelBufferWriter(width: dimensions.0, height: dimensions.1, halfOutput: true)
             writerDimensions = dimensions
         }
-        let output = try await writer!.write(result.enhanced)
+        let output = try await MLXRuntimeDiagnostics.stage("pack") { try await writer!.write(result.enhanced) }
         var colour = descriptor.colour
         colour.reference_white_nits = Double(configuration.referenceWhiteNits)
         colour.primaries = FE_BT2020.rawValue; colour.transfer = FE_LINEAR.rawValue
