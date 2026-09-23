@@ -416,6 +416,7 @@ final class MPVPlaybackController {
             if let value = value as? Bool, modelURL != nil {
                 enabled = value
                 if source.isEmpty { reconfigure() }
+                else if preparedTarget != preparedSource { applyFilter() }
                 else { worker?.enqueue(["vf-command", "enhance", "bypass", filterBypassed ? "yes" : "no"]) }
             }
         case "strength": if let value = numeric(), value.isFinite { strength = min(1, max(0, value)); reconfigure() }
@@ -466,7 +467,11 @@ final class MPVPlaybackController {
         return "@enhance:metal-hdr=\(model)\(prepared)processing-width=\(width):processing-height=\(height):strength=\(strength):colour-strength=\(colorStrength):maximum-luminance-ratio=2:reference-white=203:policy=\(policy):bypass=\(filterBypassed ? "yes" : "no")"
     }
     private var filterBypassed: Bool { !enabled || (mode == .prepared && preparedSource == nil) }
-    private var preparedTarget: String? { mode == .prepared && preparedUnavailableReason == nil ? source : nil }
+    /// Switching enhancement on creates the Prepared context; switching it off only bypasses it, so preparation keeps running.
+    private var preparedTarget: String? {
+        guard mode == .prepared, preparedUnavailableReason == nil, enabled || preparedSource == source else { return nil }
+        return source
+    }
     private func reconfigure() {
         if mode == .prepared { preparationFailure = nil }
         applyFilter()

@@ -93,8 +93,9 @@ function update(next) {
   element('compare').hidden = !next.capabilities?.sameFrameComparison;
   element('compare').textContent = processing.comparison === 'original' ? 'Show enhanced' : 'Compare original';
   element('compare').setAttribute('aria-pressed', String(processing.comparison === 'original'));
-  element('prepare-open').hidden = processing.mode !== 'prepared' || !availableModes.includes('prepared');
   const prepared = next.prepared ?? {};
+  const preparedContext = prepared.configurationState !== undefined;
+  element('prepare-open').hidden = processing.mode !== 'prepared' || !availableModes.includes('prepared') || !preparedContext;
   const preparing = ['preparing', 'running', 'cancelling'].includes(prepared.jobState);
   const initializing = ['initializing', 'hashing', 'planning'].includes(prepared.configurationState);
   const total = Math.max(1, prepared.totalSegments ?? 1);
@@ -106,7 +107,7 @@ function update(next) {
     : initializing ? 'Reading video…' : prepared.jobState === 'complete' ? 'Preparation complete'
       : prepared.jobState === 'cancelled' ? 'Preparation cancelled' : prepared.jobState === 'failed' ? 'Preparation failed' : 'Ready to prepare';
   element('prepare-start').textContent = completed > 0 || prepared.jobState === 'cancelled' ? 'Resume preparation' : 'Start preparation';
-  element('prepare-start').disabled = !next.capabilities?.prepared || preparing || initializing;
+  element('prepare-start').disabled = !next.capabilities?.prepared || !preparedContext || preparing || initializing;
   element('prepare-cancel').disabled = !preparing && !initializing;
   setRange('cacheCapacityGiB', prepared.capacityBytes ? prepared.capacityBytes / 1073741824 : 8);
   element('prepare-message').textContent = prepared.error || 'Completed sections play from the HDR cache. Other sections show the original video.';
