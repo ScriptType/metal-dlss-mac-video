@@ -357,6 +357,7 @@ final class MPVPlaybackController {
         state["tracks"] = []
         state["source"] = source; state["title"] = url.lastPathComponent; state["loading"] = true
         state.removeValue(forKey: "error")
+        // Remove Prepared before loadfile: the new chain is built from the `vf` option, whose request names the old file.
         if preparedSource != preparedTarget { applyFilter() }
         worker?.enqueue(["loadfile", url.path, "replace"])
         pauseIntent.request(false)
@@ -401,6 +402,7 @@ final class MPVPlaybackController {
                     if type == "video" {
                         requestedVideoTrack = id
                         if developerModes, mode == .prepared, id != "1" { mode = .adaptive }
+                        // Prepared accepts only the first video stream, so remove it before `set vid`; publish() reinstalls after.
                         if preparedSource != nil && preparedTarget == nil { applyFilter() }
                     }
                     worker?.enqueue(["set", property, id])
@@ -456,6 +458,7 @@ final class MPVPlaybackController {
     private func filter() -> String {
         let model = modelURL.map { "model=%\($0.path.utf8.count)%\($0.path):" } ?? ""
         let prepared = preparedSource == nil ? "" : "prepared-config=%\(preparedRequestURL.path.utf8.count)%\(preparedRequestURL.path):prepare=no:"
+        // direct never pauses the clocks for a late frame, so uncached ranges play the original at source rate.
         let policy = mode == .prepared ? "direct" : "adaptive"
         return "@enhance:metal-hdr=\(model)\(prepared)processing-width=\(width):processing-height=\(height):strength=\(strength):colour-strength=\(colorStrength):maximum-luminance-ratio=2:reference-white=203:policy=\(policy):bypass=\(filterBypassed ? "yes" : "no")"
     }
@@ -490,12 +493,15 @@ final class MPVPlaybackController {
         }
         if let native = incoming["nativeEnhancement"] as? [String: Any],
            mode == .live, native["policy"] as? String == "adaptive" { mode = .adaptive }
+        // A poll taken before the latest `vf set` ran can still carry an error that filter replaced.
         if preparedSource != nil, incoming["configurationID"] as? UInt64 == configurationID {
-            let native = incoming["nativeEnhancement"] as? [String: Any] ?? [:]
-            let progress = native["prepared"] as? [String: Any] ?? [:]
-            if progress["configurationState"] as? String == "failed" {
-                preparationFailure = progress["error"] as? String ?? "This source cannot be prepared."
-            } else if let error = incoming["error"] as? String { preparationFailure = error }
+            let progress = (incoming["nativeEnhancement"] as? [String: Any])?["prepared"] as? [String: Any]
+            if progress?["configurationState"] as? String == "failed" {
+                preparationFailure = progress?["error"] as? String ?? "This source cannot be prepared."
+            } else if progress == nil, let error = incoming["error"] as? String {
+                // Only an install that left no Prepared context is a preparation failure; other mpv errors keep the job running.
+                preparationFailure = error
+            }
         }
         if incoming["error"] == nil { state.removeValue(forKey: "error") }
         publish()
