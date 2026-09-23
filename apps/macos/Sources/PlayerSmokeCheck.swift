@@ -368,6 +368,80 @@ final class PlayerSmokeCheck {
               layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Prepared enhanced output is not float EDR") }
         checks.append("Prepared neural cache output uses float EDR with no playback error")
     }
+    private func runPreparedPlayback() async throws {
+        guard !EnhancementMode.developerModesEnabled else {
+            throw Failure(message: "prepared-playback checks ordinary playback; unset HDRPLAYER_DEVELOPER_MODES")
+        }
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func progress() -> [String: Any] { state()["prepared"] as? [String: Any] ?? [:] }
+        try await wait("source opened with Prepared as the only mode", seconds: 20) {
+            !self.webView.isLoading && self.number("duration") > 0 && self.processing()["availableModes"] as? [String] == ["prepared"]
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("paused before enabling Prepared") { self.state()["paused"] as? Bool == true }
+        try await waitForDOM("enhancement switch is enabled for Prepared", "document.getElementById('enhancement').disabled", equals: "false")
+        try await click("enhancement")
+        try await wait("Prepared context ready with enhancement on", seconds: 30) {
+            self.processing()["enabled"] as? Bool == true && self.processing()["mode"] as? String == "prepared" &&
+                native()["policy"] as? String == "prepared" && progress()["configurationState"] as? String == "ready"
+        }
+        guard (progress()["availableRanges"] as? [[String: Any]] ?? []).isEmpty else {
+            throw Failure(message: "The source already has prepared ranges, so playback would not show original frames")
+        }
+        checks.append("source has no prepared ranges, so playback shows original frames")
+        try await click("prepare-open")
+        try await waitForDOM("preparation can start", "document.getElementById('prepare-start').disabled", equals: "false")
+        try await click("prepare-start")
+        try await wait("preparation running", seconds: 20) { progress()["jobState"] as? String == "preparing" }
+        try await click("prepare-close")
+        // The window starts once playback is seen advancing, which excludes the one-time preview wait.
+        let start = number("position")
+        try await click("play")
+        try await wait("original playback advances while preparing", seconds: 20) {
+            self.state()["paused"] as? Bool == false && self.number("position") > start + 0.2
+        }
+        var samples: [[String: Any]] = []
+        let begin = ProcessInfo.processInfo.systemUptime
+        while true {
+            let elapsed = ProcessInfo.processInfo.systemUptime - begin
+            samples.append(["elapsedSeconds": elapsed, "position": number("position"),
+                "buffering": native()["buffering"] ?? NSNull(), "bufferCount": native()["buffer-count"] ?? NSNull(),
+                "frameDrops": state()["frameDrops"] ?? NSNull(), "decoderDrops": state()["decoderDrops"] ?? NSNull(),
+                "displayedContentKind": native()["displayed-content-kind"] ?? NSNull(),
+                "jobState": progress()["jobState"] ?? NSNull(), "enabled": processing()["enabled"] ?? NSNull(),
+                "error": state()["error"] ?? NSNull()])
+            if elapsed >= 12 { break }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        func value(_ sample: [String: Any], _ key: String) -> Double { (sample[key] as? NSNumber)?.doubleValue ?? .nan }
+        let first = samples[0], last = samples[samples.count - 1]
+        let window = value(last, "elapsedSeconds") - value(first, "elapsedSeconds")
+        let ratio = (value(last, "position") - value(first, "position")) / window
+        let bufferCountBefore = value(first, "bufferCount")
+        snapshots.append(["check": "original playback while preparing", "samples": samples])
+        snapshots.append(["check": "original playback rate while preparing", "source": state()["source"] ?? NSNull(),
+            "windowSeconds": window, "sampleCount": samples.count, "positionPerWallSecond": ratio,
+            "bufferCountBefore": bufferCountBefore, "bufferCountAfter": value(last, "bufferCount"),
+            "frameDropsDelta": value(last, "frameDrops") - value(first, "frameDrops"),
+            "decoderDropsDelta": value(last, "decoderDrops") - value(first, "decoderDrops"),
+            "contentKinds": Set(samples.compactMap { $0["displayedContentKind"] as? String }).sorted()])
+        guard samples.allSatisfy({ $0["jobState"] as? String == "preparing" }) else {
+            throw Failure(message: "Preparation left the preparing state during the window")
+        }
+        guard samples.allSatisfy({ $0["buffering"] as? Bool == false }),
+              samples.allSatisfy({ value($0, "bufferCount") <= bufferCountBefore }) else {
+            throw Failure(message: "Playback paused its clocks for enhancement while preparing")
+        }
+        guard samples.allSatisfy({ $0["enabled"] as? Bool == true }) else {
+            throw Failure(message: "Enhancement turned off during the window")
+        }
+        guard (0.97...1.03).contains(ratio) else {
+            throw Failure(message: "Position advanced \(ratio) s per wall second while preparing")
+        }
+        checks.append("original plays at source rate for \(Int(window)) s while preparing, without buffering")
+        try await click("play")
+        try await wait("paused after the window") { self.state()["paused"] as? Bool == true }
+    }
     private func runControls() async throws {
         try await wait("media metadata and native view loaded", seconds: 20) {
             self.number("duration") > 0 && (self.state()["tracks"] as? [[String: Any]] ?? []).count >= 4 && !self.video.subviews.isEmpty
@@ -475,6 +549,7 @@ final class PlayerSmokeCheck {
             switch ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] {
             case "dolby-vision": try await runDolbyVision()
             case "prepared": try await runPrepared()
+            case "prepared-playback": try await runPreparedPlayback()
             case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")
             default: try await runControls()
             }
