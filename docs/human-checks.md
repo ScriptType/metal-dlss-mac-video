@@ -17,7 +17,7 @@ The app is `artifacts/HDR Player.app`. The steps start its executable from Termi
 
 ## Sleep and wake (#16)
 
-The lifecycle recorder writes what the player did around a real sleep. `scripts/check-sleep-wake-log.py` then judges it. The recorder only counts a cycle when macOS reports a real kernel sleep followed by power-on, so closing the lid is required.
+The lifecycle recorder writes what the player did around a real sleep. `scripts/check-sleep-wake-log.py` then judges it. The recorder only counts a cycle when macOS reports a real kernel sleep followed by power-on, so closing the lid is required. Disconnect any external display first; with one attached and power connected, a closed lid keeps the Mac awake. The analyzer also requires a clean Cmd+Q at least 10 seconds after wake, and it checks the displayed frame, not only the clock.
 
 ### 1. A paused clip stays paused
 
@@ -82,13 +82,15 @@ The check:
 "artifacts/HDR Player.app/Contents/MacOS/HDRPlayer" "$PWD/assets/test-clips/player-controls.mkv" &
 ```
 
-For each control in the table, run the command below in Terminal. Within 8 seconds, click the player window and move the VoiceOver cursor onto the control with Control-Option-Right Arrow. Listen to the announcement, then wait for the probe to print.
+For each control in the table, run the command below in Terminal. Within 30 seconds, click the video area of the player (not a control, which would trigger it), then press Tab until VoiceOver reaches the control. Listen to the announcement, stop pressing keys, and wait for the probe to print.
 
 ```sh
-sleep 8; artifacts/human/voiceover-probe --read-current-phrase --player-pid "$(pgrep -x HDRPlayer)"
+sleep 30; artifacts/human/voiceover-probe --read-current-phrase --player-pid "$(pgrep -x HDRPlayer)"
 ```
 
-| Control | Expected in `lastPhrase` |
+A spoken hint can replace the last phrase before the probe reads it, so a control passes when its name appears in either `lastPhrase` or `cursorText`.
+
+| Control | Expected in `lastPhrase` or `cursorText` |
 |---|---|
 | Play or pause button | "Play" or "Pause" |
 | Timeline | "Seek video" |
