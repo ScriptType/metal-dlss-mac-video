@@ -79,6 +79,31 @@ private func isolationTiming(_ index: Int) throws -> HDRCacheFrameTiming {
 
 private let isolationPixels: [Float] = (0..<64).flatMap { pixel -> [Float] in [pixel % 2 == 0 ? -0.25 : 1_000, 203, 0.0001, 1] }
 
+@Test func corruptSegmentPinnedByALeaseStillCountsTowardCapacity() async throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent("hdr-retired-\(UUID())")
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let cache = try await HDRSegmentCache.open(directory: directory, capacityBytes: 1_048_576)
+    let identity = try isolationIdentity(storage: HDRSegmentCache.storagePolicy)
+    let writer = try await cache.begin(identity: identity, expectedFrameCount: 2)
+    for index in 0..<2 {
+        try await cache.append(HDRCacheFloatFrame(timing: isolationTiming(index), rgba: isolationPixels), to: writer)
+    }
+    let manifest = try await cache.publish(writer)
+    let stored = try await cache.usage().byteCount
+    let lease = try #require(try await cache.acquire(identity: identity))
+    let payload = directory.appendingPathComponent("segments/\(manifest.key)/\(manifest.frames[0].fileName)")
+    var bytes = try Data(contentsOf: payload)
+    bytes[0] ^= 0x01
+    try bytes.write(to: payload)
+    await #expect(throws: HDRCacheError.self) { try await cache.acquire(identity: identity) }
+    // The leased directory is still on disk, so it must still count against capacity.
+    #expect(try await cache.usage().completedSegments == 0)
+    #expect(try await cache.usage().byteCount == stored)
+    await cache.release(lease)
+    #expect(try await cache.usage().byteCount == 0)
+    #expect(!FileManager.default.fileExists(atPath: payload.deletingLastPathComponent().path))
+}
+
 @Test func float32EntriesAreIgnoredByHEVCIdentitiesAndNeverDecodedAsHEVC() async throws {
     let directory = FileManager.default.temporaryDirectory.appendingPathComponent("hdr-hevc-isolation-\(UUID())")
     defer { try? FileManager.default.removeItem(at: directory) }
