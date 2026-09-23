@@ -1,6 +1,7 @@
 /// Which window holds the video. Every way out of the floating panel returns the
-/// video to a shown main window, and closing the main window while floating only
-/// hides it, so no sequence of closes leaves audio playing without a window.
+/// video to the main window and shows it, pausing if that window is on another Space.
+/// Closing the main window while floating only hides it. So no sequence of closes
+/// leaves audio playing without a visible window.
 enum VideoPlacement: Equatable {
     case main
     case floating(mainHidden: Bool)

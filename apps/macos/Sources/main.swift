@@ -77,7 +77,8 @@ final class PlayerDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, N
         }
         player = MPVPlaybackController(hostView: video)
         floatingVideo = FloatingVideoController(host: video, mainSlot: videoSlot, mainWindow: window,
-            togglePlay: { [weak self] in self?.togglePlay() }, seek: { [weak self] delta in self?.seek(by: delta) })
+            togglePlay: { [weak self] in self?.togglePlay() }, pause: { [weak self] in self?.player.command("pause", value: nil) },
+            seek: { [weak self] delta in self?.seek(by: delta) })
         floatingVideo.onChange = { [weak self] placement in
             guard let self else { return }
             self.lifecycle?.record("video-placement", extra: ["placement": String(describing: placement),

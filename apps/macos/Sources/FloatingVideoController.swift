@@ -8,6 +8,7 @@ final class FloatingVideoController: NSObject, NSWindowDelegate {
     private let mainSlot: NSView
     private let mainWindow: NSWindow
     private let togglePlay: () -> Void
+    private let pause: () -> Void
     private let seek: (Double) -> Void
     private let panelSlot = NSView()
     private let placeholder = NSStackView()
@@ -17,11 +18,12 @@ final class FloatingVideoController: NSObject, NSWindowDelegate {
     var onChange: ((VideoPlacement) -> Void)?
 
     init(host: NSView, mainSlot: NSView, mainWindow: NSWindow,
-         togglePlay: @escaping () -> Void, seek: @escaping (Double) -> Void) {
+         togglePlay: @escaping () -> Void, pause: @escaping () -> Void, seek: @escaping (Double) -> Void) {
         self.host = host
         self.mainSlot = mainSlot
         self.mainWindow = mainWindow
         self.togglePlay = togglePlay
+        self.pause = pause
         self.seek = seek
         super.init()
         placeholder.addArrangedSubview(NSTextField(labelWithString: "Video is in the floating window."))
@@ -39,17 +41,17 @@ final class FloatingVideoController: NSObject, NSWindowDelegate {
 
     @discardableResult
     func perform(_ action: VideoPlacement.Action) -> VideoPlacement {
-        let next = placement.after(action)
-        guard next != placement else { return next }
-        switch (placement, next) {
+        let previous = placement
+        placement = previous.after(action)
+        guard placement != previous else { return placement }
+        switch (previous, placement) {
         case (.main, .floating): showPanel()
         case (.floating, .main): showMain()
         case (.floating(mainHidden: false), .floating(mainHidden: true)): mainWindow.orderOut(nil)
         default: break
         }
-        placement = next
-        onChange?(next)
-        return next
+        onChange?(placement)
+        return placement
     }
 
     func update(title: String, paused: Bool) {
@@ -66,6 +68,9 @@ final class FloatingVideoController: NSObject, NSWindowDelegate {
     }
 
     private func showMain() {
+        // While another app is active, showing a window that sits on another Space does not
+        // switch the user there, for example out of that app's fullscreen Space.
+        if !mainWindow.isOnActiveSpace { pause() }
         dock(in: mainSlot)
         placeholder.isHidden = true
         panel?.orderOut(nil)
