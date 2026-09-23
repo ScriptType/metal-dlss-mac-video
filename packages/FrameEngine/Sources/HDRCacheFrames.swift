@@ -97,7 +97,7 @@ actor HDRCacheSegmentWriter {
         return try await cache.publish(token)
     }
 
-    /// Safe to repeat, and after a failed publish: it converges to no session and no stage.
+    /// Invalidates the session and discards the stage. Safe to repeat and after a failed publish.
     func cancel() async {
         if case .hevc(let encoder) = encoding { encoder.invalidate() }
         try? await cache.cancel(token)

@@ -308,4 +308,17 @@ func hevcSegmentRoundTripsVFRTimingAndEntersMidSegment() async throws {
     #expect(halfPixels(try await sequential.frame(5, of: second, in: cache).buffer) == decoded[5], "new lease restarts at the IDR")
     #expect(halfPixels(try await sequential.frame(6, of: second, in: cache).buffer) == decoded[6])
     await cache.release(second)
+
+    var shifted = identity; shifted.settings.guides["variant"] = "shifted-ramp"
+    let shiftedWriter = try await HDRCacheSegmentWriter.begin(cache, identity: shifted, frameCount: timings.count)
+    for (index, timing) in timings.enumerated() {
+        try await shiftedWriter.append(MLXPixelBuffer(halfBuffer(width: 320, height: 192, input(index + 20))), timing: timing)
+    }
+    try await shiftedWriter.publish()
+    let other = try #require(try await cache.acquire(identity: shifted))
+    let otherFrame = halfPixels(try await HDRCacheFrameReader().frame(7, of: other, in: cache).buffer)
+    #expect(otherFrame != decoded[7])
+    #expect(halfPixels(try await sequential.frame(7, of: other, in: cache).buffer) == otherFrame,
+            "another segment decodes from its own IDR, not from this reader's position")
+    await cache.release(other)
 }
