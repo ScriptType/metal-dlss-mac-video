@@ -406,7 +406,8 @@ final class PlayerSmokeCheck {
                 "buffering": native()["buffering"] ?? NSNull(), "bufferCount": native()["buffer-count"] ?? NSNull(),
                 "frameDrops": state()["frameDrops"] ?? NSNull(), "decoderDrops": state()["decoderDrops"] ?? NSNull(),
                 "displayedContentKind": native()["displayed-content-kind"] ?? NSNull(),
-                "jobState": progress()["jobState"] ?? NSNull(), "enabled": processing()["enabled"] ?? NSNull(),
+                "jobState": progress()["jobState"] ?? NSNull(), "processedFrames": progress()["processedFrames"] ?? NSNull(),
+                "completedSegments": progress()["completedSegments"] ?? NSNull(), "enabled": processing()["enabled"] ?? NSNull(),
                 "error": state()["error"] ?? NSNull()])
             if elapsed >= 12 { break }
             try await Task.sleep(for: .milliseconds(100))
