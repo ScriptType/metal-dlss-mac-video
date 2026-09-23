@@ -441,6 +441,49 @@ final class PlayerSmokeCheck {
         try await click("play")
         try await wait("paused after the window") { self.state()["paused"] as? Bool == true }
     }
+    private func runPreparedFollowsSource() async throws {
+        let sources = Array(CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("--") })
+        guard !EnhancementMode.developerModesEnabled, sources.count == 2 else {
+            throw Failure(message: "prepared-follows-source needs two local video paths and ordinary mode")
+        }
+        let next = URL(fileURLWithPath: sources[1])
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func preparedOn(_ path: String) -> Bool {
+            let prepared = state()["prepared"] as? [String: Any] ?? [:]
+            return state()["source"] as? String == path && state()["error"] == nil &&
+                processing()["mode"] as? String == "prepared" && processing()["availableModes"] as? [String] == ["prepared"] &&
+                processing()["enabled"] as? Bool == true && native()["policy"] as? String == "prepared" &&
+                prepared["configurationState"] as? String == "ready"
+        }
+        try await wait("first source opened with Prepared as the only mode", seconds: 20) {
+            !self.webView.isLoading && self.number("duration") > 0 && self.processing()["availableModes"] as? [String] == ["prepared"]
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("first source paused") { self.state()["paused"] as? Bool == true }
+        try await waitForDOM("enhancement switch is enabled for Prepared", "document.getElementById('enhancement').disabled", equals: "false")
+        try await click("enhancement")
+        let first = state()["source"] as? String ?? ""
+        try await wait("Prepared ready for the first source", seconds: 30) { preparedOn(first) }
+        var configuration = number("configurationID")
+        NSApp.delegate?.application?(NSApp, open: [next])
+        try await wait("opening another file installs Prepared for that file", seconds: 30) {
+            self.number("configurationID") > configuration && preparedOn(next.path)
+        }
+        configuration = number("configurationID")
+        _ = try await script("window.webkit.messageHandlers.player.postMessage({command:'track',value:{type:'video',id:'no'}});return true")
+        try await wait("leaving video track 1 turns enhancement off", seconds: 20) {
+            let capabilities = self.state()["capabilities"] as? [String: Any] ?? [:]
+            return self.number("configurationID") > configuration && self.processing()["enabled"] as? Bool == false &&
+                self.processing()["availableModes"] as? [String] == [] && capabilities["prepared"] as? Bool == false && self.state()["error"] == nil
+        }
+        configuration = number("configurationID")
+        _ = try await script("window.webkit.messageHandlers.player.postMessage({command:'track',value:{type:'video',id:1}});return true")
+        try await wait("returning to video track 1 installs Prepared again", seconds: 30) {
+            self.number("configurationID") > configuration && preparedOn(next.path) && self.selected("video", id: 1)
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("paused after the source changes") { self.state()["paused"] as? Bool == true }
+    }
     private func runControls() async throws {
         try await wait("media metadata and native view loaded", seconds: 20) {
             self.number("duration") > 0 && (self.state()["tracks"] as? [[String: Any]] ?? []).count >= 4 && !self.video.subviews.isEmpty
@@ -549,6 +592,7 @@ final class PlayerSmokeCheck {
             case "dolby-vision": try await runDolbyVision()
             case "prepared": try await runPrepared()
             case "prepared-playback": try await runPreparedPlayback()
+            case "prepared-follows-source": try await runPreparedFollowsSource()
             case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")
             default: try await runControls()
             }

@@ -57,7 +57,7 @@ Prepared runs the filter with `policy=direct`, so a late frame never pauses the 
 
 Prepared mode uses the same filter-owned cache context as playback. It is offered for local MP4/M4V/MOV/Matroska, the first video track and an installed model when the adapter reports support. Unsupported inputs and initialization failures carry an explicit capability reason; ordinary playback remains available. The preparation dialog provides Start/Resume, Cancel, a disk limit and committed coverage buttons for seeking. The default shared cache is `~/Library/Caches/HDRPlayer/Prepared` with an 8-GiB limit, 60-frame segments and 8 preroll frames. Preparation covers the complete video, avoiding approximate range bounds for variable frame rate input. `HDRPLAYER_CACHE_DIRECTORY` can select a diagnostic cache directory.
 
-Request JSON is written on the playback worker immediately before context installation. Reconfiguration first removes and drains the old filter, then installs the new source/settings/capacity, preventing overlapping cache owners. In ordinary mode, opening a file removes the old Prepared filter before `loadfile` and installs one for the new file once mpv reports its tracks. Selecting a video track other than 1 removes the filter, so the original plays, and returning to track 1 installs it again. A preparation failure removes the filter until you open another file or change a processing setting. In developer mode, a source change or a video track other than 1 leaves Prepared for Adaptive. Progress coverage comes from `availableRanges`, not historical completed work. Display labels use immutable current-frame provenance, distinguishing cache output from original misses. See [Prepared playback](prepared-playback.md) for identity, atomic completion, cancellation and reuse semantics.
+Request JSON is written on the playback worker immediately before context installation. Reconfiguration first removes and drains the old filter, then installs the new source/settings/capacity, preventing overlapping cache owners. In ordinary mode, opening a file removes the old Prepared filter before `loadfile` and installs one for the new file once mpv reports its tracks. Selecting a video track other than 1 removes the filter, so the original plays, and returning to track 1 installs it again. A Prepared context that fails, or an install that leaves no context, removes the filter until you open another file or change a processing setting. Other mpv errors are shown but leave a running preparation alone. In developer mode, a source change or a video track other than 1 leaves Prepared for Adaptive. Progress coverage comes from `availableRanges`, not historical completed work. Display labels use immutable current-frame provenance, distinguishing cache output from original misses. See [Prepared playback](prepared-playback.md) for identity, atomic completion, cancellation and reuse semantics.
 
 All libmpv commands, property access and destruction run on a worker. The waiting command queue is bounded at 64. New desired property values, filter configurations and seeks replace their waiting predecessors; relative frame/toggle actions retain order. AppKit can continue handling input during model setup and inference. The Settings dialog and Command-comma menu expose processing size and independent native subtitle brightness, scale and delay.
 
@@ -95,6 +95,15 @@ MLXDLSS_NEURAL_RENDERING_PACKAGE=/path/to/NeuralRendering.dlssmodel \
 ```
 
 It runs in ordinary mode on the 60-second, 30 fps PQ clip. It turns Prepared on, starts preparation and plays. Once playback advances, it samples the state every 100 ms for 12 seconds of wall time. It fails if the job leaves the preparing state, if the clocks buffer for enhancement or `buffer-count` rises, or if position advances outside 0.97 to 1.03 seconds per wall second. The report records frame drops without asserting them.
+
+The source-change check opens a second file through the app's open-file handler, then turns the video track off and back on:
+
+```sh
+HDRPLAYER_UI_SMOKE_KIND=prepared-follows-source HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-prepared-follows-source.json \
+  .build/debug/HDRPlayer assets/test-clips/playback/pq-30-30s.mkv assets/test-clips/playback/pq-30-30s.mp4
+```
+
+It checks that Prepared is installed for the second file, that leaving video track 1 turns enhancement off, and that returning to track 1 installs Prepared again. Both clips have one video track, so the check cannot show that Prepared is removed before a switch to a second video track.
 
 Preference restoration uses two separate processes and an isolated defaults suite. The second invocation preserves the suite written by the first:
 
