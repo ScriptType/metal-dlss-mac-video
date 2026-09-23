@@ -3,6 +3,7 @@ let state = { paused: true, position: 0, duration: 0, volume: 100, muted: false,
 let seekTimer;
 let draggingTimeline = false;
 const optionSignatures = new Map();
+const modeLabels = { prepared: 'Prepared', adaptive: 'Adaptive', live: 'Live' };
 
 function send(command, value) {
   window.webkit?.messageHandlers?.player?.postMessage({ command, value });
@@ -76,12 +77,11 @@ function update(next) {
   const chapters = next.chapters ?? [];
   setOptions('chapter', chapters.map(chapter => ({ value: chapter.index, label: chapter.title || `Chapter ${chapter.index + 1}` })), next.chapter);
   element('chapter-label').hidden = chapters.length === 0;
-  element('mode').value = processing.mode || 'live';
   const availableModes = processing.availableModes ?? [];
+  setOptions('mode', availableModes.map(mode => ({ value: mode, label: modeLabels[mode] })), processing.mode);
   element('mode').disabled = availableModes.length === 0;
-  for (const option of element('mode').options) option.disabled = !availableModes.includes(option.value);
   element('enhancement').checked = Boolean(processing.enabled);
-  element('enhancement').disabled = !enhancementAvailable;
+  element('enhancement').disabled = !enhancementAvailable || Boolean(processing.unavailableReason);
   for (const id of ['strength', 'colorStrength']) {
     setRange(id, processing[id] ?? 1);
     element(id).disabled = !enhancementAvailable || !processing.enabled;
@@ -93,8 +93,9 @@ function update(next) {
   element('compare').hidden = !next.capabilities?.sameFrameComparison;
   element('compare').textContent = processing.comparison === 'original' ? 'Show enhanced' : 'Compare original';
   element('compare').setAttribute('aria-pressed', String(processing.comparison === 'original'));
-  element('prepare-open').hidden = processing.mode !== 'prepared';
   const prepared = next.prepared ?? {};
+  const preparedContext = prepared.configurationState !== undefined;
+  element('prepare-open').hidden = processing.mode !== 'prepared' || !availableModes.includes('prepared') || !preparedContext;
   const preparing = ['preparing', 'running', 'cancelling'].includes(prepared.jobState);
   const initializing = ['initializing', 'hashing', 'planning'].includes(prepared.configurationState);
   const total = Math.max(1, prepared.totalSegments ?? 1);
@@ -106,7 +107,7 @@ function update(next) {
     : initializing ? 'Reading video…' : prepared.jobState === 'complete' ? 'Preparation complete'
       : prepared.jobState === 'cancelled' ? 'Preparation cancelled' : prepared.jobState === 'failed' ? 'Preparation failed' : 'Ready to prepare';
   element('prepare-start').textContent = completed > 0 || prepared.jobState === 'cancelled' ? 'Resume preparation' : 'Start preparation';
-  element('prepare-start').disabled = !next.capabilities?.prepared || preparing || initializing;
+  element('prepare-start').disabled = !next.capabilities?.prepared || !preparedContext || preparing || initializing;
   element('prepare-cancel').disabled = !preparing && !initializing;
   setRange('cacheCapacityGiB', prepared.capacityBytes ? prepared.capacityBytes / 1073741824 : 8);
   element('prepare-message').textContent = prepared.error || 'Completed sections play from the HDR cache. Other sections show the original video.';

@@ -41,6 +41,17 @@ final class PlayerSmokeCheck {
         _ = try await script("const e=document.getElementById('\(id)');e.value='\(value)';e.dispatchEvent(new Event('\(event)',{bubbles:true}));return true;")
     }
     private func click(_ id: String) async throws { _ = try await script("document.getElementById('\(id)').click();return true;") }
+    private func waitForDOM(_ label: String, _ expression: String, equals expected: String, seconds: Double = 8) async throws {
+        let deadline = Date().addingTimeInterval(seconds)
+        var actual = try await script("return \(expression);")
+        while actual != expected {
+            if Date() >= deadline { throw Failure(message: "Timed out: \(label); DOM returned \(actual)") }
+            try await Task.sleep(for: .milliseconds(100))
+            actual = try await script("return \(expression);")
+        }
+        checks.append(label)
+    }
+    private func processing() -> [String: Any] { state()["processing"] as? [String: Any] ?? [:] }
     private func number(_ key: String) -> Double { (state()[key] as? NSNumber)?.doubleValue ?? 0 }
     private func selected(_ type: String, id: Int) -> Bool {
         (state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == type && $0["id"] as? Int == id && $0["selected"] as? Bool == true }
@@ -275,6 +286,15 @@ final class PlayerSmokeCheck {
     }
     private func runPreferences(write: Bool) async throws {
         try await wait("empty player and controls initialized", seconds: 20) { self.state()["initialized"] as? Bool == true && !self.webView.isLoading }
+        if !EnhancementMode.developerModesEnabled {
+            try await waitForDOM("controls render the empty player's native state", "!document.getElementById('quality').disabled", equals: "true")
+            let empty = try await script("const m=document.getElementById('mode');return {options:m.options.length,modeDisabled:m.disabled,enhancementDisabled:document.getElementById('enhancement').disabled};")
+            guard let data = empty.data(using: .utf8), let controls = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  controls["options"] as? Int == 0, controls["modeDisabled"] as? Bool == true, controls["enhancementDisabled"] as? Bool == true else {
+                throw Failure(message: "Empty ordinary player offers a mode or an enabled enhancement switch: \(empty)")
+            }
+            checks.append("empty ordinary player offers no mode and disables the enhancement switch")
+        }
         if write {
             try await change("volume", value: "37", event: "input")
             if state()["muted"] as? Bool != true { try await click("mute") }
@@ -347,6 +367,178 @@ final class PlayerSmokeCheck {
               layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Prepared enhanced output is not float EDR") }
         checks.append("Prepared neural cache output uses float EDR with no playback error")
     }
+    private func runPreparedPlayback() async throws {
+        guard !EnhancementMode.developerModesEnabled else {
+            throw Failure(message: "prepared-playback checks ordinary playback; unset HDRPLAYER_DEVELOPER_MODES")
+        }
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func progress() -> [String: Any] { state()["prepared"] as? [String: Any] ?? [:] }
+        try await wait("source opened with Prepared as the only mode", seconds: 20) {
+            !self.webView.isLoading && self.number("duration") > 0 && self.processing()["availableModes"] as? [String] == ["prepared"]
+        }
+        guard processing()["enabled"] as? Bool == false, progress()["configurationState"] == nil else {
+            throw Failure(message: "prepared-playback must start with enhancement off and no Prepared context")
+        }
+        let start = number("position")
+        if state()["paused"] as? Bool != false { try await click("play") }
+        try await wait("original playback advances before enhancement", seconds: 20) {
+            self.state()["paused"] as? Bool == false && self.number("position") > start + 0.5
+        }
+        var samples: [[String: Any]] = []
+        let begin = ProcessInfo.processInfo.systemUptime
+        func sample(until label: String, seconds: Double, _ done: () async throws -> Bool) async throws {
+            let deadline = ProcessInfo.processInfo.systemUptime + seconds
+            while true {
+                samples.append(["elapsedSeconds": ProcessInfo.processInfo.systemUptime - begin, "position": number("position"),
+                    "buffering": native()["buffering"] ?? NSNull(), "bufferCount": native()["buffer-count"] ?? NSNull(),
+                    "frameDrops": state()["frameDrops"] ?? NSNull(), "decoderDrops": state()["decoderDrops"] ?? NSNull(),
+                    "displayedContentKind": native()["displayed-content-kind"] ?? NSNull(),
+                    "jobState": progress()["jobState"] ?? NSNull(), "processedFrames": progress()["processedFrames"] ?? NSNull(),
+                    "completedSegments": progress()["completedSegments"] ?? NSNull(), "enabled": processing()["enabled"] ?? NSNull(),
+                    "phase": label, "error": state()["error"] ?? NSNull()])
+                if try await done() { return }
+                if ProcessInfo.processInfo.systemUptime >= deadline { throw Failure(message: "Timed out: " + label) }
+                try await Task.sleep(for: .milliseconds(100))
+            }
+        }
+        let playingSince = ProcessInfo.processInfo.systemUptime
+        try await sample(until: "original before enabling", seconds: 5) { ProcessInfo.processInfo.systemUptime - playingSince >= 1 }
+        try await click("enhancement")
+        try await sample(until: "Prepared context ready after enabling during playback", seconds: 30) {
+            self.processing()["enabled"] as? Bool == true && self.processing()["mode"] as? String == "prepared" &&
+                native()["policy"] as? String == "prepared" && progress()["configurationState"] as? String == "ready"
+        }
+        guard (progress()["availableRanges"] as? [[String: Any]] ?? []).isEmpty else {
+            throw Failure(message: "The source already has prepared ranges, so playback would not show original frames")
+        }
+        checks.append("enhancement switched on during playback; the source has no prepared ranges")
+        try await click("prepare-open")
+        try await sample(until: "preparation can start", seconds: 8) {
+            try await self.script("return document.getElementById('prepare-start').disabled;") == "false"
+        }
+        try await click("prepare-start")
+        try await sample(until: "preparation running", seconds: 20) { progress()["jobState"] as? String == "preparing" }
+        try await click("prepare-close")
+        let preparingFrom = samples.count
+        let preparingSince = ProcessInfo.processInfo.systemUptime
+        try await sample(until: "original while preparing", seconds: 20) { ProcessInfo.processInfo.systemUptime - preparingSince >= 12 }
+        func value(_ sample: [String: Any], _ key: String) -> Double { (sample[key] as? NSNumber)?.doubleValue ?? .nan }
+        func rate(_ from: [String: Any], _ to: [String: Any]) -> Double {
+            (value(to, "position") - value(from, "position")) / (value(to, "elapsedSeconds") - value(from, "elapsedSeconds"))
+        }
+        let preparing = Array(samples[preparingFrom...])
+        let first = samples[0], last = samples[samples.count - 1]
+        let window = value(last, "elapsedSeconds") - value(first, "elapsedSeconds")
+        let ratio = rate(first, last)
+        let preparingRatio = rate(preparing[0], preparing[preparing.count - 1])
+        let bufferCountBefore = value(first, "bufferCount")
+        var fewestSecondsBehind = Double.infinity, worstLag = 0.0
+        for sample in samples {
+            let behind = (value(sample, "elapsedSeconds") - value(first, "elapsedSeconds")) - (value(sample, "position") - value(first, "position"))
+            fewestSecondsBehind = min(fewestSecondsBehind, behind)
+            worstLag = max(worstLag, behind - fewestSecondsBehind)
+        }
+        snapshots.append(["check": "original playback while enabling and preparing", "samples": samples])
+        snapshots.append(["check": "original playback rate while enabling and preparing", "source": state()["source"] ?? NSNull(),
+            "windowSeconds": window, "sampleCount": samples.count, "positionPerWallSecond": ratio,
+            "preparingWindowSeconds": value(preparing[preparing.count - 1], "elapsedSeconds") - value(preparing[0], "elapsedSeconds"),
+            "preparingPositionPerWallSecond": preparingRatio,
+            "bufferCountBefore": bufferCountBefore, "bufferCountAfter": value(last, "bufferCount"),
+            "frameDropsDelta": value(last, "frameDrops") - value(first, "frameDrops"),
+            "decoderDropsDelta": value(last, "decoderDrops") - value(first, "decoderDrops"), "worstVideoLagSeconds": worstLag,
+            "contentKinds": Set(samples.compactMap { $0["displayedContentKind"] as? String }).sorted()])
+        guard samples.allSatisfy({ $0["buffering"] as? Bool != true }),
+              samples.allSatisfy({ value($0, "bufferCount").isNaN || value($0, "bufferCount") <= (bufferCountBefore.isNaN ? 0 : bufferCountBefore) }) else {
+            throw Failure(message: "Playback paused its clocks while enabling enhancement or preparing")
+        }
+        guard worstLag <= 0.5 else {
+            throw Failure(message: "Video fell \(worstLag) s behind the clock while enabling or preparing")
+        }
+        guard (0.97...1.03).contains(ratio), (0.97...1.03).contains(preparingRatio) else {
+            throw Failure(message: "Position advanced \(ratio) s per wall second overall and \(preparingRatio) while preparing")
+        }
+        checks.append("original plays at source rate for \(Int(window)) s across enabling enhancement and preparing, without clock holds")
+        guard preparing.allSatisfy({ $0["jobState"] as? String == "preparing" && $0["enabled"] as? Bool == true }) else {
+            throw Failure(message: "Preparation or enhancement stopped during the preparing window")
+        }
+        try await click("enhancement")
+        try await wait("switching enhancement off keeps preparing") {
+            self.processing()["enabled"] as? Bool == false && progress()["jobState"] as? String == "preparing"
+        }
+        let holdCount = (native()["buffer-count"] as? NSNumber)?.intValue ?? 0
+        let holdSeconds = (native()["buffer-seconds"] as? NSNumber)?.doubleValue ?? 0
+        try await click("enhancement")
+        try await wait("switching enhancement back on during playback", seconds: 10) {
+            self.processing()["enabled"] as? Bool == true && native()["policy"] as? String == "prepared" && native()["buffering"] as? Bool == false
+        }
+        try await Task.sleep(for: .seconds(1))
+        let reenableHolds = ((native()["buffer-count"] as? NSNumber)?.intValue ?? 0) - holdCount
+        snapshots.append(["check": "enabling enhancement again during playback", "bufferCountDelta": reenableHolds,
+            "bufferSecondsDelta": ((native()["buffer-seconds"] as? NSNumber)?.doubleValue ?? 0) - holdSeconds, "state": state()])
+        guard reenableHolds == 0, native()["buffering"] as? Bool == false else {
+            throw Failure(message: "Switching enhancement back on paused the clocks \(reenableHolds) time(s)")
+        }
+        checks.append("switching enhancement off and on again during playback holds no clocks")
+        try await click("play")
+        try await wait("paused after the window") { self.state()["paused"] as? Bool == true }
+    }
+    private func runPreparedTooLarge() async throws {
+        try await wait("large source opened", seconds: 20) {
+            !self.webView.isLoading && self.number("duration") > 0 &&
+                (self.state()["tracks"] as? [[String: Any]] ?? []).contains { $0["type"] as? String == "video" && $0["demux-w"] != nil }
+        }
+        try await wait("Prepared is unavailable above 3840 × 1920") {
+            self.processing()["availableModes"] as? [String] == [] &&
+                (self.processing()["unavailableReason"] as? String ?? "").contains("3840 × 1920")
+        }
+        try await waitForDOM("enhancement switch is disabled for the large source", "document.getElementById('enhancement').disabled", equals: "true")
+        guard state()["nativeEnhancement"] == nil || (state()["nativeEnhancement"] as? [String: Any])?["policy"] as? String != "prepared" else {
+            throw Failure(message: "A Prepared filter was installed for a source the engine cannot process")
+        }
+    }
+    private func runPreparedFollowsSource() async throws {
+        let sources = Array(CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("--") })
+        guard !EnhancementMode.developerModesEnabled, sources.count == 2 else {
+            throw Failure(message: "prepared-follows-source needs two local video paths and ordinary mode")
+        }
+        let next = URL(fileURLWithPath: sources[1])
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        func preparedOn(_ path: String) -> Bool {
+            let prepared = state()["prepared"] as? [String: Any] ?? [:]
+            return state()["source"] as? String == path && state()["error"] == nil &&
+                processing()["mode"] as? String == "prepared" && processing()["availableModes"] as? [String] == ["prepared"] &&
+                processing()["enabled"] as? Bool == true && native()["policy"] as? String == "prepared" &&
+                prepared["configurationState"] as? String == "ready"
+        }
+        try await wait("first source opened with Prepared as the only mode", seconds: 20) {
+            !self.webView.isLoading && self.number("duration") > 0 && self.processing()["availableModes"] as? [String] == ["prepared"]
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("first source paused") { self.state()["paused"] as? Bool == true }
+        try await waitForDOM("enhancement switch is enabled for Prepared", "document.getElementById('enhancement').disabled", equals: "false")
+        try await click("enhancement")
+        let first = state()["source"] as? String ?? ""
+        try await wait("Prepared ready for the first source", seconds: 30) { preparedOn(first) }
+        var configuration = number("configurationID")
+        NSApp.delegate?.application?(NSApp, open: [next])
+        try await wait("opening another file installs Prepared for that file", seconds: 30) {
+            self.number("configurationID") > configuration && preparedOn(next.path)
+        }
+        configuration = number("configurationID")
+        _ = try await script("window.webkit.messageHandlers.player.postMessage({command:'track',value:{type:'video',id:'no'}});return true")
+        try await wait("leaving video track 1 turns enhancement off", seconds: 20) {
+            let capabilities = self.state()["capabilities"] as? [String: Any] ?? [:]
+            return self.number("configurationID") > configuration && self.processing()["enabled"] as? Bool == false &&
+                self.processing()["availableModes"] as? [String] == [] && capabilities["prepared"] as? Bool == false && self.state()["error"] == nil
+        }
+        configuration = number("configurationID")
+        _ = try await script("window.webkit.messageHandlers.player.postMessage({command:'track',value:{type:'video',id:1}});return true")
+        try await wait("returning to video track 1 installs Prepared again", seconds: 30) {
+            self.number("configurationID") > configuration && preparedOn(next.path) && self.selected("video", id: 1)
+        }
+        if state()["paused"] as? Bool != true { try await click("play") }
+        try await wait("paused after the source changes") { self.state()["paused"] as? Bool == true }
+    }
     private func runControls() async throws {
         try await wait("media metadata and native view loaded", seconds: 20) {
             self.number("duration") > 0 && (self.state()["tracks"] as? [[String: Any]] ?? []).count >= 4 && !self.video.subviews.isEmpty
@@ -389,6 +581,31 @@ final class PlayerSmokeCheck {
         try await wait("fullscreen via DOM") { self.state()["fullscreen"] as? Bool == true }
         try await click("fullscreen")
         try await wait("exit fullscreen via DOM") { self.state()["fullscreen"] as? Bool == false }
+        if EnhancementMode.developerModesEnabled { try await runDeveloperEnhancement() }
+        else { try await runOrdinaryEnhancement() }
+        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Unknown playback error") }
+        checks.append("no native playback error")
+    }
+    private func runOrdinaryEnhancement() async throws {
+        func native() -> [String: Any] { state()["nativeEnhancement"] as? [String: Any] ?? [:] }
+        try await wait("native state offers only Prepared", seconds: 20) { self.processing()["availableModes"] as? [String] == ["prepared"] }
+        try await waitForDOM("ordinary controls offer only Prepared; Live and Adaptive are absent",
+            "Array.from(document.getElementById('mode').options,o=>o.value)", equals: "[\"prepared\"]")
+        try await waitForDOM("enhancement switch is enabled for Prepared", "document.getElementById('enhancement').disabled", equals: "false")
+        try await click("enhancement")
+        try await wait("enhancement switch turns Prepared on", seconds: 20) {
+            self.processing()["enabled"] as? Bool == true && self.processing()["mode"] as? String == "prepared" &&
+                native()["policy"] as? String == "prepared"
+        }
+    }
+    private func runDeveloperEnhancement() async throws {
+        try await wait("developer state offers Adaptive", seconds: 20) {
+            (self.processing()["availableModes"] as? [String] ?? []).contains("adaptive")
+        }
+        try await waitForDOM("developer controls offer Adaptive",
+            "Array.from(document.getElementById('mode').options,o=>o.value).includes('adaptive')", equals: "true")
+        try await change("mode", value: "adaptive")
+        try await wait("explicit switch to Adaptive") { self.processing()["mode"] as? String == "adaptive" }
         try await click("enhancement")
         try await wait("enhancement command accepted") { (self.state()["processing"] as? [String: Any])?["enabled"] as? Bool == true }
         try await click("play")
@@ -421,8 +638,6 @@ final class PlayerSmokeCheck {
         guard let layer = video.subviews.first?.layer as? CAMetalLayer, layer.pixelFormat == .rgba16Float,
               layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Neural presentation is not float EDR") }
         checks.append("retained comparison preserved rational PTS/generation without inference submission; float EDR active")
-        guard state()["error"] == nil else { throw Failure(message: state()["error"] as? String ?? "Unknown playback error") }
-        checks.append("no native playback error")
     }
     func start() { Task { await run() } }
     private func run() async {
@@ -431,6 +646,9 @@ final class PlayerSmokeCheck {
             switch ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] {
             case "dolby-vision": try await runDolbyVision()
             case "prepared": try await runPrepared()
+            case "prepared-too-large": try await runPreparedTooLarge()
+            case "prepared-playback": try await runPreparedPlayback()
+            case "prepared-follows-source": try await runPreparedFollowsSource()
             case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")
             default: try await runControls()
             }

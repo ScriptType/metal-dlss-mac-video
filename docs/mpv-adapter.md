@@ -36,7 +36,7 @@ The tiny 32×24 processing shape validates neural integration on M3. It is not a
 | `hlg-peak` | 1000 | HLG display peak used for the OOTF |
 | `maximum-luminance-ratio` | 2 | Reconstruction gain bound |
 | `bypass` | `no` | Forward the decoder's original hardware frames directly |
-| `policy` | `direct` | `adaptive` buffers both playback clocks under enhancement pressure; `direct` is the unpaced processor diagnostic |
+| `policy` | `direct` | `adaptive` buffers both playback clocks under enhancement pressure; `direct` never holds the clocks and is the policy Prepared playback uses |
 | `measurements` | None | JSONL filter-output and normalization-pass measurements |
 | `measurement-config` | None | Path to the shared engine's `MeasurementConfiguration` JSON |
 | `engine-report` | None | Destination for shared engine JSON measurements at teardown |
@@ -55,7 +55,7 @@ Seek, bypass and input geometry/colour resets discard qualification evidence. Re
 
 Invalid current-epoch durations, an unavailable or invalid source rate, and malformed settings clear the sample window and qualification. Losing the p95 margin or invalidating evidence while in Live switches visibly to Adaptive. Fresh valid completions can restore qualification, but playback remains Adaptive until a new explicit `policy live` command succeeds. The production-helper CPU tests exercise these transitions with synthetic durations; actual fallback from a qualified neural Live session remains unexercised.
 
-On startup and seek, decoder preroll reaches mpv's exact-seek selector without inference. The selected source frame appears first, while its enhancement runs. Both clocks stay held until the renderer replaces that frame with enhanced pixels of exactly the same rational PTS and generation. A superseded generation cannot replace the current frame. Source preview admission does not wait for obsolete inference to finish.
+On startup and seek, decoder preroll reaches mpv's exact-seek selector without inference. Under `adaptive` and Live, the selected source frame appears first, while its enhancement runs. Both clocks stay held until the renderer replaces that frame with enhanced pixels of exactly the same rational PTS and generation. A superseded generation cannot replace the current frame. Source preview admission does not wait for obsolete inference to finish. Under `direct` there is no such preview or hold; the first processed frame is shown when it completes. Whenever the engine reports full, the filter polls admission until a submission is accepted, because a freed slot does not always wake it.
 
 `vf-command enhance compare original` / `enhanced` switches an immutable retained pair while the user has paused playback. The renderer changes its current image and colour interpretation, flushes the old image cache and redraws without advancing PTS or submitting temporal work. The command rejects missing pairs and playback that is not paused. Original PQ/HLG source buffers retain their metadata; enhanced buffers remain linear BT.2020 RGBA16F.
 

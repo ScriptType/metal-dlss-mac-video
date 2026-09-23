@@ -8,7 +8,7 @@ All measurements were taken on the development MacBook Pro (M3, 16 GB). Nothing 
 
 | Issue | True today |
 |---|---|
-| [#34](https://github.com/ScriptType/metal-dlss-mac-video/issues/34) Playback-mode policy | The controls offer Live, Adaptive and Prepared (`apps/controls/src/index.html`). None of them is usable daily on the M3. The recommendation is Prepared only. |
+| [#34](https://github.com/ScriptType/metal-dlss-mac-video/issues/34) Playback-mode policy | Ordinary playback offers only Prepared, which plays unprepared ranges as the original at source rate (`policy=direct`). `HDRPLAYER_DEVELOPER_MODES=1` restores Live and Adaptive. |
 | [#35](https://github.com/ScriptType/metal-dlss-mac-video/issues/35) 10-bit HEVC Prepared cache | `HDRSegmentCache` stores Float32 RGBA (`packages/FrameEngine/Sources/HDRCache.swift`), about 33 MB per 1080p frame. The default 8 GiB capacity holds about 11 seconds of 1080p. |
 | [#36](https://github.com/ScriptType/metal-dlss-mac-video/issues/36) Whole-file preparation with resume | Preparation reuses segments already in the cache. There is no whole-file queue, and preparation does not resume after a relaunch. Depends on #35. |
 | [#37](https://github.com/ScriptType/metal-dlss-mac-video/issues/37) The ~90 ms enhancement floor | Warmed work p50 is 89 to 100 ms per frame at both 32×24 and 160×96 ([benchmarks](m3-benchmarks.md#clean-completed-work-reference)). Nobody has attributed the time outside optical flow. |
