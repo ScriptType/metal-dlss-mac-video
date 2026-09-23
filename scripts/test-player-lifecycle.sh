@@ -13,3 +13,6 @@ swiftc -swift-version 6 -I packages/CMpv apps/macos/Sources/PlayerLifecycleDiagn
   scripts/test-player-lifecycle-recorder.swift -o artifacts/player-lifecycle-checks/recorder
 artifacts/player-lifecycle-checks/recorder artifacts/player-lifecycle-checks/recorder.jsonl \
   | tee artifacts/player-lifecycle-checks/recorder.log
+swiftc -swift-version 6 apps/macos/Sources/VideoPlacement.swift scripts/test-video-placement.swift \
+  -o artifacts/player-lifecycle-checks/video-placement
+artifacts/player-lifecycle-checks/video-placement | tee artifacts/player-lifecycle-checks/video-placement.log
