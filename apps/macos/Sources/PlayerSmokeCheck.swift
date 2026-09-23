@@ -417,12 +417,18 @@ final class PlayerSmokeCheck {
         let window = value(last, "elapsedSeconds") - value(first, "elapsedSeconds")
         let ratio = (value(last, "position") - value(first, "position")) / window
         let bufferCountBefore = value(first, "bufferCount")
+        var fewestSecondsBehind = Double.infinity, worstLag = 0.0
+        for sample in samples {
+            let behind = (value(sample, "elapsedSeconds") - value(first, "elapsedSeconds")) - (value(sample, "position") - value(first, "position"))
+            fewestSecondsBehind = min(fewestSecondsBehind, behind)
+            worstLag = max(worstLag, behind - fewestSecondsBehind)
+        }
         snapshots.append(["check": "original playback while preparing", "samples": samples])
         snapshots.append(["check": "original playback rate while preparing", "source": state()["source"] ?? NSNull(),
             "windowSeconds": window, "sampleCount": samples.count, "positionPerWallSecond": ratio,
             "bufferCountBefore": bufferCountBefore, "bufferCountAfter": value(last, "bufferCount"),
             "frameDropsDelta": value(last, "frameDrops") - value(first, "frameDrops"),
-            "decoderDropsDelta": value(last, "decoderDrops") - value(first, "decoderDrops"),
+            "decoderDropsDelta": value(last, "decoderDrops") - value(first, "decoderDrops"), "worstVideoLagSeconds": worstLag,
             "contentKinds": Set(samples.compactMap { $0["displayedContentKind"] as? String }).sorted()])
         guard samples.allSatisfy({ $0["jobState"] as? String == "preparing" }) else {
             throw Failure(message: "Preparation left the preparing state during the window")
@@ -438,6 +444,19 @@ final class PlayerSmokeCheck {
             throw Failure(message: "Position advanced \(ratio) s per wall second while preparing")
         }
         checks.append("original plays at source rate for \(Int(window)) s while preparing, without buffering")
+        try await click("enhancement")
+        try await wait("switching enhancement off keeps preparing") {
+            self.processing()["enabled"] as? Bool == false && progress()["jobState"] as? String == "preparing"
+        }
+        let holdCount = (native()["buffer-count"] as? NSNumber)?.intValue ?? 0
+        let holdSeconds = (native()["buffer-seconds"] as? NSNumber)?.doubleValue ?? 0
+        try await click("enhancement")
+        try await wait("switching enhancement back on during playback", seconds: 10) {
+            self.processing()["enabled"] as? Bool == true && native()["policy"] as? String == "prepared" && native()["buffering"] as? Bool == false
+        }
+        try await Task.sleep(for: .seconds(1))
+        snapshots.append(["check": "enabling enhancement during playback", "bufferCountDelta": ((native()["buffer-count"] as? NSNumber)?.intValue ?? 0) - holdCount,
+            "bufferSecondsDelta": ((native()["buffer-seconds"] as? NSNumber)?.doubleValue ?? 0) - holdSeconds, "state": state()])
         try await click("play")
         try await wait("paused after the window") { self.state()["paused"] as? Bool == true }
     }
