@@ -65,6 +65,14 @@ Preferences retain effect parameters, processing dimensions, volume/mute, subtit
 
 Native menus provide Open (Command-O), Settings (Command-comma), Close (Command-W), Play/Pause (Command-P), frame stepping (Command-left/right bracket), Mute (Command-M), and fullscreen (Control-Command-F). When the native video has focus, Space, arrows, F, M and comma/period handle playback directly. Left/Right seek five seconds; Shift-Left/Right seek 60 seconds, consistently across the native video and WebKit background. Focused form controls retain their normal arrow-key behavior. WebKit receives keys while a control has focus, and Tab navigation includes form controls without changing the system keyboard preference. Dialogs expose their headings and labeled controls through the native accessibility tree; Escape closes them.
 
+## Floating video
+
+**View > Float Video** moves the video into a small always-on-top panel. The panel shows the same mpv view, so playback, audio and the displayed frame continue without a reload. To move the video back, choose the menu item again, click **Return to Player**, press Escape or close the panel. Each of these shows the main window with the video, even if you closed or minimized the main window while the video was floating. If the main window is on another Space, for example while another app is full screen, playback also pauses. In a scripted run, closing the panel on another app's full-screen Space left that Space in front, with the main window out of sight. Closing the main window while the video floats only hides that window. Closing it while the video is in the main window quits, as before. Open, Settings and full screen move the video back first. Float Video is unavailable while the main window is in full screen.
+
+The panel has −5 s, Play/Pause, +5 s and **Return to Player** buttons. While the panel has focus, Space, Left and Right work as in the main window, and Command-W closes the panel. The panel stays above other windows, including another app's full-screen Space. `VideoPlacement` (`apps/macos/Sources/VideoPlacement.swift`) holds the close rule, and `scripts/test-player-lifecycle.sh` checks it without opening a window.
+
+`scripts/test-floating-video.py` drives the built app. It checks that a move keeps the same mpv view and layer and the same filter generation while position and source PTS keep advancing. It covers both close orders, a minimized main window and quitting while floating. Two more runs let the `tools/FloatingSpaceReference` helper take a full-screen Space and list the player's on-screen windows, then close the panel on that Space, once with the main window open and once after closing it. The script uses the GPU and takes over the screen for a few seconds, so `scripts/check.sh` does not run it.
+
 ## Functional check
 
 ```sh

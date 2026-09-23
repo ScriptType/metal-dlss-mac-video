@@ -639,17 +639,129 @@ final class PlayerSmokeCheck {
               layer.wantsExtendedDynamicRangeContent else { throw Failure(message: "Neural presentation is not float EDR") }
         checks.append("retained comparison preserved rational PTS/generation without inference submission; float EDR active")
     }
+    private func playhead() -> (position: Double, pts: Int64, generation: Int64)? {
+        let native = state()["nativeEnhancement"] as? [String: Any] ?? [:]
+        guard let pts = (native["displayed-source-pts"] as? NSNumber)?.int64Value,
+              let generation = (native["generation"] as? NSNumber)?.int64Value else { return nil }
+        return (number("position"), pts, generation)
+    }
+    private var playing: Bool { state()["paused"] as? Bool == false }
+    private var floating: Bool { video.window !== window && video.window?.isVisible == true && video.window?.level == .floating }
+    private var home: Bool {
+        video.window === window && window.isVisible && !window.isMiniaturized && !NSApp.windows.contains { $0.level == .floating && $0.isVisible }
+    }
+    private func chooseFloatVideo() throws {
+        guard let menu = NSApp.mainMenu?.item(withTitle: "View")?.submenu, let item = menu.item(withTitle: "Float Video") else {
+            throw Failure(message: "View > Float Video is missing")
+        }
+        menu.update()
+        guard item.isEnabled else { throw Failure(message: "View > Float Video is disabled") }
+        menu.performActionForItem(at: menu.index(of: item))
+    }
+    private func startMutedPlayback() async throws {
+        try await wait("media loaded", seconds: 20) { self.number("duration") > 0 && !self.video.subviews.isEmpty }
+        try await waitForDOM("controls loaded", "document.getElementById('mute')!==null", equals: "true")
+        try await click("mute")
+        try await wait("muted through the DOM and playing with a displayed source PTS", seconds: 20) {
+            self.state()["muted"] as? Bool == true && self.playing && self.number("position") >= 2 && self.playhead() != nil
+        }
+    }
+    /// A restart would replace mpv's view or layer, change the filter generation (seek,
+    /// flush or reload), or stop position and displayed source PTS advancing.
+    private func moveWithoutRestart(_ label: String, until moved: @escaping () -> Bool) async throws {
+        guard let view = video.subviews.first, let layer = view.layer, let before = playhead() else {
+            throw Failure(message: "No mpv view or displayed frame before: \(label)")
+        }
+        let start = Date()
+        try chooseFloatVideo()
+        try await wait(label, until: moved)
+        try await Task.sleep(for: .seconds(1))
+        let elapsed = Date().timeIntervalSince(start)
+        guard let after = playhead(), video.subviews.first === view, view.layer === layer, after.generation == before.generation,
+              playing, after.pts > before.pts, after.position > before.position + 0.5, after.position < before.position + elapsed + 0.5 else {
+            throw Failure(message: "\(label) restarted playback: before \(before), after \(String(describing: playhead())), same view \(video.subviews.first === view)")
+        }
+        checks.append("\(label) without a restart: position \(before.position) -> \(after.position) s in \(elapsed) s, source PTS \(before.pts) -> \(after.pts), filter generation \(before.generation), same mpv view and layer")
+    }
+    private func runFloatingVideo() async throws {
+        try await startMutedPlayback()
+        try await moveWithoutRestart("View > Float Video moves the playing video into the panel") { self.floating }
+        try await moveWithoutRestart("View > Float Video moves it back to the main window") { self.home }
+        try chooseFloatVideo()
+        try await wait("floating before closing the main window") { self.floating }
+        window.performClose(nil)
+        try await wait("closing the main window while floating hides it; the panel keeps playing") {
+            !self.window.isVisible && self.floating && self.playing
+        }
+        video.window?.performClose(nil)
+        try await wait("closing the panel then shows the main window with the video, still playing") { self.home && self.playing }
+        try chooseFloatVideo()
+        try await wait("floating before minimizing the main window") { self.floating }
+        try await wait("main window minimized while floating") {
+            // AppKit drops a miniaturize sent while the previous return's activation settles.
+            if !self.window.isMiniaturized { self.window.miniaturize(nil) }
+            return self.window.isMiniaturized && self.floating
+        }
+        video.window?.performClose(nil)
+        try await wait("closing the panel deminiaturizes the main window with the video") { self.home && self.playing }
+        try chooseFloatVideo()
+        try await wait("floating before closing the panel") { self.floating }
+        video.window?.performClose(nil)
+        try await wait("closing the panel first returns the video to the main window") { self.home && self.playing }
+        try chooseFloatVideo()
+        try await wait("floating before closing the main window again") { self.floating }
+        window.performClose(nil)
+        try await wait("floating with the main window closed when the check quits") {
+            !self.window.isVisible && self.floating && self.playing
+        }
+    }
+    private func runFloatingCloseMain() async throws {
+        try await startMutedPlayback()
+        try chooseFloatVideo()
+        try await wait("floating before closing the panel") { self.floating }
+        video.window?.performClose(nil)
+        try await wait("closing the panel first returns the video to the main window") { self.home && self.playing }
+        window.performClose(nil)
+        checks.append("closed the main window after the panel; the app must now quit by itself")
+    }
+    private func runFloatingSpace(hidingMain: Bool) async throws {
+        try await startMutedPlayback()
+        try chooseFloatVideo()
+        try await wait("floating before another app takes a fullscreen Space") { self.floating }
+        if hidingMain {
+            window.performClose(nil)
+            try await wait("main window closed while floating") { !self.window.isVisible && self.floating }
+        }
+        let helperReport = reportURL.deletingLastPathComponent().appendingPathComponent("helper.json")
+        try await wait("another app's fullscreen Space is active and the helper listed the on-screen windows", seconds: 60) {
+            FileManager.default.fileExists(atPath: helperReport.path)
+        }
+        video.window?.performClose(nil)
+        // The helper holds its Space for 5 s, so a pass within 2 s cannot come from it leaving.
+        try await wait("closing the panel over that Space leaves the main window in view or playback paused", seconds: 2) {
+            self.home && (self.window.isOnActiveSpace || self.state()["paused"] as? Bool == true)
+        }
+        checks.append("after closing the panel: main window on the active Space \(window.isOnActiveSpace), paused \(state()["paused"] as? Bool == true)")
+        try await wait("the desktop Space returns", seconds: 20) { self.window.isOnActiveSpace }
+        try chooseFloatVideo()
+        try await wait("floating when the check quits") { self.floating }
+    }
     func start() { Task { await run() } }
     private func run() async {
         var failure: String?
+        let kind = ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"]
         do {
-            switch ProcessInfo.processInfo.environment["HDRPLAYER_UI_SMOKE_KIND"] {
+            switch kind {
             case "dolby-vision": try await runDolbyVision()
             case "prepared": try await runPrepared()
             case "prepared-too-large": try await runPreparedTooLarge()
             case "prepared-playback": try await runPreparedPlayback()
             case "prepared-follows-source": try await runPreparedFollowsSource()
             case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")
+            case "floating-video": try await runFloatingVideo()
+            case "floating-video-close-main": try await runFloatingCloseMain()
+            case "floating-space": try await runFloatingSpace(hidingMain: false)
+            case "floating-space-hidden-main": try await runFloatingSpace(hidingMain: true)
             default: try await runControls()
             }
         } catch { failure = error.localizedDescription }
@@ -664,6 +776,7 @@ final class PlayerSmokeCheck {
             try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys]).write(to: reportURL)
         } catch { fputs("Cannot write UI smoke report: \(error)\n", stderr) }
         fputs("HDRPlayer UI smoke: \(failure ?? "passed")\n", stderr)
-        NSApp.terminate(nil)
+        // A passing close-main check has closed the main window, which must quit the app by itself.
+        if failure != nil || kind != "floating-video-close-main" { NSApp.terminate(nil) }
     }
 }
