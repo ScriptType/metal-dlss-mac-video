@@ -98,3 +98,41 @@ A spoken hint can replace the last phrase before the probe reads it, so a contro
 | Settings button | "Picture and subtitle settings" |
 
 Then press Cmd+Q in the player and turn VoiceOver off with Cmd+F5. Paste the four probe outputs into #16. Also note whether you heard each phrase spoken, because the probe shows what VoiceOver reported, not that it was audible.
+
+## Floating video (#17)
+
+These steps check keys and buttons in the floating panel. An agent cannot check them, because synthetic key events skip the real keyboard routing. Start the player for each step with this command:
+
+```sh
+"artifacts/HDR Player.app/Contents/MacOS/HDRPlayer" "$PWD/assets/test-clips/playback/pq-30-60s.mkv"
+```
+
+The clip beeps once a second, and the main window's time display shows the position. Keep the main window's controls visible next to the panel. In #17, note PASS or FAIL for each numbered action and anything that behaved differently.
+
+### 4. Keys work in the panel
+
+1. Choose **View > Float Video**. The video moves to a panel at the top right of the screen, and the main window shows "Video is in the floating window."
+2. Click the video in the panel.
+3. Press Space. The video and the beeps stop. Press Space again. They resume.
+4. Press Right. The time in the main window jumps about 5 seconds ahead. Press Left. It jumps about 5 seconds back.
+5. Press Escape. The video returns to the main window.
+6. Press Cmd+Q.
+
+### 5. The panel buttons work
+
+1. Choose **View > Float Video**.
+2. Click **Pause**. The video and the beeps stop, and the button changes to **Play**. Click **Play**. They resume.
+3. Click **+5 s**, then **−5 s**. The time jumps about 5 seconds ahead, then back.
+4. Click **Return to Player**. The video returns to the main window.
+5. Choose **View > Float Video** again, then click the panel's close button. The video returns to the main window, and the main window comes to the front.
+6. Press Cmd+Q.
+
+### 6. Keys work after you click the panel title bar from another app
+
+1. Choose **View > Float Video**.
+2. Click the Terminal window. The menu bar now shows Terminal. Move Terminal so that it does not cover the main window's controls.
+3. Click the panel's title bar once. Do not click the video.
+4. Press Space. The video and the beeps stop, and Terminal does not receive the key. Press Space again. They resume.
+5. Press Right. The time in the main window jumps about 5 seconds ahead. Press Left. It jumps back.
+6. Press Escape. The video returns to the main window.
+7. Press Cmd+Q.
