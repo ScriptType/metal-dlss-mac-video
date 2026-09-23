@@ -55,13 +55,14 @@ public enum DecoderFrameDescriptor {
         frame.colour.reference_white_nits = Double(metadata.color.referenceWhiteNits)
         frame.colour.hlg_peak_nits = Double(metadata.color.hlgPeakNits)
         // ST 2086 and content-light payloads are big-endian integers, as specified
-        // by CoreVideo's corresponding attachment keys.
+        // by CoreVideo's corresponding attachment keys. ST 2086 lists the primaries
+        // green, blue, red; mastering_xy stores red, green, blue.
         if let data = metadata.color.masteringDisplay, data.count == 24 {
             func word(_ i: Int) -> Double { Double(UInt16(data[i]) << 8 | UInt16(data[i + 1])) / 50_000 }
             func luminance(_ i: Int) -> Double {
                 Double(UInt32(data[i]) << 24 | UInt32(data[i + 1]) << 16 | UInt32(data[i + 2]) << 8 | UInt32(data[i + 3])) / 10_000
             }
-            frame.colour.mastering_xy = (word(0), word(2), word(4), word(6), word(8), word(10), word(12), word(14))
+            frame.colour.mastering_xy = (word(8), word(10), word(0), word(2), word(4), word(6), word(12), word(14))
             frame.colour.mastering_max_nits = luminance(16); frame.colour.mastering_min_nits = luminance(20)
         }
         if let data = metadata.color.contentLightLevel, data.count == 4 {
