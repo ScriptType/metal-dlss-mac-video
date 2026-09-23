@@ -108,6 +108,13 @@ The mpv filter emits no original-first preview under `policy=direct`, so install
 
 Sources larger than 3840 × 1920 do not advance through the frame engine (#67), so Prepared is unavailable for them and the enhancement switch is disabled with a reason. `HDRPLAYER_UI_SMOKE_KIND=prepared-too-large` checks that on a 3840 × 2160 clip.
 
+The published `display` state carries the EDR headroom of the screen that shows the video. `DisplayHeadroomMonitor` re-reads it when that window changes screens, when the video moves between the main window and the floating panel, and when the display parameters change, for example a preset change. It republishes when the value moves by at least 10 %, because macOS also posts parameter changes for every small step of an EDR ramp. On the same notifications mpv gives the enhanced (linear) layer fresh EDR metadata, which Core Animation needs in order to re-evaluate the display. The original PQ path's metadata belongs to MoltenVK and is not replaced. The display-headroom check pauses enhanced playback, confirms the metadata stays the same for a second, then posts the parameters notification and requires a replacement:
+
+```sh
+HDRPLAYER_UI_SMOKE_KIND=display-headroom HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-display-headroom.json \
+  .build/debug/HDRPlayer assets/test-clips/playback/pq-30-60s.mkv
+```
+
 The source-change check opens a second file through the app's open-file handler, then turns the video track off and back on:
 
 ```sh

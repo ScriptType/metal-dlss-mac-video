@@ -1,7 +1,7 @@
 # v1.0 progress
 
-Current issues: #17 on `feat/17-floating-video` (PR open, `Refs #17`; its key checks are Human). #35 on `feat/35-hevc-cache` (worktree `artifacts/wt-35`) and #37 on `perf/37-enhancement-floor` (worktree `artifacts/wt-37`) are with implementer subagents.
-Next step: merge #17 and close PR #22, land #35, then #36 (brief in the coordinator's `artifacts/goal-run/36-brief.md`), #39 (mpv observer for `NSApplication.didChangeScreenParametersNotification` in `observeEmbeddedHost` plus an app handler), then #3's agent parts.
+Current issue: #39 on `fix/39-edr-headroom` (worktree `artifacts/wt-39`, PR `Refs #39`; its display check is Human). #35 (`feat/35-hevc-cache`, worktree `artifacts/wt-35`) is implemented and waits for review and merge. #37 (`perf/37-enhancement-floor`, worktree `artifacts/wt-37`) is with an implementer subagent.
+Next step: land #39 and #35, then #36 (brief in the coordinator's `artifacts/goal-run/36-brief.md`), then #3's agent parts (settled capture script and human steps).
 
 ## Blocked
 
