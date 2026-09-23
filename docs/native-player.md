@@ -40,7 +40,7 @@ State version 1 includes title/source, position/duration, pause, volume/mute, tr
 | `enhancement` | Boolean; retained-session bypass |
 | `strength`, `colorStrength` | 0–1 |
 | `quality` | `{ width, height }`, each 16–8192, product at most 512 × 288 |
-| `mode` | An entry in `processing.availableModes` |
+| `mode` | An entry in `processing.availableModes`. Ordinary playback offers only `prepared`. |
 | `compare` | `original`, `enhanced`, or omitted to toggle |
 | `prepare` | `start` (also resume/reuse) or `cancel` |
 | `cacheCapacityGiB` | 1–64, default 8 |
@@ -49,11 +49,15 @@ State version 1 includes title/source, position/duration, pause, volume/mute, tr
 
 Dolby Vision uses the native renderer and disables neural/Prepared controls through `processing.enhancementAvailable` and a descriptive reason. Stream profile and compatibility metadata remain visible in track state. See [Dolby Vision paths](dolby-vision.md) for the profile-specific limits.
 
-The app starts enhancement in Adaptive mode. It exposes Live only when the running native session reports qualification. Processing size or effect changes replace the filter and reset qualification/history; bypass preserves the model session. Buffering, source preview, pending/completed counts and retained comparison come from `enhancement-state`. Comparison is available only for an actual retained pair while paused. The [adapter contract](mpv-adapter.md) defines the clock policy, qualification and exact-timestamp replacement behavior. PiP is not exposed by these controls.
+Prepared is the only enhancement mode in ordinary playback (#34). On the M3, warmed enhancement takes about 90 ms per frame at processing sizes up to 160 × 96, and 172 ms at p95 at 320 × 192. A 24 fps source leaves 41.7 ms per frame. In Adaptive mode, a 97.7-second HDR10+ clip needed 388.7 seconds of wall time. `processing.availableModes` is `["prepared"]` when Prepared is available for the open file and empty otherwise. The mode select lists only those entries. When Prepared is unavailable, `processing.unavailableReason` says why and the enhancement switch is disabled.
+
+Prepared runs the filter with `policy=direct`, so a late frame never pauses the audio and video clocks. mpv may drop that frame instead. Ranges that are not prepared yet play the original at source rate. The default processing size stays 32 × 24, because #34 ties a new default to the owner's visual check in #3, which has not happened.
+
+`HDRPLAYER_DEVELOPER_MODES=1`, read once at launch, restores Live and Adaptive. In developer mode the app starts enhancement in Adaptive mode. It exposes Live only when the running native session reports qualification. Processing size or effect changes replace the filter and reset qualification/history; bypass preserves the model session. Buffering, source preview, pending/completed counts and retained comparison come from `enhancement-state`. Comparison is available only for an actual retained pair while paused. The [adapter contract](mpv-adapter.md) defines the clock policy, qualification and exact-timestamp replacement behavior. PiP is not exposed by these controls.
 
 Prepared mode uses the same filter-owned cache context as playback. It is offered for local MP4/M4V/MOV/Matroska, the first video track and an installed model when the adapter reports support. Unsupported inputs and initialization failures carry an explicit capability reason; ordinary playback remains available. The preparation dialog provides Start/Resume, Cancel, a disk limit and committed coverage buttons for seeking. The default shared cache is `~/Library/Caches/HDRPlayer/Prepared` with an 8-GiB limit, 60-frame segments and 8 preroll frames. Preparation covers the complete video, avoiding approximate range bounds for variable frame rate input. `HDRPLAYER_CACHE_DIRECTORY` can select a diagnostic cache directory.
 
-Request JSON is written on the playback worker immediately before context installation. Reconfiguration first removes and drains the old filter, then installs the new source/settings/capacity, preventing overlapping cache owners. Source or video-track changes leave Prepared mode. Progress coverage comes from `availableRanges`, not historical completed work. Display labels use immutable current-frame provenance, distinguishing cache output from original misses. See [Prepared playback](prepared-playback.md) for identity, atomic completion, cancellation and reuse semantics.
+Request JSON is written on the playback worker immediately before context installation. Reconfiguration first removes and drains the old filter, then installs the new source/settings/capacity, preventing overlapping cache owners. In ordinary mode, opening a file removes the old Prepared filter before `loadfile` and installs one for the new file once mpv reports its tracks. Selecting a video track other than 1 removes the filter, so the original plays, and returning to track 1 installs it again. A preparation failure removes the filter until you open another file or change a processing setting. In developer mode, a source change or a video track other than 1 leaves Prepared for Adaptive. Progress coverage comes from `availableRanges`, not historical completed work. Display labels use immutable current-frame provenance, distinguishing cache output from original misses. See [Prepared playback](prepared-playback.md) for identity, atomic completion, cancellation and reuse semantics.
 
 All libmpv commands, property access and destruction run on a worker. The waiting command queue is bounded at 64. New desired property values, filter configurations and seeks replace their waiting predecessors; relative frame/toggle actions retain order. AppKit can continue handling input during model setup and inference. The Settings dialog and Command-comma menu expose processing size and independent native subtitle brightness, scale and delay.
 
@@ -67,9 +71,11 @@ Native menus provide Open (Command-O), Settings (Command-comma), Close (Command-
 python3 scripts/generate-player-fixture.py
 HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-ui.json \
   .build/debug/HDRPlayer assets/test-clips/player-controls.mkv
+HDRPLAYER_DEVELOPER_MODES=1 HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-ui-developer.json \
+  .build/debug/HDRPlayer assets/test-clips/player-controls.mkv
 ```
 
-The opt-in check uses isolated preferences and drives the shipped DOM. It verifies transport, a thousand volume-input events settling to the final value, two audio tracks, native subtitles, chapters, subtitle settings, exact paused seeking/frame stepping, resize/fullscreen, neural playback and retained comparison. Comparison checks rational PTS, generation and submission count. It requires float EDR configuration for enhanced output, records actual native state and reports failures before orderly shutdown. The fixture extends the generated PQ clip with a second audio track, subtitles and two chapters.
+The opt-in check uses isolated preferences and drives the shipped DOM. It verifies transport, a thousand volume-input events settling to the final value, two audio tracks, native subtitles, chapters, subtitle settings, exact paused seeking/frame stepping and resize/fullscreen. The ordinary run then checks that the state and the mode select offer only Prepared and that the enhancement switch turns Prepared on. The developer run switches to Adaptive and checks neural playback and retained comparison. [`scripts/test-player-lifecycle-playback.py`](player-lifecycle-diagnostics.md) runs both. Comparison checks rational PTS, generation and submission count. It requires float EDR configuration for enhanced output, records actual native state and reports failures before orderly shutdown. The fixture extends the generated PQ clip with a second audio track, subtitles and two chapters.
 
 The separate Prepared dialog check uses the PQ MP4, with an isolated cache unless overridden:
 
@@ -79,6 +85,16 @@ HDRPLAYER_UI_SMOKE_KIND=prepared HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-prepared-
 ```
 
 It exercises original misses, changing capacity after draining the old owner, progress, cancel/resume, committed-range seeking, cache provenance and reusing complete segments without more neural work.
+
+The source-rate check plays a file that is not prepared yet while preparation runs. It needs the neural model. Set `MLXDLSS_NEURAL_RENDERING_PACKAGE` when the model is not installed in this checkout:
+
+```sh
+MLXDLSS_NEURAL_RENDERING_PACKAGE=/path/to/NeuralRendering.dlssmodel \
+  HDRPLAYER_UI_SMOKE_KIND=prepared-playback HDRPLAYER_UI_SMOKE_REPORT=/tmp/player-prepared-playback.json \
+  .build/debug/HDRPlayer assets/test-clips/playback/pq-30-60s.mkv
+```
+
+It runs in ordinary mode on the 60-second, 30 fps PQ clip. It turns Prepared on, starts preparation and plays. Once playback advances, it samples the state every 100 ms for 12 seconds of wall time. It fails if the job leaves the preparing state, if the clocks buffer for enhancement or `buffer-count` rises, or if position advances outside 0.97 to 1.03 seconds per wall second. The report records frame drops without asserting them.
 
 Preference restoration uses two separate processes and an isolated defaults suite. The second invocation preserves the suite written by the first:
 
