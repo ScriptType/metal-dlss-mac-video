@@ -291,12 +291,16 @@ public actor HDRSegmentCache {
     private struct Entry {
         var manifest: HDRCacheManifest
         var lastAccess: Date
+        /// Payloads plus manifest, as validated.
+        let bytes: Int64
     }
     private struct Stage {
         let identity: HDRCacheIdentity
         let expectedFrameCount: Int
         let directory: URL
         var frames: [HDRCacheFrameRecord]
+        var manifestBytes: Int64 = 0
+        var bytes: Int64 { frames.reduce(manifestBytes) { $0 + Int64($1.byteCount) } }
     }
     private var entries: [String: Entry] = [:]
     private var stages: [UUID: Stage] = [:]
@@ -335,9 +339,9 @@ public actor HDRSegmentCache {
         try fm.createDirectory(at: stagingDirectory, withIntermediateDirectories: true)
         for directory in try fm.contentsOfDirectory(at: completedDirectory, includingPropertiesForKeys: [.contentModificationDateKey]) {
             do {
-                let manifest = try validate(directory: directory)
+                let (manifest, bytes) = try validate(directory: directory)
                 let date = try directory.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate ?? .distantPast
-                entries[manifest.key] = Entry(manifest: manifest, lastAccess: date)
+                entries[manifest.key] = Entry(manifest: manifest, lastAccess: date, bytes: bytes)
             } catch {
                 try fm.removeItem(at: directory)
             }
@@ -403,7 +407,7 @@ public actor HDRSegmentCache {
 
     @discardableResult
     public func publish(_ token: HDRCacheWrite) throws -> HDRCacheManifest {
-        guard let stage = stages[token.id] else { throw HDRCacheError.unavailable }
+        guard var stage = stages[token.id] else { throw HDRCacheError.unavailable }
         guard stage.frames.count == stage.expectedFrameCount else {
             throw HDRCacheError.invalidFrame("Segment is incomplete")
         }
@@ -414,8 +418,9 @@ public actor HDRSegmentCache {
         guard metadata.count <= maximumManifestBytes else { throw HDRCacheError.capacityExceeded }
         let manifestURL = stage.directory.appendingPathComponent("manifest.json")
         // A previous failed publication may already have a manifest; account only for its replacement.
-        let previousBytes = (try? manifestURL.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-        try makeRoom(for: Int64(max(0, metadata.count - previousBytes)))
+        try makeRoom(for: max(0, Int64(metadata.count) - stage.manifestBytes))
+        stage.manifestBytes = Int64(metadata.count)
+        stages[token.id] = stage
         try metadata.write(to: manifestURL)
         try synchronize(manifestURL)
         _ = try validate(directory: stage.directory, expectedKey: manifest.key)
@@ -423,7 +428,7 @@ public actor HDRSegmentCache {
         let destination = completedDirectory.appendingPathComponent(manifest.key, isDirectory: true)
         try fm.moveItem(at: stage.directory, to: destination)
         try synchronizeDirectory(completedDirectory)
-        entries[manifest.key] = Entry(manifest: manifest, lastAccess: Date())
+        entries[manifest.key] = Entry(manifest: manifest, lastAccess: Date(), bytes: stage.bytes)
         stages.removeValue(forKey: token.id)
         return manifest
     }
@@ -496,39 +501,33 @@ public actor HDRSegmentCache {
     }
 
     public func usage() throws -> HDRCacheUsage {
-        HDRCacheUsage(byteCount: try diskBytes(), capacityBytes: capacityBytes,
+        HDRCacheUsage(byteCount: logicalBytes, capacityBytes: capacityBytes,
                       completedSegments: entries.count, stagedSegments: stages.count, activeReaders: readers.count)
     }
 
     private var completedDirectory: URL { root.appendingPathComponent("segments", isDirectory: true) }
     private var stagingDirectory: URL { root.appendingPathComponent("staging", isDirectory: true) }
 
-    private func diskBytes() throws -> Int64 {
-        guard let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: [.isRegularFileKey, .fileSizeKey]) else {
-            throw HDRCacheError.unavailable
-        }
-        var total: Int64 = 0
-        for case let file as URL in enumerator {
-            let values = try file.resourceValues(forKeys: [.isRegularFileKey, .fileSizeKey])
-            if values.isRegularFile == true { total += Int64(values.fileSize ?? 0) }
-        }
-        return total
+    /// Derived from records this actor owns, so accounting costs no directory walk.
+    private var logicalBytes: Int64 {
+        entries.values.reduce(0) { $0 + $1.bytes } + stages.values.reduce(0) { $0 + $1.bytes }
     }
 
     private func makeRoom(for additionalBytes: Int64) throws {
         guard additionalBytes <= capacityBytes else { throw HDRCacheError.capacityExceeded }
-        var bytes = try diskBytes()
+        var bytes = logicalBytes
         let pinned = Set(readers.values)
-        for (key, _) in entries.sorted(by: { $0.value.lastAccess < $1.value.lastAccess }) where !pinned.contains(key) {
+        for (key, entry) in entries.sorted(by: { $0.value.lastAccess < $1.value.lastAccess }) where !pinned.contains(key) {
             if bytes <= capacityBytes - additionalBytes { break }
             try fm.removeItem(at: completedDirectory.appendingPathComponent(key))
             entries.removeValue(forKey: key)
-            bytes = try diskBytes()
+            bytes -= entry.bytes
         }
         guard bytes <= capacityBytes - additionalBytes else { throw HDRCacheError.capacityExceeded }
     }
 
-    private func validate(directory: URL, expectedKey: String? = nil) throws -> HDRCacheManifest {
+    /// Returns the manifest and the segment's logical bytes: payloads plus manifest.
+    private func validate(directory: URL, expectedKey: String? = nil) throws -> (HDRCacheManifest, Int64) {
         let attributes = try directory.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
         guard attributes.isDirectory == true, attributes.isSymbolicLink != true else {
             throw HDRCacheError.corruptSegment("Invalid segment directory")
@@ -557,7 +556,7 @@ public actor HDRSegmentCache {
         guard names == Set(manifest.frames.map(\.fileName) + ["manifest.json"]) else {
             throw HDRCacheError.corruptSegment("Unexpected payload files")
         }
-        return manifest
+        return (manifest, manifest.frames.reduce(Int64(count)) { $0 + Int64($1.byteCount) })
     }
 
     private func readVerified(_ record: HDRCacheFrameRecord, from directory: URL) throws -> Data {
