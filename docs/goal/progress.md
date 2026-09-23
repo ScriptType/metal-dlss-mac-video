@@ -1,7 +1,7 @@
 # v1.0 progress
 
-Current issue: #34 on `feat/34-prepared-only` (worktree `artifacts/wt-42`). #35 is with an implementer subagent on `feat/35-hevc-cache` (worktree `artifacts/wt-35`).
-Next step: merge #34, then review and land #35. #37 needs the GPU to itself, so it waits until the #35 GPU runs are done. #39 needs a small mpv fork change (observe `NSApplication.didChangeScreenParametersNotification` in `observeEmbeddedHost`) plus an app handler; start it after #35 merges.
+Current issues: #17 on `feat/17-floating-video` (PR open, `Refs #17`; its key checks are Human). #35 on `feat/35-hevc-cache` (worktree `artifacts/wt-35`) and #37 on `perf/37-enhancement-floor` (worktree `artifacts/wt-37`) are with implementer subagents.
+Next step: merge #17 and close PR #22, land #35, then #36 (brief in the coordinator's `artifacts/goal-run/36-brief.md`), #39 (mpv observer for `NSApplication.didChangeScreenParametersNotification` in `observeEmbeddedHost` plus an app handler), then #3's agent parts.
 
 ## Blocked
 
@@ -15,6 +15,7 @@ None.
 - Prepared uses `policy=direct`; mpv `484b01b` emits no clock-holding preview under direct, so switching enhancement on while playing holds no clock. Adaptive keeps the preview.
 - `HDRPLAYER_DEVELOPER_MODES=1` restores Live and Adaptive. The lifecycle smoke runs ordinary and developer modes; `prepared-playback` is the source-rate check.
 - `preferences-read` smoke fails intermittently (about 1 in 5) because volume and mute are saved from polled state; seen on main before #34.
+- Float Video is a `VideoPlacement` enum (`apps/macos/Sources/VideoPlacement.swift`); `scripts/test-floating-video.py` drives it on the real app, including over another app's fullscreen Space with the local helper in `tools/FloatingSpaceReference`.
 - Give a worktree its fixtures with `cp -c` (APFS clones), never symlinks. `preparedReplacementSharesCacheAndRejectsChangedSource` appends a byte to its "copy" of `hdr10-30.mp4`, and `copyItem` copies a symlink as a symlink, so a symlinked worktree corrupts the main checkout's fixture (its SHA-256 must stay `8ae84e52…`, as in `assets/test-clips/manifest.json`).
 - The controls smoke (`scripts/test-player-lifecycle-playback.py`) can time out on its frame-step check right after a fresh mpv build; rerun it once before debugging (#59).
 - Many scripts are pinned by SHA-256 at runtime (for example `review-reference-sequence.py`, `analyze-flash-reference.py`). CI runs tests that check those pins; `check.sh` does not.
