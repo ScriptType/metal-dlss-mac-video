@@ -10,6 +10,7 @@ private final class DecoderFixture: @unchecked Sendable {
     var opens = 0, closes = 0, retains = 0, releases = 0, frameRetains = 0, frameReleases = 0
     var waiting = false, cancelled = false, block = false
     let pts: [Int64] = [0, 33, 67, 100, 133, 167]
+    var width: UInt32 = 4
     func locked<T>(_ body: () -> T) -> T { condition.lock(); defer { condition.unlock() }; return body() }
 }
 private final class DecoderFixtureReader {
@@ -59,8 +60,8 @@ private func fixtureProvider(_ owner: DecoderFixture) throws -> CFramePreparatio
         frame.struct_size = UInt32(MemoryLayout<fe_frame>.size); frame.abi_version = UInt32(FE_ABI_VERSION)
         frame.pts = fe_time(value: fixture.pts[reader.index], timescale: 1000)
         frame.duration = fe_time(value: 1, timescale: 30)
-        frame.geometry.width = 4; frame.geometry.height = 2
-        frame.geometry.crop_width = 4; frame.geometry.crop_height = 2
+        frame.geometry.width = fixture.width; frame.geometry.height = 2
+        frame.geometry.crop_width = Double(fixture.width); frame.geometry.crop_height = 2
         frame.geometry.pixel_aspect_num = 1; frame.geometry.pixel_aspect_den = 1
         if reader.mode == FE_PREPARATION_PIXELS.rawValue {
             var buffer: CVPixelBuffer?
@@ -220,4 +221,21 @@ func nativeDecoderDescriptorStoresMasteringPrimariesInRGBWhiteOrder() async thro
     // ffprobe: red 35400/14600, green 8500/39850, blue 6550/2300, white 15635/16450, in units of 1/50000.
     let expected: [Double] = [35_400, 14_600, 8_500, 39_850, 6_550, 2_300, 15_635, 16_450].map { $0 / 50_000 }
     #expect([xy.0, xy.1, xy.2, xy.3, xy.4, xy.5, xy.6, xy.7] == expected)
+}
+
+@Test func preparationContextRefusesOddGeometryBeforeAnySegment() async throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent("hdr-provider-odd-\(UUID())")
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appendingPathComponent("source.mkv")
+    try Data([1, 2, 3]).write(to: source)
+    let fixture = DecoderFixture(); fixture.width = 5
+    let context = try PreparedHDRContext(request: .init(sourcePath: source.path,
+        cacheDirectory: directory.appendingPathComponent("cache").path, capacityBytes: 1_048_576),
+        configuration: .init(processingWidth: 4, processingHeight: 2, strength: 0),
+        decoderProvider: fixtureProvider(fixture))
+    context.initializeInBackground()
+    await #expect(throws: (any Error).self) { try await context.waitUntilReady() }
+    #expect(context.status.snapshot().configurationState == "failed")
+    await context.cancel()
 }

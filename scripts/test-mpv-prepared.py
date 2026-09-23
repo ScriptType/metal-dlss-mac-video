@@ -113,6 +113,20 @@ def verify_provider(identifier, mapping, version):
     return values
 
 
+FLOAT32_POLICY = "rgba-f32le-linear-bt2020-absolute-nits-straight-alpha-v1"
+
+
+def payload_format(manifest):
+    """Frame file suffix and exact-size flag for the manifest's storage policy."""
+    policy = manifest["storagePolicy"]
+    if policy == FLOAT32_POLICY:
+        return ".rgba32f", True
+    # HEVC policies are bound into the key through the identity's colour policy.
+    if policy.startswith("hevc-main10-videotoolbox-hw;") and policy == manifest["identity"]["settings"].get("colourPolicy", {}).get("storage"):
+        return ".hevc", False
+    raise ValueError("Cache lacks a known storage policy bound to its identity")
+
+
 def snapshot_cache(cache, archive, phase, inventory, mapped, mapping, version, source_hash, model_hash, capacity):
     paths = sorted((cache / "segments").glob("*/manifest.json"))
     if len(paths) != 2:
@@ -122,8 +136,9 @@ def snapshot_cache(cache, archive, phase, inventory, mapped, mapping, version, s
     snapshots = []
     for segment, (path, manifest) in enumerate(manifests):
         identity = manifest["identity"]
-        if manifest["schemaVersion"] != 2 or manifest["storagePolicy"] != "rgba-f32le-linear-bt2020-absolute-nits-straight-alpha-v1":
-            raise ValueError("Cache lacks exact-timing float reference policy")
+        if manifest["schemaVersion"] != 2:
+            raise ValueError("Cache lacks exact-timing schema")
+        suffix, exact_size = payload_format(manifest)
         if identity["source"]["contentSHA256"] != source_hash or identity["settings"]["modelSHA256"] != model_hash:
             raise ValueError("Cache source/model identity mismatch")
         if (identity["settings"]["outputWidth"], identity["settings"]["outputHeight"]) != (inventory["width"], inventory["height"]):
@@ -148,11 +163,13 @@ def snapshot_cache(cache, archive, phase, inventory, mapped, mapping, version, s
         key = hashlib.sha256(canonical(identity)).hexdigest()
         if key != manifest["key"] or key != path.parent.name:
             raise ValueError("Committed cache key does not bind full processing identity")
+        frame_bytes = inventory["width"] * inventory["height"] * 16
         for index, record in enumerate(records):
-            if record["fileName"] != f"{index:08d}.rgba32f":
+            if record["fileName"] != f"{index:08d}{suffix}":
                 raise ValueError("Unexpected cache payload path")
             payload = path.parent / record["fileName"]
-            if payload.is_symlink() or payload.stat().st_size != inventory["width"] * inventory["height"] * 16 or payload.stat().st_size != record["byteCount"] or digest(payload) != record["sha256"]:
+            size = payload.stat().st_size
+            if payload.is_symlink() or not (size == frame_bytes if exact_size else 0 < size <= frame_bytes) or size != record["byteCount"] or digest(payload) != record["sha256"]:
                 raise ValueError("Cache pixel payload does not match committed manifest")
         archived = archive / f"phase{phase}-{key}.json"
         shutil.copyfile(path, archived)

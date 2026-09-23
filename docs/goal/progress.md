@@ -1,7 +1,7 @@
 # v1.0 progress
 
-Current issue: #39 on `fix/39-edr-headroom` (worktree `artifacts/wt-39`, PR `Refs #39`; its display check is Human). #35 (`feat/35-hevc-cache`, worktree `artifacts/wt-35`) is implemented and waits for review and merge. #37 (`perf/37-enhancement-floor`, worktree `artifacts/wt-37`) is with an implementer subagent.
-Next step: land #39 and #35, then #36 (brief in the coordinator's `artifacts/goal-run/36-brief.md`), then #3's agent parts (settled capture script and human steps).
+Current issue: #35 on `feat/35-hevc-cache` (PR #75). #37 (`perf/37-enhancement-floor`, worktree `artifacts/wt-37`) is with an implementer subagent. #16, #17 and #39 wait only on their Human items.
+Next step: merge #35, then #36 (brief in the coordinator's `artifacts/goal-run/36-brief.md`), then #3's agent parts (settled capture script and human steps).
 
 ## Blocked
 
@@ -20,3 +20,5 @@ None.
 - The controls smoke (`scripts/test-player-lifecycle-playback.py`) can time out on its frame-step check right after a fresh mpv build; rerun it once before debugging (#59).
 - Many scripts are pinned by SHA-256 at runtime (for example `review-reference-sequence.py`, `analyze-flash-reference.py`). CI runs tests that check those pins; `check.sh` does not.
 - The Adaptive media-gate WIP for AirPods sits on `wip/*` branches in `ScriptType/mpv` (#33, deferred).
+- Prepared segments are HEVC Main10 PQ frame files (`HDRCacheFrames.swift`); Float32 stays as the reference storage the old tests pin. `PreparedHEVCReferenceTests` need `artifacts/public-hdr-source-audit/apple-advanced-hdr10plus-aac.mp4` and add about 100 s to `swift test`.
+- App smokes hang if the player window opens off the active Space (#74); run them while the desktop Space is active.

@@ -1,5 +1,5 @@
 import CFrameEngine
-import CoreVideo
+import DLSSMLX
 import Foundation
 
 public struct HDRPreparationSegment: Sendable {
@@ -105,7 +105,7 @@ public actor HDRPreparationCoordinator {
                       identity.settings.effects["strength"] == Double(configuration.strength),
                       identity.settings.effects["colourStrength"] == Double(configuration.colourStrength),
                       identity.settings.effects["maximumLuminanceRatio"] == Double(configuration.maximumLuminanceRatio),
-                      identity.settings.colourPolicy["storage"] == HDRSegmentCache.storagePolicy,
+                      identity.settings.colourPolicy["storage"] != nil,
                       identity.preroll.policyVersion == "reset-decode-all-from-preroll-v1",
                       identity.preroll.randomSeed == 0 else {
                     throw HDRCacheError.invalidIdentity("Preparation settings/source do not match actual processor")
@@ -115,17 +115,18 @@ public actor HDRPreparationCoordinator {
                     reusedSegments += 1; completedSegments += 1; completedRanges.append(identity.range)
                     continue
                 }
-                let writer = try await cache.begin(identity: identity, expectedFrameCount: segment.frameCount)
+                // The store rejects a storage policy it does not know when the writer begins.
+                let writer = try await HDRCacheSegmentWriter.begin(cache, identity: identity, frameCount: segment.frameCount)
                 do {
                     try await prepare(sourceURL: sourceURL, segment: segment, writer: writer, token: token)
                     try check(token)
                     guard try PreparedSourceSignature.read(sourceURL.path) == sourceSignature else {
                         throw HDRCacheError.invalidIdentity("Source changed before the prepared segment could be published")
                     }
-                    _ = try await cache.publish(writer)
+                    try await writer.publish()
                     completedSegments += 1; completedRanges.append(identity.range)
                 } catch {
-                    try? await cache.cancel(writer)
+                    await writer.cancel()
                     throw error
                 }
             }
@@ -140,7 +141,7 @@ public actor HDRPreparationCoordinator {
         }
     }
 
-    private func prepare(sourceURL: URL, segment: HDRPreparationSegment, writer: HDRCacheWrite, token: UInt64) async throws {
+    private func prepare(sourceURL: URL, segment: HDRPreparationSegment, writer: HDRCacheSegmentWriter, token: UInt64) async throws {
         let identity = segment.identity
         let session = try FrameSession(limits: .init(slots: 3, bytes: 512 * 1024 * 1024,
             processingWidth: configuration.processingWidth, processingHeight: configuration.processingHeight), processor: processor)
@@ -193,7 +194,7 @@ public actor HDRPreparationCoordinator {
         await reader.cancel()
     }
 
-    private func consume(session: FrameSession, writer: HDRCacheWrite, identity: HDRCacheIdentity, token: UInt64) async throws -> Int {
+    private func consume(session: FrameSession, writer: HDRCacheSegmentWriter, identity: HDRCacheIdentity, token: UInt64) async throws -> Int {
         if session.statistics().failures > 0 { throw FrameEngineError.invalid(session.error) }
         var count = 0
         while let output = session.poll() {
@@ -203,21 +204,7 @@ public actor HDRPreparationCoordinator {
             let pts = try HDRCacheTime(value: descriptor.pts.value, timescale: descriptor.pts.timescale)
             if pts < identity.range.start { continue }
             let duration = try HDRCacheTime(value: descriptor.duration.value, timescale: descriptor.duration.timescale)
-            let buffer = output.pixelBuffer
-            CVPixelBufferLockBaseAddress(buffer, .readOnly)
-            guard let address = CVPixelBufferGetBaseAddress(buffer) else {
-                CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
-                throw HDRCacheError.invalidFrame("Missing completed float storage")
-            }
-            let rowBytes = CVPixelBufferGetBytesPerRow(buffer)
-            let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
-            var rgba: [Float] = []; rgba.reserveCapacity(width * height * 4)
-            for y in 0..<height {
-                let row = address.advanced(by: y * rowBytes).assumingMemoryBound(to: Float16.self)
-                rgba.append(contentsOf: UnsafeBufferPointer(start: row, count: width * 4).map(Float.init))
-            }
-            CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
-            try await cache.append(HDRCacheFloatFrame(timing: .init(presentationTime: pts, duration: duration), rgba: rgba), to: writer)
+            try await writer.append(MLXPixelBuffer(output.pixelBuffer), timing: .init(presentationTime: pts, duration: duration))
             processedFrames += 1
         }
         return count

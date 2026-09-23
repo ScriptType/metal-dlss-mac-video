@@ -242,6 +242,93 @@ public struct HDRCacheFloatFrame: Sendable {
     }
 }
 
+/// One HEVC access unit as 4-byte big-endian length-prefixed NAL units. Frame 0 of a
+/// segment begins with its VPS, SPS and PPS and holds an IRAP picture, so every segment
+/// decodes on its own.
+public struct HDRCacheHEVCSample: Sendable {
+    public let timing: HDRCacheFrameTiming
+    public let data: Data
+
+    public init(timing: HDRCacheFrameTiming, data: Data) {
+        self.timing = timing
+        self.data = data
+    }
+
+    /// Byte ranges of each NAL unit, header included, or nil unless the length prefixes tile
+    /// the buffer exactly and every unit holds at least its two-byte header.
+    static func nalUnits(_ bytes: UnsafeRawBufferPointer) -> [Range<Int>]? {
+        var units: [Range<Int>] = [], offset = 0
+        while offset < bytes.count {
+            guard bytes.count - offset >= 4 else { return nil }
+            let length = bytes[offset..<(offset + 4)].reduce(0) { $0 << 8 | Int($1) }
+            offset += 4
+            guard length >= 2, length <= bytes.count - offset else { return nil }
+            units.append(offset..<(offset + length))
+            offset += length
+        }
+        return units
+    }
+
+    static func nalType(_ bytes: UnsafeRawBufferPointer, _ unit: Range<Int>) -> UInt8 { (bytes[unit.lowerBound] >> 1) & 0x3f }
+
+    /// Every NAL header has forbidden_zero_bit 0 and at least one unit is VCL (types 0...31).
+    /// The first sample starts with VPS, SPS and PPS (32, 33, 34) and holds an IRAP (16...21).
+    static func validFraming(_ bytes: UnsafeRawBufferPointer, isFirst: Bool) -> Bool {
+        guard let units = nalUnits(bytes), !units.isEmpty,
+              units.allSatisfy({ bytes[$0.lowerBound] & 0x80 == 0 }) else { return false }
+        let types = units.map { nalType(bytes, $0) }
+        guard types.contains(where: { $0 < 32 }) else { return false }
+        return !isFirst || (types.starts(with: [32, 33, 34]) && types.contains(where: { (16...21).contains($0) }))
+    }
+}
+
+/// How a segment's frame files are encoded. It is a pure function of the identity's
+/// `colourPolicy["storage"]`, so the format is part of the cache key.
+enum HDRCacheStorage: Equatable, Sendable {
+    /// `HDRSegmentCache.storagePolicy`, or no storage entry.
+    case float32
+    /// `HDRCacheHEVC.storagePolicy`.
+    case hevc
+
+    init(_ identity: HDRCacheIdentity) throws {
+        switch identity.settings.colourPolicy["storage"] {
+        case nil, HDRSegmentCache.storagePolicy?:
+            self = .float32
+        case HDRCacheHEVC.storagePolicy?:
+            // 4:2:0 needs even geometry. Any hardware size limit is the encoder's to report,
+            // so planning-only identities of any even size stay valid.
+            guard identity.settings.outputWidth % 2 == 0, identity.settings.outputHeight % 2 == 0 else {
+                throw HDRCacheError.invalidIdentity("HEVC storage requires even output width and height")
+            }
+            self = .hevc
+        default:
+            throw HDRCacheError.invalidIdentity("Unknown storage policy")
+        }
+    }
+
+    var policy: String {
+        switch self {
+        case .float32: HDRSegmentCache.storagePolicy
+        case .hevc: HDRCacheHEVC.storagePolicy
+        }
+    }
+
+    func fileName(_ frameIndex: Int) -> String {
+        switch self {
+        case .float32: String(format: "%08d.rgba32f", frameIndex)
+        case .hevc: String(format: "%08d.hevc", frameIndex)
+        }
+    }
+
+    /// Float32: exactly one frame of valid floats. HEVC: at most that many bytes, exactly framed.
+    func accepts(_ payload: UnsafeRawBufferPointer, frameIndex: Int, frameByteCount: Int) -> Bool {
+        switch self {
+        case .float32: payload.count == frameByteCount && HDRCachePixels.valid(payload)
+        case .hevc: payload.count <= frameByteCount && HDRCacheHEVCSample.validFraming(payload, isFirst: frameIndex == 0)
+        }
+    }
+}
+
 public struct HDRCacheFrameRecord: Codable, Sendable {
     public let timing: HDRCacheFrameTiming
     public let fileName: String
@@ -259,7 +346,7 @@ public struct HDRCacheManifest: Codable, Sendable {
 
 public struct HDRCacheWrite: Hashable, Sendable { fileprivate let id: UUID }
 public struct HDRCacheLease: Sendable {
-    fileprivate let id: UUID
+    let id: UUID
     public let manifest: HDRCacheManifest
 }
 
@@ -291,16 +378,23 @@ public actor HDRSegmentCache {
     private struct Entry {
         var manifest: HDRCacheManifest
         var lastAccess: Date
+        /// Payloads plus manifest, as validated.
+        let bytes: Int64
     }
     private struct Stage {
         let identity: HDRCacheIdentity
+        let storage: HDRCacheStorage
         let expectedFrameCount: Int
         let directory: URL
         var frames: [HDRCacheFrameRecord]
+        var manifestBytes: Int64 = 0
+        var bytes: Int64 { frames.reduce(manifestBytes) { $0 + Int64($1.byteCount) } }
     }
     private var entries: [String: Entry] = [:]
     private var stages: [UUID: Stage] = [:]
     private var readers: [UUID: String] = [:]
+    /// Corrupt segments dropped from the index whose directory a lease still pins.
+    private var retired: [String: Int64] = [:]
     private var recovered = false
 
     public init(directory: URL, capacityBytes: Int64) throws {
@@ -335,9 +429,9 @@ public actor HDRSegmentCache {
         try fm.createDirectory(at: stagingDirectory, withIntermediateDirectories: true)
         for directory in try fm.contentsOfDirectory(at: completedDirectory, includingPropertiesForKeys: [.contentModificationDateKey]) {
             do {
-                let manifest = try validate(directory: directory)
+                let (manifest, bytes) = try validate(directory: directory)
                 let date = try directory.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate ?? .distantPast
-                entries[manifest.key] = Entry(manifest: manifest, lastAccess: date)
+                entries[manifest.key] = Entry(manifest: manifest, lastAccess: date, bytes: bytes)
             } catch {
                 try fm.removeItem(at: directory)
             }
@@ -349,6 +443,7 @@ public actor HDRSegmentCache {
     public func begin(identity: HDRCacheIdentity, expectedFrameCount: Int) throws -> HDRCacheWrite {
         guard recovered else { throw HDRCacheError.unavailable }
         let key = try identity.key()
+        let storage = try HDRCacheStorage(identity)
         guard expectedFrameCount > 0, expectedFrameCount <= maximumManifestBytes / 128 else {
             throw HDRCacheError.invalidFrame("Invalid frame count")
         }
@@ -359,33 +454,43 @@ public actor HDRSegmentCache {
         let token = HDRCacheWrite(id: UUID())
         let directory = stagingDirectory.appendingPathComponent(token.id.uuidString, isDirectory: true)
         try fm.createDirectory(at: directory, withIntermediateDirectories: true)
-        stages[token.id] = Stage(identity: identity, expectedFrameCount: expectedFrameCount,
+        stages[token.id] = Stage(identity: identity, storage: storage, expectedFrameCount: expectedFrameCount,
                                  directory: directory, frames: [])
         return token
     }
 
     public func append(_ frame: HDRCacheFloatFrame, to token: HDRCacheWrite) throws {
-        guard var stage = stages[token.id] else { throw HDRCacheError.unavailable }
-        guard stage.frames.count < stage.expectedFrameCount else { throw HDRCacheError.invalidFrame("Too many frames") }
-        let timingValid: Bool
-        if stage.identity.timingInventorySHA256 != nil {
-            timingValid = frame.timing.presentationTime < stage.identity.range.end &&
-                (stage.frames.last.map { $0.timing.presentationTime < frame.timing.presentationTime }
-                    ?? (frame.timing.presentationTime == stage.identity.range.start))
-        } else {
-            let expectedStart = try stage.frames.last?.timing.end ?? stage.identity.range.start
-            timingValid = try frame.timing.presentationTime == expectedStart && frame.timing.end <= stage.identity.range.end
-        }
-        guard frame.timing.duration.value > 0, timingValid,
-              frame.rgba.count == (try stage.identity.frameByteCount) / 4,
-              frame.rgba.withUnsafeBytes({ HDRCachePixels.valid($0) }) else {
-            throw HDRCacheError.invalidFrame("Pixels, alpha, or exact rational timing are invalid")
-        }
         let data = frame.rgba.withUnsafeBufferPointer { buffer in
             Data(buffer: UnsafeBufferPointer(start: buffer.baseAddress, count: buffer.count))
         }
-        let fileName = String(format: "%08d.rgba32f", stage.frames.count)
-        let record = HDRCacheFrameRecord(timing: frame.timing, fileName: fileName,
+        try append(data, timing: frame.timing, as: .float32, to: token)
+    }
+
+    /// Same timing, capacity, fsync and record rules as the Float32 append.
+    public func append(_ sample: HDRCacheHEVCSample, to token: HDRCacheWrite) throws {
+        try append(sample.data, timing: sample.timing, as: .hevc, to: token)
+    }
+
+    private func append(_ data: Data, timing: HDRCacheFrameTiming, as storage: HDRCacheStorage, to token: HDRCacheWrite) throws {
+        guard var stage = stages[token.id] else { throw HDRCacheError.unavailable }
+        guard stage.storage == storage else { throw HDRCacheError.invalidFrame("Frame format differs from the identity's storage") }
+        guard stage.frames.count < stage.expectedFrameCount else { throw HDRCacheError.invalidFrame("Too many frames") }
+        let timingValid: Bool
+        if stage.identity.timingInventorySHA256 != nil {
+            timingValid = timing.presentationTime < stage.identity.range.end &&
+                (stage.frames.last.map { $0.timing.presentationTime < timing.presentationTime }
+                    ?? (timing.presentationTime == stage.identity.range.start))
+        } else {
+            let expectedStart = try stage.frames.last?.timing.end ?? stage.identity.range.start
+            timingValid = try timing.presentationTime == expectedStart && timing.end <= stage.identity.range.end
+        }
+        let frameByteCount = try stage.identity.frameByteCount, frameIndex = stage.frames.count
+        guard timing.duration.value > 0, timingValid,
+              data.withUnsafeBytes({ storage.accepts($0, frameIndex: frameIndex, frameByteCount: frameByteCount) }) else {
+            throw HDRCacheError.invalidFrame("Pixels, alpha, or exact rational timing are invalid")
+        }
+        let fileName = storage.fileName(frameIndex)
+        let record = HDRCacheFrameRecord(timing: timing, fileName: fileName,
                                         sha256: cacheDigest(data), byteCount: data.count)
         // No atomic-write temporary duplicate: this directory is already unpublished staging.
         try makeRoom(for: Int64(data.count))
@@ -403,19 +508,20 @@ public actor HDRSegmentCache {
 
     @discardableResult
     public func publish(_ token: HDRCacheWrite) throws -> HDRCacheManifest {
-        guard let stage = stages[token.id] else { throw HDRCacheError.unavailable }
+        guard var stage = stages[token.id] else { throw HDRCacheError.unavailable }
         guard stage.frames.count == stage.expectedFrameCount else {
             throw HDRCacheError.invalidFrame("Segment is incomplete")
         }
         try validateTiming(stage.frames.map(\.timing), identity: stage.identity)
-        let manifest = HDRCacheManifest(schemaVersion: stage.identity.timingInventorySHA256 == nil ? 1 : 2, storagePolicy: Self.storagePolicy,
+        let manifest = HDRCacheManifest(schemaVersion: stage.identity.timingInventorySHA256 == nil ? 1 : 2, storagePolicy: stage.storage.policy,
                                         key: try stage.identity.key(), identity: stage.identity, frames: stage.frames)
         let metadata = try cacheJSON(manifest)
         guard metadata.count <= maximumManifestBytes else { throw HDRCacheError.capacityExceeded }
         let manifestURL = stage.directory.appendingPathComponent("manifest.json")
         // A previous failed publication may already have a manifest; account only for its replacement.
-        let previousBytes = (try? manifestURL.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-        try makeRoom(for: Int64(max(0, metadata.count - previousBytes)))
+        try makeRoom(for: max(0, Int64(metadata.count) - stage.manifestBytes))
+        stage.manifestBytes = Int64(metadata.count)
+        stages[token.id] = stage
         try metadata.write(to: manifestURL)
         try synchronize(manifestURL)
         _ = try validate(directory: stage.directory, expectedKey: manifest.key)
@@ -423,7 +529,7 @@ public actor HDRSegmentCache {
         let destination = completedDirectory.appendingPathComponent(manifest.key, isDirectory: true)
         try fm.moveItem(at: stage.directory, to: destination)
         try synchronizeDirectory(completedDirectory)
-        entries[manifest.key] = Entry(manifest: manifest, lastAccess: Date())
+        entries[manifest.key] = Entry(manifest: manifest, lastAccess: Date(), bytes: stage.bytes)
         stages.removeValue(forKey: token.id)
         return manifest
     }
@@ -443,7 +549,8 @@ public actor HDRSegmentCache {
         catch {
             // An existing reader still owns its lease; reads will report corruption, never stale pixels.
             entries.removeValue(forKey: key)
-            if !readers.values.contains(key) { try? fm.removeItem(at: completedDirectory.appendingPathComponent(key)) }
+            if readers.values.contains(key) { retired[key] = entry.bytes }
+            else { try? fm.removeItem(at: completedDirectory.appendingPathComponent(key)) }
             throw error
         }
         entry.lastAccess = Date()
@@ -454,20 +561,33 @@ public actor HDRSegmentCache {
         return HDRCacheLease(id: id, manifest: entry.manifest)
     }
 
+    /// One checksum-verified frame of a Float32 lease; throws `.unavailable` for an HEVC lease.
     public func read(_ lease: HDRCacheLease, frameIndex: Int) throws -> HDRCacheFloatFrame {
-        guard readers[lease.id] == lease.manifest.key, lease.manifest.frames.indices.contains(frameIndex) else {
+        let (record, data) = try readPayload(lease, frameIndex: frameIndex, as: .float32)
+        return HDRCacheFloatFrame(timing: record.timing, rgba: try HDRCachePixels.decode(data))
+    }
+
+    /// One checksum-verified sample of an HEVC lease; throws `.unavailable` for a Float32 lease.
+    public func readSample(_ lease: HDRCacheLease, frameIndex: Int) throws -> HDRCacheHEVCSample {
+        let (record, data) = try readPayload(lease, frameIndex: frameIndex, as: .hevc)
+        return HDRCacheHEVCSample(timing: record.timing, data: data)
+    }
+
+    private func readPayload(_ lease: HDRCacheLease, frameIndex: Int,
+                             as storage: HDRCacheStorage) throws -> (HDRCacheFrameRecord, Data) {
+        guard readers[lease.id] == lease.manifest.key, lease.manifest.frames.indices.contains(frameIndex),
+              try HDRCacheStorage(lease.manifest.identity) == storage else {
             throw HDRCacheError.unavailable
         }
         let record = lease.manifest.frames[frameIndex]
-        let data = try readVerified(record, from: completedDirectory.appendingPathComponent(lease.manifest.key))
-        let rgba = try HDRCachePixels.decode(data)
-        return HDRCacheFloatFrame(timing: record.timing, rgba: rgba)
+        return (record, try readVerified(record, from: completedDirectory.appendingPathComponent(lease.manifest.key)))
     }
 
     public func release(_ lease: HDRCacheLease) {
         guard let key = readers.removeValue(forKey: lease.id) else { return }
         if entries[key] == nil, !readers.values.contains(key) {
             try? fm.removeItem(at: completedDirectory.appendingPathComponent(key))
+            retired.removeValue(forKey: key)
         }
     }
 
@@ -496,39 +616,33 @@ public actor HDRSegmentCache {
     }
 
     public func usage() throws -> HDRCacheUsage {
-        HDRCacheUsage(byteCount: try diskBytes(), capacityBytes: capacityBytes,
+        HDRCacheUsage(byteCount: logicalBytes, capacityBytes: capacityBytes,
                       completedSegments: entries.count, stagedSegments: stages.count, activeReaders: readers.count)
     }
 
     private var completedDirectory: URL { root.appendingPathComponent("segments", isDirectory: true) }
     private var stagingDirectory: URL { root.appendingPathComponent("staging", isDirectory: true) }
 
-    private func diskBytes() throws -> Int64 {
-        guard let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: [.isRegularFileKey, .fileSizeKey]) else {
-            throw HDRCacheError.unavailable
-        }
-        var total: Int64 = 0
-        for case let file as URL in enumerator {
-            let values = try file.resourceValues(forKeys: [.isRegularFileKey, .fileSizeKey])
-            if values.isRegularFile == true { total += Int64(values.fileSize ?? 0) }
-        }
-        return total
+    /// Derived from records this actor owns, so accounting costs no directory walk.
+    private var logicalBytes: Int64 {
+        entries.values.reduce(0) { $0 + $1.bytes } + stages.values.reduce(0) { $0 + $1.bytes } + retired.values.reduce(0, +)
     }
 
     private func makeRoom(for additionalBytes: Int64) throws {
         guard additionalBytes <= capacityBytes else { throw HDRCacheError.capacityExceeded }
-        var bytes = try diskBytes()
+        var bytes = logicalBytes
         let pinned = Set(readers.values)
-        for (key, _) in entries.sorted(by: { $0.value.lastAccess < $1.value.lastAccess }) where !pinned.contains(key) {
+        for (key, entry) in entries.sorted(by: { $0.value.lastAccess < $1.value.lastAccess }) where !pinned.contains(key) {
             if bytes <= capacityBytes - additionalBytes { break }
             try fm.removeItem(at: completedDirectory.appendingPathComponent(key))
             entries.removeValue(forKey: key)
-            bytes = try diskBytes()
+            bytes -= entry.bytes
         }
         guard bytes <= capacityBytes - additionalBytes else { throw HDRCacheError.capacityExceeded }
     }
 
-    private func validate(directory: URL, expectedKey: String? = nil) throws -> HDRCacheManifest {
+    /// Returns the manifest and the segment's logical bytes: payloads plus manifest.
+    private func validate(directory: URL, expectedKey: String? = nil) throws -> (HDRCacheManifest, Int64) {
         let attributes = try directory.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
         guard attributes.isDirectory == true, attributes.isSymbolicLink != true else {
             throw HDRCacheError.corruptSegment("Invalid segment directory")
@@ -540,24 +654,26 @@ public actor HDRSegmentCache {
         }
         let manifest = try JSONDecoder().decode(HDRCacheManifest.self, from: Data(contentsOf: manifestURL))
         try manifest.identity.validate()
-        guard manifest.schemaVersion == (manifest.identity.timingInventorySHA256 == nil ? 1 : 2), manifest.storagePolicy == Self.storagePolicy,
+        let storage = try HDRCacheStorage(manifest.identity)
+        guard manifest.schemaVersion == (manifest.identity.timingInventorySHA256 == nil ? 1 : 2), manifest.storagePolicy == storage.policy,
               manifest.key == (try manifest.identity.key()), manifest.key == (expectedKey ?? directory.lastPathComponent),
               !manifest.frames.isEmpty else { throw HDRCacheError.corruptSegment("Invalid manifest identity") }
         try validateTiming(manifest.frames.map(\.timing), identity: manifest.identity)
         let frameBytes = try manifest.identity.frameByteCount
         for (index, frame) in manifest.frames.enumerated() {
-            guard frame.fileName == String(format: "%08d.rgba32f", index), frame.byteCount == frameBytes else {
+            guard frame.fileName == storage.fileName(index), frame.byteCount <= frameBytes else {
                 throw HDRCacheError.corruptSegment("Invalid frame inventory or timing")
             }
-            let pixels = try readVerified(frame, from: directory)
-            let valid = pixels.withUnsafeBytes { HDRCachePixels.valid($0) }
-            guard valid else { throw HDRCacheError.corruptSegment("Invalid float payload") }
+            let payload = try readVerified(frame, from: directory)
+            guard payload.withUnsafeBytes({ storage.accepts($0, frameIndex: index, frameByteCount: frameBytes) }) else {
+                throw HDRCacheError.corruptSegment("Invalid frame payload")
+            }
         }
         let names = Set(try fm.contentsOfDirectory(atPath: directory.path))
         guard names == Set(manifest.frames.map(\.fileName) + ["manifest.json"]) else {
             throw HDRCacheError.corruptSegment("Unexpected payload files")
         }
-        return manifest
+        return (manifest, manifest.frames.reduce(Int64(count)) { $0 + Int64($1.byteCount) })
     }
 
     private func readVerified(_ record: HDRCacheFrameRecord, from directory: URL) throws -> Data {
