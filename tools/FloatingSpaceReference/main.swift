@@ -2,7 +2,7 @@ import AppKit
 
 // Local dev tool for scripts/test-floating-video.py; CI and check.sh do not build it.
 // Usage: FloatingSpaceReference PLAYER_PID REPORT_JSON. It takes a fullscreen Space of
-// its own, writes the player's on-screen windows there, holds the Space for 3 s so the
+// its own, writes the player's on-screen windows there, holds the Space for 5 s so the
 // player can act on it, then leaves fullscreen and quits.
 @main
 @MainActor
@@ -40,7 +40,7 @@ final class FloatingSpaceReference: NSObject, NSApplicationDelegate, NSWindowDel
             let report: [String: Any] = ["fullscreen": window.styleMask.contains(.fullScreen), "active": NSApp.isActive,
                                          "playerWindowsOnScreen": player]
             try? JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys]).write(to: reportURL, options: .atomic)
-            try? await Task.sleep(for: .seconds(3))
+            try? await Task.sleep(for: .seconds(5))
             window.toggleFullScreen(nil)
         }
     }

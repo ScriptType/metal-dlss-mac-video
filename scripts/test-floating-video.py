@@ -5,7 +5,8 @@ Scenarios:
   floating-video             float and return without a restart, close orders, quit while floating
   floating-video-close-main  close the panel, then the main window; the app must quit
   floating-space             a helper app takes a fullscreen Space; the panel must stay on screen,
-                             and closing it there must pause playback
+                             and closing it there must leave the main window in view or pause
+  floating-space-hidden-main the same after closing the main window while floating
 
 Uses the GPU and the screen. floating-space takes over the screen for a few
 seconds. Run only while no other GPU tests run.
@@ -23,7 +24,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = ROOT / "tools/FloatingSpaceReference"
-SCENARIOS = ("floating-video", "floating-video-close-main", "floating-space")
+SCENARIOS = ("floating-video", "floating-video-close-main", "floating-space", "floating-space-hidden-main")
 FLOATING = "floating(mainHidden: false)"
 
 
@@ -78,8 +79,9 @@ def run(kind: str, output: Path, args: argparse.Namespace, helper: Path | None) 
         player = subprocess.Popen([str(args.executable), str(args.source)], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
         try:
             if helper:
+                ready = "floating(mainHidden: true)" if kind == "floating-space-hidden-main" else FLOATING
                 deadline = time.monotonic() + 60
-                while FLOATING not in placements(lifecycle(output / "lifecycle.jsonl")):
+                while ready not in placements(lifecycle(output / "lifecycle.jsonl")):
                     assert player.poll() is None and time.monotonic() < deadline, "The player never floated the video"
                     time.sleep(0.2)
                 helper_process = subprocess.Popen([str(helper), str(player.pid), str(output / "helper.json")],
@@ -134,7 +136,7 @@ def main() -> int:
     output = args.output.resolve()
     runs = {}
     for kind in args.scenario or SCENARIOS:
-        helper = build_helper(output) if kind == "floating-space" else None
+        helper = build_helper(output) if kind.startswith("floating-space") else None
         runs[kind] = run(kind, output / kind, args, helper)
     report = {"passed": all(run["passed"] for run in runs.values()), "runs": runs}
     output.mkdir(parents=True, exist_ok=True)

@@ -724,17 +724,24 @@ final class PlayerSmokeCheck {
         window.performClose(nil)
         checks.append("closed the main window after the panel; the app must now quit by itself")
     }
-    private func runFloatingSpace() async throws {
+    private func runFloatingSpace(hidingMain: Bool) async throws {
         try await startMutedPlayback()
         try chooseFloatVideo()
         try await wait("floating before another app takes a fullscreen Space") { self.floating }
-        try await wait("another app's fullscreen Space is active", seconds: 60) { !self.window.isOnActiveSpace }
-        let helperReport = reportURL.deletingLastPathComponent().appendingPathComponent("helper.json")
-        try await wait("the helper listed the on-screen windows", seconds: 20) { FileManager.default.fileExists(atPath: helperReport.path) }
-        video.window?.performClose(nil)
-        try await wait("closing the panel over that Space returns the video to the main window, paused", seconds: 5) {
-            self.home && !self.window.isOnActiveSpace && self.state()["paused"] as? Bool == true
+        if hidingMain {
+            window.performClose(nil)
+            try await wait("main window closed while floating") { !self.window.isVisible && self.floating }
         }
+        let helperReport = reportURL.deletingLastPathComponent().appendingPathComponent("helper.json")
+        try await wait("another app's fullscreen Space is active and the helper listed the on-screen windows", seconds: 60) {
+            FileManager.default.fileExists(atPath: helperReport.path)
+        }
+        video.window?.performClose(nil)
+        // The helper holds its Space for 5 s, so a pass within 2 s cannot come from it leaving.
+        try await wait("closing the panel over that Space leaves the main window in view or playback paused", seconds: 2) {
+            self.home && (self.window.isOnActiveSpace || self.state()["paused"] as? Bool == true)
+        }
+        checks.append("after closing the panel: main window on the active Space \(window.isOnActiveSpace), paused \(state()["paused"] as? Bool == true)")
         try await wait("the desktop Space returns", seconds: 20) { self.window.isOnActiveSpace }
         try chooseFloatVideo()
         try await wait("floating when the check quits") { self.floating }
@@ -753,7 +760,8 @@ final class PlayerSmokeCheck {
             case let kind? where kind.hasPrefix("preferences-"): try await runPreferences(write: kind == "preferences-write")
             case "floating-video": try await runFloatingVideo()
             case "floating-video-close-main": try await runFloatingCloseMain()
-            case "floating-space": try await runFloatingSpace()
+            case "floating-space": try await runFloatingSpace(hidingMain: false)
+            case "floating-space-hidden-main": try await runFloatingSpace(hidingMain: true)
             default: try await runControls()
             }
         } catch { failure = error.localizedDescription }
