@@ -1,7 +1,7 @@
 # v1.0 progress
 
-Current issues: #49 on `fix/49-mastering-primaries` (PR open). #34 on `feat/34-prepared-only`, built in the worktree `artifacts/wt-42`.
-Next step: merge #49, then finish #34. #37 needs the GPU to itself, so it waits until the #34 runs are done.
+Current issues: #16 agent part on `docs/16-human-checks`. #34 on `feat/34-prepared-only` (worktree `artifacts/wt-42`) and #35 on `feat/35-hevc-cache` (worktree `artifacts/wt-35`) are with implementer subagents.
+Next step: land #16's agent part, then review and land #34 and #35. #37 needs the GPU to itself, so it waits until the #34 and #35 GPU runs are done.
 
 ## Blocked
 
