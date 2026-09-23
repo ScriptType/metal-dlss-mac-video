@@ -41,7 +41,6 @@ final class PlayerSmokeCheck {
         _ = try await script("const e=document.getElementById('\(id)');e.value='\(value)';e.dispatchEvent(new Event('\(event)',{bubbles:true}));return true;")
     }
     private func click(_ id: String) async throws { _ = try await script("document.getElementById('\(id)').click();return true;") }
-    /// The DOM renders one dispatch after the native state it reflects.
     private func waitForDOM(_ label: String, _ expression: String, equals expected: String, seconds: Double = 8) async throws {
         let deadline = Date().addingTimeInterval(seconds)
         var actual = try await script("return \(expression);")
@@ -394,7 +393,6 @@ final class PlayerSmokeCheck {
         try await click("prepare-start")
         try await wait("preparation running", seconds: 20) { progress()["jobState"] as? String == "preparing" }
         try await click("prepare-close")
-        // The window starts once playback is seen advancing, which excludes the one-time preview wait.
         let start = number("position")
         try await click("play")
         try await wait("original playback advances while preparing", seconds: 20) {

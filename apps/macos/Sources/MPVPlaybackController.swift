@@ -117,7 +117,6 @@ private final class MPVPlayerWorker: @unchecked Sendable {
         }
         var removeExistingFilter = removeExistingFilter
         if let replacement = key(args) {
-            // A replaced filter change may have been the one that drains a Prepared cache owner.
             removeExistingFilter = removeExistingFilter || commands.contains { key($0.args) == replacement && $0.removeExistingFilter }
             commands.removeAll { key($0.args) == replacement }
         }
@@ -165,7 +164,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
             guard initialized >= 0 else { throw MPVFailure(message: library.error(initialized)) }
             _ = library.requestLog(handle, "warn")
             var failure: String?
-            var appliedConfigurationID: UInt64 = 0
+            var attemptedConfigurationID: UInt64 = 0
             var nextState = Date.distantPast
             var running = true
             func property(_ name: String) -> String? {
@@ -178,8 +177,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                 if stop { break }
                 if let work {
                     let args = work.args
-                    // Set before any failure path so a failed filter change reports its own configuration.
-                    if work.configurationID != 0 { appliedConfigurationID = work.configurationID }
+                    if work.configurationID != 0 { attemptedConfigurationID = work.configurationID }
                     if work.removeExistingFilter, let filters = property("vf"), let json = filters.data(using: .utf8),
                        let entries = (try? JSONSerialization.jsonObject(with: json)) as? [[String: Any]],
                        entries.contains(where: { $0["label"] as? String == "enhance" }) {
@@ -234,7 +232,7 @@ private final class MPVPlayerWorker: @unchecked Sendable {
                     let chapters: [[String: Any]] = array("chapter-list").enumerated().map { index, chapter in
                         ["index": index, "title": chapter["title"] ?? "Chapter \(index + 1)", "time": chapter["time"] ?? 0]
                     }
-                    var state: [String: Any] = ["configurationID": appliedConfigurationID, "initialized": true, "title": property("media-title") ?? "HDR Player", "source": property("path") ?? "",
+                    var state: [String: Any] = ["configurationID": attemptedConfigurationID, "initialized": true, "title": property("media-title") ?? "HDR Player", "source": property("path") ?? "",
                         "paused": property("pause") == "yes", "position": number("time-pos"), "duration": number("duration"),
                         "playing": property("pause") == "no" && property("core-idle") == "no",
                         "volume": number("volume", fallback: volume), "muted": property("mute") == "yes", "loading": property("paused-for-cache") == "yes",
@@ -291,9 +289,7 @@ final class MPVPlaybackController {
     private var height: Int
     private let developerModes = EnhancementMode.developerModesEnabled
     private var mode: EnhancementMode
-    /// Source of the Prepared filter in the most recently enqueued `vf set`; nil when that filter is not Prepared.
     private var preparedSource: String?
-    /// Polls can still report the previous selection after a `set vid` is enqueued.
     private var requestedVideoTrack: String?
     private var subtitleBrightness: Double
     private var subtitleScale: Double
@@ -361,7 +357,6 @@ final class MPVPlaybackController {
         state["tracks"] = []
         state["source"] = source; state["title"] = url.lastPathComponent; state["loading"] = true
         state.removeValue(forKey: "error")
-        // The old Prepared context must drain before loadfile builds the new chain from the `vf` option.
         if preparedSource != preparedTarget { applyFilter() }
         worker?.enqueue(["loadfile", url.path, "replace"])
         pauseIntent.request(false)
@@ -406,7 +401,6 @@ final class MPVPlaybackController {
                     if type == "video" {
                         requestedVideoTrack = id
                         if developerModes, mode == .prepared, id != "1" { mode = .adaptive }
-                        // Uninstall before the switch; publish() reinstalls only after `set vid 1` is queued.
                         if preparedSource != nil && preparedTarget == nil { applyFilter() }
                     }
                     worker?.enqueue(["set", property, id])
@@ -461,15 +455,12 @@ final class MPVPlaybackController {
     }
     private func filter() -> String {
         let model = modelURL.map { "model=%\($0.path.utf8.count)%\($0.path):" } ?? ""
-        // prepared-config is only valid in the `vf set` that also writes its request JSON.
         let prepared = preparedSource == nil ? "" : "prepared-config=%\(preparedRequestURL.path.utf8.count)%\(preparedRequestURL.path):prepare=no:"
-        // direct never pauses the clocks for a late frame, so uncached Prepared ranges play the original at source rate.
         let policy = mode == .prepared ? "direct" : "adaptive"
         return "@enhance:metal-hdr=\(model)\(prepared)processing-width=\(width):processing-height=\(height):strength=\(strength):colour-strength=\(colorStrength):maximum-luminance-ratio=2:reference-white=203:policy=\(policy):bypass=\(filterBypassed ? "yes" : "no")"
     }
     private var filterBypassed: Bool { !enabled || (mode == .prepared && preparedSource == nil) }
     private var preparedTarget: String? { mode == .prepared && preparedUnavailableReason == nil ? source : nil }
-    /// A user settings change retries a failed Prepared source; a reconcile does not.
     private func reconfigure() {
         if mode == .prepared { preparationFailure = nil }
         applyFilter()
@@ -499,7 +490,6 @@ final class MPVPlaybackController {
         }
         if let native = incoming["nativeEnhancement"] as? [String: Any],
            mode == .live, native["policy"] as? String == "adaptive" { mode = .adaptive }
-        // An older configuration can still report the error that the latest filter replaced.
         if preparedSource != nil, incoming["configurationID"] as? UInt64 == configurationID {
             let native = incoming["nativeEnhancement"] as? [String: Any] ?? [:]
             let progress = native["prepared"] as? [String: Any] ?? [:]
@@ -529,7 +519,6 @@ final class MPVPlaybackController {
         if !["mp4", "m4v", "mov", "mkv"].contains(URL(fileURLWithPath: source).pathExtension.lowercased()) {
             return "Prepared currently supports MP4, M4V, MOV and Matroska containers."
         }
-        // load() clears the tracks, so this holds until a poll reports the new file with its tracks.
         let tracks = state["tracks"] as? [[String: Any]] ?? []
         guard state["source"] as? String == source, !tracks.isEmpty else { return "Opening video…" }
         if (state["nativeEnhancement"] as? [String: Any])?["prepared-supported"] as? Bool != true {
@@ -555,7 +544,6 @@ final class MPVPlaybackController {
         let preparedReason = preparedUnavailableReason
         let preparedAvailable = preparedReason == nil
         let modes = EnhancementMode.offered(developer: developerModes, prepared: preparedAvailable, adaptive: available, live: qualified && enabled)
-        // In ordinary mode Prepared is the only enhancement, so its reason disables the switch.
         let unavailableReason = dolbyVisionReason ?? (developerModes ? nil : preparedReason)
         func ranges(_ key: String) -> [[String: Any]] {
             (progress[key] as? [[String: Any]] ?? []).compactMap { range in
