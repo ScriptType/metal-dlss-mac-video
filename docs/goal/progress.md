@@ -15,6 +15,7 @@ None.
 - Prepared uses `policy=direct`; mpv `484b01b` emits no clock-holding preview under direct, so switching enhancement on while playing holds no clock. Adaptive keeps the preview.
 - `HDRPLAYER_DEVELOPER_MODES=1` restores Live and Adaptive. The lifecycle smoke runs ordinary and developer modes; `prepared-playback` is the source-rate check.
 - `preferences-read` smoke fails intermittently (about 1 in 5) because volume and mute are saved from polled state; seen on main before #34.
+- Give a worktree its fixtures with `cp -c` (APFS clones), never symlinks. `preparedReplacementSharesCacheAndRejectsChangedSource` appends a byte to its "copy" of `hdr10-30.mp4`, and `copyItem` copies a symlink as a symlink, so a symlinked worktree corrupts the main checkout's fixture (its SHA-256 must stay `8ae84e52…`, as in `assets/test-clips/manifest.json`).
 - The controls smoke (`scripts/test-player-lifecycle-playback.py`) can time out on its frame-step check right after a fresh mpv build; rerun it once before debugging (#59).
 - Many scripts are pinned by SHA-256 at runtime (for example `review-reference-sequence.py`, `analyze-flash-reference.py`). CI runs tests that check those pins; `check.sh` does not.
 - The Adaptive media-gate WIP for AirPods sits on `wip/*` branches in `ScriptType/mpv` (#33, deferred).
