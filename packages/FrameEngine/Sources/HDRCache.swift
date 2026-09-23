@@ -393,6 +393,8 @@ public actor HDRSegmentCache {
     private var entries: [String: Entry] = [:]
     private var stages: [UUID: Stage] = [:]
     private var readers: [UUID: String] = [:]
+    /// Corrupt segments dropped from the index whose directory a lease still pins.
+    private var retired: [String: Int64] = [:]
     private var recovered = false
 
     public init(directory: URL, capacityBytes: Int64) throws {
@@ -547,7 +549,8 @@ public actor HDRSegmentCache {
         catch {
             // An existing reader still owns its lease; reads will report corruption, never stale pixels.
             entries.removeValue(forKey: key)
-            if !readers.values.contains(key) { try? fm.removeItem(at: completedDirectory.appendingPathComponent(key)) }
+            if readers.values.contains(key) { retired[key] = entry.bytes }
+            else { try? fm.removeItem(at: completedDirectory.appendingPathComponent(key)) }
             throw error
         }
         entry.lastAccess = Date()
@@ -584,6 +587,7 @@ public actor HDRSegmentCache {
         guard let key = readers.removeValue(forKey: lease.id) else { return }
         if entries[key] == nil, !readers.values.contains(key) {
             try? fm.removeItem(at: completedDirectory.appendingPathComponent(key))
+            retired.removeValue(forKey: key)
         }
     }
 
@@ -621,7 +625,7 @@ public actor HDRSegmentCache {
 
     /// Derived from records this actor owns, so accounting costs no directory walk.
     private var logicalBytes: Int64 {
-        entries.values.reduce(0) { $0 + $1.bytes } + stages.values.reduce(0) { $0 + $1.bytes }
+        entries.values.reduce(0) { $0 + $1.bytes } + stages.values.reduce(0) { $0 + $1.bytes } + retired.values.reduce(0, +)
     }
 
     private func makeRoom(for additionalBytes: Int64) throws {
